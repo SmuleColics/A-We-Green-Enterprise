@@ -1,0 +1,130 @@
+/* =============================================
+   LOG AVATAR
+   ============================================= */
+.log-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(22, 162, 73, 0.12);
+  border: 2px solid var(--awg-primary);
+  color: var(--awg-primary);
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: monospace;
+  text-transform: uppercase;
+}
+
+.log-avatar-lg {
+  width: 52px;
+  height: 52px;
+  font-size: 18px;
+}
+
+.log-avatar-unknown {
+  background: #f3f4f6;
+  border-color: var(--muted-text);
+  color: var(--muted-text);
+}
+
+/* =============================================
+   MODULE BADGES
+   ============================================= */
+.module-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.module-assessment { background: #d1fae5; color: #065f46; }
+.module-quotation  { background: #dbeafe; color: #1e40af; }
+.module-project    { background: #ede9fe; color: #5b21b6; }
+.module-task       { background: #fef3c7; color: #92400e; }
+.module-client     { background: #e0f2fe; color: #0369a1; }
+.module-employee   { background: #f0fdf4; color: #166534; }
+.module-material   { background: #fdf4ff; color: #86198f; }
+.module-settings   { background: #f1f5f9; color: #334155; }
+.module-auth       { background: #fff1f2; color: #9f1239; }
+
+/* =============================================
+   ACTION BADGES
+   ============================================= */
+.action-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.action-create  { background: #d1fae5; color: #065f46; }
+.action-update  { background: #dbeafe; color: #1e40af; }
+.action-approve { background: #dcfce7; color: #166534; }
+.action-archive { background: #f1f5f9; color: #334155; }
+.action-warning { background: #fef3c7; color: #92400e; }
+.action-danger  { background: #fee2e2; color: #991b1b; }
+.action-login   { background: #f0fdf4; color: #166534; }
+
+/* =============================================
+   ARCHIVE INFO BOX
+   ============================================= */
+.policy-info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+/* =============================================
+   VIEW LOG MODAL — SECTION / DETAIL LABELS
+   ============================================= */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-text);
+  margin-bottom: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.section-label:first-of-type {
+  padding-top: 0;
+  border-top: none;
+}
+
+.detail-label { color: var(--muted-text); margin-bottom: 1px; }
+.detail-value { color: var(--body-text);  margin-bottom: 0; }
+
+/* =============================================
+   PAGINATION
+   ============================================= */
+.page-link {
+  color: var(--awg-primary);
+  border-color: var(--border-color);
+}
+
+.page-link:hover {
+  color: var(--awg-primary-dark);
+  background-color: var(--awg-green-hover);
+  border-color: var(--awg-primary);
+}
+
+.page-item.active .page-link {
+  background-color: var(--awg-primary);
+  border-color: var(--awg-primary);
+  color: var(--white-text);
+}

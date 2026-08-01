@@ -1,0 +1,89 @@
+/* =============================================
+   PAGE HERO (shared technique across client pages)
+   ============================================= */
+* { box-sizing: border-box; }
+
+body {
+  background: #f7f5f2;
+  margin: 0;
+}
+
+.page-wrapper {
+  min-height: calc(100vh - 64px);
+}
+
+.page-hero {
+  background: var(--awg-primary);
+  padding: 1.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: #f7f5f2;
+  border-radius: 32px 32px 0 0;
+}
+
+.page-hero h2 {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-hero p {
+  color: rgba(255, 255, 255, .8);
+  font-size: .83rem;
+  margin: .25rem 0 0;
+}
+
+.main-content {
+  padding: 0 1.5rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* =============================================
+   PROGRESS BAR CONTAINER
+   ============================================= */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+}
+
+.progress-container .progress { flex: 1; }
+
+/* =============================================
+   SERVICE TYPE BADGES
+   (kept for potential future use — not used in the
+   current table markup, which uses plain text instead)
+   ============================================= */
+.service-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+}
+
+.badge-green { background: #d1fae5; color: #065f46; }
+.badge-blue  { background: #dbeafe; color: #1e40af; }
+.badge-amber { background: #fef3c7; color: #92400e; }
+.badge-gray  { background: #f3f4f6; color: #374151; }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 575.98px) {
+  .main-content { padding: 0 1rem 2rem; }
+  .page-hero { padding: 1.25rem 1rem 3rem; }
+}

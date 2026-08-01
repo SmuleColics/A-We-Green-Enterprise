@@ -1,0 +1,86 @@
+/* =============================================
+   QUOTATIONS TABLE — COLUMN WIDTHS
+   ============================================= */
+#quotationsTable th {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 10px 12px;
+  vertical-align: middle;
+}
+
+#quotationsTable td {
+  font-size: 13px;
+  padding: 9px 12px;
+  vertical-align: middle;
+}
+
+#quotationsTable th:nth-child(1),
+#quotationsTable td:nth-child(1) { width: 120px; white-space: nowrap; }
+
+#quotationsTable th:nth-child(2),
+#quotationsTable td:nth-child(2) { width: auto; }
+
+#quotationsTable th:nth-child(3),
+#quotationsTable td:nth-child(3) { width: 160px; white-space: nowrap; }
+
+#quotationsTable th:nth-child(4),
+#quotationsTable td:nth-child(4) { width: 110px; white-space: nowrap; }
+
+#quotationsTable th:nth-child(5),
+#quotationsTable td:nth-child(5) { width: 110px; white-space: nowrap; }
+
+#quotationsTable th:nth-child(6),
+#quotationsTable td:nth-child(6) { width: 110px; white-space: nowrap; }
+
+#quotationsTable th:nth-child(7),
+#quotationsTable td:nth-child(7) { width: 110px; white-space: nowrap; }
+
+/* =============================================
+   NEW QUOTATION MODAL — LINE ITEMS TABLE
+   ============================================= */
+#lineItemsTable th { font-size: 12px; font-weight: 600; }
+#lineItemsTable td { font-size: 13px; vertical-align: middle; }
+#lineItemsTable tfoot td { font-size: 13px; padding-top: 10px; }
+
+/* =============================================
+   TOTALS ROW
+   ============================================= */
+.totals-row {
+  width: 280px;
+  justify-content: space-between;
+}
+
+/* =============================================
+   PAGINATION — LINK COLORS
+   ============================================= */
+.page-link {
+  color: var(--awg-primary);
+  border-color: var(--border-color);
+}
+
+.page-link:hover {
+  color: var(--awg-primary-dark);
+  background-color: var(--awg-green-hover);
+  border-color: var(--awg-primary);
+}
+
+.page-item.active .page-link {
+  background-color: var(--awg-primary);
+  border-color: var(--awg-primary);
+  color: var(--white-text);
+}
+
+.page-item.disabled .page-link {
+  color: var(--muted-text);
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 768px) {
+  #quotationsTable th:nth-child(3),
+  #quotationsTable td:nth-child(3),
+  #quotationsTable th:nth-child(5),
+  #quotationsTable td:nth-child(5) { display: none; }
+}

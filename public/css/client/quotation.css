@@ -1,0 +1,128 @@
+/* =============================================
+   PAGE LOCAL VARIABLES
+   ============================================= */
+:root {
+  --green-light: #e8f5ee;
+}
+
+/* =============================================
+   QUOTATIONS TABLE — COLUMN WIDTHS
+   ============================================= */
+#quotationsTable th {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 10px 12px;
+  vertical-align: middle;
+}
+
+#quotationsTable td {
+  font-size: 13px;
+  padding: 9px 12px;
+  vertical-align: middle;
+}
+
+#quotationsTable th:nth-child(1),
+#quotationsTable td:nth-child(1) { width: 130px; white-space: nowrap; }
+
+#quotationsTable th:nth-child(2),
+#quotationsTable td:nth-child(2) { width: auto; }
+
+#quotationsTable th:nth-child(3),
+#quotationsTable td:nth-child(3) { width: 130px; white-space: nowrap; }
+
+#quotationsTable th:nth-child(4),
+#quotationsTable td:nth-child(4) { width: 130px; white-space: nowrap; }
+
+#quotationsTable th:nth-child(5),
+#quotationsTable td:nth-child(5) { width: 140px; white-space: nowrap; }
+
+#quotationsTable th:nth-child(6),
+#quotationsTable td:nth-child(6) { width: 90px; white-space: nowrap; }
+
+/* =============================================
+   QUOTATION VIEW PAGE
+   ============================================= */
+.quotation-view-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* =============================================
+   LINE ITEMS TABLE (read-only)
+   ============================================= */
+#lineItemsTable th { font-size: 15px; font-weight: 600; }
+#lineItemsTable td { font-size: 14px; vertical-align: middle; }
+#lineItemsTable tfoot td { font-size: 14px; padding-top: 10px; }
+
+/* =============================================
+   TOTALS ROW
+   ============================================= */
+.totals-row {
+  width: 280px;
+  justify-content: space-between;
+}
+
+/* =============================================
+   PAGE HERO (matches assessment.css's technique)
+   ============================================= */
+* { box-sizing: border-box; }
+
+body {
+  background: #f7f5f2;
+  margin: 0;
+}
+
+.page-wrapper {
+  min-height: calc(100vh - 64px);
+}
+
+.page-hero {
+  background: var(--awg-primary);
+  padding: 1.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: #f7f5f2;
+  border-radius: 32px 32px 0 0;
+}
+
+.page-hero h2 {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-hero p {
+  color: rgba(255, 255, 255, .8);
+  font-size: .83rem;
+  margin: .25rem 0 0;
+}
+
+.main-content {
+  padding: 0 1.5rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 768px) {
+  #quotationsTable th:nth-child(3),
+  #quotationsTable td:nth-child(3) { display: none; }
+}
+
+@media (max-width: 575.98px) {
+  .main-content { padding: 0 1rem 2rem; }
+  .page-hero { padding: 1.25rem 1rem 3rem; }
+}

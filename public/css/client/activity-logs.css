@@ -1,0 +1,99 @@
+/* =============================================
+   PAGE HERO (shared technique across client pages)
+   ============================================= */
+* { box-sizing: border-box; }
+
+body {
+  background: #f7f5f2;
+  margin: 0;
+}
+
+.page-wrapper {
+  min-height: calc(100vh - 64px);
+}
+
+.page-hero {
+  background: var(--awg-primary);
+  padding: 1.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: #f7f5f2;
+  border-radius: 32px 32px 0 0;
+}
+
+.page-hero h2 {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-hero p {
+  color: rgba(255, 255, 255, .8);
+  font-size: .83rem;
+  margin: .25rem 0 0;
+}
+
+.main-content {
+  padding: 0 1.5rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* =============================================
+   ACTIVITY TABLE
+   ============================================= */
+.activity-type-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--awg-green-hover);
+  color: var(--awg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activity-type-icon .material-symbols-outlined {
+  font-size: 17px;
+}
+
+#activityTable th:nth-child(1),
+#activityTable td:nth-child(1) { width: 50px; text-align: center; }
+
+#activityTable th:nth-child(2),
+#activityTable td:nth-child(2) { width: auto; }
+
+#activityTable th:nth-child(3),
+#activityTable td:nth-child(3) { width: 30%; }
+
+#activityTable th:nth-child(4),
+#activityTable td:nth-child(4) { width: 130px; white-space: nowrap; }
+
+#activityTable th:nth-child(5),
+#activityTable td:nth-child(5) { width: 150px; white-space: nowrap; }
+
+#activityTable th:nth-child(6),
+#activityTable td:nth-child(6) { width: 80px; }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 768px) {
+  #activityTable th:nth-child(3),
+  #activityTable td:nth-child(3) { display: none; }
+}
+
+@media (max-width: 575.98px) {
+  .main-content { padding: 0 1rem 2rem; }
+  .page-hero { padding: 1.25rem 1rem 3rem; }
+}

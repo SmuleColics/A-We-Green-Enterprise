@@ -1,0 +1,118 @@
+/* =============================================
+   PAGE HERO (shared technique across client pages)
+   ============================================= */
+* { box-sizing: border-box; }
+
+body {
+  background: #f7f5f2;
+  margin: 0;
+}
+
+.page-wrapper {
+  min-height: calc(100vh - 64px);
+}
+
+.page-hero {
+  background: var(--awg-primary);
+  padding: 1.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: #f7f5f2;
+  border-radius: 32px 32px 0 0;
+}
+
+.page-hero h2 {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-hero p {
+  color: rgba(255, 255, 255, .8);
+  font-size: .83rem;
+  margin: .25rem 0 0;
+}
+
+.main-content {
+  padding: 0 1.5rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* =============================================
+   SETTINGS ROWS (toggle switch layout)
+   ============================================= */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+.setting-label {
+  font-size: .875rem;
+  font-weight: 600;
+  color: var(--body-text);
+  margin: 0 0 2px;
+}
+
+.setting-desc {
+  font-size: .78rem;
+  color: var(--muted-text);
+  margin: 0;
+}
+
+/* Bootstrap switch color override to match brand green */
+.form-check-input:checked {
+  background-color: var(--awg-primary);
+  border-color: var(--awg-primary);
+}
+
+.form-check-input:focus {
+  border-color: var(--awg-primary);
+  box-shadow: 0 0 0 .2rem rgba(22, 162, 73, .18);
+}
+
+.form-check-input[role="switch"] {
+  width: 2.4em;
+  height: 1.3em;
+  cursor: pointer;
+}
+
+/* =============================================
+   DANGER ZONE
+   ============================================= */
+.danger-zone-card {
+  border: 1px solid #f5c6cb !important;
+  background: #fff8f8;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 575.98px) {
+  .main-content { padding: 0 1rem 2rem; }
+  .page-hero { padding: 1.25rem 1rem 3rem; }
+
+  .setting-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+  }
+}

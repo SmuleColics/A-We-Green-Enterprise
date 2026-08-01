@@ -1,0 +1,89 @@
+/* =============================================
+   PAGE HERO (shared technique across client pages)
+   ============================================= */
+* { box-sizing: border-box; }
+
+body {
+  background: #f7f5f2;
+  margin: 0;
+}
+
+.page-wrapper {
+  min-height: calc(100vh - 64px);
+}
+
+.page-hero {
+  background: var(--awg-primary);
+  padding: 1.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: #f7f5f2;
+  border-radius: 32px 32px 0 0;
+}
+
+.page-hero h2 {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-hero p {
+  color: rgba(255, 255, 255, .8);
+  font-size: .83rem;
+  margin: .25rem 0 0;
+}
+
+.main-content {
+  padding: 0 1.5rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* =============================================
+   PROFILE HEADER
+   ============================================= */
+.profile-wrap {
+  max-width: 100%;
+}
+
+.profile-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--awg-primary);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: monospace;
+}
+
+/* =============================================
+   FORM LABEL OVERRIDE
+   ============================================= */
+.form-label {
+  font-size: .8rem;
+  font-weight: 600;
+  color: #555;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 575.98px) {
+  .main-content { padding: 0 1rem 2rem; }
+  .page-hero { padding: 1.25rem 1rem 3rem; }
+}

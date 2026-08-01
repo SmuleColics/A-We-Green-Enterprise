@@ -1,0 +1,729 @@
+
+:root {
+  --green-light: #e8f5ee;
+  --green-mid: rgba(22, 162, 73, .12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Page background — different from the portal page,
+   so scoped to this page only rather than body.portal-body */
+body {
+  background: #f7f5f2;
+  margin: 0;
+}
+
+.page-wrapper {
+  min-height: calc(100vh - 64px);
+}
+
+.page-hero {
+  background: var(--awg-primary);
+  padding: 1.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: #f7f5f2;
+  border-radius: 32px 32px 0 0;
+}
+
+.page-hero h2 {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-hero p {
+  color: rgba(255, 255, 255, .8);
+  font-size: .83rem;
+  margin: .25rem 0 0;
+}
+
+.main-content {
+  padding: 0 1.5rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* =============================================
+   STEP WIZARD
+   ============================================= */
+.step-wizard {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .07);
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  min-width: 56px;
+}
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .75rem;
+  font-weight: 700;
+  z-index: 1;
+  background: #e9ecef;
+  color: #888;
+  border: 2px solid #e9ecef;
+  transition: all .25s;
+  flex-shrink: 0;
+}
+
+.step-circle.active {
+  background: var(--awg-primary);
+  color: #fff;
+  border-color: var(--awg-primary);
+}
+
+.step-circle.done {
+  background: var(--green-light);
+  color: var(--awg-primary);
+  border-color: var(--awg-primary);
+  font-size: .9rem;
+}
+
+.step-label {
+  font-size: .62rem;
+  color: #999;
+  margin-top: 4px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.step-label.active {
+  color: var(--awg-primary);
+  font-weight: 600;
+}
+
+.step-label.done {
+  color: var(--awg-primary);
+}
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background: #e9ecef;
+  margin: 0 3px 16px;
+  transition: background .25s;
+  min-width: 12px;
+}
+
+.step-line.done {
+  background: var(--awg-primary);
+}
+
+/* =============================================
+   STEP PANES
+   ============================================= */
+.step-pane {
+  display: none;
+}
+
+.step-pane.active {
+  display: block;
+}
+
+/* =============================================
+   CLIENT TYPE CARDS
+   ============================================= */
+.type-card {
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  cursor: pointer;
+  transition: border-color .2s, background .2s, transform .15s;
+  text-align: center;
+  background: #fff;
+  height: 100%;
+}
+
+.type-card:hover {
+  border-color: var(--awg-primary);
+  transform: translateY(-2px);
+}
+
+.type-card.selected {
+  border-color: var(--awg-primary);
+  background: var(--green-light);
+}
+
+.type-card .material-symbols-outlined {
+  font-size: 38px;
+  color: var(--awg-primary);
+  display: block;
+  margin-bottom: .5rem;
+}
+
+.type-card h6 {
+  font-size: .88rem;
+  font-weight: 700;
+  margin: 0 0 .2rem;
+  color: #222;
+}
+
+.type-card p {
+  font-size: .72rem;
+  color: #888;
+  margin: 0;
+}
+
+/* =============================================
+   ESTABLISHMENT CARDS
+   ============================================= */
+.estab-card {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: .85rem .7rem;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  text-align: center;
+  background: #fff;
+  height: 100%;
+}
+
+.estab-card:hover {
+  border-color: var(--awg-primary);
+}
+
+.estab-card.selected {
+  border-color: var(--awg-primary);
+  background: var(--green-light);
+}
+
+.estab-card .material-symbols-outlined {
+  font-size: 26px;
+  color: var(--awg-primary);
+  display: block;
+  margin-bottom: .3rem;
+}
+
+.estab-card .elabel {
+  font-size: .76rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.calendar-container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .07);
+  padding: 1.5rem;
+}
+
+.full-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #dee2e6;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.calendar-header-cell {
+  background: #d4f1e0;
+  padding: 9px 4px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--awg-primary-dark);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.calendar-cell {
+  background: #fff;
+  min-height: 76px;
+  padding: 5px;
+  cursor: pointer;
+  transition: background .12s;
+}
+
+.calendar-cell:hover:not(.no-click):not(.no-work):not(.full) {
+  background: #f0faf4;
+}
+
+.calendar-cell.no-click {
+  cursor: not-allowed;
+}
+
+.calendar-cell.no-work {
+  background: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.calendar-cell.partial {
+  background: #e0f7fa;
+}
+
+.calendar-cell.full {
+  background: #f0f0f0;
+  cursor: not-allowed;
+}
+
+.calendar-cell.today {
+  background: var(--awg-primary);
+}
+
+.calendar-cell.selected-day {
+  outline: 2px solid var(--awg-primary);
+  background: #c8ead5;
+}
+
+.calendar-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.calendar-cell.today .calendar-date {
+  color: #fff;
+}
+
+.calendar-cell.no-work .calendar-date {
+  color: #ccc;
+}
+
+.calendar-cell.full .calendar-date {
+  color: #bbb;
+}
+
+.calendar-slot-badge {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 4px;
+  border-radius: 3px;
+  margin-top: 2px;
+  display: block;
+  background: var(--awg-primary);
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-cell.today .calendar-slot-badge {
+  background: #fff;
+  color: var(--awg-primary);
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* =============================================
+   SERVICE CARDS (multi-select)
+   ============================================= */
+.service-card {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 1rem .75rem;
+  cursor: pointer;
+  transition: border-color .2s, background .2s, transform .15s;
+  text-align: center;
+  background: #fff;
+  height: 100%;
+  position: relative;
+}
+
+.service-card:hover {
+  border-color: var(--awg-primary);
+  transform: translateY(-2px);
+}
+
+.service-card.selected {
+  border-color: var(--awg-primary);
+  background: var(--green-light);
+}
+
+.service-card .material-symbols-outlined {
+  font-size: 30px;
+  color: var(--awg-primary);
+  display: block;
+  margin-bottom: .35rem;
+}
+
+.service-card h6 {
+  font-size: .8rem;
+  font-weight: 600;
+  margin: 0;
+  color: #222;
+}
+
+.service-check {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #e9ecef;
+  border: 2px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  transition: all .2s;
+  color: transparent;
+}
+
+.service-card.selected .service-check {
+  background: var(--awg-primary);
+  border-color: var(--awg-primary);
+  color: #fff;
+}
+
+/* =============================================
+   SLOT INFO BANNER
+   ============================================= */
+.slot-info-banner {
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 10px;
+  padding: .75rem 1rem;
+  font-size: .8rem;
+  color: #5d4037;
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  margin-bottom: 1rem;
+}
+
+.slot-info-banner .material-symbols-outlined {
+  font-size: 18px;
+  color: #f59e0b;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* =============================================
+   SUB-TYPE PILLS
+   ============================================= */
+.subtype-pill {
+  border: 2px solid #e9ecef;
+  border-radius: 30px;
+  padding: .4rem 1.1rem;
+  cursor: pointer;
+  font-size: .8rem;
+  font-weight: 600;
+  color: #555;
+  background: #fff;
+  transition: border-color .2s, background .2s, color .2s;
+  display: inline-block;
+}
+
+.subtype-pill:hover {
+  border-color: var(--awg-primary);
+  color: var(--awg-primary);
+}
+
+.subtype-pill.selected {
+  border-color: var(--awg-primary);
+  background: var(--awg-primary);
+  color: #fff;
+}
+
+/* =============================================
+   TIME SLOT CARDS
+   ============================================= */
+.slot-card {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 1rem;
+  cursor: pointer;
+  text-align: center;
+  background: #fff;
+  transition: border-color .2s, background .2s;
+  height: 100%;
+}
+
+.slot-card:hover {
+  border-color: var(--awg-primary);
+}
+
+.slot-card.selected {
+  border-color: var(--awg-primary);
+  background: var(--green-light);
+}
+
+.slot-card.disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.slot-card .material-symbols-outlined {
+  font-size: 28px;
+  color: var(--awg-primary);
+}
+
+.slot-card h6 {
+  font-size: .85rem;
+  font-weight: 600;
+  margin: .3rem 0 .1rem;
+  color: #222;
+}
+
+.slot-card p {
+  font-size: .72rem;
+  color: #888;
+  margin: 0;
+}
+
+.full-day-badge {
+  display: inline-block;
+  background: var(--awg-primary);
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-top: .35rem;
+}
+
+/* =============================================
+   REVIEW BOX (step 5)
+   ============================================= */
+.review-box {
+  background: var(--green-light);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid #b7dfc5;
+}
+
+.review-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: .45rem;
+  font-size: .84rem;
+}
+
+.review-label {
+  color: #666;
+  font-weight: 500;
+}
+
+.review-value {
+  font-weight: 600;
+  color: #222;
+  text-align: right;
+  max-width: 60%;
+}
+
+/* =============================================
+   SECTION LABEL
+   ============================================= */
+.section-label {
+  font-size: .63rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--awg-primary);
+  margin-bottom: .6rem;
+  display: block;
+}
+
+/* =============================================
+   FORM OVERRIDES
+   ============================================= */
+.form-label {
+  font-size: .8rem;
+  font-weight: 600;
+  color: #555;
+}
+
+/* =============================================
+   NAV TABS
+   (page-local — not in utilities.css; admin has its
+   own separate copy for admin-assessment.blade.php)
+   ============================================= */
+.nav-tabs {
+  border-bottom: none;
+}
+
+.nav-tabs .nav-link {
+  color: #6c757d;
+  background: #e9ecef;
+  border: none;
+  font-weight: 500;
+  padding: 8px 18px;
+  font-size: 13px;
+  border-radius: 0;
+  transition: all .15s;
+}
+
+.nav-tabs .nav-item:first-child .nav-link {
+  border-radius: 6px 0 0 6px;
+}
+
+.nav-tabs .nav-item:last-child .nav-link {
+  border-radius: 0 6px 6px 0;
+}
+
+.nav-tabs .nav-link.active {
+  color: #212529;
+  background: #fff;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+}
+
+.nav-tabs .nav-link:hover:not(.active) {
+  background: #dee2e6;
+}
+
+/* =============================================
+   VIEW-REQUEST MODAL DETAIL LABELS
+   ============================================= */
+.detail-label {
+  font-size: .72rem;
+  color: #888;
+  margin-bottom: .1rem;
+}
+
+.detail-value {
+  font-size: .88rem;
+  color: #222;
+  margin-bottom: 0;
+}
+
+.modal-section-label {
+  font-size: .63rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--awg-primary);
+  margin-bottom: 0;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 575.98px) {
+  .main-content {
+    padding: 0 1rem 2rem;
+  }
+
+  .page-hero {
+    padding: 1.25rem 1rem 3rem;
+  }
+
+  .calendar-cell {
+    min-height: 52px;
+  }
+
+  .calendar-header-cell {
+    font-size: 9px;
+    padding: 6px 2px;
+  }
+}
+
+/* =============================================
+   ASSESSMENT SUMMARY TABLE (read-only)
+   ============================================= */
+.table-success {
+  background-color: #d4f1e0 !important;
+  color: var(--awg-primary-dark);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.table-bordered {
+  border: 2px solid var(--awg-primary-dark);
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid var(--awg-primary-dark);
+  padding: 10px;
+  font-size: 13px;
+}
+
+/* =============================================
+   PAGE HERO
+   (same technique as assessment.css / quotation.css)
+   ============================================= */
+* { box-sizing: border-box; }
+
+body {
+  background: #f7f5f2;
+  margin: 0;
+}
+
+.page-wrapper {
+  min-height: calc(100vh - 64px);
+}
+
+.page-hero {
+  background: var(--awg-primary);
+  padding: 1.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: #f7f5f2;
+  border-radius: 32px 32px 0 0;
+}
+
+.page-hero h2 {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-hero p {
+  color: rgba(255, 255, 255, .8);
+  font-size: .83rem;
+  margin: .25rem 0 0;
+}
+
+.main-content {
+  padding: 0 1.5rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 575.98px) {
+  .main-content { padding: 0 1rem 2rem; }
+  .page-hero { padding: 1.25rem 1rem 3rem; }
+}

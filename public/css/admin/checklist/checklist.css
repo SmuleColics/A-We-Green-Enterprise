@@ -1,0 +1,82 @@
+/* =============================================
+   PROGRESS CONTAINER
+   ============================================= */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.progress-container .progress { flex: 1; }
+
+/* =============================================
+   PAGINATION LINK COLORS
+   ============================================= */
+.page-link {
+  color: var(--awg-primary);
+  border-color: var(--border-color);
+}
+
+.page-link:hover {
+  color: var(--awg-primary-dark);
+  background-color: var(--awg-green-hover);
+  border-color: var(--awg-primary);
+}
+
+.page-item.active .page-link {
+  background-color: var(--awg-primary);
+  border-color: var(--awg-primary);
+  color: var(--white-text);
+}
+
+/* =============================================
+   CHECKLIST MODAL
+   ============================================= */
+.checklist-modal .modal-content {
+  border: 0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.checklist-modal .modal-header {
+  border-bottom: 1px solid #edf0f2;
+}
+
+/* =============================================
+   CHECKLIST TABLE
+   ============================================= */
+.checklist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.checklist-table th {
+  background: var(--labor-bg);
+  color: var(--awg-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--light-bg);
+}
+
+.checklist-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #eef1f4;
+  color: var(--body-text);
+  vertical-align: middle;
+}
+
+.checklist-table tbody tr:hover { background: #f8fffb; }
+.checklist-table .row-complete   { background: #f5fcf7; }
+
+/* =============================================
+   CHECKLIST INPUTS
+   ============================================= */
+.checklist-input,
+.checklist-select { min-width: 88px; }
+
+.checklist-input { text-align: center; }

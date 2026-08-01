@@ -1,0 +1,58 @@
+/* =============================================
+   ASSESSMENT FORM TABLE
+   ============================================= */
+.table-success {
+  background-color: #d4f1e0 !important;
+  color: var(--awg-primary-dark);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.table-bordered {
+  border: 2px solid var(--awg-primary-dark);
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid var(--awg-primary-dark);
+  padding: 8px;
+}
+
+/* =============================================
+   INVENTORY PICKER BUTTON
+   ============================================= */
+.picker-btn {
+  width: 30px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--border-color);
+}
+
+.picker-btn:hover {
+  background-color: var(--awg-primary);
+  border-color: var(--awg-primary);
+  color: var(--white-text);
+}
+
+/* =============================================
+   TABLE INPUTS
+   ============================================= */
+.table input.border-0 {
+  background: transparent;
+}
+
+.table input.border-0:focus {
+  background: #f8f9fa;
+  outline: none;
+  box-shadow: none;
+}
+
+/* =============================================
+   INVENTORY LIST PICKER
+   ============================================= */
+.list-group-item-action:hover {
+  background-color: var(--awg-green-hover);
+  cursor: pointer;
+}

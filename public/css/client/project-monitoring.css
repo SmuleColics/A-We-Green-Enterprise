@@ -1,0 +1,246 @@
+/* =============================================
+   PAGE HERO
+   ============================================= */
+* { box-sizing: border-box; }
+
+body {
+  background: #f7f5f2;
+  margin: 0;
+}
+
+.page-wrapper {
+  min-height: calc(100vh - 64px);
+}
+
+.page-hero {
+  background: var(--awg-primary);
+  padding: 1.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: #f7f5f2;
+  border-radius: 32px 32px 0 0;
+}
+
+.page-hero h2 {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-hero p {
+  color: rgba(255, 255, 255, .8);
+  font-size: .83rem;
+  margin: .25rem 0 0;
+}
+
+.main-content {
+  padding: 0 1.5rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* =============================================
+   SERVICE BADGES
+   ============================================= */
+.service-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+}
+
+.badge-green { background: #d1fae5; color: #065f46; }
+
+/* =============================================
+   DETAIL CARD
+   ============================================= */
+.detail-card {
+  background: var(--white-text);
+  border: 1px solid var(--light-bg);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* =============================================
+   PROGRESS PERCENTAGE
+   ============================================= */
+.progress-pct {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--awg-primary);
+  line-height: 1;
+}
+
+/* =============================================
+   PROJECT TEAM CHIPS (read-only display)
+   ============================================= */
+.team-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #f0fdf4; border: 1px solid #bbf7d0;
+  border-radius: 999px; padding: 4px 10px 4px 6px;
+  font-size: 0.78rem; font-weight: 600; color: #065f46;
+}
+
+.team-chip-avatar {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--awg-primary); color: var(--white-text);
+  font-size: 0.62rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* =============================================
+   TIMELINE
+   ============================================= */
+.timeline { display: flex; flex-direction: column; }
+
+.timeline-item { display: flex; gap: 0; padding-bottom: 28px; }
+.timeline-item.last { padding-bottom: 0; }
+
+.tl-left {
+  display: flex; flex-direction: column; align-items: center;
+  width: 28px; flex-shrink: 0; padding-top: 5px;
+}
+
+.tl-dot {
+  width: 13px; height: 13px; border-radius: 50%;
+  background: var(--awg-primary); border: 2px solid var(--white-text);
+  box-shadow: 0 0 0 2px var(--awg-primary); flex-shrink: 0; z-index: 1;
+}
+
+.tl-line { width: 2px; flex: 1; background: var(--border-color); margin-top: 4px; }
+.tl-body { flex: 1; padding-left: 16px; padding-top: 2px; }
+
+/* =============================================
+   UPDATE AVATAR
+   ============================================= */
+.update-avatar.sm { width: 26px; height: 26px; font-size: 9px;
+  background: #d1fae5; color: var(--awg-primary); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: monospace; font-weight: 700; flex-shrink: 0;
+}
+
+/* =============================================
+   UPDATE IMAGES
+   ============================================= */
+.update-images { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
+.update-thumb {
+  width: 140px; height: 90px; object-fit: cover;
+  border-radius: 8px; border: 1px solid var(--light-bg);
+  cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.update-thumb:hover { transform: scale(1.04); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); }
+
+/* =============================================
+   CONTRACT FILE ROWS (view/download)
+   ============================================= */
+.contract-file-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--labor-bg); border: 1px solid #e5e7eb;
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 13.5px; color: var(--body-text);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.contract-file-row:hover {
+  background: var(--awg-green-hover);
+  border-color: var(--awg-primary);
+  color: var(--body-text);
+}
+
+/* =============================================
+   CHECKLIST PROGRESS BAR
+   ============================================= */
+.checklist-progress-bar {
+  height: 10px; border-radius: 8px;
+  background: var(--light-bg); overflow: hidden;
+}
+
+.checklist-progress-bar .bar-fill {
+  height: 100%; background: var(--awg-primary);
+  border-radius: 8px; transition: width 0.3s ease;
+}
+
+/* =============================================
+   TASK ITEM CARDS (read-only)
+   ============================================= */
+.task-item-card {
+  background: var(--white-text);
+  border: 1px solid var(--light-bg);
+  border-radius: 12px; padding: 16px; margin-bottom: 10px;
+}
+
+.task-item-card.status-done       { background: #f0fdf4; border-color: #bbf7d0; }
+.task-item-card.status-inprogress { background: #fffbeb; border-color: #fde68a; }
+
+.task-item-title { font-size: 14px; font-weight: 600; color: var(--body-text); margin: 0; }
+
+/* =============================================
+   ASSIGNEE CHIP
+   ============================================= */
+.assignee-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px; border-radius: 20px;
+  font-size: 11.5px; font-weight: 600;
+  background: #d1fae5; color: #065f46;
+}
+
+.assignee-chip .chip-avatar {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--awg-primary); color: var(--white-text);
+  font-size: 8px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  font-family: monospace;
+}
+
+/* =============================================
+   TASK CHECKBOX (display-only — no hover/click affordance)
+   ============================================= */
+.task-checkbox.readonly {
+  flex-shrink: 0; width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px; cursor: default;
+}
+
+.task-checkbox.readonly .material-symbols-outlined { font-size: 22px; color: #d1d5db; }
+.task-checkbox.readonly.checked .material-symbols-outlined { color: var(--awg-primary); }
+
+/* =============================================
+   CHECKLIST FILTER TABS
+   ============================================= */
+.checklist-tabs .nav-link {
+  color: var(--muted-text); border: none;
+  border-bottom: 3px solid transparent;
+  font-weight: 600; font-size: 13px;
+  padding: 10px 16px; transition: all 0.15s;
+}
+
+.checklist-tabs .nav-link:hover { color: var(--awg-primary); }
+
+.checklist-tabs .nav-link.active {
+  color: var(--awg-primary);
+  border-bottom-color: var(--awg-primary);
+  background: transparent;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 575.98px) {
+  .main-content { padding: 0 1rem 2rem; }
+  .page-hero { padding: 1.25rem 1rem 3rem; }
+}

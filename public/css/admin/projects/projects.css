@@ -1,0 +1,153 @@
+/* =============================================
+   PROGRESS BAR CONTAINER
+   ============================================= */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+}
+
+.progress-container .progress { flex: 1; }
+
+/* =============================================
+   SERVICE TYPE BADGES
+   ============================================= */
+.service-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+}
+
+.badge-green { background: #d1fae5; color: #065f46; }
+.badge-blue  { background: #dbeafe; color: #1e40af; }
+.badge-amber { background: #fef3c7; color: #92400e; }
+.badge-gray  { background: #f3f4f6; color: #374151; }
+
+/* =============================================
+   PROJECT CARD (grid/card view)
+   ============================================= */
+.project-card {
+  background: var(--white-text);
+  border: 1px solid var(--light-bg);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.18s, transform 0.15s;
+}
+
+.project-card:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.09);
+  transform: translateY(-2px);
+}
+
+/* =============================================
+   ASSIGNEE AVATAR
+   ============================================= */
+.assignee-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #d1fae5;
+  color: var(--awg-primary);
+  font-size: 10.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: monospace;
+}
+
+/* =============================================
+   TASK ROW
+   ============================================= */
+.task-row { transition: background 0.13s; }
+.task-row:hover { background: #f8fffe; }
+
+/* =============================================
+   NAV TABS (project detail tabs)
+   ============================================= */
+.nav-tabs .nav-link {
+  color: var(--muted-text);
+  font-size: 13.5px;
+  font-weight: 500;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 16px;
+  transition: color 0.13s, border-color 0.13s;
+}
+
+.nav-tabs .nav-link:hover {
+  color: var(--awg-primary);
+  border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--awg-primary);
+  border-bottom: 2px solid var(--awg-primary);
+  background: none;
+  font-weight: 600;
+}
+
+/* =============================================
+   TIMELINE (updates tab)
+   ============================================= */
+.timeline { position: relative; padding-left: 20px; }
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 24px;
+  padding-left: 20px;
+}
+
+.timeline-item.last { padding-bottom: 0; }
+
+.timeline-dot {
+  position: absolute;
+  left: -6px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--awg-primary);
+}
+
+.timeline-line {
+  position: absolute;
+  left: 0;
+  top: 16px;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-color);
+}
+
+.timeline-content { padding-left: 4px; }
+
+/* =============================================
+   CONTRACT BODY
+   ============================================= */
+.contract-body { line-height: 1.7; }
+
+/* =============================================
+   PAGINATION LINK COLORS
+   ============================================= */
+.page-link {
+  color: var(--awg-primary);
+  border-color: var(--border-color);
+}
+
+.page-link:hover {
+  color: var(--awg-primary-dark);
+  background-color: var(--awg-green-hover);
+  border-color: var(--awg-primary);
+}
+
+.page-item.active .page-link {
+  background-color: var(--awg-primary);
+  border-color: var(--awg-primary);
+  color: var(--white-text);
+}

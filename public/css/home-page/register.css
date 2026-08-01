@@ -1,0 +1,308 @@
+/* ---------- Page-local variables ---------- */
+:root {
+  --color-accent: #4ade80;
+  --color-accent-dark: #22c55e;
+  --color-highlight: #facc15;
+  --color-card: #ffffff;
+  --font-display: 'Montserrat', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .06);
+  --shadow-elevated: 0 10px 25px rgba(0, 0, 0, .12), 0 4px 10px rgba(0, 0, 0, .08);
+  --transition: all .25s ease;
+}
+
+/* ---------- Full-height two-column layout ---------- */
+.auth-page {
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+.auth-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+}
+
+@media (min-width: 992px) {
+  .auth-wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---------- Form side ---------- */
+.auth-form-side {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  order: 2;
+}
+
+@media (min-width: 992px) {
+  .auth-form-side { order: 1; }
+}
+
+.auth-back {
+  padding: 1.5rem 2rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: .875rem;
+  color: #6b7280;
+  text-decoration: none;
+  transition: color .2s ease;
+}
+.back-link:hover { color: var(--awg-primary); }
+
+.auth-form-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem 3rem;
+}
+
+.auth-form-inner {
+  width: 100%;
+  max-width: 440px;
+}
+
+/* ---------- Heading ---------- */
+.auth-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  color: var(--awg-primary);
+  margin-bottom: .375rem;
+}
+.auth-subtitle {
+  font-size: .9375rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ---------- Labels ---------- */
+.auth-label {
+  font-size: .875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: .375rem;
+}
+
+/* ---------- Inputs ---------- */
+.auth-input {
+  height: 48px;
+  border-radius: 10px !important;
+  border: 1.5px solid #e5e7eb !important;
+  font-size: .9375rem;
+  color: #1f2937;
+  transition: border-color .2s ease, box-shadow .2s ease;
+  background: #fff;
+}
+.auth-input:focus {
+  border-color: var(--awg-primary) !important;
+  box-shadow: 0 0 0 3px rgba(22,162,73,.12) !important;
+  outline: none;
+}
+.auth-input::placeholder { color: #9ca3af; }
+
+.input-icon-wrap { position: relative; }
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: #9ca3af;
+  z-index: 5;
+  pointer-events: none;
+}
+.ps-input { padding-left: 2.5rem !important; }
+.pe-input { padding-right: 2.75rem !important; }
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 15px;
+  z-index: 5;
+  transition: color .2s ease;
+}
+.password-toggle:hover { color: #374151; }
+
+/* ---------- Checkbox ---------- */
+.auth-check { display: flex; align-items: flex-start; gap: .625rem; }
+.auth-check .form-check-input {
+  width: 16px; height: 16px;
+  margin-top: 2px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 4px !important;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.auth-check .form-check-input:checked {
+  background-color: var(--awg-primary);
+  border-color: var(--awg-primary);
+}
+.auth-check .form-check-input:focus {
+  box-shadow: 0 0 0 3px rgba(22,162,73,.12);
+}
+.auth-check-label {
+  font-size: .875rem;
+  color: #6b7280;
+  line-height: 1.5;
+  cursor: pointer;
+  margin: 0;
+}
+
+/* ---------- Links ---------- */
+.auth-link {
+  color: var(--awg-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color .2s ease;
+}
+.auth-link:hover { color: var(--color-accent-dark); }
+
+/* ---------- Submit button ---------- */
+.auth-submit {
+  height: 48px;
+  font-size: 1rem;
+  border-radius: 10px;
+  background: var(--awg-primary);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  transition: all .25s ease;
+}
+.auth-submit:hover {
+  background: var(--awg-primary-dark);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22,162,73,.3);
+}
+
+/* ---------- Sign in switch ---------- */
+.auth-switch { font-size: .875rem; color: #6b7280; }
+
+/* ---------- Visual side ---------- */
+.auth-visual-side {
+  position: relative;
+  overflow: hidden;
+  order: 1;
+  min-height: 280px;
+}
+
+@media (min-width: 992px) {
+  .auth-visual-side {
+    order: 2;
+    min-height: unset;
+  }
+}
+
+.auth-visual-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Matches the landing page hero overlay exactly:
+   diagonal green gradient + dark wash stacked via ::after,
+   so all three pages (landing, sign-in, register) render
+   the same overlay mood on the same photo. */
+.auth-visual-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      rgba(22, 162, 73, 0.85) 0%,
+      rgba(22, 162, 73, 0.65) 100%);
+}
+
+.auth-visual-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 45, 31, .45);
+}
+
+.auth-visual-content {
+  padding: 2.5rem;
+  z-index: 1;
+  width: 100%;
+}
+
+/* ---------- Logo on visual side ---------- */
+.visual-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.visual-brand-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.visual-brand-sub {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  color: rgba(255,255,255,.65);
+}
+
+/* ---------- Headline + subtext ---------- */
+.visual-headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 46px;
+  color: #fff;
+  line-height: 1.25;
+}
+.visual-subtext {
+  font-size: 1.15rem;
+  color: rgba(255,255,255,.78);
+  line-height: 1.7;
+}
+
+/* ---------- Perk list ---------- */
+.perk-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.12);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.perk-icon-i {
+  font-size: 18px;
+  color: var(--color-accent-dark);
+}
+.perk-label {
+  font-size: 1rem;
+  color: rgba(255,255,255,.88);
+  line-height: 1.4;
+}
+
+/* ---------- Copyright ---------- */
+.visual-copyright {
+  font-size: .75rem;
+  color: rgba(255,255,255,.5);
+}

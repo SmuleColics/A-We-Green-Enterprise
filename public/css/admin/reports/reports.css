@@ -1,0 +1,276 @@
+/* =============================================
+   NAV TABS
+   ============================================= */
+.nav-tabs { border-bottom: 2px solid var(--border-color); }
+
+.nav-tabs .nav-link {
+  color: var(--muted-text);
+  font-size: 13.5px;
+  font-weight: 500;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 9px 18px;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+  background: none;
+}
+
+.nav-tabs .nav-link:hover { color: var(--awg-primary); border-color: transparent; }
+
+.nav-tabs .nav-link.active {
+  color: var(--awg-primary);
+  border-bottom: 2px solid var(--awg-primary);
+  font-weight: 600;
+}
+
+/* =============================================
+   REPORT SUMMARY CARDS
+   ============================================= */
+.report-card {
+  background: var(--white-text);
+  border: 1px solid var(--light-bg);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  height: 100%;
+}
+
+.report-icon-wrap {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.report-icon-wrap .material-symbols-outlined { font-size: 24px; }
+
+.report-label {
+  font-size: 12px;
+  color: var(--muted-text);
+  margin-bottom: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.report-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--body-text);
+  margin: 0;
+  line-height: 1;
+}
+
+/* =============================================
+   CHART CARDS
+   ============================================= */
+.chart-card {
+  background: var(--white-text);
+  border: 1px solid var(--light-bg);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.chart-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--body-text);
+  margin-bottom: 16px;
+}
+
+/* =============================================
+   GENERATE REPORT MODAL
+   ============================================= */
+#generateReportModal .modal-dialog { max-width: 900px; }
+
+.modal-header { border-bottom: 2px solid var(--awg-primary); }
+
+/* =============================================
+   PRESET BUTTONS
+   ============================================= */
+.report-preset-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #9ca3af;
+  align-self: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.preset-btn { font-size: 0.78rem; transition: all 0.15s; }
+
+.preset-btn.active {
+  background: var(--awg-primary);
+  border-color: var(--awg-primary);
+  color: var(--white-text);
+}
+
+.preset-btn:hover:not(.active) {
+  background: var(--awg-green-hover);
+  border-color: var(--awg-primary);
+  color: var(--awg-primary);
+}
+
+/* =============================================
+   PLACEHOLDER
+   ============================================= */
+.report-placeholder {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px; padding: 3rem 1rem;
+  color: #9ca3af; text-align: center;
+}
+
+.report-placeholder .material-symbols-outlined { font-size: 52px; opacity: 0.35; }
+.report-placeholder p { font-size: 0.875rem; max-width: 320px; margin: 0; }
+
+/* =============================================
+   LETTERHEAD
+   ============================================= */
+.rpt-letterhead { margin-bottom: 16px; }
+
+.rpt-company-name {
+  font-size: 1rem; font-weight: 900;
+  color: var(--awg-primary);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  margin-bottom: 4px; font-family: Arial, sans-serif;
+}
+
+.rpt-company-address { font-size: 0.72rem; color: #444; line-height: 1.5; }
+.rpt-company-contact  { font-size: 0.72rem; color: #555; line-height: 1.5; }
+
+.rpt-logo-box { flex-shrink: 0; margin-left: 1rem; display: flex; align-items: flex-start; }
+
+.rpt-divider {
+  border: none;
+  border-top: 2px solid var(--awg-primary);
+  margin: 10px 0 14px;
+}
+
+/* =============================================
+   META ROW
+   ============================================= */
+.rpt-meta-row { display: flex; flex-wrap: wrap; gap: 20px; font-size: 0.8rem; margin-bottom: 10px; }
+
+.rpt-meta-label {
+  font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; color: #888;
+  font-size: 0.7rem; margin-right: 4px;
+}
+
+.rpt-meta-value { font-weight: 600; color: var(--body-text); }
+
+/* =============================================
+   SUBJECT LINE
+   ============================================= */
+.rpt-subject-line {
+  font-size: 0.8rem; font-weight: 700;
+  text-transform: uppercase; color: var(--body-text);
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px; margin-bottom: 14px;
+  letter-spacing: 0.02em;
+}
+
+/* =============================================
+   SUMMARY BOXES
+   ============================================= */
+.rpt-summary-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+
+.rpt-summary-box {
+  flex: 1; min-width: 120px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px; padding: 12px 16px;
+  background: #fafafa;
+}
+
+.rpt-summary-value { font-size: 1.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 3px; }
+
+.rpt-summary-label {
+  font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: #9ca3af;
+}
+
+/* =============================================
+   REPORT TABLE
+   ============================================= */
+table.rpt-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+
+table.rpt-table thead th {
+  background: var(--awg-primary);
+  color: var(--white-text);
+  padding: 8px 12px; font-weight: 600;
+  font-size: 0.7rem; text-transform: uppercase;
+  letter-spacing: 0.04em; text-align: left; border: none;
+}
+
+table.rpt-table tbody td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle; color: #1f2937;
+}
+
+table.rpt-table tbody tr:nth-child(even) td { background: #f9fdf9; }
+table.rpt-table tbody tr:hover td           { background: var(--awg-green-hover); }
+
+/* =============================================
+   REPORT BADGES
+   ============================================= */
+.rpt-badge {
+  display: inline-block; font-size: 0.65rem;
+  font-weight: 700; padding: 2px 8px;
+  border-radius: 20px; text-transform: uppercase;
+  letter-spacing: 0.04em; white-space: nowrap;
+}
+
+.rpt-badge-completed,
+.rpt-badge-confirmed,
+.rpt-badge-approved,
+.rpt-badge-done          { background: #d1fae5; color: #065f46; }
+
+.rpt-badge-in-progress,
+.rpt-badge-sent          { background: #dbeafe; color: #1e40af; }
+
+.rpt-badge-on-hold,
+.rpt-badge-pending,
+.rpt-badge-for-review,
+.rpt-badge-to-do         { background: #fef3c7; color: #92400e; }
+
+.rpt-badge-cancelled,
+.rpt-badge-rejected      { background: #fee2e2; color: #991b1b; }
+
+.rpt-badge-priority-high   { background: #fee2e2; color: #991b1b; }
+.rpt-badge-priority-medium { background: #fef3c7; color: #92400e; }
+.rpt-badge-priority-low    { background: #d1fae5; color: #065f46; }
+
+/* =============================================
+   TERMS SECTION
+   ============================================= */
+.rpt-terms-section { margin-top: 20px; padding-top: 14px; border-top: 1px solid #e5e7eb; }
+.rpt-terms-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--body-text); margin-bottom: 8px; }
+.rpt-terms-list { padding-left: 18px; margin: 0; }
+.rpt-terms-list li { font-size: 0.8rem; color: #374151; line-height: 1.65; margin-bottom: 4px; list-style-type: disc; }
+
+/* =============================================
+   SIGNATURES
+   ============================================= */
+.rpt-signatures { display: flex; justify-content: space-between; gap: 40px; margin-top: 40px; }
+.rpt-sig-box    { flex: 1; text-align: center; }
+.rpt-sig-line   { border-top: 1px solid var(--input-text); margin-bottom: 6px; margin-top: 32px; }
+.rpt-sig-name   { font-size: 0.8rem; font-weight: 700; margin-bottom: 2px; }
+.rpt-sig-role   { font-size: 0.75rem; color: #9ca3af; }
+
+/* =============================================
+   PRINT
+   ============================================= */
+@media print {
+  .top-header, .nav-tabs, #reportTabs,
+  .modal-header, .modal-footer,
+  #reportPlaceholder, #datePresets { display: none !important; }
+
+  #printableReport { display: block !important; padding: 0; margin: 0; }
+}

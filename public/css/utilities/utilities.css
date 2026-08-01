@@ -1,0 +1,313 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+
+/* =============================================
+   GLOBAL VARIABLES
+   ============================================= */
+:root {
+  --border-light: rgba(255, 255, 255, 0.15);
+  --awg-primary: #16A249;
+  --awg-primary-dark: #128a3d;
+  --awg-primary-light: rgba(255, 255, 255, 0.12);
+  --awg-light: #f4f2ef;
+  --awg-green-hover: #f0faf4;       /* ← light green hover bg on buttons */
+  --sb-width: 240px;
+  --text-muted: rgba(255, 255, 255, 0.75);
+  --white-text: #ffffff;
+  --body-text: #212529;             /* ← dark text used everywhere */
+  --muted-text: #6c757d;            /* ← secondary/muted text */
+  --border-color: #dee2e6;          /* ← standard border */
+  --input-text: #495057;            /* ← form/filter text */
+  --light-bg: #e9ecef;              /* ← light gray backgrounds */
+  --labor-bg: #f8f9fa;
+  --dark-blue: #374151;
+}
+
+/* =============================================
+   TYPOGRAPHY
+   ============================================= */
+.fs-46 { font-size: 46px !important; }
+.fs-42 { font-size: 42px !important; }
+.fs-40 { font-size: 40px !important; }
+.fs-22 { font-size: 22px !important; }
+.fs-20 { font-size: 20px !important; }
+.fs-18 { font-size: 18px !important; }
+.fs-17 { font-size: 17px !important; }
+.fs-16 { font-size: 16px !important; }
+.fs-15 { font-size: 15px !important; }
+.fs-14 { font-size: 14px !important; }
+.fs-12 { font-size: 12px !important; }
+.fs-11 { font-size: 11px !important; }
+
+/* =============================================
+   line height
+   ============================================= */
+
+.lh-17 {
+  line-height: 1.7;
+}
+
+/* =============================================
+   TEXT COLOR
+   ============================================= */
+.green-text {
+  color: var(--awg-primary) !important;
+}
+
+.dblue-text {
+  color: var(--dark-blue) !important;
+}
+
+.muted-text { color: var(--muted-text); }
+
+/* =============================================
+   WIDTHS
+   ============================================= */
+
+
+.w-40 { width: 40px !important; }
+.w-70 { width: 70px !important; }
+.w-90 { width: 90px !important; }
+.w-140 { width: 140px !important; }
+.w-145 { width: 145px !important; }
+.w-180 { width: 180px !important; }
+
+.mw-720 { max-width: 720px !important; }
+.mw-600 { max-width: 600px !important; }
+.mw-500 { max-width: 500px !important; }
+
+/* width percentage */
+.wp-10 { width: 10% !important; }
+.wp-15 { width: 15% !important; }
+.wp-20 { width: 20% !important; }
+.wp-30 { width: 30% !important; }
+.wp-40 { width: 40% !important; }
+.wp-55 { width: 55% !important; }
+.wp-65 { width: 65% !important; }
+.wp-100 { width: 100% !important; }
+/* =============================================
+   HEIGHTS
+   ============================================= */
+.mh-400 { max-height: 400px !important; }
+
+.hpx-6 { height: 6px !important;}
+.hpx-40 { height: 40px !important;}
+.hpx-50 { height: 50px !important;}
+.hpx-200 { height: 200px !important;}
+.hpx-260 { height: 260px !important;}
+/* =============================================
+   BORDERS
+   ============================================= */
+.light-border {
+  border-color: var(--border-light) !important;
+}
+
+.borr-10 {
+  border-radius: 10px;
+}
+
+/* =============================================
+   BACKGROUNDS
+   ============================================= */
+.bg-awg-primary {
+  background-color: var(--awg-primary) !important;
+}
+
+.bg-awg-light {
+  background-color: var(--awg-light);
+}
+
+.bg-labor {
+  background-color: var(--labor-bg);
+}
+
+/* =============================================
+   POINTER EVENTS
+   ============================================= */
+.pe-none { pointer-events: none; }
+
+/* =============================================
+   BADGES
+   ============================================= */
+.badge {
+  font-size: 10px;
+  padding: 3px 8px;
+  font-weight: 500;
+}
+
+/* =============================================
+   BUTTONS
+   ============================================= */
+.btn-primary {
+  background-color: var(--awg-primary);
+  border-color: var(--awg-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--awg-primary-dark);
+  border-color: var(--awg-primary-dark);
+}
+
+.btn-outline-primary {
+  color: var(--awg-primary);
+  border-color: var(--awg-primary);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--awg-primary);
+  border-color: var(--awg-primary);
+  color: #fff;
+}
+
+/* =============================================
+   CARDS
+   ============================================= */
+.card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* =============================================
+   TABLES  
+   ============================================= */
+.table thead th {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--awg-primary);
+  background-color: #f8f9fa;
+}
+
+.table tbody td {
+  vertical-align: middle;
+  font-size: 13px;
+}
+
+.green-th {
+  color: var(--awg-primary) !important;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* =============================================
+   SUMMARY / STAT CARDS
+   ============================================= */
+.summary-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.summary-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.summary-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-text);
+  margin-bottom: 2px;
+}
+
+.summary-value {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--body-text);
+  margin-bottom: 0;
+  line-height: 1;
+}
+
+/* =============================================
+   FILTER BUTTON GROUP
+   ============================================= */
+.filter-btn-group .btn {
+  font-size: 12.5px;
+  padding: 5px 14px;
+  border-color: var(--border-color);
+  color: var(--input-text);
+}
+
+.filter-btn-group .btn.active {
+  background-color: var(--awg-primary);
+  border-color: var(--awg-primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+.filter-btn-group .btn:hover:not(.active) {
+  background-color: var(--awg-green-hover);
+  color: var(--awg-primary);
+}
+
+/* =============================================
+   TABLE ACTION BUTTONS
+   ============================================= */
+.icon-action {
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+/* =============================================
+   TOP HEADER
+   ============================================= */
+.top-header {
+  height: 80px;
+  z-index: 10;
+  background-color: var(--awg-primary);
+  border-bottom: 1px solid var(--border-light) !important;
+}
+
+@media (max-width: 991.98px) {
+  .top-header {
+    padding-left: 20px !important;
+  }
+}
+
+/* =============================================
+   DATATABLES — PAGINATION & SPACING
+   ============================================= */
+.dataTables_wrapper .pagination .page-item.active .page-link {
+  background-color: var(--awg-primary) !important;
+  border-color: var(--awg-primary) !important;
+  color: #fff !important;
+}
+
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_length {
+  margin-bottom: 12px;
+}
+
+.dataTables_wrapper table.dataTable {
+  margin-top: 10px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+  background: var(--awg-primary) !important;
+  border-color: var(--awg-primary) !important;
+  color: #fff !important;
+  border-radius: 6px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:not(.disabled):hover {
+  background: rgba(22, 162, 73, 0.1) !important;
+  border-color: var(--awg-primary) !important;
+  color: var(--awg-primary) !important;
+  border-radius: 6px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  border-radius: 6px;
+}
