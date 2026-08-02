@@ -25,4 +25,9 @@ class HomeController extends Controller
   {
     return view('home-page.forgot-password');
   }
+
+  public function showResetPassword()
+  {
+    return view('home-page.reset-password');
+  }
 }

@@ -17,9 +17,19 @@ class AdminController extends Controller
     return view('admin.assessments.assessments');
   }
 
+  public function showArchiveAssessments()
+  {
+    return view('admin.assessments.archive-assessments');
+  }
+
   public function showAssessmentRequests()
   {
     return view('admin.assessments.requests');
+  }
+
+  public function showArchiveAssessmentRequests()
+  {
+    return view('admin.assessments.archive-requests');
   }
 
   public function showAssessmentForms()

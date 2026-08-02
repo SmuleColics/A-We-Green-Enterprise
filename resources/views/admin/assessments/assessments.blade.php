@@ -3,21 +3,21 @@
 @section('title', 'Assessment Schedule')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/assessment/assessment.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/assessments/assessments.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 @endsection
 
 @section('content')
 
-@section('page-title', 'Assessment')
+@section('page-title', 'Assessments')
 
 @section('topbar-actions')
-    <btn class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#archiveModal">
+    <a href="{{ route('archive-assessments') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
-    </btn>
-    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text" data-bs-toggle="modal"
-        data-bs-target="#scheduleModal">
+    </a>
+    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text"
+        data-bs-toggle="modal" data-bs-target="#scheduleModal">
         <span class="material-symbols-outlined me-1 fs-18">add</span>
         Schedule Assessment
     </button>
@@ -678,97 +678,6 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- ── Archive Modal ── -->
-<div class="modal fade" id="archiveModal" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="material-symbols-outlined text-secondary" style="font-size:22px;">inventory_2</span>
-                    <h5 class="modal-title mb-0">Archived Assessments</h5>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table id="archiveTable" class="table table-hover mb-0 small w-100">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="border-0 small">Date</th>
-                                <th class="border-0 small">Time</th>
-                                <th class="border-0 small">Client</th>
-                                <th class="border-0 small">Service</th>
-                                <th class="border-0 small">Status</th>
-                                <th class="border-0 small">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Feb 10, 2026</td>
-                                <td>8:00 AM</td>
-                                <td>Roberto Lim</td>
-                                <td>CCTV Setup</td>
-                                <td><span class="badge bg-secondary rounded-pill">Archived</span></td>
-                                <td class="text-nowrap">
-                                    <button class="btn btn-sm btn-outline-info" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewAssessmentModal"
-                                        onclick="loadAssessmentDetail({
-                                              date:'Feb 10, 2026', time:'8:00 AM', client:'Roberto Lim',
-                                              contact:'0917-999-8888', email:'', clientType:'Residential',
-                                              service:'CCTV Setup', establishment:'Home / Residence', assessor:'Marco Rivera',
-                                              status:'Archived', statusClass:'secondary', notes:'',
-                                              cluster:'', block:'Block 7', lot:'Lot 3',
-                                              brgy:'Brgy. Navarro', city:'General Trias', province:'Cavite', zip:'4107'
-                                            })">
-                                        <span class="material-symbols-outlined"
-                                            style="font-size:16px;vertical-align:middle;">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-success" title="Restore">
-                                        <span class="material-symbols-outlined"
-                                            style="font-size:15px;vertical-align:middle;">unarchive</span>
-                                        Restore
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jan 28, 2026</td>
-                                <td>1:00 PM</td>
-                                <td>Carla Bautista</td>
-                                <td>Solar Setup</td>
-                                <td><span class="badge bg-secondary rounded-pill">Archived</span></td>
-                                <td class="text-nowrap">
-                                    <button class="btn btn-sm btn-outline-info" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewAssessmentModal"
-                                        onclick="loadAssessmentDetail({
-                                              date:'Jan 28, 2026', time:'1:00 PM', client:'Carla Bautista',
-                                              contact:'0919-777-6666', email:'carla@email.com', clientType:'Commercial',
-                                              service:'Solar Setup', establishment:'Office / Commercial', assessor:'Carlo Mendoza',
-                                              status:'Archived', statusClass:'secondary', notes:'Rooftop solar panels.',
-                                              cluster:'', block:'', lot:'',
-                                              brgy:'Brgy. Burol I', city:'Silang', province:'Cavite', zip:'4118'
-                                            })">
-                                        <span class="material-symbols-outlined"
-                                            style="font-size:16px;vertical-align:middle;">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-success" title="Restore">
-                                        <span class="material-symbols-outlined"
-                                            style="font-size:15px;vertical-align:middle;">unarchive</span>
-                                        Restore
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

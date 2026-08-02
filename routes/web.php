@@ -14,11 +14,20 @@ Route::get('/', function () {
 //dashboard
 Route::get('/dashboard', [AdminController::class, 'showDashboard'])->name('dashboard');
 
-//assessment
+//assessments
 Route::get('/assessments', [AdminController::class, 'showAssessments'])->name('assessments');
 
+//archive assessments
+Route::get('/archive-assessments', [AdminController::class, 'showArchiveAssessments'])->name('archive-assessments');
+
 //assessment request
-Route::get('/request', [AdminController::class, 'showAssessmentRequests'])->name('requests');
+Route::get('/requests', [AdminController::class, 'showAssessmentRequests'])->name('requests');
+
+//assessment request
+Route::get('/archive-requests', [AdminController::class, 'showArchiveAssessmentRequests'])->name('archive-requests');
+
+//admin assessment request
+Route::get('/archiverequest', [AdminController::class, 'showAssessmentRequests'])->name('requests');
 
 //assessment form
 Route::get('/forms', [AdminController::class, 'showAssessmentForms'])->name('form');
@@ -108,3 +117,6 @@ Route::get('/register', [HomeController::class, 'showRegister'])->name('register
 
 //forgot password
 Route::get('/forgot-password', [HomeController::class, 'showForgotPassword'])->name('forgot-password');
+
+//forgot password
+Route::get('/reset-password', [HomeController::class, 'showResetPassword'])->name('reset-password');

@@ -82,8 +82,8 @@
 
                     <!-- Mobile logo -->
                     <div class="d-flex d-lg-none align-items-center gap-2 mb-4">
-                        <img src="{{ asset('css/images/AWeGreen-Logo.svg') }}" alt="A We Green Enterprise"
-                            style="height:40px;">
+                        <img class="hpx-40" src="{{ asset('css/images/AWeGreen-Logo.svg') }}" alt="A We Green Enterprise"
+                            >
                     </div>
 
                     <!-- ── STATE 1: REQUEST FORM (default view) ── -->
@@ -97,7 +97,7 @@
                         <p class="auth-subtitle">No worries. Enter the email linked to your account and we'll send you a
                             reset link.</p>
 
-                        <form class="mt-4" method="POST" action="" id="fp-form">
+                        <form class="mt-4" method="" action="" id="fp-form">
 
                             <!-- Email -->
                             <div class="mb-4">
@@ -106,11 +106,11 @@
                                     <i class="bi bi-envelope input-icon"></i>
                                     <input id="email" name="email" type="email"
                                         class="form-control auth-input ps-input" placeholder="you@example.com"
-                                        autocomplete="email" required />
+                                        autocomplete="email" />
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn w-100 auth-submit">Send Reset Link</button>
+                            <a href="{{ route('reset-password') }}" type="submit" class="btn w-100 auth-submit d-flex align-items-center justify-content-center">Send Reset Link</a>
 
                         </form>
 

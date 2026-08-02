@@ -3,18 +3,17 @@
 @section('title', 'Client Requests')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/asessment/request.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/assessments/request.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 @endsection
 
 @section('page-title', 'Assessment Requests')
 
 @section('topbar-actions')
-    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-bs-toggle="modal"
-        data-bs-target="#archiveModal">
+     <a href="{{ route('archive-requests') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
-    </button>
+    </a>
     <a href="{{ route('assessments') }}" class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text">
         <span class="material-symbols-outlined fs-17">arrow_back</span>
         Back to Schedule

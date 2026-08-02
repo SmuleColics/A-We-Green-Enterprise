@@ -3,7 +3,7 @@
 @section('title', 'Assessment Form')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/assessment/form.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/assessments/form.css') }}">
 @endsection
 
 @section('page-title', 'Assessment Form')
