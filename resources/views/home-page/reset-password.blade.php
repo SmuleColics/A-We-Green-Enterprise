@@ -44,15 +44,15 @@
         <ul class="list-unstyled mt-4 d-flex flex-column gap-3">
           <li class="d-flex align-items-center gap-3">
             <span class="perk-icon">
-              <i class="bi bi-shield-check perk-icon-i"></i>
+              <i class="bi bi-shield-check perk-icon-i text-white"></i>
             </span>
-            <span class="perk-label">At least 8 characters</span>
+            <span class="perk-label text-white">At least 8 characters</span>
           </li>
           <li class="d-flex align-items-center gap-3">
             <span class="perk-icon">
-              <i class="bi bi-key perk-icon-i"></i>
+              <i class="bi bi-key perk-icon-i text-white"></i>
             </span>
-            <span class="perk-label">Avoid reusing old passwords</span>
+            <span class="perk-label text-white">Avoid reusing old passwords</span>
           </li>
         </ul>
       </div>

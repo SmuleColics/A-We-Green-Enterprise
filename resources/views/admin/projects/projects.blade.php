@@ -9,13 +9,12 @@
 @section('page-title', 'Projects')
 
 @section('topbar-actions')
-    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1"
-        data-bs-toggle="modal" data-bs-target="#archivedProjectsModal">
+    <a href="{{ route('archive-projects') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
-        View Archives
-    </button>
-    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text"
-        data-bs-toggle="modal" data-bs-target="#createProjectModal">
+        Archived Projects
+    </a>
+    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text" data-bs-toggle="modal"
+        data-bs-target="#createProjectModal">
         <span class="material-symbols-outlined me-1 fs-18">add</span>
         Create Project
     </button>
@@ -38,7 +37,16 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-success">play_circle</span>
+                    <span class="material-symbols-outlined summary-icon green-text">check_circle</span>
+                    <div>
+                        <p class="summary-label">Completed</p>
+                        <p class="summary-value">1</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="summary-card">
+                    <span class="material-symbols-outlined summary-icon text-primary">play_circle</span>
                     <div>
                         <p class="summary-label">Active</p>
                         <p class="summary-value">3</p>
@@ -54,15 +62,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-primary">check_circle</span>
-                    <div>
-                        <p class="summary-label">Completed</p>
-                        <p class="summary-value">1</p>
-                    </div>
-                </div>
-            </div>
+           
         </div>
 
         <!-- Projects Table -->
@@ -70,10 +70,13 @@
             <div class="card-body">
                 <div class="mb-3">
                     <div class="btn-group filter-btn-group" role="group" id="statusFilterGroup">
-                        <button type="button" class="btn btn-sm btn-outline-secondary active" data-filter="all">All</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Completed">Completed</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary active"
+                            data-filter="all">All</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                            data-filter="Completed">Completed</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Active">Active</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="On Hold">On Hold</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="On Hold">On
+                            Hold</button>
                     </div>
                 </div>
 
@@ -107,9 +110,10 @@
                                         <small class="text-muted">100%</small>
                                     </div>
                                 </td>
-                                <td><span class="badge bg-primary rounded-pill" data-status="1">Completed</span></td>
+                                <td><span class="badge bg-success rounded-pill" data-status="1">Completed</span></td>
                                 <td class="text-nowrap actions-col">
-                                    <a href="{{ route('monitoring') }}" class="btn btn-sm btn-outline-success action-btn" title="View">
+                                    <a href="{{ route('monitoring') }}" class="btn btn-sm btn-outline-success action-btn"
+                                        title="View">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </a>
                                     <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
@@ -132,14 +136,15 @@
                                 <td>
                                     <div class="progress-container">
                                         <div class="progress hpx-6">
-                                            <div class="progress-bar bg-success wp-65"></div>
+                                            <div class="progress-bar bg-primary wp-65"></div>
                                         </div>
                                         <small class="text-muted">65%</small>
                                     </div>
                                 </td>
-                                <td><span class="badge bg-success rounded-pill" data-status="2">Active</span></td>
+                                <td><span class="badge bg-primary rounded-pill" data-status="2">Active</span></td>
                                 <td class="text-nowrap actions-col">
-                                    <a href="{{ route('monitoring') }}" class="btn btn-sm btn-outline-success action-btn" title="View">
+                                    <a href="{{ route('monitoring') }}" class="btn btn-sm btn-outline-success action-btn"
+                                        title="View">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </a>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
@@ -162,12 +167,12 @@
                                 <td>
                                     <div class="progress-container">
                                         <div class="progress hpx-6">
-                                            <div class="progress-bar bg-success wp-40"></div>
+                                            <div class="progress-bar bg-primary wp-40"></div>
                                         </div>
                                         <small class="text-muted">40%</small>
                                     </div>
                                 </td>
-                                <td><span class="badge bg-success rounded-pill" data-status="2">Active</span></td>
+                                <td><span class="badge bg-primary rounded-pill" data-status="2">Active</span></td>
                                 <td class="text-nowrap actions-col">
                                     <a href="#" class="btn btn-sm btn-outline-success action-btn" title="View">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
@@ -192,12 +197,12 @@
                                 <td>
                                     <div class="progress-container">
                                         <div class="progress hpx-6">
-                                            <div class="progress-bar bg-success wp-10"></div>
+                                            <div class="progress-bar bg-primary wp-10"></div>
                                         </div>
                                         <small class="text-muted">10%</small>
                                     </div>
                                 </td>
-                                <td><span class="badge bg-success rounded-pill" data-status="2">Active</span></td>
+                                <td><span class="badge bg-primary rounded-pill" data-status="2">Active</span></td>
                                 <td class="text-nowrap actions-col">
                                     <a href="#" class="btn btn-sm btn-outline-success action-btn" title="View">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
@@ -223,12 +228,13 @@
                                 <td>
                                     <div class="progress-container">
                                         <div class="progress hpx-6">
-                                            <div class="progress-bar bg-success wp-20"></div>
+                                            <div class="progress-bar bg-warning wp-20"></div>
                                         </div>
                                         <small class="text-muted">20%</small>
                                     </div>
                                 </td>
-                                <td><span class="badge bg-warning text-dark rounded-pill" data-status="3">On Hold</span></td>
+                                <td><span class="badge bg-warning text-dark rounded-pill" data-status="3">On Hold</span>
+                                </td>
                                 <td class="text-nowrap actions-col">
                                     <a href="#" class="btn btn-sm btn-outline-success action-btn" title="View">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
@@ -285,7 +291,9 @@
                                     <td><span class="service-badge badge-gray">Public Address System</span></td>
                                     <td class="text-success fw-semibold">₱55,000.00</td>
                                     <td>Jan 15, 2026</td>
-                                    <td><span class="badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle">Completed</span></td>
+                                    <td><span
+                                            class="badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle">Completed</span>
+                                    </td>
                                     <td class="text-muted small">Feb 1, 2026</td>
                                     <td class="text-nowrap actions-col">
                                         <button class="btn btn-sm btn-outline-success action-btn" title="Restore">
@@ -300,7 +308,9 @@
                                     <td><span class="service-badge badge-amber">Solar Setup</span></td>
                                     <td class="text-success fw-semibold">₱210,000.00</td>
                                     <td>Dec 30, 2025</td>
-                                    <td><span class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle">Cancelled</span></td>
+                                    <td><span
+                                            class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle">Cancelled</span>
+                                    </td>
                                     <td class="text-muted small">Jan 5, 2026</td>
                                     <td class="text-nowrap actions-col">
                                         <button class="btn btn-sm btn-outline-success action-btn" title="Restore">
@@ -330,11 +340,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body pt-2">
-                    <p class="small text-muted mb-0">This project will be moved to the archive. You can restore it anytime from <strong>Archived Projects</strong>.</p>
+                    <p class="small text-muted mb-0">This project will be moved to the archive. You can restore it anytime
+                        from <strong>Archived Projects</strong>.</p>
                 </div>
                 <div class="modal-footer border-0 pt-1">
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-warning d-flex align-items-center gap-1" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-sm btn-warning d-flex align-items-center gap-1"
+                        data-bs-dismiss="modal">
                         <span class="material-symbols-outlined fs-15">archive</span>
                         Archive
                     </button>
@@ -360,7 +372,8 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label small">Project Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" placeholder="e.g. CCTV Installation – Makati Branch">
+                            <input type="text" class="form-control"
+                                placeholder="e.g. CCTV Installation – Makati Branch">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small">Client Name <span class="text-danger">*</span></label>
@@ -496,11 +509,18 @@
 
             $('#projectsTable').DataTable({
                 pageLength: 10,
-                columnDefs: [
-                    { orderable: false, targets: 7 },
-                    { type: 'status-priority', targets: 6 }
+                columnDefs: [{
+                        orderable: false,
+                        targets: 7
+                    },
+                    {
+                        type: 'status-priority',
+                        targets: 6
+                    }
                 ],
-                order: [[6, 'asc']]
+                order: [
+                    [6, 'asc']
+                ]
             });
         });
     </script>

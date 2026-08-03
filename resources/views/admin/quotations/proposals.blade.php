@@ -9,7 +9,7 @@
 @section('page-title', 'View Quotation')
 
 @section('topbar-actions')
-    <a href="{{ route('quotation') }}" class="btn btn-sm btn-outline-light fw-semibold d-flex align-items-center gap-1">
+    <a href="{{ route('quotations') }}" class="btn btn-sm btn-outline-light fw-semibold d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">arrow_back</span>
         Back to Quotations
     </a>

@@ -51,3 +51,47 @@
   #requestsTable th:nth-child(6),
   #requestsTable td:nth-child(6) { display: none; }
 }
+
+/* =============================================
+   ASSESSOR CHECKLIST (Assign Assessors modal)
+   ============================================= */
+.assessor-check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--labor-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.assessor-check-row:has(.assessor-checkbox:checked) {
+  background: var(--awg-green-hover);
+  border-color: var(--awg-primary);
+}
+
+.assessor-checkbox {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.assessor-checkbox:disabled {
+  cursor: not-allowed;
+}
+
+.assessor-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--awg-primary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: monospace;
+}

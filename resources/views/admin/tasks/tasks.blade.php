@@ -3,17 +3,16 @@
 @section('title', 'Tasks')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/task/task.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/tasks/tasks.css') }}">
 @endsection
 
 @section('page-title', 'Tasks')
 
 @section('topbar-actions')
-    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1"
-        data-bs-toggle="modal" data-bs-target="#archivedModal">
+    <a href="{{ route('archive-tasks') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
-        View Archives
-    </button>
+        Archived Tasks
+    </a>
     <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text"
         data-bs-toggle="modal" data-bs-target="#assignModal">
         <span class="material-symbols-outlined me-1 fs-18">add</span>
@@ -309,44 +308,6 @@
                     <button type="button" class="btn btn-sm btn-warning" id="confirmArchiveBtn">
                         <span class="material-symbols-outlined me-1" style="font-size:14px;vertical-align:middle;">archive</span>Archive
                     </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ── Archived Tasks Modal ── -->
-    <div class="modal fade" id="archivedModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary fs-22">inventory_2</span>
-                        <h5 class="modal-title mb-0">Archived Tasks</h5>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 small w-100">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0 small green-text">Task</th>
-                                    <th class="border-0 small green-text">Project</th>
-                                    <th class="border-0 small green-text">Assignee</th>
-                                    <th class="border-0 small green-text">Priority</th>
-                                    <th class="border-0 small green-text">Due Date</th>
-                                    <th class="border-0 small green-text">Archived On</th>
-                                    <th class="border-0 small green-text">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="archivedBody"></tbody>
-                        </table>
-                    </div>
-                    <p id="noArchivedMsg" class="text-muted text-center py-3 small" style="display:none;">No archived tasks yet.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

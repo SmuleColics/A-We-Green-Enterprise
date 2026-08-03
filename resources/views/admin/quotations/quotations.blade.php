@@ -1,21 +1,20 @@
 @extends('layouts.admin')
 
-@section('title', 'Quotation')
+@section('title', 'Quotations')
 
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/quotation/quotation.css') }}">
 @endsection
 
-@section('page-title', 'Quotation')
+@section('page-title', 'Quotations')
 
 @section('topbar-actions')
-    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-bs-toggle="modal"
-        data-bs-target="#archiveModal">
+    <a href="{{ route('archive-quotations') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
-    </button>
-    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text" data-bs-toggle="modal"
-        data-bs-target="#newQuotationModal">
+    </a>
+    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text"
+        data-bs-toggle="modal" data-bs-target="#newQuotationModal">
         <span class="material-symbols-outlined me-1 fs-18">add</span>
         New Quotation
     </button>
@@ -110,9 +109,21 @@
                                         title="Open Form">
                                         <span class="material-symbols-outlined icon-action">description</span>
                                     </a>
-                                    <a href="#" class="btn btn-sm btn-outline-success action-btn" title="View">
+                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
+                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
+                                        onclick="loadQuotationDetail({
+                                            refNo:'QT-2026-003', date:'Mar 12, 2026', status:'Approved', statusClass:'success',
+                                            client:'Anna Garcia', service:'Solar Street Light',
+                                            subject:'Solar Street Lighting Installation — Barangay Road',
+                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
+                                            items:[
+                                                {qty:20, unit:'pcs', desc:'Solar Street Light 100W', price:32500, total:650000},
+                                                {qty:1, unit:'lot', desc:'Installation & Wiring', price:58333, total:58333}
+                                            ],
+                                            subtotal:708333, laborPercent:20, labor:141667, total:850000
+                                        })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
+                                    </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#newQuotationModal">
                                         <span class="material-symbols-outlined icon-action">edit</span>
@@ -136,9 +147,21 @@
                                         title="Open Form">
                                         <span class="material-symbols-outlined icon-action">description</span>
                                     </a>
-                                    <a href="#" class="btn btn-sm btn-outline-success action-btn" title="View">
+                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
+                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
+                                        onclick="loadQuotationDetail({
+                                            refNo:'QT-2026-006', date:'Mar 15, 2026', status:'Approved', statusClass:'success',
+                                            client:'Roberto Lim', service:'Solar Street Light',
+                                            subject:'Solar Street Lighting – Taguig',
+                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
+                                            items:[
+                                                {qty:18, unit:'pcs', desc:'Solar Street Light 100W', price:32500, total:585000},
+                                                {qty:1, unit:'lot', desc:'Installation & Wiring', price:40000, total:40000}
+                                            ],
+                                            subtotal:625000, laborPercent:20, labor:125000, total:750000
+                                        })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
+                                    </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#newQuotationModal">
                                         <span class="material-symbols-outlined icon-action">edit</span>
@@ -162,9 +185,21 @@
                                     <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
                                         <span class="material-symbols-outlined icon-action">description</span>
                                     </button>
-                                    <a href="#" class="btn btn-sm btn-outline-success action-btn" title="View">
+                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
+                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
+                                        onclick="loadQuotationDetail({
+                                            refNo:'QT-2026-002', date:'Mar 11, 2026', status:'Sent', statusClass:'primary text-white',
+                                            client:'John Reyes', service:'Solar Setup',
+                                            subject:'Solar Setup Installation – BGC Office',
+                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
+                                            items:[
+                                                {qty:6, unit:'pcs', desc:'Solar Panel 450W', price:12000, total:72000},
+                                                {qty:1, unit:'unit', desc:'Inverter 5kW', price:28000, total:28000}
+                                            ],
+                                            subtotal:100000, laborPercent:20, labor:20000, total:120000
+                                        })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
+                                    </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#newQuotationModal">
                                         <span class="material-symbols-outlined icon-action">edit</span>
@@ -188,9 +223,22 @@
                                     <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
                                         <span class="material-symbols-outlined icon-action">description</span>
                                     </button>
-                                    <a href="#" class="btn btn-sm btn-outline-success action-btn" title="View">
+                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
+                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
+                                        onclick="loadQuotationDetail({
+                                            refNo:'QT-2026-001', date:'Mar 10, 2026', status:'For Review', statusClass:'warning text-dark',
+                                            client:'Maria Santos', service:'CCTV Setup',
+                                            subject:'CCTV Installation – Makati Branch',
+                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
+                                            items:[
+                                                {qty:4, unit:'pcs', desc:'IP Camera 4MP Outdoor', price:3500, total:14000},
+                                                {qty:1, unit:'unit', desc:'8-Channel NVR Recorder', price:8500, total:8500},
+                                                {qty:50, unit:'meters', desc:'CAT6 LAN Cable', price:45, total:2250}
+                                            ],
+                                            subtotal:24750, laborPercent:20, labor:4950, total:29700
+                                        })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
+                                    </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#newQuotationModal">
                                         <span class="material-symbols-outlined icon-action">edit</span>
@@ -213,9 +261,22 @@
                                     <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
                                         <span class="material-symbols-outlined icon-action">description</span>
                                     </button>
-                                    <a href="#" class="btn btn-sm btn-outline-success action-btn" title="View">
+                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
+                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
+                                        onclick="loadQuotationDetail({
+                                            refNo:'QT-2026-004', date:'Mar 13, 2026', status:'Draft', statusClass:'secondary',
+                                            client:'Pedro Cruz', service:'Public Address System',
+                                            subject:'PA System Installation – Alabang',
+                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
+                                            items:[
+                                                {qty:8, unit:'pcs', desc:'Ceiling Speaker 20W', price:2200, total:17600},
+                                                {qty:1, unit:'unit', desc:'PA Amplifier 240W', price:22000, total:22000},
+                                                {qty:100, unit:'meters', desc:'Speaker Wire', price:35, total:3500}
+                                            ],
+                                            subtotal:43100, laborPercent:null, labor:0, total:95000
+                                        })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
+                                    </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#newQuotationModal">
                                         <span class="material-symbols-outlined icon-action">edit</span>
@@ -238,9 +299,22 @@
                                     <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
                                         <span class="material-symbols-outlined icon-action">description</span>
                                     </button>
-                                    <a href="#" class="btn btn-sm btn-outline-success action-btn" title="View">
+                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
+                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
+                                        onclick="loadQuotationDetail({
+                                            refNo:'QT-2026-005', date:'Mar 14, 2026', status:'Rejected', statusClass:'danger',
+                                            client:'Lisa Tan', service:'CCTV Setup',
+                                            subject:'CCTV System – Quezon City',
+                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
+                                            items:[
+                                                {qty:6, unit:'pcs', desc:'IP Camera 4MP Outdoor', price:3500, total:21000},
+                                                {qty:1, unit:'unit', desc:'8-Channel NVR Recorder', price:8500, total:8500},
+                                                {qty:60, unit:'meters', desc:'CAT6 LAN Cable', price:45, total:2700}
+                                            ],
+                                            subtotal:32200, laborPercent:20, labor:6440, total:55000
+                                        })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
+                                    </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#newQuotationModal">
                                         <span class="material-symbols-outlined icon-action">edit</span>
@@ -256,6 +330,117 @@
             </div>
         </div>
 
+    </div>
+
+
+    <!-- ── View Quotation Modal ── -->
+    <div class="modal fade" id="viewQuotationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title d-flex align-items-center gap-2">
+                        <span class="material-symbols-outlined fs-20">request_quote</span>
+                        Quotation Details
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+
+                    <!-- Quotation Info -->
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <p class="section-label fs-11">Quotation Info</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="detail-label fs-12">Reference No.</p>
+                            <p class="detail-value fw-semibold fs-14" id="vq-refNo">—</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="detail-label fs-12">Date</p>
+                            <p class="detail-value fs-14" id="vq-date">—</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="detail-label fs-12">Status</p>
+                            <p class="detail-value fs-14" id="vq-status">—</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="detail-label fs-12">Service</p>
+                            <p class="detail-value fs-14" id="vq-service">—</p>
+                        </div>
+
+                        <!-- Client Info -->
+                        <div class="col-12">
+                            <p class="section-label fs-11">Client Info</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="detail-label fs-12">Client Name</p>
+                            <p class="detail-value fw-semibold fs-14" id="vq-client">—</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="detail-label fs-12">Subject / Project Title</p>
+                            <p class="detail-value fs-14" id="vq-subject">—</p>
+                        </div>
+
+                        <!-- Opening Message -->
+                        <div class="col-12">
+                            <p class="section-label fs-11">Opening Message</p>
+                        </div>
+                        <div class="col-12">
+                            <p class="detail-value fs-14 mb-0" id="vq-message">—</p>
+                        </div>
+
+                        <!-- Line Items -->
+                        <div class="col-12">
+                            <p class="section-label fs-11">Line Items</p>
+                        </div>
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table table-sm mb-0 small">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="fs-12">Qty</th>
+                                            <th class="fs-12">Unit</th>
+                                            <th class="fs-12">Description</th>
+                                            <th class="fs-12 text-end">Unit Price</th>
+                                            <th class="fs-12 text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="vq-lineitems">
+                                        <!-- populated via JS -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="border-0"></td>
+                                            <td class="fs-13 text-muted text-end border-0">Subtotal</td>
+                                            <td class="fs-13 text-end fw-medium border-0" id="vq-subtotal">—</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="border-0"></td>
+                                            <td class="fs-13 text-muted text-end border-0" id="vq-labor-label">Labor</td>
+                                            <td class="fs-13 text-end fw-medium border-0" id="vq-labor">—</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="border-0"></td>
+                                            <td class="fs-14 fw-semibold text-end border-top pt-2">Grand Total</td>
+                                            <td class="fs-14 fw-semibold text-end border-top pt-2 green-text" id="vq-total">—</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1" data-bs-dismiss="modal">
+                        <span class="material-symbols-outlined fs-16">close</span>Close
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined fs-16">picture_as_pdf</span>Preview PDF
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -459,84 +644,39 @@
         </div>
     </div>
 
-
-    <!-- ── Archive Modal ── -->
-    <div class="modal fade" id="archiveModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary fs-22">inventory_2</span>
-                        <h5 class="modal-title mb-0">Archived Quotations</h5>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table id="archiveTable" class="table table-hover mb-0 small w-100">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0 small green-text">Ref No.</th>
-                                    <th class="border-0 small green-text">Client</th>
-                                    <th class="border-0 small green-text">Service</th>
-                                    <th class="border-0 small green-text">Amount</th>
-                                    <th class="border-0 small green-text">Date</th>
-                                    <th class="border-0 small green-text">Status</th>
-                                    <th class="border-0 small green-text">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>QT-2025-089</td>
-                                    <td>Carlo Mendoza</td>
-                                    <td>Solar Setup</td>
-                                    <td>₱210,000.00</td>
-                                    <td>Nov 20, 2025</td>
-                                    <td><span class="badge bg-secondary rounded-pill">Archived</span></td>
-                                    <td class="text-nowrap actions-col">
-                                        <a href="#" class="btn btn-sm btn-outline-success action-btn"
-                                            title="View">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </a>
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="Restore">
-                                            <span class="material-symbols-outlined icon-action">unarchive</span>
-                                            Restore
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>QT-2025-074</td>
-                                    <td>Grace Villanueva</td>
-                                    <td>CCTV Setup</td>
-                                    <td>₱38,500.00</td>
-                                    <td>Oct 05, 2025</td>
-                                    <td><span class="badge bg-secondary rounded-pill">Archived</span></td>
-                                    <td class="text-nowrap actions-col">
-                                        <a href="#" class="btn btn-sm btn-outline-success action-btn"
-                                            title="View">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </a>
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="Restore">
-                                            <span class="material-symbols-outlined icon-action">unarchive</span>
-                                            Restore
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 @endsection
 
 @section('scripts')
     <script>
+        function loadQuotationDetail(d) {
+            document.getElementById('vq-refNo').textContent = d.refNo || '—';
+            document.getElementById('vq-date').textContent = d.date || '—';
+            document.getElementById('vq-service').textContent = d.service || '—';
+            document.getElementById('vq-client').textContent = d.client || '—';
+            document.getElementById('vq-subject').textContent = d.subject || '—';
+            document.getElementById('vq-message').textContent = d.message || '—';
+            document.getElementById('vq-status').innerHTML =
+                `<span class="badge bg-${d.statusClass} rounded-pill">${d.status}</span>`;
+
+            const tbody = document.getElementById('vq-lineitems');
+            tbody.innerHTML = '';
+            (d.items || []).forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="fs-13">${item.qty}</td>
+                        <td class="fs-13">${item.unit}</td>
+                        <td class="fs-13">${item.desc}</td>
+                        <td class="fs-13 text-end">₱${item.price.toLocaleString('en-PH', {minimumFractionDigits:2})}</td>
+                        <td class="fs-13 text-end">₱${item.total.toLocaleString('en-PH', {minimumFractionDigits:2})}</td>
+                    </tr>`;
+            });
+
+            document.getElementById('vq-subtotal').textContent = '₱' + (d.subtotal || 0).toLocaleString('en-PH', {minimumFractionDigits:2});
+            document.getElementById('vq-labor-label').textContent = d.laborPercent ? `Labor (${d.laborPercent}%)` : 'Labor';
+            document.getElementById('vq-labor').textContent = '₱' + (d.labor || 0).toLocaleString('en-PH', {minimumFractionDigits:2});
+            document.getElementById('vq-total').textContent = '₱' + (d.total || 0).toLocaleString('en-PH', {minimumFractionDigits:2});
+        }
+
         $(document).ready(function() {
             jQuery.fn.dataTable.ext.type.order['status-priority-pre'] = function(data) {
                 return $(data).data('status') || 0;

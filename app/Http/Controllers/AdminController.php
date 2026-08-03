@@ -43,25 +43,44 @@ class AdminController extends Controller
     return view('admin.quotations.quotations');
   }
 
+  public function showArchiveQuotations()
+  {
+    return view('admin.quotations.archive-quotations');
+  }
+  
   public function showQuotationProposals()
   {
     return view('admin.quotations.proposals');
   }
 
+  // TASKS
   public function showTasks()
   {
     return view('admin.tasks.tasks');
   }
 
+  public function showArchiveTasks()
+  {
+    return view('admin.tasks.archive-tasks');
+  }
+
+  // PROJECTS
   public function showProjects()
   {
     return view('admin.projects.projects');
+  }
+
+  public function showArchiveProjects()
+  {
+    return view('admin.projects.archive-projects');
   }
 
   public function showMonitoring()
   {
     return view('admin.projects.monitoring');
   }
+
+  // CHECKLISTS
 
   public function showChecklists()
   {

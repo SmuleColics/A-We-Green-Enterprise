@@ -117,14 +117,15 @@
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-success" title="Confirm"
-                                        onclick="confirmRequest(this, 'AWG-2026-0006')">
+                                        onclick="openAssignAssessorModal(this, 'AWG-2026-0006')">
                                         <span class="material-symbols-outlined icon-action">check_circle</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger" title="Decline"
-                                        onclick="declineRequest(this, 'AWG-2026-0006')">
+                                        onclick="openDeclineConfirm(this, 'AWG-2026-0006')">
                                         <span class="material-symbols-outlined icon-action">cancel</span>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Archive">
+                                    <button class="btn btn-sm btn-outline-secondary" title="Archive"
+                                        onclick="openArchiveConfirm(this, 'AWG-2026-0006')">
                                         <span class="material-symbols-outlined icon-action">archive</span>
                                     </button>
                                 </td>
@@ -159,7 +160,8 @@
                                     <button class="btn btn-sm btn-outline-secondary" disabled title="Already Confirmed">
                                         <span class="material-symbols-outlined icon-action">cancel</span>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Archive">
+                                    <button class="btn btn-sm btn-outline-secondary" title="Archive"
+                                        onclick="openArchiveConfirm(this, 'AWG-2026-0007')">
                                         <span class="material-symbols-outlined icon-action">archive</span>
                                     </button>
                                 </td>
@@ -189,14 +191,15 @@
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-success" title="Confirm"
-                                        onclick="confirmRequest(this, 'AWG-2026-0005')">
+                                        onclick="openAssignAssessorModal(this, 'AWG-2026-0005')">
                                         <span class="material-symbols-outlined icon-action">check_circle</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger" title="Decline"
-                                        onclick="declineRequest(this, 'AWG-2026-0005')">
+                                        onclick="openDeclineConfirm(this, 'AWG-2026-0005')">
                                         <span class="material-symbols-outlined icon-action">cancel</span>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Archive">
+                                    <button class="btn btn-sm btn-outline-secondary" title="Archive"
+                                        onclick="openArchiveConfirm(this, 'AWG-2026-0005')">
                                         <span class="material-symbols-outlined icon-action">archive</span>
                                     </button>
                                 </td>
@@ -231,7 +234,8 @@
                                     <button class="btn btn-sm btn-outline-secondary" disabled title="Already Declined">
                                         <span class="material-symbols-outlined icon-action">cancel</span>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Archive">
+                                    <button class="btn btn-sm btn-outline-secondary" title="Archive"
+                                        onclick="openArchiveConfirm(this, 'AWG-2026-0004')">
                                         <span class="material-symbols-outlined icon-action">archive</span>
                                     </button>
                                 </td>
@@ -244,7 +248,6 @@
         </div>
 
     </div>
-
 
     <!-- ── View Request Detail Modal ── -->
     <div class="modal fade" id="viewRequestModal" tabindex="-1">
@@ -372,6 +375,116 @@
         </div>
     </div>
 
+    <!-- ── Assign Assessor Modal (shown on Confirm) ── -->
+    <div class="modal fade" id="assignAssessorModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title d-flex align-items-center gap-2 text-success">
+                        <span class="material-symbols-outlined fs-18">groups</span>
+                        Assign Assessors
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <p class="mb-1">Confirming request <strong id="aa-refNo">—</strong></p>
+                    <p class="text-muted small mb-3">Select up to 3 employees to assess this request.</p>
+
+                    <div class="d-flex flex-column gap-2" id="aa-employee-list">
+                        <label class="assessor-check-row">
+                            <input type="checkbox" class="form-check-input assessor-checkbox" value="Marco Rivera">
+                            <span class="assessor-avatar">MR</span>
+                            <span class="flex-grow-1">Marco Rivera</span>
+                        </label>
+                        <label class="assessor-check-row">
+                            <input type="checkbox" class="form-check-input assessor-checkbox" value="Carlo Mendoza">
+                            <span class="assessor-avatar">CM</span>
+                            <span class="flex-grow-1">Carlo Mendoza</span>
+                        </label>
+                        <label class="assessor-check-row">
+                            <input type="checkbox" class="form-check-input assessor-checkbox" value="Jomar Tan">
+                            <span class="assessor-avatar">JT</span>
+                            <span class="flex-grow-1">Jomar Tan</span>
+                        </label>
+                        <label class="assessor-check-row">
+                            <input type="checkbox" class="form-check-input assessor-checkbox" value="Ana Garcia">
+                            <span class="assessor-avatar">AG</span>
+                            <span class="flex-grow-1">Ana Garcia</span>
+                        </label>
+                        <label class="assessor-check-row">
+                            <input type="checkbox" class="form-check-input assessor-checkbox" value="Paolo Reyes">
+                            <span class="assessor-avatar">PR</span>
+                            <span class="flex-grow-1">Paolo Reyes</span>
+                        </label>
+                    </div>
+
+                    <div class="alert alert-warning py-2 px-3 mt-3 mb-0 small d-none" id="aa-limit-warning">
+                        <span class="material-symbols-outlined fs-15" style="vertical-align:middle;">warning</span>
+                        You can only assign up to 3 assessors.
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success btn-sm px-4" id="aa-confirm-btn" disabled>
+                        <span class="material-symbols-outlined fs-15" style="vertical-align:middle;">check_circle</span>
+                        Confirm Request
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ── Decline Confirm Modal ── -->
+    <div class="modal fade" id="declineConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-semibold text-danger">Decline this request?</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <p class="small text-muted mb-0">
+                        Are you sure you want to decline request <strong id="dc-refNo">—</strong>?
+                        This action cannot be undone, and the client will be notified.
+                    </p>
+                </div>
+                <div class="modal-footer border-0 pt-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-danger d-flex align-items-center gap-1" id="dc-confirm-btn">
+                        <span class="material-symbols-outlined fs-15">cancel</span>
+                        Decline Request
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ── Archive Confirm Modal ── -->
+    <div class="modal fade" id="archiveConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-semibold">Archive this request?</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <p class="small text-muted mb-0">
+                        Request <strong id="ac-refNo">—</strong> will be moved to the archive. You can restore it anytime from <strong>View Archives</strong>.
+                    </p>
+                </div>
+                <div class="modal-footer border-0 pt-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-warning d-flex align-items-center gap-1" id="ac-confirm-btn">
+                        <span class="material-symbols-outlined fs-15">archive</span>
+                        Archive
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('scripts')
@@ -407,19 +520,96 @@
             declineBtn.style.display = d.status === 'Pending' ? 'inline-block' : 'none';
         }
 
-        function confirmRequest(btn, refNo) {
-            const row = btn.closest('tr');
-            row.querySelector('.badge').className = 'badge bg-success rounded-pill';
-            row.querySelector('.badge').textContent = 'Confirmed';
-            row.querySelectorAll('.btn-outline-success, .btn-outline-danger').forEach(b => {
-                b.classList.replace('btn-outline-success', 'btn-outline-secondary');
-                b.classList.replace('btn-outline-danger', 'btn-outline-secondary');
-                b.disabled = true;
+        /* ─────────────────────────────────────────
+           CONFIRM → ASSIGN ASSESSORS FLOW
+           ───────────────────────────────────────── */
+        let pendingConfirmBtn = null;
+        let pendingConfirmRefNo = null;
+        const MAX_ASSESSORS = 3;
+
+        const assignAssessorModalEl = document.getElementById('assignAssessorModal');
+        const assignAssessorModal = new bootstrap.Modal(assignAssessorModalEl);
+        const assessorCheckboxes = document.querySelectorAll('.assessor-checkbox');
+        const aaConfirmBtn = document.getElementById('aa-confirm-btn');
+        const aaLimitWarning = document.getElementById('aa-limit-warning');
+
+        function openAssignAssessorModal(btn, refNo) {
+            pendingConfirmBtn = btn;
+            pendingConfirmRefNo = refNo;
+            document.getElementById('aa-refNo').textContent = refNo;
+
+            // Reset checkboxes each time the modal opens
+            assessorCheckboxes.forEach(cb => {
+                cb.checked = false;
+                cb.disabled = false;
             });
+            aaLimitWarning.classList.add('d-none');
+            aaConfirmBtn.disabled = true;
+
+            assignAssessorModal.show();
         }
 
-        function declineRequest(btn, refNo) {
-            const row = btn.closest('tr');
+        assessorCheckboxes.forEach(cb => {
+            cb.addEventListener('change', function() {
+                const checkedCount = document.querySelectorAll('.assessor-checkbox:checked').length;
+
+                if (checkedCount >= MAX_ASSESSORS) {
+                    assessorCheckboxes.forEach(other => {
+                        if (!other.checked) other.disabled = true;
+                    });
+                    aaLimitWarning.classList.remove('d-none');
+                } else {
+                    assessorCheckboxes.forEach(other => other.disabled = false);
+                    aaLimitWarning.classList.add('d-none');
+                }
+
+                aaConfirmBtn.disabled = checkedCount === 0;
+            });
+        });
+
+        aaConfirmBtn.addEventListener('click', function() {
+            const selectedAssessors = Array.from(document.querySelectorAll('.assessor-checkbox:checked'))
+                .map(cb => cb.value);
+
+            if (selectedAssessors.length === 0 || !pendingConfirmBtn) return;
+
+            const row = pendingConfirmBtn.closest('tr');
+            row.querySelector('.badge').className = 'badge bg-success text-white rounded-pill';
+            row.querySelector('.badge').textContent = 'Confirmed';
+            row.querySelectorAll('.btn-outline-success, .btn-outline-danger').forEach(b => {
+                if (b.title === 'Confirm' || b.title === 'Decline') {
+                    b.classList.replace('btn-outline-success', 'btn-outline-secondary');
+                    b.classList.replace('btn-outline-danger', 'btn-outline-secondary');
+                    b.disabled = true;
+                    b.title = b.title === 'Confirm' ? 'Already Confirmed' : 'Already Confirmed';
+                }
+            });
+
+            // In a real app: send selectedAssessors + pendingConfirmRefNo to the server here.
+            console.log('Confirmed', pendingConfirmRefNo, 'with assessors:', selectedAssessors);
+
+            assignAssessorModal.hide();
+            pendingConfirmBtn = null;
+            pendingConfirmRefNo = null;
+        });
+
+        /* ─────────────────────────────────────────
+           DECLINE CONFIRMATION FLOW
+           ───────────────────────────────────────── */
+        let pendingDeclineBtn = null;
+
+        const declineConfirmModalEl = document.getElementById('declineConfirmModal');
+        const declineConfirmModal = new bootstrap.Modal(declineConfirmModalEl);
+
+        function openDeclineConfirm(btn, refNo) {
+            pendingDeclineBtn = btn;
+            document.getElementById('dc-refNo').textContent = refNo;
+            declineConfirmModal.show();
+        }
+
+        document.getElementById('dc-confirm-btn').addEventListener('click', function() {
+            if (!pendingDeclineBtn) return;
+            const row = pendingDeclineBtn.closest('tr');
             row.querySelector('.badge').className = 'badge bg-danger rounded-pill';
             row.querySelector('.badge').textContent = 'Declined';
             row.querySelectorAll('.btn-outline-success, .btn-outline-danger').forEach(b => {
@@ -427,10 +617,33 @@
                 b.classList.replace('btn-outline-danger', 'btn-outline-secondary');
                 b.disabled = true;
             });
-        }
-    </script>
+            declineConfirmModal.hide();
+            pendingDeclineBtn = null;
+        });
 
-    <script>
+        /* ─────────────────────────────────────────
+           ARCHIVE CONFIRMATION FLOW
+           ───────────────────────────────────────── */
+        let pendingArchiveBtn = null;
+
+        const archiveConfirmModalEl = document.getElementById('archiveConfirmModal');
+        const archiveConfirmModal = new bootstrap.Modal(archiveConfirmModalEl);
+
+        function openArchiveConfirm(btn, refNo) {
+            pendingArchiveBtn = btn;
+            document.getElementById('ac-refNo').textContent = refNo;
+            archiveConfirmModal.show();
+        }
+
+        document.getElementById('ac-confirm-btn').addEventListener('click', function() {
+            if (!pendingArchiveBtn) return;
+            const row = pendingArchiveBtn.closest('tr');
+            // In a real app: send an archive request to the server, then remove/hide the row.
+            row.remove();
+            archiveConfirmModal.hide();
+            pendingArchiveBtn = null;
+        });
+
         $(document).ready(function() {
             $('#requestsTable').DataTable({
                 pageLength: 10,

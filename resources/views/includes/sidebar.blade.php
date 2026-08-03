@@ -20,25 +20,28 @@
         </a>
 
         <a href="{{ route('assessments') }}"
-            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('assessments')) active @endif">
+            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('assessments') ||
+                    Request::routeIs('archive-assessments') ||
+                    Request::routeIs('requests') || Request::routeIs('archive-requests') ||
+                    Request::routeIs('form')) active @endif">
             <span class="material-symbols-outlined">event_available</span>
             Assessments
         </a>
 
         <a href="{{ route('quotations') }}"
-            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('quotations')) active @endif">
+            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('quotations') || Request::routeIs('archive-quotations') || Request::routeIs('proposals')) active @endif">
             <span class="material-symbols-outlined">request_quote</span>
             Quotations
         </a>
 
         <a href="{{ route('tasks') }}"
-            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('tasks')) active @endif">
+            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('tasks') || Request::routeIs('archive-tasks')) active @endif">
             <span class="material-symbols-outlined">task_alt</span>
             Tasks
         </a>
 
         <a href="{{ route('projects') }}"
-            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('projects')) active @endif">
+            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('projects') || Request::routeIs('archive-projects')) active @endif">
             <span class="material-symbols-outlined">folder</span>
             Projects
         </a>

@@ -32,17 +32,26 @@ Route::get('/archiverequest', [AdminController::class, 'showAssessmentRequests']
 //assessment form
 Route::get('/forms', [AdminController::class, 'showAssessmentForms'])->name('form');
 
-//quotation
+//quotations
 Route::get('/quotations', [AdminController::class, 'showQuotations'])->name('quotations');
+
+//archive quotations
+Route::get('/archive-quotations', [AdminController::class, 'showArchiveQuotations'])->name('archive-quotations');
 
 //quotation proposal
 Route::get('/proposals', [AdminController::class, 'showQuotationProposals'])->name('proposals');
 
-//task 
+//tasks
 Route::get('/tasks', [AdminController::class, 'showTasks'])->name('tasks');
+
+//archive tasks
+Route::get('/archive-tasks', [AdminController::class, 'showArchiveTasks'])->name('archive-tasks');
 
 //projects
 Route::get('/projects', [AdminController::class, 'showProjects'])->name('projects');
+
+//archive projects
+Route::get('/archive-projects', [AdminController::class, 'showArchiveProjects'])->name('archive-projects');
 
 //project monitoring
 Route::get('/monitoring', [AdminController::class, 'showMonitoring'])->name('monitoring');
