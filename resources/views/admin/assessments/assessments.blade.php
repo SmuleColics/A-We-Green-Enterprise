@@ -16,8 +16,8 @@
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
     </a>
-    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text"
-        data-bs-toggle="modal" data-bs-target="#scheduleModal">
+    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text" data-bs-toggle="modal"
+        data-bs-target="#scheduleModal">
         <span class="material-symbols-outlined me-1 fs-18">add</span>
         Schedule Assessment
     </button>
@@ -42,7 +42,8 @@
             </li>
         </ul>
 
-        <a href="{{ route('requests') }}" class="btn btn-sm btn-outline-secondary fw-semibold d-flex align-items-center gap-1">
+        <a href="{{ route('requests') }}"
+            class="btn btn-sm btn-outline-secondary fw-semibold d-flex align-items-center gap-1">
             View Assessment Requests
         </a>
 
@@ -51,6 +52,7 @@
     <!-- Tab Content -->
     <div class="tab-content" id="assessmentTabsContent">
 
+        <!-- ── Calendar View ── -->
         <!-- ── Calendar View ── -->
         <div class="tab-pane fade show active" id="calendar-view" role="tabpanel">
             <div class="calendar-container">
@@ -88,113 +90,145 @@
                     <div class="calendar-cell no-work"></div>
                     <div class="calendar-cell no-work"></div>
 
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 1, 2026', [])">
                         <div class="calendar-date">1</div>
                     </div>
                     <div class="calendar-cell no-work">
                         <div class="calendar-date">2</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 3, 2026', [])">
                         <div class="calendar-date">3</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 4, 2026', [])">
                         <div class="calendar-date">4</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 5, 2026', [])">
                         <div class="calendar-date">5</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 6, 2026', [])">
                         <div class="calendar-date">6</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 7, 2026', [])">
                         <div class="calendar-date">7</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 8, 2026', [])">
                         <div class="calendar-date">8</div>
                     </div>
                     <div class="calendar-cell no-work">
                         <div class="calendar-date">9</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 10, 2026', [])">
                         <div class="calendar-date">10</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 11, 2026', [])">
                         <div class="calendar-date">11</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 12, 2026', [])">
                         <div class="calendar-date">12</div>
                     </div>
 
-                    <div class="calendar-cell fully-booked">
+                    <div class="calendar-cell fully-booked calendar-clickable"
+                        onclick="openDayModal('March 13, 2026', [
+        {time:'8:00 AM', client:'Maria Santos', contact:'0917-123-4567', email:'maria@email.com', clientType:'Residential', service:'CCTV Setup', establishment:'Home / Residence', assessor:'Marco Rivera', slot:'Morning', status:'Done Assessment', statusClass:'success', cluster:'Cluster 1', block:'Block 3', lot:'Lot 12', brgy:'Brgy. Molino III', city:'Bacoor', province:'Cavite', zip:'4102', notes:'Client needs outdoor cameras.', date:'Mar 13, 2026'},
+        {time:'1:00 PM', client:'Juan dela Cruz', contact:'0918-555-7777', email:'', clientType:'Commercial', service:'Solar Setup', establishment:'Office / Commercial', assessor:'Carlo Mendoza', slot:'Afternoon', status:'Pending', statusClass:'warning text-dark', cluster:'', block:'Block 6', lot:'Lot 3', brgy:'Brgy. Poblacion', city:'Imus', province:'Cavite', zip:'4103', notes:'', date:'Mar 13, 2026'}
+      ])">
                         <div class="calendar-date">13</div>
                         <div class="calendar-booking"><small class="d-block text-truncate">AM — Maria</small></div>
                         <div class="calendar-booking"><small class="d-block text-truncate">PM — Juan</small></div>
                     </div>
 
-                    <div class="calendar-cell fully-booked">
+                    <div class="calendar-cell fully-booked calendar-clickable"
+                        onclick="openDayModal('March 14, 2026', [
+        {time:'Full Day', client:'Brgy. San Jose', contact:'046-123-4567', email:'brgysanjose@gmail.com', clientType:'Government/LGU', service:'Solar Street Light', establishment:'Government Facility', assessor:'Ana Garcia', slot:'Full Day', status:'Pending', statusClass:'warning text-dark', cluster:'', block:'', lot:'', brgy:'Brgy. San Jose', city:'Dasmariñas', province:'Cavite', zip:'4114', notes:'Streetlights along the main barangay road.', date:'Mar 14, 2026'}
+    ])">
                         <div class="calendar-date">14</div>
                         <div class="calendar-booking"><small class="d-block text-truncate">Full Day — Brgy.</small>
                         </div>
                     </div>
 
-                    <div class="calendar-cell today">
+                    <div class="calendar-cell today calendar-clickable"
+                        onclick="openDayModal('March 15, 2026', [
+        {time:'8:00 AM', client:'Pedro Cruz', contact:'0919-888-2222', email:'pedro.cruz@email.com', clientType:'Commercial', service:'Public Address System', establishment:'Office / Commercial', assessor:'Marco Rivera', slot:'Morning', status:'Done Assessment', statusClass:'success', cluster:'', block:'Block 2', lot:'Lot 8', brgy:'Brgy. GMA', city:'General Mariano Alvarez', province:'Cavite', zip:'4117', notes:'', date:'Mar 15, 2026'}
+    ])">
                         <div class="calendar-date text-white">15</div>
                         <div class="calendar-booking"><small class="d-block text-truncate">AM — Pedro</small></div>
                     </div>
-
                     <div class="calendar-cell no-work">
                         <div class="calendar-date">16</div>
                     </div>
 
-                    <div class="calendar-cell half-booked">
+                    <div class="calendar-cell half-booked calendar-clickable"
+                        onclick="openDayModal('March 17, 2026', [
+        {time:'1:00 PM', client:'ABC Company', contact:'046-987-6543', email:'contact@abccompany.com', clientType:'Commercial', service:'CCTV Setup', establishment:'Office / Commercial', assessor:'Carlo Mendoza', slot:'Afternoon', status:'Pending', statusClass:'warning text-dark', cluster:'', block:'Block 1', lot:'Lot 4', brgy:'Brgy. Salawag', city:'Dasmariñas', province:'Cavite', zip:'4114', notes:'Requesting perimeter coverage for warehouse.', date:'Mar 17, 2026'}
+    ])">
                         <div class="calendar-date">17</div>
                         <div class="calendar-booking"><small class="d-block text-truncate">PM — ABC</small></div>
                     </div>
 
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 18, 2026', [])">
                         <div class="calendar-date">18</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 19, 2026', [])">
                         <div class="calendar-date">19</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 20, 2026', [])">
                         <div class="calendar-date">20</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 21, 2026', [])">
                         <div class="calendar-date">21</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 22, 2026', [])">
                         <div class="calendar-date">22</div>
                     </div>
                     <div class="calendar-cell no-work">
                         <div class="calendar-date">23</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 24, 2026', [])">
                         <div class="calendar-date">24</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 25, 2026', [])">
                         <div class="calendar-date">25</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 26, 2026', [])">
                         <div class="calendar-date">26</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 27, 2026', [])">
                         <div class="calendar-date">27</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 28, 2026', [])">
                         <div class="calendar-date">28</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 29, 2026', [])">
                         <div class="calendar-date">29</div>
                     </div>
                     <div class="calendar-cell no-work">
                         <div class="calendar-date">30</div>
                     </div>
-                    <div class="calendar-cell">
+                    <div class="calendar-cell calendar-clickable" onclick="openDayModal('March 31, 2026', [])">
                         <div class="calendar-date">31</div>
                     </div>
 
                 </div>
+
+                <!-- Calendar Legend -->
+                <div class="d-flex flex-wrap gap-4 mt-3 small text-muted">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="legend-dot" style="background:#d4f1e0;border:1px solid #aaa;"></span> Available
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="legend-dot" style="background:#e0f7fa;"></span> Half Booked
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="legend-dot" style="background:#f3e5f5;"></span> Fully Booked
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="legend-dot" style="background:var(--awg-primary);"></span> Today
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="legend-dot" style="background:#f8f9fa;border:1px solid #dee2e6;"></span> No Work
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -683,6 +717,33 @@
     </div>
 </div>
 
+<!-- ── Day Detail Modal ── -->
+<div class="modal fade" id="dayDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title d-flex align-items-center gap-2">
+                    <span class="material-symbols-outlined fs-20">calendar_today</span>
+                    <span id="dayModalDate">—</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="dayModalBody">
+                <!-- filled by JS -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success d-flex align-items-center gap-1"
+                    data-bs-dismiss="modal"
+                    data-bs-toggle="modal" data-bs-target="#scheduleModal">
+                    <span class="material-symbols-outlined fs-17">add</span>
+                    Schedule on This Day
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -711,5 +772,95 @@
             }
         });
     });
+</script>
+
+<script>
+    function openDayModal(date, assessments) {
+        document.getElementById('dayModalDate').textContent = date;
+        const body = document.getElementById('dayModalBody');
+
+        if (!assessments || assessments.length === 0) {
+            body.innerHTML = `
+            <div class="text-center py-4 text-muted">
+                <span class="material-symbols-outlined" style="font-size:40px;opacity:.3;">event_available</span>
+                <p class="small mt-2 mb-0">No assessments scheduled for this day.</p>
+                <p class="small text-muted mb-0">Click <strong>Schedule on This Day</strong> to add one.</p>
+            </div>`;
+        } else {
+            body.innerHTML = `
+            <p class="section-label mb-3">${assessments.length} Assessment${assessments.length > 1 ? 's' : ''} Scheduled</p>
+            <div class="d-flex flex-column gap-3">
+                ${assessments.map((a, i) => {
+                    const locationParts = [a.cluster, a.block, a.lot, a.brgy, a.city, a.province, a.zip]
+                        .filter(part => part && part.trim() !== '')
+                        .join(', ');
+
+                    return `
+                        <div class="day-assessment-card">
+                            <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="material-symbols-outlined green-text fs-18">schedule</span>
+                                    <span class="fw-semibold small">${a.time}</span>
+                                    <span class="badge rounded-pill bg-${a.statusClass} ms-1">${a.status}</span>
+                                </div>
+                                <span class="day-slot-badge">${a.slot}</span>
+                            </div>
+
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <p class="detail-label small mb-0">Client</p>
+                                    <p class="detail-value small fw-semibold mb-0">${a.client}</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="detail-label small mb-0">Service</p>
+                                    <p class="detail-value small mb-0">${a.service}</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="detail-label small mb-0">Contact</p>
+                                    <p class="detail-value small mb-0">${a.contact || '—'}</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="detail-label small mb-0">Client Type</p>
+                                    <p class="detail-value small mb-0">${a.clientType || '—'}</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="detail-label small mb-0">Establishment</p>
+                                    <p class="detail-value small mb-0">${a.establishment || '—'}</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="detail-label small mb-0">Assessor</p>
+                                    <p class="detail-value small mb-0">${a.assessor || '—'}</p>
+                                </div>
+                            </div>
+
+                            <div class="day-location-row mb-2">
+                                <span class="material-symbols-outlined fs-15 muted-text">location_on</span>
+                                <p class="small mb-0">${locationParts || 'No location details provided.'}</p>
+                            </div>
+
+                            ${a.notes ? `
+                                <div class="day-notes-row">
+                                    <span class="material-symbols-outlined fs-15 muted-text">sticky_note_2</span>
+                                    <p class="small mb-0">${a.notes}</p>
+                                </div>
+                            ` : ''}
+
+                            <div class="text-end mt-2">
+                                <button type="button" class="btn btn-sm btn-outline-success py-1 px-2"
+                                    data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#viewAssessmentModal"
+                                    onclick="loadAssessmentDetail(${JSON.stringify(a).replace(/"/g, '&quot;')})">
+                                    <span class="material-symbols-outlined fs-14" style="vertical-align:middle;">open_in_full</span>
+                                    View Full Details
+                                </button>
+                            </div>
+                        </div>
+                        ${i < assessments.length - 1 ? '<hr class="my-1">' : ''}
+                    `;
+                }).join('')}
+            </div>`;
+        }
+
+        new bootstrap.Modal(document.getElementById('dayDetailModal')).show();
+    }
 </script>
 @endsection

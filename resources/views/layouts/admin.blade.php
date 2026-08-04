@@ -21,7 +21,7 @@
     @yield('styles')
 </head>
 
-<body>
+<body class="bg-awg-light">
     {{-- @include('includes.toast') --}}
 
     <div class="admin-layout bg-awg-light">

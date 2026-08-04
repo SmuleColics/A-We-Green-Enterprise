@@ -59,14 +59,23 @@ Route::get('/monitoring', [AdminController::class, 'showMonitoring'])->name('mon
 //checklists
 Route::get('/checklists', [AdminController::class, 'showChecklists'])->name('checklists');
 
-//checklists
+//archive checklists
+Route::get('/archive-checklists', [AdminController::class, 'showArchiveChecklists'])->name('archive-checklists');
+
+//reports
 Route::get('/reports', [AdminController::class, 'showReports'])->name('reports');
 
 //employees
 Route::get('/employees', [AdminController::class, 'showEmployees'])->name('employees');
 
+//archive employees
+Route::get('/archive-employees', [AdminController::class, 'showArchiveEmployees'])->name('archive-employees');
+
 //clients
 Route::get('/clients', [AdminController::class, 'showClients'])->name('clients');
+
+//archive clients
+Route::get('/archive-clients', [AdminController::class, 'showArchiveClients'])->name('archive-clients');
 
 //materials
 Route::get('/materials', [AdminController::class, 'showMaterials'])->name('materials');

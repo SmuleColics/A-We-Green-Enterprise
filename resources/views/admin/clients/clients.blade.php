@@ -9,11 +9,10 @@
 @section('page-title', 'Clients')
 
 @section('topbar-actions')
-    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-bs-toggle="modal"
-        data-bs-target="#archiveModal">
+    <a href="{{ route('archive-clients') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
-    </button>
+    </a>
     <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text" data-bs-toggle="modal"
         data-bs-target="#addClientModal">
         <span class="material-symbols-outlined fs-17">person_add</span>
@@ -449,73 +448,6 @@
             </div>
         </div>
     </div>
-
-
-    <!-- ── Archive Modal ── -->
-    <div class="modal fade" id="archiveModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary fs-22">inventory_2</span>
-                        <h5 class="modal-title mb-0">Archived Clients</h5>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table id="archiveTable" class="table table-hover mb-0 small w-100">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0 small green-text">Client ID</th>
-                                    <th class="border-0 small green-text">Client Name</th>
-                                    <th class="border-0 small green-text">Contact</th>
-                                    <th class="border-0 small green-text">Type</th>
-                                    <th class="border-0 small green-text">Service</th>
-                                    <th class="border-0 small green-text">Status</th>
-                                    <th class="border-0 small green-text">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>CLT-2025-018</td>
-                                    <td>Elena Cruz</td>
-                                    <td>0922-111-2222</td>
-                                    <td><span class="type-pill type-residential">Residential</span></td>
-                                    <td>CCTV Setup</td>
-                                    <td><span class="badge bg-secondary rounded-pill">Archived</span></td>
-                                    <td class="text-nowrap actions-col">
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="Restore">
-                                            <span class="material-symbols-outlined icon-action">unarchive</span>
-                                            Restore
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>CLT-2025-022</td>
-                                    <td>Ramon dela Cruz</td>
-                                    <td>0933-222-3333</td>
-                                    <td><span class="type-pill type-commercial">Commercial</span></td>
-                                    <td>Solar Setup</td>
-                                    <td><span class="badge bg-secondary rounded-pill">Archived</span></td>
-                                    <td class="text-nowrap actions-col">
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="Restore">
-                                            <span class="material-symbols-outlined icon-action">unarchive</span>
-                                            Restore
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 @endsection
 
 @section('scripts')

@@ -47,7 +47,7 @@
         </a>
 
         <a href="{{ route('checklists') }}"
-            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('checklists')) active @endif">
+            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('checklists') || Request::routeIs('archive-checklists')) active @endif">
             <span class="material-symbols-outlined">checklist</span>
             Checklists
         </a>
@@ -59,13 +59,13 @@
         </a>
 
         <a href="{{ route('employees') }}"
-            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('employees')) active @endif">
+            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('employees') || Request::routeIs('archive-employees')) active @endif">
             <span class="material-symbols-outlined">badge</span>
             Employees
         </a>
 
         <a href="{{ route('clients') }}"
-            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('clients')) active @endif">
+            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('clients') || Request::routeIs('archive-clients')) active @endif">
             <span class="material-symbols-outlined">groups</span>
             Clients
         </a>

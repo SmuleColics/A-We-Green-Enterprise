@@ -9,11 +9,10 @@
 @section('page-title', 'Employees')
 
 @section('topbar-actions')
-    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-bs-toggle="modal"
-        data-bs-target="#archiveModal">
+    <a href="{{ route('archive-employees') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
-    </button>
+    </a>
     <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text" data-bs-toggle="modal"
         data-bs-target="#addStaffModal">
         <span class="material-symbols-outlined fs-17">person_add</span>
@@ -449,87 +448,6 @@
             </div>
         </div>
     </div>
-
-
-    <!-- ── Archive Modal ── -->
-    <div class="modal fade" id="archiveModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary fs-22">inventory_2</span>
-                        <h5 class="modal-title mb-0">Archived Staff</h5>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table id="archiveTable" class="table table-hover mb-0 small w-100">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0 small green-text">Staff ID</th>
-                                    <th class="border-0 small green-text">Name</th>
-                                    <th class="border-0 small green-text">Type</th>
-                                    <th class="border-0 small green-text">Role</th>
-                                    <th class="border-0 small green-text">Contact</th>
-                                    <th class="border-0 small green-text">Status</th>
-                                    <th class="border-0 small green-text">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>EMP-2025-011</td>
-                                    <td>Felix Navarro</td>
-                                    <td>Employee</td>
-                                    <td>Technician</td>
-                                    <td>0930-111-2222</td>
-                                    <td><span class="badge bg-secondary rounded-pill">Archived</span></td>
-                                    <td class="text-nowrap actions-col">
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="Restore">
-                                            <span class="material-symbols-outlined icon-action">unarchive</span>
-                                            Restore
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>EMP-2025-009</td>
-                                    <td>Renato Aguilar</td>
-                                    <td>Employee</td>
-                                    <td>Driver</td>
-                                    <td>0931-222-3333</td>
-                                    <td><span class="badge bg-secondary rounded-pill">Archived</span></td>
-                                    <td class="text-nowrap actions-col">
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="Restore">
-                                            <span class="material-symbols-outlined icon-action">unarchive</span>
-                                            Restore
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>SEC-2025-001</td>
-                                    <td>Lorna Castillo</td>
-                                    <td>Secretary</td>
-                                    <td>Secretary</td>
-                                    <td>0932-333-4444</td>
-                                    <td><span class="badge bg-secondary rounded-pill">Archived</span></td>
-                                    <td class="text-nowrap actions-col">
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="Restore">
-                                            <span class="material-symbols-outlined icon-action">unarchive</span>
-                                            Restore
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 @endsection
 
 @section('scripts')
