@@ -80,6 +80,9 @@ Route::get('/archive-clients', [AdminController::class, 'showArchiveClients'])->
 //materials
 Route::get('/materials', [AdminController::class, 'showMaterials'])->name('materials');
 
+//archive materials
+Route::get('/archive-materials', [AdminController::class, 'showArchiveMaterials'])->name('archive-materials');
+
 //admin-settings
 Route::get('/admin-settings', [AdminController::class, 'showAdminSettings'])->name('admin-settings');
 

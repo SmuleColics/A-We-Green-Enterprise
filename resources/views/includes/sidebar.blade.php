@@ -71,7 +71,7 @@
         </a>
 
         <a href="{{ route('materials') }}"
-            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('materials')) active @endif">
+            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('materials') || Request::routeIs('archive-materials')) active @endif">
             <span class="material-symbols-outlined">inventory_2</span>
             Materials
         </a>

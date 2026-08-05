@@ -117,10 +117,10 @@
                                             subject:'Solar Street Lighting Installation — Barangay Road',
                                             message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
                                             items:[
-                                                {qty:20, unit:'pcs', desc:'Solar Street Light 100W', price:32500, total:650000},
-                                                {qty:1, unit:'lot', desc:'Installation & Wiring', price:58333, total:58333}
+                                                {qty:20, unit:'pcs', image:'', desc:'Solar Street Light 100W', price:32500, total:650000},
+                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:200000, total:200000}
                                             ],
-                                            subtotal:708333, laborPercent:20, labor:141667, total:850000
+                                            total:850000
                                         })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
@@ -155,10 +155,10 @@
                                             subject:'Solar Street Lighting – Taguig',
                                             message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
                                             items:[
-                                                {qty:18, unit:'pcs', desc:'Solar Street Light 100W', price:32500, total:585000},
-                                                {qty:1, unit:'lot', desc:'Installation & Wiring', price:40000, total:40000}
+                                                {qty:18, unit:'pcs', image:'', desc:'Solar Street Light 100W', price:32500, total:585000},
+                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:165000, total:165000}
                                             ],
-                                            subtotal:625000, laborPercent:20, labor:125000, total:750000
+                                            total:750000
                                         })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
@@ -193,10 +193,11 @@
                                             subject:'Solar Setup Installation – BGC Office',
                                             message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
                                             items:[
-                                                {qty:6, unit:'pcs', desc:'Solar Panel 450W', price:12000, total:72000},
-                                                {qty:1, unit:'unit', desc:'Inverter 5kW', price:28000, total:28000}
+                                                {qty:6, unit:'pcs', image:'{{ asset('css/images/materials/solar-panel-330w.jpg') }}', desc:'Solar Panel 450W', price:12000, total:72000},
+                                                {qty:1, unit:'unit', image:'{{ asset('css/images/materials/solar-inverter-3kw.jpg') }}', desc:'Inverter 5kW', price:28000, total:28000},
+                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:20000, total:20000}
                                             ],
-                                            subtotal:100000, laborPercent:20, labor:20000, total:120000
+                                            total:120000
                                         })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
@@ -231,11 +232,12 @@
                                             subject:'CCTV Installation – Makati Branch',
                                             message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
                                             items:[
-                                                {qty:4, unit:'pcs', desc:'IP Camera 4MP Outdoor', price:3500, total:14000},
-                                                {qty:1, unit:'unit', desc:'8-Channel NVR Recorder', price:8500, total:8500},
-                                                {qty:50, unit:'meters', desc:'CAT6 LAN Cable', price:45, total:2250}
+                                                {qty:4, unit:'pcs', image:'{{ asset('css/images/materials/ip-camera.jpg') }}', desc:'IP Camera 4MP Outdoor', price:3500, total:14000},
+                                                {qty:1, unit:'unit', image:'{{ asset('css/images/materials/nvr-8ch.jpg') }}', desc:'8-Channel NVR Recorder', price:8500, total:8500},
+                                                {qty:50, unit:'meters', image:'{{ asset('css/images/materials/cat6-cable.jpg') }}', desc:'CAT6 LAN Cable', price:45, total:2250},
+                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:4950, total:4950}
                                             ],
-                                            subtotal:24750, laborPercent:20, labor:4950, total:29700
+                                            total:29700
                                         })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
@@ -269,11 +271,12 @@
                                             subject:'PA System Installation – Alabang',
                                             message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
                                             items:[
-                                                {qty:8, unit:'pcs', desc:'Ceiling Speaker 20W', price:2200, total:17600},
-                                                {qty:1, unit:'unit', desc:'PA Amplifier 240W', price:22000, total:22000},
-                                                {qty:100, unit:'meters', desc:'Speaker Wire', price:35, total:3500}
+                                                {qty:8, unit:'pcs', image:'{{ asset('css/images/materials/horn-speaker-30w.jpg') }}', desc:'Ceiling Speaker 20W', price:2200, total:17600},
+                                                {qty:1, unit:'unit', image:'{{ asset('css/images/materials/mixer-amp-100w.jpg') }}', desc:'PA Amplifier 240W', price:22000, total:22000},
+                                                {qty:100, unit:'meters', image:'', desc:'Speaker Wire', price:35, total:3500},
+                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:51900, total:51900}
                                             ],
-                                            subtotal:43100, laborPercent:null, labor:0, total:95000
+                                            total:95000
                                         })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
@@ -307,11 +310,12 @@
                                             subject:'CCTV System – Quezon City',
                                             message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
                                             items:[
-                                                {qty:6, unit:'pcs', desc:'IP Camera 4MP Outdoor', price:3500, total:21000},
-                                                {qty:1, unit:'unit', desc:'8-Channel NVR Recorder', price:8500, total:8500},
-                                                {qty:60, unit:'meters', desc:'CAT6 LAN Cable', price:45, total:2700}
+                                                {qty:6, unit:'pcs', image:'{{ asset('css/images/materials/ip-camera.jpg') }}', desc:'IP Camera 4MP Outdoor', price:3500, total:21000},
+                                                {qty:1, unit:'unit', image:'{{ asset('css/images/materials/nvr-8ch.jpg') }}', desc:'8-Channel NVR Recorder', price:8500, total:8500},
+                                                {qty:60, unit:'meters', image:'{{ asset('css/images/materials/cat6-cable.jpg') }}', desc:'CAT6 LAN Cable', price:45, total:2700},
+                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:22800, total:22800}
                                             ],
-                                            subtotal:32200, laborPercent:20, labor:6440, total:55000
+                                            total:55000
                                         })">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
@@ -401,7 +405,7 @@
                                             <th class="fs-12">Qty</th>
                                             <th class="fs-12">Unit</th>
                                             <th class="fs-12">Description</th>
-                                            <th class="fs-12 text-end">Unit Price</th>
+                                            <th class="fs-12 text-end">Price</th>
                                             <th class="fs-12 text-end">Total</th>
                                         </tr>
                                     </thead>
@@ -410,19 +414,17 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="3" class="border-0"></td>
-                                            <td class="fs-13 text-muted text-end border-0">Subtotal</td>
-                                            <td class="fs-13 text-end fw-medium border-0" id="vq-subtotal">—</td>
+                                            <td colspan="5" class="text-center p-1">
+                                                <p class="quote-inclusion-note mb-0 fs-12">
+                                                    Quoted Price with <span class="fw-bold">VALUE ADDED TAX</span> Inclusion
+                                                </p>
+                                            </td>
                                         </tr>
-                                        <tr>
-                                            <td colspan="3" class="border-0"></td>
-                                            <td class="fs-13 text-muted text-end border-0" id="vq-labor-label">Labor</td>
-                                            <td class="fs-13 text-end fw-medium border-0" id="vq-labor">—</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="3" class="border-0"></td>
-                                            <td class="fs-14 fw-semibold text-end border-top pt-2">Grand Total</td>
-                                            <td class="fs-14 fw-semibold text-end border-top pt-2 green-text" id="vq-total">—</td>
+                                        <tr class="grand-total-row">
+                                            <td colspan="4" class="text-center">
+                                                <span class="fw-bold fs-12">ONE (1) YEAR FULL WARRANTY</span>
+                                            </td>
+                                            <td class="fw-bold text-end fs-14" id="vq-total">—</td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -516,17 +518,28 @@
                                             <th class="w-70">QTY</th>
                                             <th class="w-90">Unit</th>
                                             <th>Description</th>
-                                            <th class="w-140">Unit Price (₱)</th>
+                                            <th class="w-140">Price (₱)</th>
                                             <th class="w-140">Total (₱)</th>
                                             <th class="w-40"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {{-- Camera --}}
                                         <tr>
                                             <td><input type="number" class="form-control form-control-sm" value="4"
                                                     min="1"></td>
-                                            <td><input type="text" class="form-control form-control-sm"
-                                                    value="pcs"></td>
+                                            <td>
+                                                <div class="item-unit-cell">
+                                                    <div class="item-thumb-wrap">
+                                                        <img src="{{ asset('css/images/materials/ip-camera.jpg') }}"
+                                                            alt="CCTV Camera" class="item-thumb"
+                                                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                                        <div class="item-thumb-fallback" style="display:none;">
+                                                            <span class="material-symbols-outlined">image_not_supported</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td><input type="text" class="form-control form-control-sm"
                                                     value="IP Camera 4MP Outdoor"></td>
                                             <td><input type="number" class="form-control form-control-sm"
@@ -538,11 +551,22 @@
                                                 </button>
                                             </td>
                                         </tr>
+                                        {{-- NVR/DVR --}}
                                         <tr>
                                             <td><input type="number" class="form-control form-control-sm" value="1"
                                                     min="1"></td>
-                                            <td><input type="text" class="form-control form-control-sm"
-                                                    value="unit"></td>
+                                            <td>
+                                                <div class="item-unit-cell">
+                                                    <div class="item-thumb-wrap">
+                                                        <img src="{{ asset('css/images/materials/nvr-8ch.jpg') }}"
+                                                            alt="Digital Video Recorder" class="item-thumb"
+                                                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                                        <div class="item-thumb-fallback" style="display:none;">
+                                                            <span class="material-symbols-outlined">image_not_supported</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td><input type="text" class="form-control form-control-sm"
                                                     value="8-Channel NVR Recorder"></td>
                                             <td><input type="number" class="form-control form-control-sm"
@@ -554,11 +578,22 @@
                                                 </button>
                                             </td>
                                         </tr>
+                                        {{-- Cable --}}
                                         <tr>
                                             <td><input type="number" class="form-control form-control-sm" value="50"
                                                     min="1"></td>
-                                            <td><input type="text" class="form-control form-control-sm"
-                                                    value="meters"></td>
+                                            <td>
+                                                <div class="item-unit-cell">
+                                                    <div class="item-thumb-wrap">
+                                                        <img src="{{ asset('css/images/materials/cat6-cable.jpg') }}"
+                                                            alt="Cat6 Cable" class="item-thumb"
+                                                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                                        <div class="item-thumb-fallback" style="display:none;">
+                                                            <span class="material-symbols-outlined">image_not_supported</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td><input type="text" class="form-control form-control-sm"
                                                     value="CAT6 LAN Cable"></td>
                                             <td><input type="number" class="form-control form-control-sm"
@@ -570,24 +605,36 @@
                                                 </button>
                                             </td>
                                         </tr>
+                                        {{-- Labor / Installation --}}
+                                        <tr class="labor-row">
+                                            <td><input type="number" class="form-control form-control-sm" value="1"
+                                                    min="1"></td>
+                                            <td><input type="text" class="form-control form-control-sm"
+                                                    value="lot"></td>
+                                            <td><input type="text" class="form-control form-control-sm"
+                                                    value="Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY"></td>
+                                            <td><input type="number" class="form-control form-control-sm"
+                                                    value="4950"></td>
+                                            <td class="fw-medium align-middle">₱4,950.00</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    <span class="material-symbols-outlined icon-action">delete</span>
+                                                </button>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                     <tfoot>
-                                        <tr class="labor-row">
-                                            <td colspan="2" class="align-middle">
-                                                <span class="fw-semibold small text-muted">LABOR</span>
+                                        <tr>
+                                            <td colspan="6" class="text-center p-1">
+                                                <p class="quote-inclusion-note mb-0">
+                                                    Quoted Price with <span class="fw-bold">VALUE ADDED TAX</span> Inclusion
+                                                </p>
                                             </td>
-                                            <td class="align-middle small text-muted">Overall labor charge (% of subtotal)
-                                            </td>
-                                            <td class="align-middle">
-                                                <select class="form-select form-select-sm">
-                                                    <option value="">No Labor</option>
-                                                    <option value="15">15%</option>
-                                                    <option value="20" selected>20%</option>
-                                                    <option value="25">25%</option>
-                                                    <option value="30">30%</option>
-                                                </select>
-                                            </td>
-                                            <td class="fw-medium align-middle">₱4,950.00</td>
+                                        </tr>
+                                        <tr class="grand-total-row">
+                                            <td colspan="4" class="text-center"><span class="fw-bold text-center ps-5">ONE (1)
+                                                    YEAR FULL WARRANTY</span></td>
+                                            <td class="fw-bold text-end">₱29,700.00</td>
                                             <td></td>
                                         </tr>
                                     </tfoot>
@@ -597,20 +644,6 @@
                                 <span class="material-symbols-outlined fs-18">add</span>
                                 Add Item
                             </button>
-                            <div class="d-flex flex-column align-items-end mt-4 pt-3 border-top gap-1">
-                                <div class="d-flex justify-content-between totals-row small text-muted">
-                                    <span>Subtotal</span>
-                                    <span>₱24,750.00</span>
-                                </div>
-                                <div class="d-flex justify-content-between totals-row small text-muted">
-                                    <span>Labor (20%)</span>
-                                    <span>₱4,950.00</span>
-                                </div>
-                                <div class="d-flex justify-content-between totals-row mt-1 pt-2 border-top">
-                                    <span class="fw-semibold me-5">Grand Total</span>
-                                    <span class="h5 green-text fw-medium mb-0">₱29,700.00</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -661,19 +694,28 @@
             const tbody = document.getElementById('vq-lineitems');
             tbody.innerHTML = '';
             (d.items || []).forEach(item => {
+                const unitCell = item.image
+                    ? `<div class="item-unit-cell">
+                           <div class="item-thumb-wrap item-thumb-wrap-sm">
+                               <img src="${item.image}" alt="${item.desc}" class="item-thumb"
+                                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                               <div class="item-thumb-fallback" style="display:none;">
+                                   <span class="material-symbols-outlined">image_not_supported</span>
+                               </div>
+                           </div>
+                       </div>`
+                    : (item.unit || '—');
+
                 tbody.innerHTML += `
                     <tr>
                         <td class="fs-13">${item.qty}</td>
-                        <td class="fs-13">${item.unit}</td>
+                        <td class="fs-13">${unitCell}</td>
                         <td class="fs-13">${item.desc}</td>
                         <td class="fs-13 text-end">₱${item.price.toLocaleString('en-PH', {minimumFractionDigits:2})}</td>
                         <td class="fs-13 text-end">₱${item.total.toLocaleString('en-PH', {minimumFractionDigits:2})}</td>
                     </tr>`;
             });
 
-            document.getElementById('vq-subtotal').textContent = '₱' + (d.subtotal || 0).toLocaleString('en-PH', {minimumFractionDigits:2});
-            document.getElementById('vq-labor-label').textContent = d.laborPercent ? `Labor (${d.laborPercent}%)` : 'Labor';
-            document.getElementById('vq-labor').textContent = '₱' + (d.labor || 0).toLocaleString('en-PH', {minimumFractionDigits:2});
             document.getElementById('vq-total').textContent = '₱' + (d.total || 0).toLocaleString('en-PH', {minimumFractionDigits:2});
         }
 

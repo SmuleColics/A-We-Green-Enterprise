@@ -130,6 +130,11 @@ class AdminController extends Controller
     return view('admin.materials.materials');
   }
 
+  public function showArchiveMaterials()
+  {
+    return view('admin.materials.archive-materials');
+  }
+
   // SYSTEM SETTINGS
 
   public function showAdminSettings()

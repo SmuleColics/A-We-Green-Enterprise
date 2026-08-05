@@ -544,7 +544,7 @@
                 <h5 class="modal-title">Schedule Assessment</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body overflow-y-scroll">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label small">Client Name *</label>

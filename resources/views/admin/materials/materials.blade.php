@@ -9,13 +9,12 @@
 @section('page-title', 'Materials')
 
 @section('topbar-actions')
-    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-bs-toggle="modal"
-        data-bs-target="#archiveModal">
+    <a href="{{ route('archive-materials') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
-    </button>
-    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text" data-bs-toggle="modal"
-        data-bs-target="#addMaterialModal">
+    </a>
+    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text"
+        data-bs-toggle="modal" data-bs-target="#addMaterialModal">
         <span class="material-symbols-outlined fs-17">add_box</span>
         Add Material
     </button>
@@ -95,7 +94,19 @@
 
                             {{-- CCTV --}}
                             <tr>
-                                <td><span class="fw-semibold">IP Camera 2MP Outdoor</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mat-thumb-wrap">
+                                            <img src="{{ asset('css/images/materials/ip-camera.jpg') }}"
+                                                alt="IP Camera 2MP Outdoor" class="mat-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                            <div class="mat-thumb-fallback" style="display:none;">
+                                                <span class="material-symbols-outlined">image_not_supported</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-semibold">IP Camera 2MP Outdoor</span>
+                                    </div>
+                                </td>
                                 <td><span class="cat-badge cat-cctv">CCTV</span></td>
                                 <td>pcs</td>
                                 <td>24</td>
@@ -104,12 +115,12 @@
                                 <td class="text-nowrap actions-col">
                                     <button class="btn btn-sm btn-outline-success action-btn" title="View"
                                         data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'IP Camera 2MP Outdoor',category:'CCTV',unit:'pcs',stock:24,cost:'₱2,500.00',status:'In Stock',description:'2 Megapixel outdoor IP camera with night vision and weatherproof casing.',supplier:'TechPro Supplies',location:'Shelf A-1'})">
+                                        onclick="loadMaterial({name:'IP Camera 2MP Outdoor',image:'{{ asset('css/images/materials/ip-camera.jpg') }}',category:'CCTV',unit:'pcs',stock:24,cost:'₱2,500.00',status:'In Stock',description:'2 Megapixel outdoor IP camera with night vision and weatherproof casing.',supplier:'TechPro Supplies',location:'Shelf A-1'})">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'IP Camera 2MP Outdoor',category:'CCTV',unit:'pcs',stock:24,cost:2500,description:'2 Megapixel outdoor IP camera with night vision and weatherproof casing.',supplier:'TechPro Supplies',location:'Shelf A-1'})">
+                                        onclick="loadEditMaterial({name:'IP Camera 2MP Outdoor',image:'{{ asset('css/images/materials/ip-camera.jpg') }}',category:'CCTV',unit:'pcs',stock:24,cost:2500,description:'2 Megapixel outdoor IP camera with night vision and weatherproof casing.',supplier:'TechPro Supplies',location:'Shelf A-1'})">
                                         <span class="material-symbols-outlined icon-action">edit</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
@@ -118,7 +129,19 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><span class="fw-semibold">8-Channel NVR with 2TB HDD</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mat-thumb-wrap">
+                                            <img src="{{ asset('css/images/materials/nvr-8ch.jpg') }}"
+                                                alt="8-Channel NVR with 2TB HDD" class="mat-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                            <div class="mat-thumb-fallback" style="display:none;">
+                                                <span class="material-symbols-outlined">image_not_supported</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-semibold">8-Channel NVR with 2TB HDD</span>
+                                    </div>
+                                </td>
                                 <td><span class="cat-badge cat-cctv">CCTV</span></td>
                                 <td>unit</td>
                                 <td>8</td>
@@ -127,12 +150,12 @@
                                 <td class="text-nowrap actions-col">
                                     <button class="btn btn-sm btn-outline-success action-btn" title="View"
                                         data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'8-Channel NVR with 2TB HDD',category:'CCTV',unit:'unit',stock:8,cost:'₱8,500.00',status:'In Stock',description:'8-channel network video recorder bundled with 2TB hard drive.',supplier:'NetVision Inc.',location:'Shelf A-2'})">
+                                        onclick="loadMaterial({name:'8-Channel NVR with 2TB HDD',image:'{{ asset('css/images/materials/nvr-8ch.jpg') }}',category:'CCTV',unit:'unit',stock:8,cost:'₱8,500.00',status:'In Stock',description:'8-channel network video recorder bundled with 2TB hard drive.',supplier:'NetVision Inc.',location:'Shelf A-2'})">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'8-Channel NVR with 2TB HDD',category:'CCTV',unit:'unit',stock:8,cost:8500,description:'8-channel network video recorder bundled with 2TB hard drive.',supplier:'NetVision Inc.',location:'Shelf A-2'})">
+                                        onclick="loadEditMaterial({name:'8-Channel NVR with 2TB HDD',image:'{{ asset('css/images/materials/nvr-8ch.jpg') }}',category:'CCTV',unit:'unit',stock:8,cost:8500,description:'8-channel network video recorder bundled with 2TB hard drive.',supplier:'NetVision Inc.',location:'Shelf A-2'})">
                                         <span class="material-symbols-outlined icon-action">edit</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
@@ -141,7 +164,18 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><span class="fw-semibold">Cat6 UTP Cable</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mat-thumb-wrap">
+                                            <img src="" alt="Cat6 UTP Cable" class="mat-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                            <div class="mat-thumb-fallback" style="display:flex;">
+                                                <span class="material-symbols-outlined">image_not_supported</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-semibold">Cat6 UTP Cable</span>
+                                    </div>
+                                </td>
                                 <td><span class="cat-badge cat-cctv">CCTV</span></td>
                                 <td>roll</td>
                                 <td>3</td>
@@ -150,12 +184,12 @@
                                 <td class="text-nowrap actions-col">
                                     <button class="btn btn-sm btn-outline-success action-btn" title="View"
                                         data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Cat6 UTP Cable',category:'CCTV',unit:'roll',stock:3,cost:'₱1,800.00',status:'Low Stock',description:'Cat6 unshielded twisted pair cable, 305m per roll.',supplier:'CablePro PH',location:'Shelf B-1'})">
+                                        onclick="loadMaterial({name:'Cat6 UTP Cable',image:'',category:'CCTV',unit:'roll',stock:3,cost:'₱1,800.00',status:'Low Stock',description:'Cat6 unshielded twisted pair cable, 305m per roll.',supplier:'CablePro PH',location:'Shelf B-1'})">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Cat6 UTP Cable',category:'CCTV',unit:'roll',stock:3,cost:1800,description:'Cat6 unshielded twisted pair cable, 305m per roll.',supplier:'CablePro PH',location:'Shelf B-1'})">
+                                        onclick="loadEditMaterial({name:'Cat6 UTP Cable',image:'',category:'CCTV',unit:'roll',stock:3,cost:1800,description:'Cat6 unshielded twisted pair cable, 305m per roll.',supplier:'CablePro PH',location:'Shelf B-1'})">
                                         <span class="material-symbols-outlined icon-action">edit</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
@@ -164,7 +198,18 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><span class="fw-semibold">DC Power Supply 12V 5A</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mat-thumb-wrap">
+                                            <img src="" alt="DC Power Supply 12V 5A" class="mat-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                            <div class="mat-thumb-fallback" style="display:flex;">
+                                                <span class="material-symbols-outlined">image_not_supported</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-semibold">DC Power Supply 12V 5A</span>
+                                    </div>
+                                </td>
                                 <td><span class="cat-badge cat-cctv">CCTV</span></td>
                                 <td>pcs</td>
                                 <td>0</td>
@@ -173,12 +218,12 @@
                                 <td class="text-nowrap actions-col">
                                     <button class="btn btn-sm btn-outline-success action-btn" title="View"
                                         data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'DC Power Supply 12V 5A',category:'CCTV',unit:'pcs',stock:0,cost:'₱650.00',status:'Out of Stock',description:'12V 5A CCTV power supply with multi-output ports.',supplier:'PowerTech Supplies',location:'Shelf A-3'})">
+                                        onclick="loadMaterial({name:'DC Power Supply 12V 5A',image:'',category:'CCTV',unit:'pcs',stock:0,cost:'₱650.00',status:'Out of Stock',description:'12V 5A CCTV power supply with multi-output ports.',supplier:'PowerTech Supplies',location:'Shelf A-3'})">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'DC Power Supply 12V 5A',category:'CCTV',unit:'pcs',stock:0,cost:650,description:'12V 5A CCTV power supply with multi-output ports.',supplier:'PowerTech Supplies',location:'Shelf A-3'})">
+                                        onclick="loadEditMaterial({name:'DC Power Supply 12V 5A',image:'',category:'CCTV',unit:'pcs',stock:0,cost:650,description:'12V 5A CCTV power supply with multi-output ports.',supplier:'PowerTech Supplies',location:'Shelf A-3'})">
                                         <span class="material-symbols-outlined icon-action">edit</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
@@ -189,7 +234,19 @@
 
                             {{-- Solar --}}
                             <tr>
-                                <td><span class="fw-semibold">Solar Panel 330W Monocrystalline</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mat-thumb-wrap">
+                                            <img src="{{ asset('css/images/materials/solar-panel-330w.jpg') }}"
+                                                alt="Solar Panel 330W Monocrystalline" class="mat-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                            <div class="mat-thumb-fallback" style="display:none;">
+                                                <span class="material-symbols-outlined">image_not_supported</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-semibold">Solar Panel 330W Monocrystalline</span>
+                                    </div>
+                                </td>
                                 <td><span class="cat-badge cat-solar">Solar</span></td>
                                 <td>pcs</td>
                                 <td>12</td>
@@ -198,12 +255,12 @@
                                 <td class="text-nowrap actions-col">
                                     <button class="btn btn-sm btn-outline-success action-btn" title="View"
                                         data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Solar Panel 330W Monocrystalline',category:'Solar',unit:'pcs',stock:12,cost:'₱6,500.00',status:'In Stock',description:'High-efficiency 330W monocrystalline solar panel.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
+                                        onclick="loadMaterial({name:'Solar Panel 330W Monocrystalline',image:'{{ asset('css/images/materials/solar-panel-330w.jpg') }}',category:'Solar',unit:'pcs',stock:12,cost:'₱6,500.00',status:'In Stock',description:'High-efficiency 330W monocrystalline solar panel.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Solar Panel 330W Monocrystalline',category:'Solar',unit:'pcs',stock:12,cost:6500,description:'High-efficiency 330W monocrystalline solar panel.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
+                                        onclick="loadEditMaterial({name:'Solar Panel 330W Monocrystalline',image:'{{ asset('css/images/materials/solar-panel-330w.jpg') }}',category:'Solar',unit:'pcs',stock:12,cost:6500,description:'High-efficiency 330W monocrystalline solar panel.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
                                         <span class="material-symbols-outlined icon-action">edit</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
@@ -212,7 +269,19 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><span class="fw-semibold">Solar Inverter 3kW</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mat-thumb-wrap">
+                                            <img src="{{ asset('css/images/materials/solar-inverter-3kw.jpg') }}"
+                                                alt="Solar Inverter 3kW" class="mat-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                            <div class="mat-thumb-fallback" style="display:none;">
+                                                <span class="material-symbols-outlined">image_not_supported</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-semibold">Solar Inverter 3kW</span>
+                                    </div>
+                                </td>
                                 <td><span class="cat-badge cat-solar">Solar</span></td>
                                 <td>unit</td>
                                 <td>4</td>
@@ -221,12 +290,12 @@
                                 <td class="text-nowrap actions-col">
                                     <button class="btn btn-sm btn-outline-success action-btn" title="View"
                                         data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Solar Inverter 3kW',category:'Solar',unit:'unit',stock:4,cost:'₱18,000.00',status:'Low Stock',description:'3kW pure sine wave solar inverter with built-in MPPT charge controller.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
+                                        onclick="loadMaterial({name:'Solar Inverter 3kW',image:'{{ asset('css/images/materials/solar-inverter-3kw.jpg') }}',category:'Solar',unit:'unit',stock:4,cost:'₱18,000.00',status:'Low Stock',description:'3kW pure sine wave solar inverter with built-in MPPT charge controller.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Solar Inverter 3kW',category:'Solar',unit:'unit',stock:4,cost:18000,description:'3kW pure sine wave solar inverter with built-in MPPT charge controller.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
+                                        onclick="loadEditMaterial({name:'Solar Inverter 3kW',image:'{{ asset('css/images/materials/solar-inverter-3kw.jpg') }}',category:'Solar',unit:'unit',stock:4,cost:18000,description:'3kW pure sine wave solar inverter with built-in MPPT charge controller.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
                                         <span class="material-symbols-outlined icon-action">edit</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
@@ -235,7 +304,18 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><span class="fw-semibold">Lithium Battery 100Ah</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mat-thumb-wrap">
+                                            <img src="" alt="Lithium Battery 100Ah" class="mat-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                            <div class="mat-thumb-fallback" style="display:flex;">
+                                                <span class="material-symbols-outlined">image_not_supported</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-semibold">Lithium Battery 100Ah</span>
+                                    </div>
+                                </td>
                                 <td><span class="cat-badge cat-solar">Solar</span></td>
                                 <td>unit</td>
                                 <td>0</td>
@@ -244,12 +324,12 @@
                                 <td class="text-nowrap actions-col">
                                     <button class="btn btn-sm btn-outline-success action-btn" title="View"
                                         data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Lithium Battery 100Ah',category:'Solar',unit:'unit',stock:0,cost:'₱22,000.00',status:'Out of Stock',description:'100Ah LiFePO4 lithium deep cycle battery for solar storage.',supplier:'BatteryKing PH',location:'Warehouse Row D'})">
+                                        onclick="loadMaterial({name:'Lithium Battery 100Ah',image:'',category:'Solar',unit:'unit',stock:0,cost:'₱22,000.00',status:'Out of Stock',description:'100Ah LiFePO4 lithium deep cycle battery for solar storage.',supplier:'BatteryKing PH',location:'Warehouse Row D'})">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Lithium Battery 100Ah',category:'Solar',unit:'unit',stock:0,cost:22000,description:'100Ah LiFePO4 lithium deep cycle battery for solar storage.',supplier:'BatteryKing PH',location:'Warehouse Row D'})">
+                                        onclick="loadEditMaterial({name:'Lithium Battery 100Ah',image:'',category:'Solar',unit:'unit',stock:0,cost:22000,description:'100Ah LiFePO4 lithium deep cycle battery for solar storage.',supplier:'BatteryKing PH',location:'Warehouse Row D'})">
                                         <span class="material-symbols-outlined icon-action">edit</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
@@ -260,7 +340,19 @@
 
                             {{-- PA System --}}
                             <tr>
-                                <td><span class="fw-semibold">Horn Speaker 30W</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mat-thumb-wrap">
+                                            <img src="{{ asset('css/images/materials/horn-speaker-30w.jpg') }}"
+                                                alt="Horn Speaker 30W" class="mat-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                            <div class="mat-thumb-fallback" style="display:none;">
+                                                <span class="material-symbols-outlined">image_not_supported</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-semibold">Horn Speaker 30W</span>
+                                    </div>
+                                </td>
                                 <td><span class="cat-badge cat-pa">PA System</span></td>
                                 <td>pcs</td>
                                 <td>18</td>
@@ -269,12 +361,12 @@
                                 <td class="text-nowrap actions-col">
                                     <button class="btn btn-sm btn-outline-success action-btn" title="View"
                                         data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Horn Speaker 30W',category:'PA System',unit:'pcs',stock:18,cost:'₱950.00',status:'In Stock',description:'30W weather-resistant horn speaker for outdoor PA systems.',supplier:'AudioPro PH',location:'Shelf D-1'})">
+                                        onclick="loadMaterial({name:'Horn Speaker 30W',image:'{{ asset('css/images/materials/horn-speaker-30w.jpg') }}',category:'PA System',unit:'pcs',stock:18,cost:'₱950.00',status:'In Stock',description:'30W weather-resistant horn speaker for outdoor PA systems.',supplier:'AudioPro PH',location:'Shelf D-1'})">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Horn Speaker 30W',category:'PA System',unit:'pcs',stock:18,cost:950,description:'30W weather-resistant horn speaker for outdoor PA systems.',supplier:'AudioPro PH',location:'Shelf D-1'})">
+                                        onclick="loadEditMaterial({name:'Horn Speaker 30W',image:'{{ asset('css/images/materials/horn-speaker-30w.jpg') }}',category:'PA System',unit:'pcs',stock:18,cost:950,description:'30W weather-resistant horn speaker for outdoor PA systems.',supplier:'AudioPro PH',location:'Shelf D-1'})">
                                         <span class="material-symbols-outlined icon-action">edit</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
@@ -283,7 +375,19 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><span class="fw-semibold">100W Mixer Amplifier</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mat-thumb-wrap">
+                                            <img src="{{ asset('css/images/materials/mixer-amp-100w.jpg') }}"
+                                                alt="100W Mixer Amplifier" class="mat-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                            <div class="mat-thumb-fallback" style="display:none;">
+                                                <span class="material-symbols-outlined">image_not_supported</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-semibold">100W Mixer Amplifier</span>
+                                    </div>
+                                </td>
                                 <td><span class="cat-badge cat-pa">PA System</span></td>
                                 <td>unit</td>
                                 <td>5</td>
@@ -292,12 +396,12 @@
                                 <td class="text-nowrap actions-col">
                                     <button class="btn btn-sm btn-outline-success action-btn" title="View"
                                         data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'100W Mixer Amplifier',category:'PA System',unit:'unit',stock:5,cost:'₱7,200.00',status:'In Stock',description:'100W rack-mount mixer amplifier with 3 mic inputs and 1 aux input.',supplier:'AudioPro PH',location:'Shelf D-2'})">
+                                        onclick="loadMaterial({name:'100W Mixer Amplifier',image:'{{ asset('css/images/materials/mixer-amp-100w.jpg') }}',category:'PA System',unit:'unit',stock:5,cost:'₱7,200.00',status:'In Stock',description:'100W rack-mount mixer amplifier with 3 mic inputs and 1 aux input.',supplier:'AudioPro PH',location:'Shelf D-2'})">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'100W Mixer Amplifier',category:'PA System',unit:'unit',stock:5,cost:7200,description:'100W rack-mount mixer amplifier with 3 mic inputs and 1 aux input.',supplier:'AudioPro PH',location:'Shelf D-2'})">
+                                        onclick="loadEditMaterial({name:'100W Mixer Amplifier',image:'{{ asset('css/images/materials/mixer-amp-100w.jpg') }}',category:'PA System',unit:'unit',stock:5,cost:7200,description:'100W rack-mount mixer amplifier with 3 mic inputs and 1 aux input.',supplier:'AudioPro PH',location:'Shelf D-2'})">
                                         <span class="material-symbols-outlined icon-action">edit</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
@@ -308,7 +412,18 @@
 
                             {{-- General --}}
                             <tr>
-                                <td><span class="fw-semibold">Cable Ties (100pcs/bag)</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mat-thumb-wrap">
+                                            <img src="" alt="Cable Ties (100pcs/bag)" class="mat-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                            <div class="mat-thumb-fallback" style="display:flex;">
+                                                <span class="material-symbols-outlined">image_not_supported</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-semibold">Cable Ties (100pcs/bag)</span>
+                                    </div>
+                                </td>
                                 <td><span class="cat-badge cat-general">General</span></td>
                                 <td>bag</td>
                                 <td>22</td>
@@ -317,12 +432,12 @@
                                 <td class="text-nowrap actions-col">
                                     <button class="btn btn-sm btn-outline-success action-btn" title="View"
                                         data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Cable Ties (100pcs/bag)',category:'General',unit:'bag',stock:22,cost:'₱85.00',status:'In Stock',description:'Assorted nylon cable ties, 100 pieces per bag.',supplier:'Hardware Plus',location:'Shelf E-1'})">
+                                        onclick="loadMaterial({name:'Cable Ties (100pcs/bag)',image:'',category:'General',unit:'bag',stock:22,cost:'₱85.00',status:'In Stock',description:'Assorted nylon cable ties, 100 pieces per bag.',supplier:'Hardware Plus',location:'Shelf E-1'})">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Cable Ties (100pcs/bag)',category:'General',unit:'bag',stock:22,cost:85,description:'Assorted nylon cable ties, 100 pieces per bag.',supplier:'Hardware Plus',location:'Shelf E-1'})">
+                                        onclick="loadEditMaterial({name:'Cable Ties (100pcs/bag)',image:'',category:'General',unit:'bag',stock:22,cost:85,description:'Assorted nylon cable ties, 100 pieces per bag.',supplier:'Hardware Plus',location:'Shelf E-1'})">
                                         <span class="material-symbols-outlined icon-action">edit</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
@@ -331,7 +446,18 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><span class="fw-semibold">Electrical Tape</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mat-thumb-wrap">
+                                            <img src="" alt="Electrical Tape" class="mat-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                            <div class="mat-thumb-fallback" style="display:flex;">
+                                                <span class="material-symbols-outlined">image_not_supported</span>
+                                            </div>
+                                        </div>
+                                        <span class="fw-semibold">Electrical Tape</span>
+                                    </div>
+                                </td>
                                 <td><span class="cat-badge cat-general">General</span></td>
                                 <td>roll</td>
                                 <td>2</td>
@@ -340,12 +466,12 @@
                                 <td class="text-nowrap actions-col">
                                     <button class="btn btn-sm btn-outline-success action-btn" title="View"
                                         data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Electrical Tape',category:'General',unit:'roll',stock:2,cost:'₱35.00',status:'Low Stock',description:'PVC insulation electrical tape, black.',supplier:'Hardware Plus',location:'Shelf E-2'})">
+                                        onclick="loadMaterial({name:'Electrical Tape',image:'',category:'General',unit:'roll',stock:2,cost:'₱35.00',status:'Low Stock',description:'PVC insulation electrical tape, black.',supplier:'Hardware Plus',location:'Shelf E-2'})">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
                                         data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Electrical Tape',category:'General',unit:'roll',stock:2,cost:35,description:'PVC insulation electrical tape, black.',supplier:'Hardware Plus',location:'Shelf E-2'})">
+                                        onclick="loadEditMaterial({name:'Electrical Tape',image:'',category:'General',unit:'roll',stock:2,cost:35,description:'PVC insulation electrical tape, black.',supplier:'Hardware Plus',location:'Shelf E-2'})">
                                         <span class="material-symbols-outlined icon-action">edit</span>
                                     </button>
                                     <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
@@ -377,8 +503,12 @@
                 <div class="modal-body">
 
                     <div class="d-flex align-items-center gap-3 mb-4">
-                        <div class="mat-icon-circle mat-icon-circle-lg" id="vm-icon-wrap">
-                            <span class="material-symbols-outlined">inventory_2</span>
+                        <div class="mat-view-img-wrap">
+                            <img id="vm-image" src="" alt="" class="mat-view-img"
+                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                            <div class="mat-thumb-fallback mat-thumb-fallback-lg" id="vm-image-fallback" style="display:none;">
+                                <span class="material-symbols-outlined">image_not_supported</span>
+                            </div>
                         </div>
                         <div>
                             <p class="fw-semibold mb-0 fs-16" id="vm-name">—</p>
@@ -497,6 +627,19 @@
                             <label class="form-label small">Description</label>
                             <textarea id="edit-mat-description" class="form-control form-control-sm" rows="2"></textarea>
                         </div>
+                        <div class="col-12">
+                            <label class="form-label small">Item Photo</label>
+                            <div class="mat-upload-area" id="editUploadArea" onclick="document.getElementById('edit-mat-image').click()">
+                                <img id="editImagePreview" src="" alt="" class="mat-upload-preview" style="display:none;">
+                                <div id="editUploadPlaceholder">
+                                    <span class="material-symbols-outlined text-muted" style="font-size:32px;">add_photo_alternate</span>
+                                    <p class="small text-muted mb-0 mt-1">Click to replace photo</p>
+                                    <p class="text-muted mb-0" style="font-size:11px;">JPG, PNG — shown in quotations</p>
+                                </div>
+                                <input type="file" id="edit-mat-image" accept="image/*" class="d-none"
+                                    onchange="previewMatImage(this, 'editImagePreview', 'editUploadPlaceholder')">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -572,6 +715,19 @@
                         <div class="col-12">
                             <label class="form-label small">Description</label>
                             <textarea class="form-control form-control-sm" rows="2" placeholder="Brief description of the item..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small">Item Photo</label>
+                            <div class="mat-upload-area" id="addUploadArea" onclick="document.getElementById('add-mat-image').click()">
+                                <img id="addImagePreview" src="" alt="" class="mat-upload-preview" style="display:none;">
+                                <div id="addUploadPlaceholder">
+                                    <span class="material-symbols-outlined text-muted" style="font-size:32px;">add_photo_alternate</span>
+                                    <p class="small text-muted mb-0 mt-1">Click to upload item photo</p>
+                                    <p class="text-muted mb-0" style="font-size:11px;">JPG, PNG — shown in quotations</p>
+                                </div>
+                                <input type="file" id="add-mat-image" accept="image/*" class="d-none"
+                                    onchange="previewMatImage(this, 'addImagePreview', 'addUploadPlaceholder')">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -652,30 +808,19 @@
 
 @section('scripts')
     <script>
-        const catColors = {
-            'CCTV': {
-                bg: 'rgba(59,130,246,.12)',
-                border: '#3b82f6',
-                text: '#3b82f6'
-            },
-            'Solar': {
-                bg: 'rgba(22,162,73,.12)',
-                border: '#16A249',
-                text: '#16A249'
-            },
-            'PA System': {
-                bg: 'rgba(245,158,11,.12)',
-                border: '#f59e0b',
-                text: '#b45309'
-            },
-            'General': {
-                bg: 'rgba(107,114,128,.12)',
-                border: '#6b7280',
-                text: '#374151'
-            }
-        };
-
         function loadMaterial(d) {
+            const img      = document.getElementById('vm-image');
+            const fallback = document.getElementById('vm-image-fallback');
+
+            if (d.image) {
+                img.src = d.image;
+                img.style.display = '';
+                fallback.style.display = 'none';
+            } else {
+                img.style.display = 'none';
+                fallback.style.display = 'flex';
+            }
+
             document.getElementById('vm-name').textContent = d.name || '—';
             document.getElementById('vm-unit').textContent = d.unit || '—';
             document.getElementById('vm-stock').textContent = d.stock ?? '—';
@@ -683,16 +828,6 @@
             document.getElementById('vm-supplier').textContent = d.supplier || '—';
             document.getElementById('vm-location').textContent = d.location || '—';
             document.getElementById('vm-description').textContent = d.description || '—';
-
-            const parts = (d.name || '').trim().split(' ');
-            const initials = parts.length >= 2 ? parts[0][0] + parts[1][0] : (parts[0] ? parts[0][0] : '?');
-            const c = catColors[d.category] || catColors['General'];
-
-            const avatar = document.getElementById('vm-avatar');
-            avatar.textContent = initials.toUpperCase();
-            avatar.style.backgroundColor = c.bg;
-            avatar.style.border = `2px solid ${c.border}`;
-            avatar.style.color = c.text;
 
             const badge = document.getElementById('vm-category-badge');
             badge.textContent = d.category || '—';
@@ -722,6 +857,31 @@
             document.getElementById('edit-mat-supplier').value = d.supplier || '';
             document.getElementById('edit-mat-location').value = d.location || '';
             document.getElementById('edit-mat-description').value = d.description || '';
+
+            const preview     = document.getElementById('editImagePreview');
+            const placeholder = document.getElementById('editUploadPlaceholder');
+            if (d.image) {
+                preview.src = d.image;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+            } else {
+                preview.style.display = 'none';
+                placeholder.style.display = '';
+            }
+        }
+
+        function previewMatImage(input, previewId, placeholderId) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const preview     = document.getElementById(previewId);
+                const placeholder = document.getElementById(placeholderId);
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
         }
 
         $('#materialsTable').DataTable({

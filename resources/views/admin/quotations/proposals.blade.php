@@ -79,126 +79,172 @@
                                     <th class="w-70 text-end">QTY</th>
                                     <th class="w-90">Unit</th>
                                     <th>Description</th>
-                                    <th class="w-145 text-end">Unit Price (₱)</th>
+                                    <th class="w-145 text-end">Price (₱)</th>
                                     <th class="w-145 text-end">Total (₱)</th>
                                     <th class="w-40"></th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {{-- Camera --}}
                                 <tr>
                                     <td class="text-end">
-                                        <input type="number" class="form-control form-control-sm text-end" value="4"
+                                        <input type="number" class="form-control form-control-sm text-end" value="6"
                                             min="1">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control form-control-sm" value="pcs">
+                                        <div class="item-unit-cell">
+                                            <div class="item-thumb-wrap">
+                                                <img src="{{ asset('css/images/materials/ip-camera.jpg') }}"
+                                                    alt="CCTV Camera" class="item-thumb"
+                                                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                                <div class="item-thumb-fallback" style="display:none;">
+                                                    <span class="material-symbols-outlined">image_not_supported</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control form-control-sm"
-                                            value="IP Camera 4MP Outdoor">
+                                            value="CCTV System using Ultra HD DVR with Cloud and HD Camera — 2.8mm 3K 40mtrs IR Camera (Plastic) All Weather Condition, Hikvision Colorvu Colored Night">
                                     </td>
                                     <td class="text-end">
                                         <input type="number" class="form-control form-control-sm bg-light text-end pe-none"
-                                            value="3500" readonly>
+                                            value="3385" readonly>
                                     </td>
-                                    <td class="fw-medium align-middle text-end">₱14,000.00</td>
+                                    <td class="fw-medium align-middle text-end">₱20,310.00</td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-danger">
                                             <span class="material-symbols-outlined icon-action">delete</span>
                                         </button>
                                     </td>
                                 </tr>
+                                {{-- NVR/DVR --}}
                                 <tr>
                                     <td class="text-end">
                                         <input type="number" class="form-control form-control-sm text-end" value="1"
                                             min="1">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control form-control-sm" value="unit">
+                                        <div class="item-unit-cell">
+                                            <div class="item-thumb-wrap">
+                                                <img src="{{ asset('css/images/materials/nvr-8ch.jpg') }}"
+                                                    alt="Digital Video Recorder" class="item-thumb"
+                                                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                                <div class="item-thumb-fallback" style="display:none;">
+                                                    <span class="material-symbols-outlined">image_not_supported</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control form-control-sm"
-                                            value="8-Channel NVR Recorder">
+                                            value="16 Channel 8K Ultra HD Digital Video Recorder — Hikvision AcuSense Technology">
                                     </td>
                                     <td class="text-end">
                                         <input type="number" class="form-control form-control-sm bg-light text-end pe-none"
-                                            value="8500" readonly>
+                                            value="18890" readonly>
                                     </td>
-                                    <td class="fw-medium align-middle text-end">₱8,500.00</td>
+                                    <td class="fw-medium align-middle text-end">₱18,890.00</td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-danger">
                                             <span class="material-symbols-outlined icon-action">delete</span>
                                         </button>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td class="text-end">
-                                        <input type="number" class="form-control form-control-sm text-end" value="50"
-                                            min="1">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control form-control-sm" value="meters">
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control form-control-sm" value="CAT6 LAN Cable">
-                                    </td>
-                                    <td class="text-end">
-                                        <input type="number" class="form-control form-control-sm bg-light text-end pe-none"
-                                            value="45" readonly>
-                                    </td>
-                                    <td class="fw-medium align-middle text-end">₱2,250.00</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            <span class="material-symbols-outlined icon-action">delete</span>
-                                        </button>
-                                    </td>
-                                </tr>
+                                {{-- HDD --}}
                                 <tr>
                                     <td class="text-end">
                                         <input type="number" class="form-control form-control-sm text-end"
                                             value="1" min="1">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control form-control-sm" value="unit">
+                                        <div class="item-unit-cell">
+                                            <div class="item-thumb-wrap">
+                                                <img src="{{ asset('css/images/materials/hdd-2tb.jpg') }}"
+                                                    alt="Hard Disc Drive" class="item-thumb"
+                                                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                                <div class="item-thumb-fallback" style="display:none;">
+                                                    <span class="material-symbols-outlined">image_not_supported</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control form-control-sm"
-                                            value="2TB HDD Storage">
+                                            value="Hard Disc Drive 2TB">
                                     </td>
                                     <td class="text-end">
-                                        <input type="number" class="form-control form-control-sm bg-light text-end pe-none"
-                                            value="3800" readonly>
+                                        <input type="number"
+                                            class="form-control form-control-sm bg-light text-end pe-none" value="9975"
+                                            readonly>
                                     </td>
-                                    <td class="fw-medium align-middle text-end">₱3,800.00</td>
+                                    <td class="fw-medium align-middle text-end">₱9,975.00</td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-danger">
                                             <span class="material-symbols-outlined icon-action">delete</span>
                                         </button>
                                     </td>
                                 </tr>
+                                {{-- Cable (bundle, with photo — matches Camera/NVR/HDD rows) --}}
                                 <tr>
                                     <td class="text-end">
                                         <input type="number" class="form-control form-control-sm text-end"
-                                            value="4" min="1">
+                                            value="1.5" min="0" step="0.1">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control form-control-sm" value="pcs">
+                                        <div class="item-unit-cell">
+                                            <div class="item-thumb-wrap">
+                                                <img src="{{ asset('css/images/materials/cat6-cable.jpg') }}"
+                                                    alt="Cat6 Outdoor Cable" class="item-thumb"
+                                                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                                <div class="item-thumb-fallback" style="display:none;">
+                                                    <span class="material-symbols-outlined">image_not_supported</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control form-control-sm"
-                                            value="Camera Mounting Bracket">
+                                            value="Cat6 Outdoor PureCopper Cables">
                                     </td>
                                     <td class="text-end">
-                                        <input type="number" class="form-control form-control-sm bg-light text-end pe-none"
-                                            value="250" readonly>
+                                        <input type="number"
+                                            class="form-control form-control-sm bg-light text-end pe-none" value="14650"
+                                            readonly>
                                     </td>
-                                    <td class="fw-medium align-middle text-end">₱1,000.00</td>
+                                    <td class="fw-medium align-middle text-end">₱21,975.00</td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-danger">
                                             <span class="material-symbols-outlined icon-action">delete</span>
                                         </button>
                                     </td>
                                 </tr>
+                                {{-- Connectors/power supply (bundle, no photo) --}}
+                                <tr>
+                                    <td class="text-end">
+                                        <input type="number" class="form-control form-control-sm text-end"
+                                            value="6" min="1">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" value="bundle">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm"
+                                            value="DC Connectors, Video Balun, Big White Power Supply Box">
+                                    </td>
+                                    <td class="text-end">
+                                        <input type="number"
+                                            class="form-control form-control-sm bg-light text-end pe-none" value="975"
+                                            readonly>
+                                    </td>
+                                    <td class="fw-medium align-middle text-end">₱5,850.00</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <span class="material-symbols-outlined icon-action">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{-- Grouped accessories (lot, no photo) --}}
                                 <tr>
                                     <td class="text-end">
                                         <input type="number" class="form-control form-control-sm text-end"
@@ -209,13 +255,39 @@
                                     </td>
                                     <td>
                                         <input type="text" class="form-control form-control-sm"
-                                            value="Conduit Pipe and Accessories">
+                                            value="Accessories — stainless strap band, buckles, ties, 4-gang outlet, power cable, moldings, and other electrical supplies such as tape and clip">
                                     </td>
                                     <td class="text-end">
-                                        <input type="number" class="form-control form-control-sm bg-light text-end pe-none"
-                                            value="2500" readonly>
+                                        <input type="number"
+                                            class="form-control form-control-sm bg-light text-end pe-none" value="3500"
+                                            readonly>
                                     </td>
-                                    <td class="fw-medium align-middle text-end">₱2,500.00</td>
+                                    <td class="fw-medium align-middle text-end">₱3,500.00</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <span class="material-symbols-outlined icon-action">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{-- Labor / Installation --}}
+                                <tr class="labor-row">
+                                    <td class="text-end">
+                                        <input type="number" class="form-control form-control-sm text-end"
+                                            value="1" min="1">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" value="lot">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm"
+                                            value="Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY">
+                                    </td>
+                                    <td class="text-end">
+                                        <input type="number"
+                                            class="form-control form-control-sm bg-light text-end pe-none" value="24150"
+                                            readonly>
+                                    </td>
+                                    <td class="fw-medium align-middle text-end">₱24,150.00</td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-danger">
                                             <span class="material-symbols-outlined icon-action">delete</span>
@@ -224,16 +296,17 @@
                                 </tr>
                             </tbody>
                             <tfoot>
-                                <tr class="labor-row">
-                                    <td colspan="2" class="align-middle">
-                                        <span class="fw-semibold small text-muted">LABOR</span>
+                                <tr>
+                                    <td colspan="6" class="text-center p-1">
+                                        <p class="quote-inclusion-note mb-0">
+                                            Quoted Price with <span class="fw-bold">VALUE ADDED TAX</span> Inclusion
+                                        </p>
                                     </td>
-                                    <td class="align-middle small text-muted">Overall labor charge (% of subtotal)</td>
-                                    <td class="text-end">
-                                        <input type="text" class="form-control form-control-sm bg-light text-end pe-3 pe-none"
-                                            value="20%" readonly>
-                                    </td>
-                                    <td class="fw-medium align-middle text-end">₱6,410.00</td>
+                                </tr>
+                                <tr class="grand-total-row">
+                                    <td colspan="4" class="text-center"><span class="fw-bold text-center ps-5">ONE (1)
+                                            YEAR FULL WARRANTY</span></td>
+                                    <td class="fw-bold text-end">₱104,650.00</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -244,22 +317,6 @@
                         <span class="material-symbols-outlined fs-18">add</span>
                         Add Item
                     </button>
-
-                    <!-- Totals -->
-                    <div class="d-flex flex-column align-items-end mt-4 pt-3 border-top gap-1">
-                        <div class="d-flex justify-content-between totals-row small text-muted">
-                            <span>Subtotal</span>
-                            <span>₱32,050.00</span>
-                        </div>
-                        <div class="d-flex justify-content-between totals-row small text-muted">
-                            <span>Labor (20%)</span>
-                            <span>₱6,410.00</span>
-                        </div>
-                        <div class="d-flex justify-content-between totals-row mt-1 pt-2 border-top">
-                            <span class="fw-semibold">Grand Total</span>
-                            <span class="h5 green-text fw-semibold mb-0">₱38,460.00</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 

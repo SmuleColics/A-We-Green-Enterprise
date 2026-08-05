@@ -44,11 +44,68 @@
 #lineItemsTable tfoot td { font-size: 13px; padding-top: 10px; }
 
 /* =============================================
-   TOTALS ROW
+   LINE ITEM THUMBNAIL (Unit column)
    ============================================= */
-.totals-row {
-  width: 280px;
-  justify-content: space-between;
+.item-unit-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.item-thumb-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--light-bg);
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-thumb-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-text);
+}
+
+.item-thumb-fallback .material-symbols-outlined { font-size: 18px; }
+
+/* =============================================
+   LABOR / INSTALLATION ROW
+   ============================================= */
+.labor-row {
+  background: rgba(22, 162, 73, 0.04);
+}
+
+/* =============================================
+   GRAND TOTAL ROW (table tfoot)
+   ============================================= */
+.grand-total-row td {
+  background: rgba(22, 162, 73, 0.10);
+  color: var(--awg-primary-dark);
+  font-size: 14px;
+  padding: 12px;
+  border-top: 2px solid var(--awg-primary);
+}
+
+/* =============================================
+   QUOTE INCLUSION NOTE (VAT / Warranty)
+   ============================================= */
+.quote-inclusion-note {
+  font-size: 13px;
+  color: var(--body-text);
 }
 
 /* =============================================
