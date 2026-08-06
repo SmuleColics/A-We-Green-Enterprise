@@ -306,3 +306,8 @@
   font-size: .75rem;
   color: rgba(255,255,255,.5);
 }
+
+.was-validated .form-check-input:invalid ~ .form-check-label,
+.form-check-input.is-invalid ~ .form-check-label {
+    color: inherit;
+}

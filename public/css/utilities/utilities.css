@@ -311,3 +311,27 @@
 .dataTables_wrapper .dataTables_paginate .paginate_button {
   border-radius: 6px;
 }
+
+/* ---------- Disable Bootstrap's built-in validation icons ---------- */
+.was-validated .auth-input:invalid,
+.was-validated .auth-input:valid,
+.auth-input.is-invalid,
+.auth-input.is-valid {
+  background-image: none !important;
+  padding-right: 2.75rem !important;
+}
+
+#password.auth-input,
+#password_confirmation.auth-input {
+  padding-right: 2.75rem !important;
+}
+
+/* ---------- Fix invalid-feedback visibility when input sits inside a wrapper div ---------- */
+.was-validated .input-icon-wrap:has(:invalid) ~ .invalid-feedback,
+.input-icon-wrap:has(.is-invalid) ~ .invalid-feedback,
+.was-validated .auth-input:invalid ~ .invalid-feedback,
+.auth-input.is-invalid ~ .invalid-feedback,
+.was-validated .form-check:has(:invalid) ~ .invalid-feedback,
+.form-check:has(.is-invalid) ~ .invalid-feedback {
+  display: block;
+}

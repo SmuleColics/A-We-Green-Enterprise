@@ -90,16 +90,18 @@
         <h1 class="auth-title">Sign in to your account</h1>
         <p class="auth-subtitle">Enter your credentials to continue.</p>
 
-        <form class="mt-4" method="POST" action="">
+        <form class="mt-4 needs-validation" method="POST" action="{{ route('sign-in.store') }}" novalidate>
+          @csrf
 
           <!-- Email -->
           <div class="mb-3">
             <label for="email" class="form-label auth-label">Email address</label>
             <div class="input-icon-wrap">
               <i class="bi bi-envelope input-icon"></i>
-              <input id="email" name="email" type="email" class="form-control auth-input ps-input"
-                     placeholder="you@example.com" autocomplete="email" />
+              <input id="email" name="email" type="email" value="{{ old('email') }}" class="form-control auth-input ps-input"
+                    placeholder="you@example.com" autocomplete="email" required />
             </div>
+            <div class="invalid-feedback">Please enter a valid email address.</div>
           </div>
 
           <!-- Password -->
@@ -111,11 +113,12 @@
             <div class="input-icon-wrap">
               <i class="bi bi-lock input-icon"></i>
               <input id="password" name="password" type="password" class="form-control auth-input ps-input pe-input"
-                     placeholder="••••••••" autocomplete="current-password" />
+                    placeholder="••••••••" autocomplete="current-password" required />
               <button type="button" class="password-toggle" id="togglePassword" aria-label="Show password">
                 <i class="bi bi-eye" id="toggleIcon"></i>
               </button>
             </div>
+            <div class="invalid-feedback">Please enter your password.</div>
           </div>
 
           <!-- Remember me -->

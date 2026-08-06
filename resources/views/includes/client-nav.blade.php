@@ -97,7 +97,7 @@
                     <hr class="dropdown-divider">
                 </li>
                 <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2 text-danger" href="#">
+                    <a href="{{ route('landing-page') }}" class="dropdown-item d-flex align-items-center gap-2 text-danger" href="#">
                         <span class="material-symbols-outlined fs-6">logout</span> Logout
                     </a>
                 </li>

@@ -26,8 +26,8 @@ class HomeController extends Controller
     return view('home-page.forgot-password');
   }
 
-  public function showResetPassword()
+  public function showResetPassword(string $token)
   {
-    return view('home-page.reset-password');
+    return view('home-page.reset-password', ['token' => $token]);
   }
 }

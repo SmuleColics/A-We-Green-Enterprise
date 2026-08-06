@@ -34,7 +34,8 @@
             Join A We Green to manage your installations and assessments.
           </p>
 
-          <form class="mt-4" method="POST" action="">
+         <form class="mt-4 needs-validation" method="POST" action="{{ route('register.store') }}" novalidate>
+            @csrf
 
             <!-- First + Last name -->
             <div class="row g-3 mb-3">
@@ -42,12 +43,14 @@
                 <label for="firstName" class="form-label auth-label">First name</label>
                 <div class="input-icon-wrap">
                   <i class="bi bi-person input-icon"></i>
-                  <input id="firstName" name="first_name" type="text" class="form-control auth-input ps-input" placeholder="Juan" />
+                  <input id="firstName" name="first_name" type="text" value="{{ old('first_name') }}" class="form-control auth-input ps-input" placeholder="Juan" required />
                 </div>
+                <div class="invalid-feedback">Please enter your first name.</div>
               </div>
               <div class="col-sm-6">
                 <label for="lastName" class="form-label auth-label">Last name</label>
-                <input id="lastName" name="last_name" type="text" class="form-control auth-input" placeholder="Dela Cruz" />
+                <input id="lastName" name="last_name" type="text" value="{{ old('last_name') }}" class="form-control auth-input" placeholder="Dela Cruz" required />
+                <div class="invalid-feedback">Please enter your last name.</div>
               </div>
             </div>
 
@@ -56,39 +59,66 @@
               <label for="email" class="form-label auth-label">Email address</label>
               <div class="input-icon-wrap">
                 <i class="bi bi-envelope input-icon"></i>
-                <input id="email" name="email" type="email" class="form-control auth-input ps-input" placeholder="you@example.com" />
+                <input id="email" name="email" type="email" value="{{ old('email') }}" class="form-control auth-input ps-input" placeholder="you@example.com" required />
               </div>
+              <div class="invalid-feedback">Please enter a valid email address.</div>
             </div>
 
             <!-- Phone -->
             <div class="mb-3">
-              <label for="phone" class="form-label auth-label">Phone number</label>
+              <label for="phone" class="form-label auth-label">Phone Number</label>
+
               <div class="input-icon-wrap">
-                <i class="bi bi-telephone input-icon"></i>
-                <input id="phone" name="phone" type="tel" class="form-control auth-input ps-input" placeholder="(0917) 123-4567" />
+                  <i class="bi bi-telephone input-icon"></i>
+
+                  <input
+                      id="phone"
+                      name="contact_number"
+                      type="tel"
+                      class="form-control auth-input ps-input"
+                      value="{{ old('contact_number') }}"
+                      placeholder="09171234567"
+                      pattern="^09\d{9}$"
+                      required>
               </div>
-            </div>
+
+              <div class="invalid-feedback">
+                  Please enter a valid Philippine mobile number.
+              </div>
+          </div>
 
             <!-- Password -->
-            <div class="mb-4">
+            <div class="mb-3">
               <label for="password" class="form-label auth-label">Password</label>
               <div class="input-icon-wrap">
                 <i class="bi bi-lock input-icon"></i>
-                <input id="password" name="password" type="password" class="form-control auth-input ps-input pe-input" placeholder="At least 8 characters" />
+                <input id="password" name="password" type="password" class="form-control auth-input ps-input pe-input" placeholder="At least 8 characters" minlength="8" required />
                 <button type="button" class="password-toggle" id="togglePassword" aria-label="Show password">
                   <i class="bi bi-eye" id="toggleIcon"></i>
                 </button>
               </div>
+              <div class="invalid-feedback">Password must be at least 8 characters.</div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-4">
+              <label for="password_confirmation" class="form-label auth-label">Confirm password</label>
+              <div class="input-icon-wrap">
+                <i class="bi bi-lock input-icon"></i>
+                <input id="password_confirmation" name="password_confirmation" type="password" class="form-control auth-input ps-input" placeholder="Re-enter your password" required />
+              </div>
+              <div class="invalid-feedback">Please confirm your password.</div>
             </div>
 
             <!-- Terms -->
             <div class="mb-4">
               <div class="form-check auth-check">
-                <input class="form-check-input" type="checkbox" id="agreeTerms" name="agree_terms" />
+                <input class="form-check-input" type="checkbox" id="agreeTerms" name="agree_terms" required />
                 <label class="form-check-label auth-check-label" for="agreeTerms">
                   I agree to the <a href="#" class="auth-link" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a> and <a href="#" class="auth-link" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>.
                 </label>
               </div>
+              <div class="invalid-feedback">You must agree before creating an account.</div>
             </div>
 
             <button type="submit" class="btn w-100 auth-submit">Create Account</button>
