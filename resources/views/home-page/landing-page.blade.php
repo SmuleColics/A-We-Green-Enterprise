@@ -2,7 +2,7 @@
 
 @section('title', 'We Bring The Right Technology')
 
-@section('meta-description', 'Your trusted partner for CCTV, Solar Energy, Solar Street Lighting, and Public Address Systems since 2015.')
+@section('meta-description', 'Your trusted partner for CCTV, Solar Energy, Solar Street Lighting, and Public Address Systems since 2014.')
 
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/home-page/landing-page.css') }}" />
@@ -72,22 +72,22 @@
                 </span>
 
                 <!-- Headline -->
-                <h1 class="font-display fw-bolder mt-3 mb-4"
-                    style="font-size:clamp(2.25rem,5vw,4rem); line-height:1.05;">
+                <h1 class="font-display fw-bolder mt-3 mb-4 headline-title lh-105"
+                >
                     We Bring<br>
                     The <span class="text-accent-c">Right</span><br>
                     Technology
                 </h1>
 
                 <!-- Subtitle -->
-                <p class="mb-4 fs-18" style="color:rgba(255,255,255,.9); max-width:640px; line-height:1.7;">
+                <p class="mb-4 fs-18 label-text mw-640 lh-17">
                     Your trusted partner for CCTV, Solar Energy, Solar Street Lighting,
                     and Public Address Systems since 2014.
                 </p>
 
                 <!-- CTAs -->
                 <div class="d-flex flex-wrap gap-3 mb-5">
-                    <a href="#contact-location" class="btn btn-cta btn-cta-reg px-4 py-2 fs-6">
+                    <a href="{{ route('register') }}" class="btn btn-cta btn-cta-reg px-4 py-2 fs-6">
                         Schedule Free Assessment
                     </a>
                     <a href="#projects" class="btn btn-hero-outline px-4 py-2 fs-6">
@@ -103,19 +103,19 @@
                             <span class="stat-label">5,000+ Cameras Installed</span>
                         </div>
                     </div>
-                    <div class="col-6 col-sm-3" style="width: 180px;">
+                    <div class="col-6 col-sm-3 w-180">
                         <div class="hero-stat-card">
                             <i class="bi bi-lightbulb text-accent-c flex-shrink-0 mt-1 fs-20"></i>
                             <span class="stat-label">800+ Solar Street Lights</span>
                         </div>
                     </div>
-                    <div class="col-6 col-sm-3" style="width: 180px;">
+                    <div class="col-6 col-sm-3 w-180">
                         <div class="hero-stat-card">
                             <i class="bi bi-award text-accent-c flex-shrink-0 mt-1 fs-20"></i>
                             <span class="stat-label">12 Years of Excellence</span>
                         </div>
                     </div>
-                    <div class="col-6 col-sm-3" style="width: 180px;">
+                    <div class="col-6 col-sm-3 w-180">
                         <div class="hero-stat-card">
                             <i class="bi bi-building text-accent-c flex-shrink-0 mt-1 fs-20"></i>
                             <span class="stat-label">Government &amp; Private Trusted</span>
@@ -141,7 +141,7 @@
                             <i class="bi bi-calendar-check fs-5 fw-bold"></i>
                         </div>
                         <div>
-                            <div class="stat-value">Since 2015</div>
+                            <div class="stat-value">Since 2014</div>
                             <div class="stat-label-text">Years of Service</div>
                         </div>
                     </div>
@@ -481,9 +481,9 @@
         <div class="container">
 
             <div class="text-center mb-5 mx-auto mw-720">
-                <span class="section-eyebrow" style="color:var(--color-accent);">Featured Projects</span>
+                <span class="section-eyebrow text-acc-color">Featured Projects</span>
                 <h2 class="fw-bold fs-1 text-white font-display mb-3">See Our Work in Action</h2>
-                <p style="color:rgba(255,255,255,.7); font-size:1.0625rem;">
+                <p class="projects-text fs-17">
                     Real installations across Luzon — securing communities and powering progress.
                 </p>
             </div>
@@ -537,9 +537,9 @@
                 <div class="col-sm-6 col-lg-3 d-flex">
                     <article class="project-card w-100">
                         <div class="img-wrap">
-                            <img src="{{ asset('css/images/street-light.jpg') }}"
+                            <img class="img-wrap-src" src="{{ asset('css/images/street-light.jpg') }}"
                                 alt="Solar Street Lighting — Provincial Highway, Luzon" loading="lazy"
-                                style="object-position: center top;" />
+                                />
                         </div>
                         <div class="card-body">
                             <span class="project-tag">Public Works</span>
@@ -581,7 +581,7 @@
             </div>
 
             <div class="text-center mt-5">
-                <a href="#" class="btn btn-outline-light px-4 py-2 fw-semibold" style="border-radius:10px;">
+                <a href="{{ route('register') }}" class="btn btn-outline-light px-4 py-2 fw-semibold borr-10">
                     See More <i class="bi bi-arrow-right ms-1"></i>
                 </a>
             </div>
@@ -596,7 +596,7 @@
     <section id="testimonials" class="py-5 pad-y-5">
         <div class="container">
 
-            <div class="text-center mb-5 mx-auto" style="max-width:720px;">
+            <div class="text-center mb-5 mx-auto mw-720">
                 <span class="section-eyebrow">Testimonials</span>
                 <h2 class="section-title fs-1">What Our Clients Say</h2>
             </div>
@@ -676,7 +676,7 @@
                     <span class="section-eyebrow">
                         <span class="eyebrow-line"></span> Find Us
                     </span>
-                    <h2 class="section-title mb-2" style="font-size:clamp(1.75rem,3vw,2.75rem);">
+                    <h2 class="section-title mb-2 ofl-title">
                         Our <span class="text-primary-c">Office Location</span>
                     </h2>
                     <div class="accent-bar"></div>
@@ -696,10 +696,10 @@
 
                 <div class="col-lg-8">
                     <div class="map-wrapper">
-                        <iframe title="A We Green Enterprise office location"
+                        <iframe class="d-block border-0" title="A We Green Enterprise office location"
                             src="https://www.google.com/maps?q=Alta+Tierra+Homes+Phase+4+Blk+51+Lot+30+Brgy+A+Olaes+Gen+Mariano+Alvarez+Cavite+4117&output=embed"
                             width="100%" height="480" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                            style="border:0; display:block;">
+                            >
                         </iframe>
                     </div>
                 </div>
@@ -781,10 +781,10 @@
     <section id="cta-banner" class="py-5 pad-y-5">
         <div class="container cta-inner text-center text-white">
 
-            <h2 class="fw-bolder mx-auto mb-4 mw-720" style="font-size:clamp(1.75rem,4vw,3rem); line-height:1.2;">
+            <h2 class="fw-bolder mx-auto mb-4 mw-720 lh-12 section-title">
                 Ready to Secure and Power Your Property?
             </h2>
-            <p class="mb-4 mx-auto mw-600" style="font-size:1.0625rem; color:rgba(255,255,255,.85);">
+            <p class="mb-4 mx-auto mw-600 fs-17 label-text">
                 Schedule your free site assessment today. Our team will check your location and recommend the best
                 solution for your needs.
             </p>
@@ -796,7 +796,7 @@
                     </span>
                     <span class="btn-sub">0998 884 5671</span>
                 </a>
-                <a href="#contact-location" class="btn-outline-lg">
+                <a href="{{ route('sign-in') }}" class="btn-outline-lg">
                     <span class="btn-main">
                         <i class="bi bi-calendar-check-fill"></i> Schedule an Assessment
                     </span>
@@ -831,7 +831,7 @@
                     </div>
                     <p class="footer-desc">
                         We bring the right technology to communities — through CCTV, solar, and public address solutions
-                        since 2015.
+                        since 2014.
                     </p>
                     <div class="d-flex gap-2 mt-4">
                         <a href="#" aria-label="Facebook" class="footer-social-link">
@@ -895,7 +895,7 @@
             <div
                 class="container py-3 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
                 <p class="mb-0">© <span id="footer-year"></span> A We Green Enterprise. All rights reserved.</p>
-                <p class="mb-0">We bring the right technology to communities since 2015.</p>
+                <p class="mb-0">We bring the right technology to communities since 2014.</p>
             </div>
         </div>
     </footer>
@@ -935,7 +935,7 @@
                 navTogglerIcon.style.color = '#fff';
             }
         }
-
+ 
         window.addEventListener('scroll', handleScroll);
         handleScroll();
 

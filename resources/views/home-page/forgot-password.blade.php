@@ -82,12 +82,11 @@
 
                     <!-- Mobile logo -->
                     <div class="d-flex d-lg-none align-items-center gap-2 mb-4">
-                        <img class="hpx-40" src="{{ asset('css/images/AWeGreen-Logo.svg') }}" alt="A We Green Enterprise"
-                            >
+                        <img class="hpx-40" src="{{ asset('css/images/AWeGreen-Logo.svg') }}" alt="A We Green Enterprise">
                     </div>
 
                     <!-- ── STATE 1: REQUEST FORM (default view) ── -->
-                    <div id="fp-request-view">
+                    <div id="fp-request-view" @if (session('success')) class="d-none" @endif>
 
                         <div class="fp-icon-badge mb-3">
                             <span class="material-symbols-outlined">lock_reset</span>
@@ -97,20 +96,34 @@
                         <p class="auth-subtitle">No worries. Enter the email linked to your account and we'll send you a
                             reset link.</p>
 
-                        <form class="mt-4" method="" action="" id="fp-form">
+                        @if ($errors->any())
+                          <div class="alert alert-danger">
+                            <ul class="mb-0 ps-3">
+                              @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                              @endforeach
+                            </ul>
+                          </div>
+                        @endif
+
+                        <form class="mt-4 needs-validation" method="POST" action="{{ route('forgot-password.store') }}" id="fp-form" novalidate>
+                            @csrf
 
                             <!-- Email -->
                             <div class="mb-4">
                                 <label for="email" class="form-label auth-label">Email address</label>
                                 <div class="input-icon-wrap">
                                     <i class="bi bi-envelope input-icon"></i>
-                                    <input id="email" name="email" type="email"
+                                    <input id="email" name="email" type="email" value="{{ old('email') }}"
                                         class="form-control auth-input ps-input" placeholder="you@example.com"
-                                        autocomplete="email" />
+                                        autocomplete="email" required />
                                 </div>
+                                <div class="invalid-feedback">Please enter a valid email address.</div>
                             </div>
 
-                            <a href="{{ route('reset-password') }}" type="submit" class="btn w-100 auth-submit d-flex align-items-center justify-content-center">Send Reset Link</a>
+                            <button type="submit" class="btn w-100 auth-submit d-flex align-items-center justify-content-center">
+                                Send Reset Link
+                            </button>
 
                         </form>
 
@@ -122,7 +135,7 @@
                     </div>
 
                     <!-- ── STATE 2: CONFIRMATION (shown after submit) ── -->
-                    <div id="fp-sent-view" class="d-none">
+                    <div id="fp-sent-view" class="@unless (session('success')) d-none @endunless">
 
                         <div class="fp-icon-badge fp-icon-badge--success mb-3">
                             <span class="material-symbols-outlined">mark_email_read</span>
@@ -130,13 +143,13 @@
 
                         <h1 class="auth-title">Check your email</h1>
                         <p class="auth-subtitle">
-                            We've sent a password reset link to <strong id="fp-sent-email">your email</strong>.
+                            We've sent a password reset link to <strong id="fp-sent-email">{{ old('email', 'your email') }}</strong>.
                             The link will expire in 60 minutes.
                         </p>
 
                         <div class="fp-resend-box mt-4">
                             <p class="mb-2">Didn't get the email? Check your spam folder, or</p>
-                            <button type="button" class="btn-link-plain" id="fp-resend-btn">resend the link</button>
+                            <a href="{{ route('forgot-password') }}" class="btn-link-plain">try again</a>
                         </div>
 
                         <a href="{{ route('sign-in') }}"
@@ -158,28 +171,18 @@
     <script>
         document.getElementById('fp-year').textContent = new Date().getFullYear();
 
-        /*
-         * NOTE: This is presentation-only UI wiring for the "sent" state.
-         * The actual submit still POSTs to route('password.email') as normal
-         * — Laravel's password broker will redirect back with a status message
-         * on success/failure. This script only handles the optional visual
-         * swap if you want to show the confirmation view without a full
-         * page reload; remove it if you'd rather rely on the server redirect.
-         */
-        const form = document.getElementById('fp-form');
-        const requestView = document.getElementById('fp-request-view');
-        const sentView = document.getElementById('fp-sent-view');
-        const emailInput = document.getElementById('email');
-        const sentEmailLabel = document.getElementById('fp-sent-email');
-
-        @if (session('status'))
-            requestView.classList.add('d-none');
-            sentView.classList.remove('d-none');
-            sentEmailLabel.textContent = "{{ old('email') }}" || 'your email';
-        @endif
-
-        document.getElementById('fp-resend-btn')?.addEventListener('click', function() {
-            form.requestSubmit();
-        });
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
     </script>
 @endsection

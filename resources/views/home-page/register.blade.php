@@ -105,7 +105,10 @@
               <label for="password_confirmation" class="form-label auth-label">Confirm password</label>
               <div class="input-icon-wrap">
                 <i class="bi bi-lock input-icon"></i>
-                <input id="password_confirmation" name="password_confirmation" type="password" class="form-control auth-input ps-input" placeholder="Re-enter your password" required />
+                <input id="password_confirmation" name="password_confirmation" type="password" class="form-control auth-input ps-input pe-input" placeholder="Re-enter your password" required />
+                <button type="button" class="password-toggle" id="toggleConfirmPassword" aria-label="Show password">
+                  <i class="bi bi-eye" id="toggleConfirmIcon"></i>
+                </button>
               </div>
               <div class="invalid-feedback">Please confirm your password.</div>
             </div>
@@ -309,6 +312,7 @@
   <script>
     document.getElementById('reg-year').textContent = new Date().getFullYear();
 
+    /* Password toggle — main password field */
     const toggleBtn = document.getElementById('togglePassword');
     const toggleIcon = document.getElementById('toggleIcon');
     const pwInput = document.getElementById('password');
@@ -318,6 +322,18 @@
       pwInput.type = isPassword ? 'text' : 'password';
       toggleIcon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
       toggleBtn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+    });
+
+    /* Password toggle — confirm password field */
+    const toggleConfirmBtn = document.getElementById('toggleConfirmPassword');
+    const toggleConfirmIcon = document.getElementById('toggleConfirmIcon');
+    const pwConfirmInput = document.getElementById('password_confirmation');
+
+    toggleConfirmBtn.addEventListener('click', () => {
+      const isPassword = pwConfirmInput.type === 'password';
+      pwConfirmInput.type = isPassword ? 'text' : 'password';
+      toggleConfirmIcon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
+      toggleConfirmBtn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
     });
   </script>
 @endsection

@@ -20,6 +20,8 @@
   --light-bg: #e9ecef;              /* ← light gray backgrounds */
   --labor-bg: #f8f9fa;
   --dark-blue: #374151;
+  --label-color: #FFFFFFD9;
+  --projects-text: #FFFFFFB3;
 }
 
 /* =============================================
@@ -42,9 +44,9 @@
    line height
    ============================================= */
 
-.lh-17 {
-  line-height: 1.7;
-}
+.lh-17 { line-height: 1.7 !important; }
+.lh-105 { line-height: 1.05 !important; }
+.lh-12 { line-height: 1.2 !important; }
 
 /* =============================================
    TEXT COLOR
@@ -57,8 +59,11 @@
   color: var(--dark-blue) !important;
 }
 
-.muted-text { color: var(--muted-text); }
+.muted-text { color: var(--muted-text) !important; }
 
+.label-text { color: var(--label-color) !important;}
+
+.projects-text { color: var(--label-color) !important;}
 /* =============================================
    WIDTHS
    ============================================= */
@@ -72,6 +77,7 @@
 .w-180 { width: 180px !important; }
 
 .mw-720 { max-width: 720px !important; }
+.mw-640 { max-width: 640px !important; }
 .mw-600 { max-width: 600px !important; }
 .mw-500 { max-width: 500px !important; }
 
@@ -102,7 +108,7 @@
 }
 
 .borr-10 {
-  border-radius: 10px;
+  border-radius: 10px !important;
 }
 
 /* =============================================
@@ -113,17 +119,17 @@
 }
 
 .bg-awg-light {
-  background-color: var(--awg-light);
+  background-color: var(--awg-light) !important;
 }
 
 .bg-labor {
-  background-color: var(--labor-bg);
+  background-color: var(--labor-bg) !important;
 }
 
 /* =============================================
    POINTER EVENTS
    ============================================= */
-.pe-none { pointer-events: none; }
+.pe-none { pointer-events: none !important; }
 
 /* =============================================
    BADGES
