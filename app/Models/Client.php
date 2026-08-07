@@ -28,9 +28,9 @@ class Client extends Model
     // ── ID Generator ──
     public static function generateClientId(): string
     {
-        $year  = now()->year;
+        $year = now()->year;
         $count = self::whereYear('created_at', $year)->count() + 1;
 
-        return "CLT-{$year}-" . str_pad($count, 3, '0', STR_PAD_LEFT);
+        return "CLT-{$year}-".str_pad($count, 3, '0', STR_PAD_LEFT);
     }
 }

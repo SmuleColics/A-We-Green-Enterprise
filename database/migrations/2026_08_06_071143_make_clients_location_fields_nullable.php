@@ -10,13 +10,13 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::table('clients', function (Blueprint $table) {
-        $table->string('barangay')->nullable()->change();
-        $table->string('province')->nullable()->change();
-        $table->string('city')->nullable()->change();
-    });
-}
+    {
+        Schema::table('clients', function (Blueprint $table) {
+            $table->string('barangay')->nullable()->change();
+            $table->string('province')->nullable()->change();
+            $table->string('city')->nullable()->change();
+        });
+    }
 
     public function down(): void
     {

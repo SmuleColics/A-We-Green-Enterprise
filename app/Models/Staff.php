@@ -40,16 +40,16 @@ class Staff extends Model
         $year = now()->year;
 
         $prefix = match ($role) {
-            User::ROLE_EMPLOYEE    => 'EMP',
-            User::ROLE_SECRETARY   => 'SEC',
-            User::ROLE_ADMIN       => 'ADM',
-            default                => 'STF',
+            User::ROLE_EMPLOYEE => 'EMP',
+            User::ROLE_SECRETARY => 'SEC',
+            User::ROLE_ADMIN => 'ADM',
+            default => 'STF',
         };
 
         $count = self::whereYear('created_at', $year)
             ->where('staff_id', 'like', "{$prefix}-%")
             ->count() + 1;
 
-        return "{$prefix}-{$year}-" . str_pad($count, 3, '0', STR_PAD_LEFT);
+        return "{$prefix}-{$year}-".str_pad($count, 3, '0', STR_PAD_LEFT);
     }
 }

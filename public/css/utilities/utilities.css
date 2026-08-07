@@ -9,15 +9,21 @@
   --awg-primary-dark: #128a3d;
   --awg-primary-light: rgba(255, 255, 255, 0.12);
   --awg-light: #f4f2ef;
-  --awg-green-hover: #f0faf4;       /* ← light green hover bg on buttons */
+  --awg-green-hover: #f0faf4;
+  /* ← light green hover bg on buttons */
   --sb-width: 240px;
   --text-muted: rgba(255, 255, 255, 0.75);
   --white-text: #ffffff;
-  --body-text: #212529;             /* ← dark text used everywhere */
-  --muted-text: #6c757d;            /* ← secondary/muted text */
-  --border-color: #dee2e6;          /* ← standard border */
-  --input-text: #495057;            /* ← form/filter text */
-  --light-bg: #e9ecef;              /* ← light gray backgrounds */
+  --body-text: #212529;
+  /* ← dark text used everywhere */
+  --muted-text: #6c757d;
+  /* ← secondary/muted text */
+  --border-color: #dee2e6;
+  /* ← standard border */
+  --input-text: #495057;
+  /* ← form/filter text */
+  --light-bg: #e9ecef;
+  /* ← light gray backgrounds */
   --labor-bg: #f8f9fa;
   --dark-blue: #374151;
   --label-color: #FFFFFFD9;
@@ -27,26 +33,69 @@
 /* =============================================
    TYPOGRAPHY
    ============================================= */
-.fs-46 { font-size: 46px !important; }
-.fs-42 { font-size: 42px !important; }
-.fs-40 { font-size: 40px !important; }
-.fs-22 { font-size: 22px !important; }
-.fs-20 { font-size: 20px !important; }
-.fs-18 { font-size: 18px !important; }
-.fs-17 { font-size: 17px !important; }
-.fs-16 { font-size: 16px !important; }
-.fs-15 { font-size: 15px !important; }
-.fs-14 { font-size: 14px !important; }
-.fs-12 { font-size: 12px !important; }
-.fs-11 { font-size: 11px !important; }
+.fs-46 {
+  font-size: 46px !important;
+}
+
+.fs-42 {
+  font-size: 42px !important;
+}
+
+.fs-40 {
+  font-size: 40px !important;
+}
+
+.fs-22 {
+  font-size: 22px !important;
+}
+
+.fs-20 {
+  font-size: 20px !important;
+}
+
+.fs-18 {
+  font-size: 18px !important;
+}
+
+.fs-17 {
+  font-size: 17px !important;
+}
+
+.fs-16 {
+  font-size: 16px !important;
+}
+
+.fs-15 {
+  font-size: 15px !important;
+}
+
+.fs-14 {
+  font-size: 14px !important;
+}
+
+.fs-12 {
+  font-size: 12px !important;
+}
+
+.fs-11 {
+  font-size: 11px !important;
+}
 
 /* =============================================
    line height
    ============================================= */
 
-.lh-17 { line-height: 1.7 !important; }
-.lh-105 { line-height: 1.05 !important; }
-.lh-12 { line-height: 1.2 !important; }
+.lh-17 {
+  line-height: 1.7 !important;
+}
+
+.lh-105 {
+  line-height: 1.05 !important;
+}
+
+.lh-12 {
+  line-height: 1.2 !important;
+}
 
 /* =============================================
    TEXT COLOR
@@ -59,47 +108,123 @@
   color: var(--dark-blue) !important;
 }
 
-.muted-text { color: var(--muted-text) !important; }
+.muted-text {
+  color: var(--muted-text) !important;
+}
 
-.label-text { color: var(--label-color) !important;}
+.label-text {
+  color: var(--label-color) !important;
+}
 
-.projects-text { color: var(--label-color) !important;}
+.projects-text {
+  color: var(--label-color) !important;
+}
+
 /* =============================================
    WIDTHS
    ============================================= */
 
 
-.w-40 { width: 40px !important; }
-.w-70 { width: 70px !important; }
-.w-90 { width: 90px !important; }
-.w-140 { width: 140px !important; }
-.w-145 { width: 145px !important; }
-.w-180 { width: 180px !important; }
+.w-40 {
+  width: 40px !important;
+}
 
-.mw-720 { max-width: 720px !important; }
-.mw-640 { max-width: 640px !important; }
-.mw-600 { max-width: 600px !important; }
-.mw-500 { max-width: 500px !important; }
+.w-70 {
+  width: 70px !important;
+}
+
+.w-90 {
+  width: 90px !important;
+}
+
+.w-140 {
+  width: 140px !important;
+}
+
+.w-145 {
+  width: 145px !important;
+}
+
+.w-180 {
+  width: 180px !important;
+}
+
+.mw-720 {
+  max-width: 720px !important;
+}
+
+.mw-640 {
+  max-width: 640px !important;
+}
+
+.mw-600 {
+  max-width: 600px !important;
+}
+
+.mw-500 {
+  max-width: 500px !important;
+}
 
 /* width percentage */
-.wp-10 { width: 10% !important; }
-.wp-15 { width: 15% !important; }
-.wp-20 { width: 20% !important; }
-.wp-30 { width: 30% !important; }
-.wp-40 { width: 40% !important; }
-.wp-55 { width: 55% !important; }
-.wp-65 { width: 65% !important; }
-.wp-100 { width: 100% !important; }
+.wp-10 {
+  width: 10% !important;
+}
+
+.wp-15 {
+  width: 15% !important;
+}
+
+.wp-20 {
+  width: 20% !important;
+}
+
+.wp-30 {
+  width: 30% !important;
+}
+
+.wp-40 {
+  width: 40% !important;
+}
+
+.wp-55 {
+  width: 55% !important;
+}
+
+.wp-65 {
+  width: 65% !important;
+}
+
+.wp-100 {
+  width: 100% !important;
+}
+
 /* =============================================
    HEIGHTS
    ============================================= */
-.mh-400 { max-height: 400px !important; }
+.mh-400 {
+  max-height: 400px !important;
+}
 
-.hpx-6 { height: 6px !important;}
-.hpx-40 { height: 40px !important;}
-.hpx-50 { height: 50px !important;}
-.hpx-200 { height: 200px !important;}
-.hpx-260 { height: 260px !important;}
+.hpx-6 {
+  height: 6px !important;
+}
+
+.hpx-40 {
+  height: 40px !important;
+}
+
+.hpx-50 {
+  height: 50px !important;
+}
+
+.hpx-200 {
+  height: 200px !important;
+}
+
+.hpx-260 {
+  height: 260px !important;
+}
+
 /* =============================================
    BORDERS
    ============================================= */
@@ -129,7 +254,9 @@
 /* =============================================
    POINTER EVENTS
    ============================================= */
-.pe-none { pointer-events: none !important; }
+.pe-none {
+  pointer-events: none !important;
+}
 
 /* =============================================
    BADGES
@@ -324,7 +451,6 @@
 .auth-input.is-invalid,
 .auth-input.is-valid {
   background-image: none !important;
-  padding-right: 2.75rem !important;
 }
 
 #password.auth-input,
@@ -333,11 +459,11 @@
 }
 
 /* ---------- Fix invalid-feedback visibility when input sits inside a wrapper div ---------- */
-.was-validated .input-icon-wrap:has(:invalid) ~ .invalid-feedback,
-.input-icon-wrap:has(.is-invalid) ~ .invalid-feedback,
-.was-validated .auth-input:invalid ~ .invalid-feedback,
-.auth-input.is-invalid ~ .invalid-feedback,
-.was-validated .form-check:has(:invalid) ~ .invalid-feedback,
-.form-check:has(.is-invalid) ~ .invalid-feedback {
+.was-validated .input-icon-wrap:has(:invalid)~.invalid-feedback,
+.input-icon-wrap:has(.is-invalid)~.invalid-feedback,
+.was-validated .auth-input:invalid~.invalid-feedback,
+.auth-input.is-invalid~.invalid-feedback,
+.was-validated .form-check:has(:invalid)~.invalid-feedback,
+.form-check:has(.is-invalid)~.invalid-feedback {
   display: block;
 }

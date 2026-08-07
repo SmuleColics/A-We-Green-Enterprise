@@ -2,32 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class HomeController extends Controller
 {
-  public function showLandingPage()
-  {
-    return view('home-page.landing-page');
-  }
+    public function showLandingPage()
+    {
+        return view('home-page.landing-page');
+    }
 
-  public function showSignIn()
-  {
-    return view('home-page.sign-in');
-  }
+    public function showSignIn()
+    {
+        return view('home-page.sign-in');
+    }
 
-  public function showRegister()
-  {
-    return view('home-page.register');
-  }
+    public function showRegister()
+    {
+        return view('home-page.register');
+    }
 
-  public function showForgotPassword()
-  {
-    return view('home-page.forgot-password');
-  }
+    public function showForgotPassword()
+    {
+        return view('home-page.forgot-password');
+    }
 
-  public function showResetPassword(string $token)
-  {
-    return view('home-page.reset-password', ['token' => $token]);
-  }
+    public function showResetPassword()
+    {
+        return view('home-page.reset-password');
+    }
 }

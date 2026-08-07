@@ -96,17 +96,8 @@
                         <p class="auth-subtitle">No worries. Enter the email linked to your account and we'll send you a
                             reset link.</p>
 
-                        @if ($errors->any())
-                          <div class="alert alert-danger">
-                            <ul class="mb-0 ps-3">
-                              @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                              @endforeach
-                            </ul>
-                          </div>
-                        @endif
-
-                        <form class="mt-4 needs-validation" method="POST" action="{{ route('forgot-password.store') }}" id="fp-form" novalidate>
+                        <form class="mt-4 needs-validation" method="POST" action="{{ route('forgot-password.store') }}"
+                            id="fp-form" novalidate>
                             @csrf
 
                             <!-- Email -->
@@ -121,7 +112,8 @@
                                 <div class="invalid-feedback">Please enter a valid email address.</div>
                             </div>
 
-                            <button type="submit" class="btn w-100 auth-submit d-flex align-items-center justify-content-center">
+                            <button type="submit"
+                                class="btn w-100 auth-submit d-flex align-items-center justify-content-center">
                                 Send Reset Link
                             </button>
 
@@ -143,7 +135,8 @@
 
                         <h1 class="auth-title">Check your email</h1>
                         <p class="auth-subtitle">
-                            We've sent a password reset link to <strong id="fp-sent-email">{{ old('email', 'your email') }}</strong>.
+                            We've sent a password reset link to <strong
+                                id="fp-sent-email">{{ old('email', 'your email') }}</strong>.
                             The link will expire in 60 minutes.
                         </p>
 

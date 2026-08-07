@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
-    const POSITION_DRIVER            = 'driver';
-    const POSITION_TECHNICIAN        = 'technician';
+    const POSITION_DRIVER = 'driver';
+
+    const POSITION_TECHNICIAN = 'technician';
+
     const POSITION_DRIVER_TECHNICIAN = 'driver_technician';
 
     protected $fillable = [

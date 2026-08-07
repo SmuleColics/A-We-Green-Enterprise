@@ -10,10 +10,14 @@ class User extends Authenticatable
     use Notifiable;
 
     // ── Role Constants ──
-    const ROLE_CLIENT      = 'client';
-    const ROLE_EMPLOYEE    = 'employee';
-    const ROLE_SECRETARY   = 'secretary';
-    const ROLE_ADMIN       = 'admin';
+    const ROLE_CLIENT = 'client';
+
+    const ROLE_EMPLOYEE = 'employee';
+
+    const ROLE_SECRETARY = 'secretary';
+
+    const ROLE_ADMIN = 'admin';
+
     const ROLE_SUPER_ADMIN = 'super_admin';
 
     protected $fillable = [
@@ -33,7 +37,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password'          => 'hashed',
+        'password' => 'hashed',
     ];
 
     // ── Accessors ──
@@ -44,15 +48,34 @@ class User extends Authenticatable
 
     public function getInitialsAttribute(): string
     {
-        return strtoupper(substr($this->first_name, 0, 1) . substr($this->last_name, 0, 1));
+        return strtoupper(substr($this->first_name, 0, 1).substr($this->last_name, 0, 1));
     }
 
     // ── Role Helpers ──
-    public function isClient(): bool      { return $this->role === self::ROLE_CLIENT; }
-    public function isEmployee(): bool    { return $this->role === self::ROLE_EMPLOYEE; }
-    public function isSecretary(): bool   { return $this->role === self::ROLE_SECRETARY; }
-    public function isAdmin(): bool       { return $this->role === self::ROLE_ADMIN; }
-    public function isSuperAdmin(): bool  { return $this->role === self::ROLE_SUPER_ADMIN; }
+    public function isClient(): bool
+    {
+        return $this->role === self::ROLE_CLIENT;
+    }
+
+    public function isEmployee(): bool
+    {
+        return $this->role === self::ROLE_EMPLOYEE;
+    }
+
+    public function isSecretary(): bool
+    {
+        return $this->role === self::ROLE_SECRETARY;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
+    }
 
     public function isStaff(): bool
     {

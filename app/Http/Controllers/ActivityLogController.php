@@ -12,19 +12,19 @@ class ActivityLogController extends Controller
         string $module,
         string $action,
         string $description,
-        ?int   $userId   = null,
+        ?int $userId = null,
         ?string $userName = null
     ): void {
-        $user     = $userId   ?? (auth()->check() ? auth()->id()             : null);
+        $user = $userId ?? (auth()->check() ? auth()->id() : null);
         $fullName = $userName ?? (auth()->check() ? auth()->user()->full_name : 'Unknown');
 
         ActivityLog::create([
-            'user_id'     => $user,
-            'user_name'   => $fullName,
-            'module'      => $module,
-            'action'      => $action,
+            'user_id' => $user,
+            'user_name' => $fullName,
+            'module' => $module,
+            'action' => $action,
             'description' => $description,
-            'ip_address'  => request()->ip(),
+            'ip_address' => request()->ip(),
         ]);
     }
 
@@ -35,8 +35,8 @@ class ActivityLogController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        $totalToday  = ActivityLog::active()->today()->count();
-        $totalLogs   = ActivityLog::active()->count();
+        $totalToday = ActivityLog::active()->today()->count();
+        $totalLogs = ActivityLog::active()->count();
         $activeUsers = ActivityLog::active()
             ->today()
             ->whereNotNull('user_id')
@@ -63,7 +63,7 @@ class ActivityLogController extends Controller
             'older_than' => 'required|in:30,60,90,180,365',
         ]);
 
-        $days   = (int) $request->older_than;
+        $days = (int) $request->older_than;
         $cutoff = now()->subDays($days);
 
         $affected = ActivityLog::active()

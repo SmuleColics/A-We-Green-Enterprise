@@ -2,155 +2,151 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class AdminController extends Controller
 {
-  public function showDashboard()
-  {
-    return view('admin.dashboard');
-  }
+    public function showDashboard()
+    {
+        return view('admin.dashboard');
+    }
 
-  // ASSESSMENT
-  public function showAssessments()
-  {
-    return view('admin.assessments.assessments');
-  }
+    // ASSESSMENT
+    public function showAssessments()
+    {
+        return view('admin.assessments.assessments');
+    }
 
-  public function showArchiveAssessments()
-  {
-    return view('admin.assessments.archive-assessments');
-  }
+    public function showArchiveAssessments()
+    {
+        return view('admin.assessments.archive-assessments');
+    }
 
-  public function showAssessmentRequests()
-  {
-    return view('admin.assessments.requests');
-  }
+    public function showAssessmentRequests()
+    {
+        return view('admin.assessments.requests');
+    }
 
-  public function showArchiveAssessmentRequests()
-  {
-    return view('admin.assessments.archive-requests');
-  }
+    public function showArchiveAssessmentRequests()
+    {
+        return view('admin.assessments.archive-requests');
+    }
 
-  public function showAssessmentForms()
-  {
-    return view('admin.assessments.forms');
-  }
+    public function showAssessmentForms()
+    {
+        return view('admin.assessments.forms');
+    }
 
-  // QUOTATION
-  public function showQuotations()
-  {
-    return view('admin.quotations.quotations');
-  }
+    // QUOTATION
+    public function showQuotations()
+    {
+        return view('admin.quotations.quotations');
+    }
 
-  public function showArchiveQuotations()
-  {
-    return view('admin.quotations.archive-quotations');
-  }
-  
-  public function showQuotationProposals()
-  {
-    return view('admin.quotations.proposals');
-  }
+    public function showArchiveQuotations()
+    {
+        return view('admin.quotations.archive-quotations');
+    }
 
-  // TASKS
-  public function showTasks()
-  {
-    return view('admin.tasks.tasks');
-  }
+    public function showQuotationProposals()
+    {
+        return view('admin.quotations.proposals');
+    }
 
-  public function showArchiveTasks()
-  {
-    return view('admin.tasks.archive-tasks');
-  }
+    // TASKS
+    public function showTasks()
+    {
+        return view('admin.tasks.tasks');
+    }
 
-  // PROJECTS
-  public function showProjects()
-  {
-    return view('admin.projects.projects');
-  }
+    public function showArchiveTasks()
+    {
+        return view('admin.tasks.archive-tasks');
+    }
 
-  public function showArchiveProjects()
-  {
-    return view('admin.projects.archive-projects');
-  }
+    // PROJECTS
+    public function showProjects()
+    {
+        return view('admin.projects.projects');
+    }
 
-  public function showMonitoring()
-  {
-    return view('admin.projects.monitoring');
-  }
+    public function showArchiveProjects()
+    {
+        return view('admin.projects.archive-projects');
+    }
 
-  // CHECKLISTS
+    public function showMonitoring()
+    {
+        return view('admin.projects.monitoring');
+    }
 
-  public function showChecklists()
-  {
-    return view('admin.checklists.checklists');
-  }
+    // CHECKLISTS
 
-  public function showArchiveChecklists()
-  {
-    return view('admin.checklists.archive-checklists');
-  }
+    public function showChecklists()
+    {
+        return view('admin.checklists.checklists');
+    }
 
-  // REPORTS
+    public function showArchiveChecklists()
+    {
+        return view('admin.checklists.archive-checklists');
+    }
 
-  public function showReports()
-  {
-    return view('admin.reports.reports');
-  }
+    // REPORTS
 
-  // EMPLOYEES
+    public function showReports()
+    {
+        return view('admin.reports.reports');
+    }
 
-  public function showEmployees()
-  {
-    return view('admin.employees.employees');
-  }
+    // EMPLOYEES
 
-  public function showArchiveEmployees()
-  {
-    return view('admin.employees.archive-employees');
-  }
+    public function showEmployees()
+    {
+        return view('admin.employees.employees');
+    }
 
-  // CLIENTS
+    public function showArchiveEmployees()
+    {
+        return view('admin.employees.archive-employees');
+    }
 
-  public function showClients()
-  {
-    return view('admin.clients.clients');
-  }
+    // CLIENTS
 
-  public function showArchiveClients()
-  {
-    return view('admin.clients.archive-clients');
-  }
+    public function showClients()
+    {
+        return view('admin.clients.clients');
+    }
 
-  // MATERIALS
+    public function showArchiveClients()
+    {
+        return view('admin.clients.archive-clients');
+    }
 
-  public function showMaterials()
-  {
-    return view('admin.materials.materials');
-  }
+    // MATERIALS
 
-  public function showArchiveMaterials()
-  {
-    return view('admin.materials.archive-materials');
-  }
+    public function showMaterials()
+    {
+        return view('admin.materials.materials');
+    }
 
-  // SYSTEM SETTINGS
+    public function showArchiveMaterials()
+    {
+        return view('admin.materials.archive-materials');
+    }
 
-  public function showAdminSettings()
-  {
-    return view('admin.admin-settings');
-  }
+    // SYSTEM SETTINGS
 
-  public function showAdminActivityLogs()
-  {
-    return view('admin.admin-activity-logs');
-  }
+    public function showAdminSettings()
+    {
+        return view('admin.admin-settings');
+    }
 
-  public function showAdminProfile()
-  {
-    return view('admin.admin-profile');
-  }
+    public function showAdminActivityLogs()
+    {
+        return view('admin.admin-activity-logs');
+    }
 
-
+    public function showAdminProfile()
+    {
+        return view('admin.admin-profile');
+    }
 }
