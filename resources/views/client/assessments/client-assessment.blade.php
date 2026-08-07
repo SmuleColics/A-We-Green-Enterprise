@@ -20,12 +20,14 @@
             <div class="d-flex align-items-center mb-3 mt-4" style="margin-top:-1rem;">
                 <ul class="nav nav-tabs border-0" id="mainTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="book-tab" data-bs-toggle="tab" data-bs-target="#book-view" type="button">
+                        <button class="nav-link @if (!request('tab')) active @endif" id="book-tab"
+                            data-bs-toggle="tab" data-bs-target="#book-view" type="button">
                             Book Assessment
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history-view" type="button">
+                        <button class="nav-link @if (request('tab') === 'history') active @endif" id="history-tab"
+                            data-bs-toggle="tab" data-bs-target="#history-view" type="button">
                             My Requests
                         </button>
                     </li>
@@ -70,7 +72,8 @@
                         <div class="card border-0 shadow-sm">
                             <div class="card-body p-4">
                                 <h5 class="fw-semibold mb-1">Who are you?</h5>
-                                <p class="text-muted small mb-4">This helps us check the right schedule availability for your assessment.</p>
+                                <p class="text-muted small mb-4">This helps us check the right schedule availability for
+                                    your assessment.</p>
 
                                 <span class="section-label">Client Type</span>
                                 <div class="row g-3 mb-4">
@@ -110,7 +113,8 @@
                                 </div>
 
                                 <div class="d-flex justify-content-end">
-                                    <button class="btn btn-success btn-sm px-4 d-flex align-items-center gap-1" onclick="goStep(2)">
+                                    <button class="btn btn-success btn-sm px-4 d-flex align-items-center gap-1"
+                                        onclick="goStep(2)">
                                         Next <span class="material-symbols-outlined fs-15">arrow_forward</span>
                                     </button>
                                 </div>
@@ -189,7 +193,8 @@
                                     <div class="calendar-date">14</div>
                                 </div>
 
-                                <div class="calendar-cell today partial" id="mar15" onclick="handleMar15(this,'Mar 15, 2026')">
+                                <div class="calendar-cell today partial" id="mar15"
+                                    onclick="handleMar15(this,'Mar 15, 2026')">
                                     <div class="calendar-date" style="color:#fff;">15</div>
                                     <span class="calendar-slot-badge">AM — Pedro</span>
                                 </div>
@@ -251,16 +256,19 @@
 
                             <div class="d-flex flex-wrap gap-3 mt-3 pt-2" style="font-size:.75rem; color:#555;">
                                 <div class="d-flex align-items-center gap-1">
-                                    <div class="legend-dot" style="background:#fff;border:1px solid #dee2e6;"></div> Available
+                                    <div class="legend-dot" style="background:#fff;border:1px solid #dee2e6;"></div>
+                                    Available
                                 </div>
                                 <div class="d-flex align-items-center gap-1">
                                     <div class="legend-dot" style="background:#e0f7fa;"></div> Partially Booked
                                 </div>
                                 <div class="d-flex align-items-center gap-1">
-                                    <div class="legend-dot" style="background:#f0f0f0;border:1px solid #dee2e6;"></div> Fully Booked
+                                    <div class="legend-dot" style="background:#f0f0f0;border:1px solid #dee2e6;"></div>
+                                    Fully Booked
                                 </div>
                                 <div class="d-flex align-items-center gap-1">
-                                    <div class="legend-dot" style="background:#f8f9fa;border:1px solid #dee2e6;"></div> Not Available
+                                    <div class="legend-dot" style="background:#f8f9fa;border:1px solid #dee2e6;"></div>
+                                    Not Available
                                 </div>
                                 <div class="d-flex align-items-center gap-1">
                                     <div class="legend-dot" style="background:var(--awg-primary);"></div> Today
@@ -268,10 +276,12 @@
                             </div>
 
                             <div class="d-flex align-items-center justify-content-between mt-4">
-                                <button class="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1" onclick="goStep(1)">
+                                <button class="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1"
+                                    onclick="goStep(1)">
                                     <span class="material-symbols-outlined fs-15">arrow_back</span> Back
                                 </button>
-                                <p class="text-muted small mb-0 fst-italic" id="selected-date-label">No date selected yet.</p>
+                                <p class="text-muted small mb-0 fst-italic" id="selected-date-label">No date selected yet.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -282,9 +292,12 @@
                         <div class="card border-0 shadow-sm">
                             <div class="card-body p-4">
                                 <h5 class="fw-semibold mb-1">Service & Schedule</h5>
-                                <p class="text-muted small mb-4">Select one or more services you need and your preferred time slot.</p>
+                                <p class="text-muted small mb-4">Select one or more services you need and your preferred
+                                    time slot.</p>
 
-                                <span class="section-label">Service Type <span class="text-muted fw-normal" style="text-transform:none;letter-spacing:0;font-size:.7rem;">(you may select multiple)</span></span>
+                                <span class="section-label">Service Type <span class="text-muted fw-normal"
+                                        style="text-transform:none;letter-spacing:0;font-size:.7rem;">(you may select
+                                        multiple)</span></span>
                                 <div class="row g-3 mb-3">
                                     <div class="col-6 col-md-3">
                                         <div class="service-card" onclick="toggleService(this,'CCTV Setup')">
@@ -320,10 +333,14 @@
                                 <div id="cctv-subtype-section" style="display:none;" class="mb-4">
                                     <span class="section-label">CCTV Service Type</span>
                                     <div class="d-flex flex-wrap gap-2 mt-1">
-                                        <div class="subtype-pill" onclick="selectSubtype(this,'Installation')">Installation</div>
-                                        <div class="subtype-pill" onclick="selectSubtype(this,'Relocation')">Relocation</div>
-                                        <div class="subtype-pill" onclick="selectSubtype(this,'Rehabilitation')">Rehabilitation</div>
-                                        <div class="subtype-pill" onclick="selectSubtype(this,'Restoration')">Restoration</div>
+                                        <div class="subtype-pill" onclick="selectSubtype(this,'Installation')">
+                                            Installation</div>
+                                        <div class="subtype-pill" onclick="selectSubtype(this,'Relocation')">Relocation
+                                        </div>
+                                        <div class="subtype-pill" onclick="selectSubtype(this,'Rehabilitation')">
+                                            Rehabilitation</div>
+                                        <div class="subtype-pill" onclick="selectSubtype(this,'Restoration')">Restoration
+                                        </div>
                                     </div>
                                 </div>
 
@@ -344,7 +361,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="slot-card" id="slot-afternoon" onclick="selectSlot(this,'Afternoon')">
+                                        <div class="slot-card" id="slot-afternoon"
+                                            onclick="selectSlot(this,'Afternoon')">
                                             <span class="material-symbols-outlined">light_mode</span>
                                             <h6>Afternoon</h6>
                                             <p>1:00 PM – 5:00 PM</p>
@@ -362,10 +380,12 @@
                                 </div>
 
                                 <div class="d-flex justify-content-between">
-                                    <button class="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1" onclick="goStep(2)">
+                                    <button class="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1"
+                                        onclick="goStep(2)">
                                         <span class="material-symbols-outlined fs-15">arrow_back</span> Back
                                     </button>
-                                    <button class="btn btn-success btn-sm px-4 d-flex align-items-center gap-1" onclick="goStep(4)">
+                                    <button class="btn btn-success btn-sm px-4 d-flex align-items-center gap-1"
+                                        onclick="goStep(4)">
                                         Next <span class="material-symbols-outlined fs-15">arrow_forward</span>
                                     </button>
                                 </div>
@@ -385,19 +405,24 @@
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
                                         <label class="form-label">First Name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control form-control-sm" id="d-fname" value="Maria" placeholder="First name">
+                                        <input type="text" class="form-control form-control-sm" id="d-fname"
+                                            value="Maria" placeholder="First name">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Last Name <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control form-control-sm" id="d-lname" value="Santos" placeholder="Last name">
+                                        <input type="text" class="form-control form-control-sm" id="d-lname"
+                                            value="Santos" placeholder="Last name">
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Contact Number <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control form-control-sm" id="d-contact" value="0917-123-4567" placeholder="Mobile or telephone number">
+                                        <label class="form-label">Contact Number <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control form-control-sm" id="d-contact"
+                                            value="0917-123-4567" placeholder="Mobile or telephone number">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Email Address</label>
-                                        <input type="email" class="form-control form-control-sm" id="d-email" value="maria.santos@email.com" placeholder="Optional">
+                                        <input type="email" class="form-control form-control-sm" id="d-email"
+                                            value="maria.santos@email.com" placeholder="Optional">
                                     </div>
                                 </div>
 
@@ -405,23 +430,28 @@
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-3">
                                         <label class="form-label">Block</label>
-                                        <input type="text" class="form-control form-control-sm" id="d-block" value="12" placeholder="Block number">
+                                        <input type="text" class="form-control form-control-sm" id="d-block"
+                                            value="12" placeholder="Block number">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Lot</label>
-                                        <input type="text" class="form-control form-control-sm" id="d-lot" value="5" placeholder="Lot number">
+                                        <input type="text" class="form-control form-control-sm" id="d-lot"
+                                            value="5" placeholder="Lot number">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Street / Purok / Sitio</label>
-                                        <input type="text" class="form-control form-control-sm" id="d-street" value="Sampaguita St." placeholder="Street name or purok/sitio">
+                                        <input type="text" class="form-control form-control-sm" id="d-street"
+                                            value="Sampaguita St." placeholder="Street name or purok/sitio">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Barangay <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control form-control-sm" id="d-brgy" value="Brgy. Tanzang Luma II" placeholder="Barangay name">
+                                        <input type="text" class="form-control form-control-sm" id="d-brgy"
+                                            value="Brgy. Tanzang Luma II" placeholder="Barangay name">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Province <span class="text-danger">*</span></label>
-                                        <select class="form-select form-select-sm" id="d-province" onchange="updateCities()">
+                                        <select class="form-select form-select-sm" id="d-province"
+                                            onchange="updateCities()">
                                             <option value="">— Select Province —</option>
                                             <optgroup label="NCR">
                                                 <option value="Metro Manila">Metro Manila (NCR)</option>
@@ -436,14 +466,16 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label">City / Municipality <span class="text-danger">*</span></label>
+                                        <label class="form-label">City / Municipality <span
+                                                class="text-danger">*</span></label>
                                         <select class="form-select form-select-sm" id="d-city">
                                             <!-- pre-populated via JS on load -->
                                         </select>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Zip Code</label>
-                                        <input type="text" class="form-control form-control-sm" id="d-zip" value="4103" placeholder="Postal code">
+                                        <input type="text" class="form-control form-control-sm" id="d-zip"
+                                            value="4103" placeholder="Postal code">
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">Notes / Special Instructions</label>
@@ -453,10 +485,12 @@
                                 </div>
 
                                 <div class="d-flex justify-content-between">
-                                    <button class="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1" onclick="goStep(3)">
+                                    <button class="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1"
+                                        onclick="goStep(3)">
                                         <span class="material-symbols-outlined fs-15">arrow_back</span> Back
                                     </button>
-                                    <button class="btn btn-success btn-sm px-4 d-flex align-items-center gap-1" onclick="goStep(5)">
+                                    <button class="btn btn-success btn-sm px-4 d-flex align-items-center gap-1"
+                                        onclick="goStep(5)">
                                         Next <span class="material-symbols-outlined fs-15">arrow_forward</span>
                                     </button>
                                 </div>
@@ -523,16 +557,21 @@
                                     </div>
                                 </div>
 
-                                <div class="alert alert-light border d-flex gap-2 align-items-start py-2 px-3 mb-4" style="font-size:.8rem;">
-                                    <span class="material-symbols-outlined text-warning" style="font-size:18px;flex-shrink:0;">info</span>
-                                    <span>Your request will be reviewed by our team. You will be notified once your schedule is confirmed. Preferred dates are subject to availability.</span>
+                                <div class="alert alert-light border d-flex gap-2 align-items-start py-2 px-3 mb-4"
+                                    style="font-size:.8rem;">
+                                    <span class="material-symbols-outlined text-warning"
+                                        style="font-size:18px;flex-shrink:0;">info</span>
+                                    <span>Your request will be reviewed by our team. You will be notified once your schedule
+                                        is confirmed. Preferred dates are subject to availability.</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between">
-                                    <button class="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1" onclick="goStep(4)">
+                                    <button class="btn btn-outline-secondary btn-sm px-4 d-flex align-items-center gap-1"
+                                        onclick="goStep(4)">
                                         <span class="material-symbols-outlined fs-15">arrow_back</span> Back
                                     </button>
-                                    <button class="btn btn-success btn-sm px-4 d-flex align-items-center gap-1" onclick="submitRequest()">
+                                    <button class="btn btn-success btn-sm px-4 d-flex align-items-center gap-1"
+                                        onclick="submitRequest()">
                                         <span class="material-symbols-outlined">send</span> Submit Request
                                     </button>
                                 </div>
@@ -608,7 +647,8 @@
                                             <td>Morning</td>
                                             <td><span class="badge bg-success rounded-pill">Confirmed</span></td>
                                             <td>
-                                                <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#viewRequestModal"
+                                                <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
+                                                    data-bs-target="#viewRequestModal"
                                                     onclick="loadViewRequest({ref:'1',date:'Feb 20, 2026',slot:'Morning',service:'CCTV Setup',subtype:'Rehabilitation',clientType:'Residential',estab:'Home / Residence',status:'Confirmed',statusClass:'success',name:'Maria Santos',contact:'0917-123-4567',email:'maria.santos@email.com',brgy:'Brgy. Tanzang Luma II',city:'Imus',province:'Cavite',notes:'Old cameras need replacement.'})">
                                                     <span class="material-symbols-outlined icon-action">visibility</span>
                                                 </button>
@@ -624,11 +664,14 @@
                                             <td><span class="badge bg-warning text-dark rounded-pill">Pending</span></td>
                                             <td>
                                                 <div class="btn-group btn-group-sm" role="group">
-                                                    <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#viewRequestModal"
+                                                    <button class="btn btn-outline-success" data-bs-toggle="modal"
+                                                        data-bs-target="#viewRequestModal"
                                                         onclick="loadViewRequest({ref:'2',date:'Mar 19, 2026',slot:'Morning',service:'CCTV Setup',subtype:'Installation',clientType:'Residential',estab:'Home / Residence',status:'Pending',statusClass:'warning text-dark',name:'Maria Santos',contact:'0917-123-4567',email:'maria.santos@email.com',brgy:'Brgy. Tanzang Luma II',city:'Imus',province:'Cavite',notes:'Wants 4 cameras around the house.'})">
-                                                        <span class="material-symbols-outlined icon-action">visibility</span>
+                                                        <span
+                                                            class="material-symbols-outlined icon-action">visibility</span>
                                                     </button>
-                                                    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelRequestModal"
+                                                    <button class="btn btn-outline-danger" data-bs-toggle="modal"
+                                                        data-bs-target="#cancelRequestModal"
                                                         onclick="prepareCancel(2, 'Mar 19, 2026')">
                                                         <span class="material-symbols-outlined icon-action">cancel</span>
                                                     </button>
@@ -646,11 +689,14 @@
                                             <td><span class="badge bg-warning text-dark rounded-pill">Pending</span></td>
                                             <td>
                                                 <div class="btn-group btn-group-sm" role="group">
-                                                    <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#viewRequestModal"
+                                                    <button class="btn btn-outline-success" data-bs-toggle="modal"
+                                                        data-bs-target="#viewRequestModal"
                                                         onclick="loadViewRequest({ref:'3',date:'Mar 14, 2026',slot:'Full Day',service:'Solar Setup, CCTV Setup',subtype:'—',clientType:'Residential',estab:'Home / Residence',status:'Pending',statusClass:'warning text-dark',name:'Maria Santos',contact:'0917-123-4567',email:'maria.santos@email.com',brgy:'Brgy. Tanzang Luma II',city:'Imus',province:'Cavite',notes:''})">
-                                                        <span class="material-symbols-outlined icon-action">visibility</span>
+                                                        <span
+                                                            class="material-symbols-outlined icon-action">visibility</span>
                                                     </button>
-                                                    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelRequestModal"
+                                                    <button class="btn btn-outline-danger" data-bs-toggle="modal"
+                                                        data-bs-target="#cancelRequestModal"
                                                         onclick="prepareCancel(3, 'Mar 14, 2026')">
                                                         <span class="material-symbols-outlined icon-action">cancel</span>
                                                     </button>
@@ -666,7 +712,8 @@
                                             <td>Afternoon</td>
                                             <td><span class="badge bg-danger rounded-pill">Declined</span></td>
                                             <td>
-                                                <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#viewRequestModal"
+                                                <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
+                                                    data-bs-target="#viewRequestModal"
                                                     onclick="loadViewRequest({ref:'4',date:'Feb 5, 2026',slot:'Afternoon',service:'Public Address',subtype:'—',clientType:'Residential',estab:'Home / Residence',status:'Declined',statusClass:'danger',name:'Maria Santos',contact:'0917-123-4567',email:'maria.santos@email.com',brgy:'Brgy. Tanzang Luma II',city:'Imus',province:'Cavite',notes:''})">
                                                     <span class="material-symbols-outlined icon-action">visibility</span>
                                                 </button>
@@ -795,12 +842,15 @@
     <div class="modal fade" id="successModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content text-center p-4">
-                <div style="width:60px;height:60px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                <div
+                    style="width:60px;height:60px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
                     <span class="material-symbols-outlined green-text" style="font-size:32px;">check_circle</span>
                 </div>
                 <h5 class="fw-semibold mb-1">Request Submitted!</h5>
-                <p class="text-muted small mb-3">Your assessment request has been sent. Our team will confirm your schedule within 1–2 business days.</p>
-                <button class="btn btn-success btn-sm w-100" data-bs-dismiss="modal" onclick="resetWizard()">Done</button>
+                <p class="text-muted small mb-3">Your assessment request has been sent. Our team will confirm your schedule
+                    within 1–2 business days.</p>
+                <button class="btn btn-success btn-sm w-100" data-bs-dismiss="modal"
+                    onclick="resetWizard()">Done</button>
             </div>
         </div>
     </div>
@@ -821,13 +871,16 @@
 
                     <div class="alert alert-warning border-0" style="font-size:.85rem;">
                         <span class="material-symbols-outlined text-warning me-2" style="font-size:18px;">warning</span>
-                        <strong>Note:</strong> This action cannot be undone. Your request will be marked as "Cancelled" and removed from the pending queue.
+                        <strong>Note:</strong> This action cannot be undone. Your request will be marked as "Cancelled" and
+                        removed from the pending queue.
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold text-muted mb-2 d-block">Cancellation Reason <span class="text-danger">*</span></label>
+                        <label class="form-label small fw-semibold text-muted mb-2 d-block">Cancellation Reason <span
+                                class="text-danger">*</span></label>
 
-                        <select class="form-select form-select-sm mb-2" id="cancel-reason-select" onchange="toggleOtherReason()">
+                        <select class="form-select form-select-sm mb-2" id="cancel-reason-select"
+                            onchange="toggleOtherReason()">
                             <option value="">— Select a reason —</option>
                             <option value="changed_mind">Changed my mind</option>
                             <option value="date_unavailable">Preferred date no longer works</option>
@@ -837,17 +890,19 @@
                         </select>
 
                         <div id="other-reason-group" class="collapse">
-                            <textarea class="form-control form-control-sm" id="cancel-reason-other"
-                                rows="3" placeholder="Please specify the reason..."></textarea>
+                            <textarea class="form-control form-control-sm" id="cancel-reason-other" rows="3"
+                                placeholder="Please specify the reason..."></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1"
+                        data-bs-dismiss="modal">
                         <span class="material-symbols-outlined fs-15">close</span>
                         Keep Request
                     </button>
-                    <button type="button" class="btn btn-danger btn-sm px-4 d-flex align-items-center gap-1" id="confirm-cancel-btn">
+                    <button type="button" class="btn btn-danger btn-sm px-4 d-flex align-items-center gap-1"
+                        id="confirm-cancel-btn">
                         <span class="material-symbols-outlined fs-15">delete</span>
                         Cancel Request
                     </button>
@@ -1147,9 +1202,11 @@
                 state.slot = 'Full Day';
                 banner.style.display = 'flex';
                 if (state.services.length > 1 && state.estabSize === 'large') {
-                    infoText.textContent = 'Multiple services on a large establishment — a full day is required for this assessment.';
+                    infoText.textContent =
+                        'Multiple services on a large establishment — a full day is required for this assessment.';
                 } else if (state.services.length > 1) {
-                    infoText.textContent = 'Multiple services selected — a full day is required to cover all assessments in one visit.';
+                    infoText.textContent =
+                        'Multiple services selected — a full day is required to cover all assessments in one visit.';
                 } else {
                     infoText.textContent = 'This establishment type requires a full-day assessment visit.';
                 }
@@ -1330,7 +1387,8 @@
             state.services = [];
             state.subtype = '';
             state.slot = '';
-            document.querySelectorAll('.type-card,.estab-card,.service-card,.slot-card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.type-card,.estab-card,.service-card,.slot-card').forEach(c => c.classList.remove(
+                'selected'));
             document.querySelectorAll('.subtype-pill').forEach(p => p.classList.remove('selected'));
             document.querySelectorAll('.calendar-cell.selected-day').forEach(c => c.classList.remove('selected-day'));
             document.getElementById('selected-date-label').textContent = 'No date selected yet.';
@@ -1470,7 +1528,8 @@
                     rowData[3],
                     rowData[4],
                     '<span class="badge bg-secondary rounded-pill">Cancelled</span>',
-                    rowData[6].replace(/data-bs-target="#cancelRequestModal"/g, 'data-bs-target="#viewRequestModal"')
+                    rowData[6].replace(/data-bs-target="#cancelRequestModal"/g,
+                        'data-bs-target="#viewRequestModal"')
                     .replace(/onclick="prepareCancel/g, 'onclick="loadViewRequest')
                 ];
                 table.row(rowIdx).data(newRow).draw();

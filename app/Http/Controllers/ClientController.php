@@ -2,11 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
+
 class ClientController extends Controller
 {
     public function showPortal()
     {
-        return view('client.portal');
+        $user = auth()->user();
+
+        $logs = ActivityLog::where('user_id', $user->id)
+            ->where('module', '!=', 'Auth')
+            ->where('is_archived', false)
+            ->orderByDesc('created_at')
+            ->limit(15)
+            ->get();
+
+        $today = $logs->filter(fn ($log) => $log->created_at->isToday());
+        $thisWeek = $logs->filter(fn ($log) => ! $log->created_at->isToday() && $log->created_at->greaterThanOrEqualTo(now()->startOfWeek())
+        );
+        $older = $logs->filter(fn ($log) => $log->created_at->lessThan(now()->startOfWeek()));
+
+        return view('client.portal', compact('today', 'thisWeek', 'older'));
     }
 
     public function showClientAssessment()

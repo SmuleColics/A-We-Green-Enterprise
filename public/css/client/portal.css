@@ -272,11 +272,19 @@ body.portal-body {
    PORTAL GENERIC CARD
    ============================================================ */
 .portal-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   background: var(--card-bg);
   border-radius: var(--radius);
   border: 1px solid var(--border-color);
   padding: 1.5rem;
   box-shadow: var(--shadow-soft);
+}
+
+.recent-activity {
+  max-height: 610px;
+  overflow-y: auto;
 }
 
 /* ============================================================

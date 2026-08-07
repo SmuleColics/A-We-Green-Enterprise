@@ -2,7 +2,7 @@
      CLIENT NAV (logo + nav links + profile menu — no sidebar)
      ============================================================ -->
 <nav class="client-topnav">
-    <a class="topnav-brand" href="{{ route('dashboard') }}">
+    <a class="topnav-brand" href="#">
         <div><img class="w-40" src="{{ asset('css/images/AWeGreen-Logo.svg') }}" alt=""></div>
         <div class="topnav-brand-text">
             <span>A We Green Enterprise</span>
@@ -26,7 +26,7 @@
     </div>
 
     <div class="topnav-right">
-        <span class="topnav-name">Maria Santos</span>
+        <span class="topnav-name">{{ auth()->user()->full_name }}</span>
 
         <!-- Notifications -->
         <div class="dropdown">
@@ -74,7 +74,7 @@
         <div class="dropdown">
             <div class="topnav-avatar" role="button" data-bs-toggle="dropdown" aria-expanded="false"
                 title="Account menu">
-                MS
+                {{ strtoupper(substr(auth()->user()->first_name, 0, 1) . substr(auth()->user()->last_name, 0, 1)) }}
             </div>
             <ul class="dropdown-menu dropdown-menu-end topnav-avatar-menu">
                 <li>
@@ -88,8 +88,7 @@
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2"
-                        href="{{ route('activity-logs') }}">
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('activity-logs') }}">
                         <span class="material-symbols-outlined fs-6">history</span> View Activity Logs
                     </a>
                 </li>
@@ -97,9 +96,12 @@
                     <hr class="dropdown-divider">
                 </li>
                 <li>
-                    <a href="{{ route('landing-page') }}" class="dropdown-item d-flex align-items-center gap-2 text-danger" href="#">
-                        <span class="material-symbols-outlined fs-6">logout</span> Logout
-                    </a>
+                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+                        @csrf
+                        <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger">
+                            <span class="material-symbols-outlined fs-6">logout</span> Logout
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>

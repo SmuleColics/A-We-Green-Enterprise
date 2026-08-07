@@ -158,3 +158,4 @@ Route::post('/sign-in', [AuthController::class, 'login'])->name('sign-in.store')
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('forgot-password.store');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password.update');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
