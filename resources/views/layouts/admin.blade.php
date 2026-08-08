@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title> A We Green Enterprise — @yield('title')</title>
     {{-- ========== COMPANY LOGO ========== --}}
@@ -44,6 +45,17 @@
             if ($('.modal.show').length) {
                 $('body').addClass('modal-open');
             }
+        });
+
+        document.getElementById('notif-mark-all-read')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch('{{ route('notifications.read-all') }}', {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                },
+            }).then(() => location.reload());
         });
     </script>
 

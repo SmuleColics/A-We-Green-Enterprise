@@ -10,7 +10,7 @@
 @section('page-title', 'Assessment Requests')
 
 @section('topbar-actions')
-     <a href="{{ route('archive-requests') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
+    <a href="{{ route('archive-requests') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
     </a>
@@ -22,6 +22,14 @@
 
 @section('content')
 
+    @php
+        $statusBadgeClass = [
+            'Pending' => 'warning text-dark',
+            'Confirmed' => 'success text-white',
+            'Declined' => 'danger',
+        ];
+    @endphp
+
     <div class="container-fluid px-4 py-4">
 
         <!-- Summary Cards -->
@@ -31,7 +39,7 @@
                     <span class="material-symbols-outlined summary-icon text-primary">inbox</span>
                     <div>
                         <p class="summary-label">Total</p>
-                        <p class="summary-value">18</p>
+                        <p class="summary-value">{{ $total }}</p>
                     </div>
                 </div>
             </div>
@@ -40,7 +48,7 @@
                     <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
                     <div>
                         <p class="summary-label">Confirmed</p>
-                        <p class="summary-value">12</p>
+                        <p class="summary-value">{{ $confirmed }}</p>
                     </div>
                 </div>
             </div>
@@ -49,7 +57,7 @@
                     <span class="material-symbols-outlined summary-icon text-warning">pending</span>
                     <div>
                         <p class="summary-label">Pending</p>
-                        <p class="summary-value">4</p>
+                        <p class="summary-value">{{ $pending }}</p>
                     </div>
                 </div>
             </div>
@@ -58,7 +66,7 @@
                     <span class="material-symbols-outlined summary-icon text-danger">cancel</span>
                     <div>
                         <p class="summary-label">Declined</p>
-                        <p class="summary-value">2</p>
+                        <p class="summary-value">{{ $declined }}</p>
                     </div>
                 </div>
             </div>
@@ -71,10 +79,9 @@
                 <div class="mb-3 btn-group filter-btn-group" role="group" id="statusFilterGroup">
                     <button type="button" class="btn btn-sm btn-outline-secondary active" data-filter="all">All</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary"
-                        data-filter="Approved">Confirmed</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Sent">Pending</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary"
-                        data-filter="For Review">Declined</button>
+                        data-filter="Confirmed">Confirmed</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Pending">Pending</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Declined">Declined</button>
                 </div>
 
                 <div class="table-responsive">
@@ -93,153 +100,90 @@
                         </thead>
                         <tbody>
 
-                            <!-- ROW 1: Pending -->
-                            <tr>
-                                <td>AWG-2026-0006</td>
-                                <td>Elena Cruz</td>
-                                <td>0922-111-2222</td>
-                                <td>CCTV Setup</td>
-                                <td>Mar 19, 2026</td>
-                                <td>Morning</td>
-                                <td><span class="badge bg-warning text-dark rounded-pill">Pending</span></td>
-                                <td class="text-nowrap">
-                                    <button class="btn btn-sm btn-outline-success" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewRequestModal"
-                                        onclick="loadRequestDetail({
-                          refNo:'AWG-2026-0006', client:'Elena Cruz', contact:'0922-111-2222',
-                          email:'elena@gmail.com', clientType:'Residential',
-                          service:'CCTV Setup', establishment:'Home / Residence',
-                          date:'Mar 19, 2026', slot:'Morning', status:'Pending', statusClass:'warning text-dark',
-                          cluster:'Cluster 2', block:'Block 1', lot:'Lot 5',
-                          brgy:'Brgy. Tanzang Luma II', city:'Imus', province:'Cavite', zip:'4103',
-                          notes:'Wants 4 cameras around the house.'
-                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-success" title="Confirm"
-                                        onclick="openAssignAssessorModal(this, 'AWG-2026-0006')">
-                                        <span class="material-symbols-outlined icon-action">check_circle</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Decline"
-                                        onclick="openDeclineConfirm(this, 'AWG-2026-0006')">
-                                        <span class="material-symbols-outlined icon-action">cancel</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Archive"
-                                        onclick="openArchiveConfirm(this, 'AWG-2026-0006')">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
+                            @forelse ($assessments as $assessment)
+                                @php
+                                    $refNo =
+                                        'AWG-' .
+                                        $assessment->created_at->format('Y') .
+                                        '-' .
+                                        str_pad($assessment->id, 4, '0', STR_PAD_LEFT);
+                                    $badgeClass = $statusBadgeClass[$assessment->status] ?? 'secondary';
+                                    $isPending = $assessment->status === 'Pending';
+                                    $client = $assessment->client;
+                                    $clientUser = $client->user;
+                                @endphp
+                                <tr data-status="{{ $assessment->status }}">
+                                    <td>{{ $refNo }}</td>
+                                    <td>{{ $clientUser->full_name }}</td>
+                                    <td>{{ $clientUser->contact_number ?? '—' }}</td>
+                                    <td>{{ implode(', ', $assessment->services ?? []) }}</td>
+                                    <td data-order="{{ $assessment->preferred_date->format('Y-m-d') }}">
+                                        {{ $assessment->preferred_date->format('M j, Y') }}
+                                    </td>
+                                    <td>{{ $assessment->time_slot }}</td>
+                                    <td><span
+                                            class="badge bg-{{ $badgeClass }} rounded-pill">{{ $assessment->status }}</span>
+                                    </td>
+                                    <td class="text-nowrap">
+                                        <button class="btn btn-sm btn-outline-success" title="View Details"
+                                            data-bs-toggle="modal" data-bs-target="#viewRequestModal"
+                                            onclick="loadRequestDetail({
+                                id: {{ $assessment->id }},
+                                refNo: {{ Js::from($refNo) }},
+                                client: {{ Js::from($clientUser->full_name) }},
+                                contact: {{ Js::from($clientUser->contact_number ?? '—') }},
+                                email: {{ Js::from($clientUser->email ?? '—') }},
+                                clientType: {{ Js::from($assessment->client_type) }},
+                                service: {{ Js::from(implode(', ', $assessment->services ?? [])) }},
+                                establishment: {{ Js::from($assessment->establishment_type) }},
+                                date: {{ Js::from($assessment->preferred_date->format('M j, Y')) }},
+                                slot: {{ Js::from($assessment->time_slot) }},
+                                status: {{ Js::from($assessment->status) }},
+                                statusClass: {{ Js::from($badgeClass) }},
+                                block: {{ Js::from($client->block ?? '—') }},
+                                lot: {{ Js::from($client->lot ?? '—') }},
+                                brgy: {{ Js::from($client->barangay ?? '—') }},
+                                city: {{ Js::from($client->city ?? '—') }},
+                                province: {{ Js::from($client->province ?? '—') }},
+                                zip: {{ Js::from($client->zip_code ?? '—') }},
+                                notes: {{ Js::from($assessment->notes ?? '') }}
+                            })">
+                                            <span class="material-symbols-outlined icon-action">visibility</span>
+                                        </button>
 
-                            <!-- ROW 2: Confirmed -->
-                            <tr>
-                                <td>AWG-2026-0007</td>
-                                <td>Ramon dela Cruz</td>
-                                <td>0933-222-3333</td>
-                                <td>Solar Setup</td>
-                                <td>Mar 21, 2026</td>
-                                <td>Afternoon</td>
-                                <td><span class="badge bg-success text-white rounded-pill">Confirmed</span></td>
-                                <td class="text-nowrap">
-                                    <button class="btn btn-sm btn-outline-success" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewRequestModal"
-                                        onclick="loadRequestDetail({
-                          refNo:'AWG-2026-0007', client:'Ramon dela Cruz', contact:'0933-222-3333',
-                          email:'', clientType:'Commercial',
-                          service:'Solar Setup', establishment:'Office / Commercial',
-                          date:'Mar 21, 2026', slot:'Afternoon', status:'Confirmed', statusClass:'success',
-                          cluster:'', block:'Block 4', lot:'Lot 9',
-                          brgy:'Brgy. Palico IV', city:'Imus', province:'Cavite', zip:'4103',
-                          notes:''
-                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary" disabled title="Already Confirmed">
-                                        <span class="material-symbols-outlined icon-action">check_circle</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary" disabled title="Already Confirmed">
-                                        <span class="material-symbols-outlined icon-action">cancel</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Archive"
-                                        onclick="openArchiveConfirm(this, 'AWG-2026-0007')">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
+                                        @if ($isPending)
+                                            <button class="btn btn-sm btn-outline-success" title="Confirm"
+                                                onclick="openAssignAssessorModal(this, {{ $assessment->id }}, {{ Js::from($refNo) }})">
+                                                <span class="material-symbols-outlined icon-action">check_circle</span>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" title="Decline"
+                                                onclick="openDeclineConfirm(this, {{ $assessment->id }}, {{ Js::from($refNo) }})">
+                                                <span class="material-symbols-outlined icon-action">cancel</span>
+                                            </button>
+                                        @else
+                                            <button class="btn btn-sm btn-outline-secondary" disabled
+                                                title="Already {{ $assessment->status }}">
+                                                <span class="material-symbols-outlined icon-action">check_circle</span>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" disabled
+                                                title="Already {{ $assessment->status }}">
+                                                <span class="material-symbols-outlined icon-action">cancel</span>
+                                            </button>
+                                        @endif
 
-                            <!-- ROW 3: Pending -->
-                            <tr>
-                                <td>AWG-2026-0005</td>
-                                <td>Luz Reyes</td>
-                                <td>0944-333-4444</td>
-                                <td>Solar Street Light</td>
-                                <td>Mar 14, 2026</td>
-                                <td>Full Day</td>
-                                <td><span class="badge bg-warning text-dark rounded-pill">Pending</span></td>
-                                <td class="text-nowrap">
-                                    <button class="btn btn-sm btn-outline-success" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewRequestModal"
-                                        onclick="loadRequestDetail({
-                          refNo:'AWG-2026-0005', client:'Luz Reyes', contact:'0944-333-4444',
-                          email:'luz@email.com', clientType:'Government/LGU',
-                          service:'Solar Street Light', establishment:'Government Facility',
-                          date:'Mar 14, 2026', slot:'Full Day', status:'Pending', statusClass:'warning text-dark',
-                          cluster:'', block:'', lot:'',
-                          brgy:'Brgy. Malagasang I', city:'Imus', province:'Cavite', zip:'4103',
-                          notes:'Street lights along the barangay road.'
-                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-success" title="Confirm"
-                                        onclick="openAssignAssessorModal(this, 'AWG-2026-0005')">
-                                        <span class="material-symbols-outlined icon-action">check_circle</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Decline"
-                                        onclick="openDeclineConfirm(this, 'AWG-2026-0005')">
-                                        <span class="material-symbols-outlined icon-action">cancel</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Archive"
-                                        onclick="openArchiveConfirm(this, 'AWG-2026-0005')">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- ROW 4: Declined -->
-                            <tr>
-                                <td>AWG-2026-0004</td>
-                                <td>Ben Soriano</td>
-                                <td>0955-444-5555</td>
-                                <td>Public Address System</td>
-                                <td>Mar 10, 2026</td>
-                                <td>Morning</td>
-                                <td><span class="badge bg-danger rounded-pill">Declined</span></td>
-                                <td class="text-nowrap">
-                                    <button class="btn btn-sm btn-outline-success" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewRequestModal"
-                                        onclick="loadRequestDetail({
-                          refNo:'AWG-2026-0004', client:'Ben Soriano', contact:'0955-444-5555',
-                          email:'ben@email.com', clientType:'Commercial',
-                          service:'Public Address System', establishment:'Office / Commercial',
-                          date:'Mar 10, 2026', slot:'Morning', status:'Declined', statusClass:'danger',
-                          cluster:'', block:'Block 2', lot:'Lot 7',
-                          brgy:'Brgy. Anabu I-A', city:'Imus', province:'Cavite', zip:'4103',
-                          notes:'PA system for office lobby.'
-                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary" disabled title="Already Declined">
-                                        <span class="material-symbols-outlined icon-action">check_circle</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary" disabled title="Already Declined">
-                                        <span class="material-symbols-outlined icon-action">cancel</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary" title="Archive"
-                                        onclick="openArchiveConfirm(this, 'AWG-2026-0004')">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
+                                        <button class="btn btn-sm btn-outline-secondary" title="Archive"
+                                            onclick="openArchiveConfirm(this, {{ $assessment->id }}, {{ Js::from($refNo) }})">
+                                            <span class="material-symbols-outlined icon-action">archive</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-4">
+                                        No assessment requests yet.
+                                    </td>
+                                </tr>
+                            @endforelse
 
                         </tbody>
                     </table>
@@ -325,19 +269,15 @@
                         <div class="col-12">
                             <p class="section-label">Location</p>
                         </div>
-                        <div class="col-md-3">
-                            <p class="detail-label">Cluster</p>
-                            <p class="detail-value" id="vr-cluster">—</p>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p class="detail-label">Block</p>
                             <p class="detail-value" id="vr-block">—</p>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p class="detail-label">Lot</p>
                             <p class="detail-value" id="vr-lot">—</p>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p class="detail-label">Barangay</p>
                             <p class="detail-value" id="vr-brgy">—</p>
                         </div>
@@ -368,8 +308,8 @@
                 </div>
                 <div class="modal-footer" id="vr-footer-actions">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger" id="modal-decline-btn">Decline</button>
-                    <button type="button" class="btn btn-success" id="modal-confirm-btn">Confirm</button>
+                    <button type="button" class="btn btn-danger d-none" id="modal-decline-btn">Decline</button>
+                    <button type="button" class="btn btn-success d-none" id="modal-confirm-btn">Confirm</button>
                 </div>
             </div>
         </div>
@@ -391,31 +331,22 @@
                     <p class="text-muted small mb-3">Select up to 3 employees to assess this request.</p>
 
                     <div class="d-flex flex-column gap-2" id="aa-employee-list">
-                        <label class="assessor-check-row">
-                            <input type="checkbox" class="form-check-input assessor-checkbox" value="Marco Rivera">
-                            <span class="assessor-avatar">MR</span>
-                            <span class="flex-grow-1">Marco Rivera</span>
-                        </label>
-                        <label class="assessor-check-row">
-                            <input type="checkbox" class="form-check-input assessor-checkbox" value="Carlo Mendoza">
-                            <span class="assessor-avatar">CM</span>
-                            <span class="flex-grow-1">Carlo Mendoza</span>
-                        </label>
-                        <label class="assessor-check-row">
-                            <input type="checkbox" class="form-check-input assessor-checkbox" value="Jomar Tan">
-                            <span class="assessor-avatar">JT</span>
-                            <span class="flex-grow-1">Jomar Tan</span>
-                        </label>
-                        <label class="assessor-check-row">
-                            <input type="checkbox" class="form-check-input assessor-checkbox" value="Ana Garcia">
-                            <span class="assessor-avatar">AG</span>
-                            <span class="flex-grow-1">Ana Garcia</span>
-                        </label>
-                        <label class="assessor-check-row">
-                            <input type="checkbox" class="form-check-input assessor-checkbox" value="Paolo Reyes">
-                            <span class="assessor-avatar">PR</span>
-                            <span class="flex-grow-1">Paolo Reyes</span>
-                        </label>
+                        @forelse ($employees as $employee)
+                            @php
+                                $initials = collect(explode(' ', $employee->full_name))
+                                    ->map(fn($part) => strtoupper(substr($part, 0, 1)))
+                                    ->take(2)
+                                    ->implode('');
+                            @endphp
+                            <label class="assessor-check-row">
+                                <input type="checkbox" class="form-check-input assessor-checkbox"
+                                    value="{{ $employee->id }}">
+                                <span class="assessor-avatar">{{ $initials }}</span>
+                                <span class="flex-grow-1">{{ $employee->full_name }}</span>
+                            </label>
+                        @empty
+                            <p class="text-muted small mb-0">No employees available to assign.</p>
+                        @endforelse
                     </div>
 
                     <div class="alert alert-warning py-2 px-3 mt-3 mb-0 small d-none" id="aa-limit-warning">
@@ -424,7 +355,8 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                        data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-success btn-sm px-4" id="aa-confirm-btn" disabled>
                         <span class="material-symbols-outlined fs-15" style="vertical-align:middle;">check_circle</span>
                         Confirm Request
@@ -451,7 +383,8 @@
                 </div>
                 <div class="modal-footer border-0 pt-1">
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-danger d-flex align-items-center gap-1" id="dc-confirm-btn">
+                    <button type="button" class="btn btn-sm btn-danger d-flex align-items-center gap-1"
+                        id="dc-confirm-btn">
                         <span class="material-symbols-outlined fs-15">cancel</span>
                         Decline Request
                     </button>
@@ -471,12 +404,14 @@
                 </div>
                 <div class="modal-body pt-2">
                     <p class="small text-muted mb-0">
-                        Request <strong id="ac-refNo">—</strong> will be moved to the archive. You can restore it anytime from <strong>View Archives</strong>.
+                        Request <strong id="ac-refNo">—</strong> will be moved to the archive. You can restore it anytime
+                        from <strong>View Archives</strong>.
                     </p>
                 </div>
                 <div class="modal-footer border-0 pt-1">
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-warning d-flex align-items-center gap-1" id="ac-confirm-btn">
+                    <button type="button" class="btn btn-sm btn-warning d-flex align-items-center gap-1"
+                        id="ac-confirm-btn">
                         <span class="material-symbols-outlined fs-15">archive</span>
                         Archive
                     </button>
@@ -493,6 +428,17 @@
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
+        /* URL templates — __ID__ gets swapped for the real assessment id before each fetch */
+        const ROUTES = {
+            confirm: {{ Js::from(route('requests.confirm', ['assessment' => '__ID__'])) }},
+            decline: {{ Js::from(route('requests.decline', ['assessment' => '__ID__'])) }},
+            archive: {{ Js::from(route('requests.archive', ['assessment' => '__ID__'])) }},
+        };
+
+        function csrfHeader() {
+            return document.querySelector('meta[name="csrf-token"]').content;
+        }
+
         function loadRequestDetail(d) {
             document.getElementById('vr-refNo').textContent = d.refNo || '—';
             document.getElementById('vr-date').textContent = d.date || '—';
@@ -503,7 +449,6 @@
             document.getElementById('vr-clientType').textContent = d.clientType || '—';
             document.getElementById('vr-service').textContent = d.service || '—';
             document.getElementById('vr-establishment').textContent = d.establishment || '—';
-            document.getElementById('vr-cluster').textContent = d.cluster || '—';
             document.getElementById('vr-block').textContent = d.block || '—';
             document.getElementById('vr-lot').textContent = d.lot || '—';
             document.getElementById('vr-brgy').textContent = d.brgy || '—';
@@ -516,15 +461,25 @@
 
             const confirmBtn = document.getElementById('modal-confirm-btn');
             const declineBtn = document.getElementById('modal-decline-btn');
-            confirmBtn.style.display = d.status === 'Pending' ? 'inline-block' : 'none';
-            declineBtn.style.display = d.status === 'Pending' ? 'inline-block' : 'none';
+            const isPending = d.status === 'Pending';
+            confirmBtn.classList.toggle('d-none', !isPending);
+            declineBtn.classList.toggle('d-none', !isPending);
+
+            confirmBtn.onclick = () => {
+                bootstrap.Modal.getInstance(document.getElementById('viewRequestModal')).hide();
+                openAssignAssessorModal(null, d.id, d.refNo);
+            };
+            declineBtn.onclick = () => {
+                bootstrap.Modal.getInstance(document.getElementById('viewRequestModal')).hide();
+                openDeclineConfirm(null, d.id, d.refNo);
+            };
         }
 
         /* ─────────────────────────────────────────
            CONFIRM → ASSIGN ASSESSORS FLOW
            ───────────────────────────────────────── */
         let pendingConfirmBtn = null;
-        let pendingConfirmRefNo = null;
+        let pendingConfirmId = null;
         const MAX_ASSESSORS = 3;
 
         const assignAssessorModalEl = document.getElementById('assignAssessorModal');
@@ -533,12 +488,11 @@
         const aaConfirmBtn = document.getElementById('aa-confirm-btn');
         const aaLimitWarning = document.getElementById('aa-limit-warning');
 
-        function openAssignAssessorModal(btn, refNo) {
+        function openAssignAssessorModal(btn, id, refNo) {
             pendingConfirmBtn = btn;
-            pendingConfirmRefNo = refNo;
+            pendingConfirmId = id;
             document.getElementById('aa-refNo').textContent = refNo;
 
-            // Reset checkboxes each time the modal opens
             assessorCheckboxes.forEach(cb => {
                 cb.checked = false;
                 cb.disabled = false;
@@ -568,84 +522,132 @@
         });
 
         aaConfirmBtn.addEventListener('click', function() {
-            const selectedAssessors = Array.from(document.querySelectorAll('.assessor-checkbox:checked'))
-                .map(cb => cb.value);
+            const employeeIds = Array.from(document.querySelectorAll('.assessor-checkbox:checked'))
+                .map(cb => parseInt(cb.value, 10));
 
-            if (selectedAssessors.length === 0 || !pendingConfirmBtn) return;
+            if (employeeIds.length === 0 || !pendingConfirmId) return;
 
-            const row = pendingConfirmBtn.closest('tr');
-            row.querySelector('.badge').className = 'badge bg-success text-white rounded-pill';
-            row.querySelector('.badge').textContent = 'Confirmed';
-            row.querySelectorAll('.btn-outline-success, .btn-outline-danger').forEach(b => {
-                if (b.title === 'Confirm' || b.title === 'Decline') {
-                    b.classList.replace('btn-outline-success', 'btn-outline-secondary');
-                    b.classList.replace('btn-outline-danger', 'btn-outline-secondary');
-                    b.disabled = true;
-                    b.title = b.title === 'Confirm' ? 'Already Confirmed' : 'Already Confirmed';
-                }
-            });
-
-            // In a real app: send selectedAssessors + pendingConfirmRefNo to the server here.
-            console.log('Confirmed', pendingConfirmRefNo, 'with assessors:', selectedAssessors);
-
-            assignAssessorModal.hide();
-            pendingConfirmBtn = null;
-            pendingConfirmRefNo = null;
+            fetch(ROUTES.confirm.replace('__ID__', pendingConfirmId), {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfHeader(),
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        employee_ids: employeeIds
+                    }),
+                })
+                .then(res => res.json().then(data => ({
+                    status: res.status,
+                    data
+                })))
+                .then(({
+                    status,
+                    data
+                }) => {
+                    if (status !== 200 || !data.success) {
+                        showToast(data.message || 'Unable to confirm this request.', 'danger');
+                        return;
+                    }
+                    showToast(data.message, 'success');
+                    assignAssessorModal.hide();
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => showToast('Network error. Please try again.', 'danger'));
         });
 
         /* ─────────────────────────────────────────
            DECLINE CONFIRMATION FLOW
            ───────────────────────────────────────── */
-        let pendingDeclineBtn = null;
+        let pendingDeclineId = null;
 
         const declineConfirmModalEl = document.getElementById('declineConfirmModal');
         const declineConfirmModal = new bootstrap.Modal(declineConfirmModalEl);
 
-        function openDeclineConfirm(btn, refNo) {
-            pendingDeclineBtn = btn;
+        function openDeclineConfirm(btn, id, refNo) {
+            pendingDeclineId = id;
             document.getElementById('dc-refNo').textContent = refNo;
             declineConfirmModal.show();
         }
 
         document.getElementById('dc-confirm-btn').addEventListener('click', function() {
-            if (!pendingDeclineBtn) return;
-            const row = pendingDeclineBtn.closest('tr');
-            row.querySelector('.badge').className = 'badge bg-danger rounded-pill';
-            row.querySelector('.badge').textContent = 'Declined';
-            row.querySelectorAll('.btn-outline-success, .btn-outline-danger').forEach(b => {
-                b.classList.replace('btn-outline-success', 'btn-outline-secondary');
-                b.classList.replace('btn-outline-danger', 'btn-outline-secondary');
-                b.disabled = true;
-            });
-            declineConfirmModal.hide();
-            pendingDeclineBtn = null;
+            if (!pendingDeclineId) return;
+
+            fetch(ROUTES.decline.replace('__ID__', pendingDeclineId), {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfHeader(),
+                        'Accept': 'application/json',
+                    },
+                })
+                .then(res => res.json().then(data => ({
+                    status: res.status,
+                    data
+                })))
+                .then(({
+                    status,
+                    data
+                }) => {
+                    if (status !== 200 || !data.success) {
+                        showToast(data.message || 'Unable to decline this request.', 'danger');
+                        return;
+                    }
+                    showToast(data.message, 'success');
+                    declineConfirmModal.hide();
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => showToast('Network error. Please try again.', 'danger'));
         });
 
         /* ─────────────────────────────────────────
            ARCHIVE CONFIRMATION FLOW
            ───────────────────────────────────────── */
-        let pendingArchiveBtn = null;
+        let pendingArchiveId = null;
 
         const archiveConfirmModalEl = document.getElementById('archiveConfirmModal');
         const archiveConfirmModal = new bootstrap.Modal(archiveConfirmModalEl);
 
-        function openArchiveConfirm(btn, refNo) {
-            pendingArchiveBtn = btn;
+        function openArchiveConfirm(btn, id, refNo) {
+            pendingArchiveId = id;
             document.getElementById('ac-refNo').textContent = refNo;
             archiveConfirmModal.show();
         }
 
         document.getElementById('ac-confirm-btn').addEventListener('click', function() {
-            if (!pendingArchiveBtn) return;
-            const row = pendingArchiveBtn.closest('tr');
-            // In a real app: send an archive request to the server, then remove/hide the row.
-            row.remove();
-            archiveConfirmModal.hide();
-            pendingArchiveBtn = null;
+            if (!pendingArchiveId) return;
+
+            fetch(ROUTES.archive.replace('__ID__', pendingArchiveId), {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfHeader(),
+                        'Accept': 'application/json',
+                    },
+                })
+                .then(res => res.json().then(data => ({
+                    status: res.status,
+                    data
+                })))
+                .then(({
+                    status,
+                    data
+                }) => {
+                    if (status !== 200 || !data.success) {
+                        showToast(data.message || 'Unable to archive this request.', 'danger');
+                        return;
+                    }
+                    showToast(data.message, 'success');
+                    archiveConfirmModal.hide();
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => showToast('Network error. Please try again.', 'danger'));
         });
 
+        /* ─── DataTable + status filter buttons ─── */
         $(document).ready(function() {
-            $('#requestsTable').DataTable({
+            const table = $('#requestsTable').DataTable({
                 pageLength: 10,
                 lengthChange: true,
                 info: true,
@@ -656,6 +658,18 @@
                     targets: 7,
                     orderable: false
                 }]
+            });
+
+            $('#statusFilterGroup button').on('click', function() {
+                $('#statusFilterGroup button').removeClass('active');
+                $(this).addClass('active');
+
+                const filter = $(this).data('filter');
+                if (filter === 'all') {
+                    table.column(6).search('').draw();
+                } else {
+                    table.column(6).search(filter).draw();
+                }
             });
         });
     </script>

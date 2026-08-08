@@ -33,105 +33,111 @@
             <div class="topnav-bell" role="button" data-bs-toggle="dropdown" aria-expanded="false"
                 title="Notifications">
                 <span class="material-symbols-outlined">notifications</span>
-                <span class="notif-badge">3</span>
+                @if (($unreadCount ?? 0) > 0)
+                    <span class="notif-badge">{{ $unreadCount }}</span>
+                @endif
             </div>
             <div class="dropdown-menu dropdown-menu-end topnav-notif-menu">
                 <div class="notif-header">
                     <span>Notifications</span>
-                    <a href="#" class="notif-mark-read">Mark all as read</a>
+                    <a href="#" id="notif-mark-all-read" class="notif-mark-read"
+                        data-url="{{ route('notifications.read-all') }}">Mark all as read</a>
                 </div>
                 <div class="notif-list">
-                    <a href="{{ route('client-quotation') }}" class="notif-item unread">
-                        <span class="notif-icon"><span class="material-symbols-outlined">receipt_long</span></span>
-                        <div class="flex-1">
-                            <p class="notif-title">New quotation received</p>
-                            <p class="notif-detail">QT-2026-002 · Solar Setup — awaiting your review</p>
-                            <p class="notif-time">2 hours ago</p>
-                        </div>
-                    </a>
-                    <a href="{{ route('client-project') }}" class="notif-item unread">
-                        <span class="notif-icon"><span class="material-symbols-outlined">folder_open</span></span>
-                        <div class="flex-1">
-                            <p class="notif-title">Project progress updated</p>
-                            <p class="notif-detail">CCTV Installation — now 65% complete</p>
-                            <p class="notif-time">1 day ago</p>
-                        </div>
-                    </a>
-                    <a href="{{ route('client-assessment') }}" class="notif-item unread">
-                        <span class="notif-icon"><span class="material-symbols-outlined">calendar_month</span></span>
-                        <div class="flex-1">
-                            <p class="notif-title">Assessment confirmed</p>
-                            <p class="notif-detail">Mar 15, 2026 · 10:00 AM — CCTV installation</p>
-                            <p class="notif-time">2 days ago</p>
-                        </div>
-                    </a>
+                    @forelse (($notifications ?? []) as $notif)
+                        <a href="#" class="notif-item {{ $notif->is_read ? '' : 'unread' }}">
+                            <span class="notif-icon">
+                                <span class="material-symbols-outlined">
+                                    @switch($notif->module)
+                                        @case('Assessment')
+                                            calendar_month
+                                        @break
+
+                                        @case('Quotation')
+                                            receipt_long
+                                        @break
+
+                                        @case('Project')
+                                            folder_open
+                                        @break
+
+                                        @default
+                                            inbox
+                                    @endswitch
+                                </span>
+                            </span>
+                            <div class="flex-1">
+                                <p class="notif-title">{{ $notif->title }}</p>
+                                <p class="notif-detail">{{ $notif->message }}</p>
+                                <p class="notif-time">{{ $notif->created_at->diffForHumans() }}</p>
+                            </div>
+                        </a>
+                        @empty
+                            <div class="text-center text-muted small py-3">No notifications yet.</div>
+                        @endforelse
+                    </div>
+                    <a href="{{ route('activity-logs') }}" class="notif-view-all">View all activity</a>
                 </div>
-                <a href="{{ route('activity-logs') }}" class="notif-view-all">View all activity</a>
             </div>
+
+            <!-- Profile dropdown -->
+            <div class="dropdown">
+                <div class="topnav-avatar" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                    title="Account menu">
+                    {{ strtoupper(substr(auth()->user()->first_name, 0, 1) . substr(auth()->user()->last_name, 0, 1)) }}
+                </div>
+                <ul class="dropdown-menu dropdown-menu-end topnav-avatar-menu">
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('profile') }}">
+                            <span class="material-symbols-outlined fs-6">person</span> View Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('settings') }}">
+                            <span class="material-symbols-outlined fs-6">settings</span> Settings
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('activity-logs') }}">
+                            <span class="material-symbols-outlined fs-6">history</span> View Activity Logs
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <form action="{{ route('logout') }}" method="POST" class="m-0">
+                            @csrf
+                            <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger">
+                                <span class="material-symbols-outlined fs-6">logout</span> Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+            <button id="mobileNavToggle" class="topnav-toggler" type="button" aria-expanded="false"
+                aria-controls="mobileDrawer">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
         </div>
 
-        <!-- Profile dropdown -->
-        <div class="dropdown">
-            <div class="topnav-avatar" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                title="Account menu">
-                {{ strtoupper(substr(auth()->user()->first_name, 0, 1) . substr(auth()->user()->last_name, 0, 1)) }}
-            </div>
-            <ul class="dropdown-menu dropdown-menu-end topnav-avatar-menu">
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('profile') }}">
-                        <span class="material-symbols-outlined fs-6">person</span> View Profile
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('settings') }}">
-                        <span class="material-symbols-outlined fs-6">settings</span> Settings
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('activity-logs') }}">
-                        <span class="material-symbols-outlined fs-6">history</span> View Activity Logs
-                    </a>
-                </li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li>
-                    <form action="{{ route('logout') }}" method="POST" class="m-0">
-                        @csrf
-                        <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger">
-                            <span class="material-symbols-outlined fs-6">logout</span> Logout
-                        </button>
-                    </form>
-                </li>
-            </ul>
-        </div>
 
-        <button id="mobileNavToggle" class="topnav-toggler" type="button" aria-expanded="false"
-            aria-controls="mobileDrawer">
-            <span class="material-symbols-outlined">menu</span>
-        </button>
+    </nav>
+
+    <div class="mobile-nav-drawer" id="mobileDrawer">
+        <a href="{{ route('portal') }}" class="@if (Request::routeIs('portal')) active @endif">
+            <span class="material-symbols-outlined">account_circle</span> Client Portal
+        </a>
+        <a href="{{ route('client-assessment') }}" class="@if (Request::routeIs('client-assessment')) active @endif">
+            <span class="material-symbols-outlined">calendar_month</span> Assessment
+        </a>
+        <a href="{{ route('client-quotation') }}" class="@if (Request::routeIs('client-quotation')) active @endif">
+            <span class="material-symbols-outlined">receipt_long</span> Quotations
+        </a>
+        <a href="{{ route('client-project') }}" class="@if (Request::routeIs('client-project')) active @endif">
+            <span class="material-symbols-outlined">folder_open</span> Projects
+        </a>
     </div>
 
-    <button id="mobileNavToggle" class="topnav-toggler" type="button" aria-expanded="false"
-        aria-controls="mobileDrawer">
-        <span class="material-symbols-outlined">menu</span>
-    </button>
-    </div>
-</nav>
-
-<div class="mobile-nav-drawer" id="mobileDrawer">
-    <a href="{{ route('portal') }}" class="@if (Request::routeIs('portal')) active @endif">
-        <span class="material-symbols-outlined">account_circle</span> Client Portal
-    </a>
-    <a href="{{ route('client-assessment') }}" class="@if (Request::routeIs('client-assessment')) active @endif">
-        <span class="material-symbols-outlined">calendar_month</span> Assessment
-    </a>
-    <a href="{{ route('client-quotation') }}" class="@if (Request::routeIs('client-quotation')) active @endif">
-        <span class="material-symbols-outlined">receipt_long</span> Quotations
-    </a>
-    <a href="{{ route('client-project') }}" class="@if (Request::routeIs('client-project')) active @endif">
-        <span class="material-symbols-outlined">folder_open</span> Projects
-    </a>
-</div>
-
-<script src="{{ asset('js/client/topnav.js') }}"></script>
+    {{-- <script src="{{ asset('js/client/client-nav.js') }}"></script> --}}

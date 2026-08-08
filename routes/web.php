@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\AssessmentRequestController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AuthController;
 // CLIENT BACKEND CONTROLLER
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Client\AssessmentController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeController;
@@ -174,4 +175,11 @@ Route::middleware(['auth', 'role:client'])->group(function () {
     Route::get('/assessment/availability', [AssessmentController::class, 'availability'])->name('assessment.availability');
     Route::post('/assessment', [AssessmentController::class, 'store'])->name('assessment.store');
     Route::patch('/assessment/{assessment}/cancel', [AssessmentController::class, 'cancel'])->name('assessment.cancel');
+});
+// ADMIN SIDE BACKEND ROUTES
+Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function () {
+    Route::get('/requests', [AssessmentRequestController::class, 'index'])->name('requests');
+    Route::patch('/requests/{assessment}/confirm', [AssessmentRequestController::class, 'confirm'])->name('requests.confirm');
+    Route::patch('/requests/{assessment}/decline', [AssessmentRequestController::class, 'decline'])->name('requests.decline');
+    Route::patch('/requests/{assessment}/archive', [AssessmentRequestController::class, 'archive'])->name('requests.archive');
 });

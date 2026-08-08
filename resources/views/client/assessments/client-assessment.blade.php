@@ -495,13 +495,23 @@
 
                 <!-- TAB 2: MY REQUESTS -->
                 <div class="tab-pane fade" id="history-view" role="tabpanel">
+
+                    @php
+                        $statusBadge = [
+                            'Pending' => 'warning text-dark',
+                            'Confirmed' => 'success',
+                            'Declined' => 'danger',
+                            'Cancelled' => 'secondary',
+                        ];
+                    @endphp
+
                     <div class="row g-3 mb-4">
                         <div class="col-6 col-md-3">
                             <div class="summary-card">
                                 <span class="material-symbols-outlined summary-icon green-text">inbox</span>
                                 <div>
                                     <p class="summary-label">Total</p>
-                                    <p class="summary-value">4</p>
+                                    <p class="summary-value">{{ $total }}</p>
                                 </div>
                             </div>
                         </div>
@@ -510,7 +520,7 @@
                                 <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
                                 <div>
                                     <p class="summary-label">Confirmed</p>
-                                    <p class="summary-value">1</p>
+                                    <p class="summary-value">{{ $confirmed }}</p>
                                 </div>
                             </div>
                         </div>
@@ -519,7 +529,7 @@
                                 <span class="material-symbols-outlined summary-icon text-warning">pending</span>
                                 <div>
                                     <p class="summary-label">Pending</p>
-                                    <p class="summary-value">2</p>
+                                    <p class="summary-value">{{ $pending }}</p>
                                 </div>
                             </div>
                         </div>
@@ -528,7 +538,7 @@
                                 <span class="material-symbols-outlined summary-icon text-danger">cancel</span>
                                 <div>
                                     <p class="summary-label">Declined</p>
-                                    <p class="summary-value">1</p>
+                                    <p class="summary-value">{{ $declined }}</p>
                                 </div>
                             </div>
                         </div>
@@ -550,87 +560,63 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- 1: Confirmed -->
-                                        <tr>
-                                            <td class="fw-semibold">1</td>
-                                            <td>Feb 20, 2026</td>
-                                            <td>CCTV Setup</td>
-                                            <td>Rehabilitation</td>
-                                            <td>Morning</td>
-                                            <td><span class="badge bg-success rounded-pill">Confirmed</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
-                                                    data-bs-target="#viewRequestModal"
-                                                    onclick="loadViewRequest({ref:'1',date:'Feb 20, 2026',slot:'Morning',service:'CCTV Setup',subtype:'Rehabilitation',clientType:'Residential',estab:'Home / Residence',status:'Confirmed',statusClass:'success',name:'Maria Santos',contact:'0917-123-4567',email:'maria.santos@email.com',brgy:'Brgy. Tanzang Luma II',city:'Imus',province:'Cavite',notes:'Old cameras need replacement.'})">
-                                                    <span class="material-symbols-outlined icon-action">visibility</span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <!-- 2: Pending -->
-                                        <tr data-ref="2">
-                                            <td class="fw-semibold">2</td>
-                                            <td>Mar 19, 2026</td>
-                                            <td>CCTV Setup</td>
-                                            <td>Installation</td>
-                                            <td>Morning</td>
-                                            <td><span class="badge bg-warning text-dark rounded-pill">Pending</span></td>
-                                            <td>
-                                                <div class="btn-group btn-group-sm" role="group">
-                                                    <button class="btn btn-outline-success" data-bs-toggle="modal"
-                                                        data-bs-target="#viewRequestModal"
-                                                        onclick="loadViewRequest({ref:'2',date:'Mar 19, 2026',slot:'Morning',service:'CCTV Setup',subtype:'Installation',clientType:'Residential',estab:'Home / Residence',status:'Pending',statusClass:'warning text-dark',name:'Maria Santos',contact:'0917-123-4567',email:'maria.santos@email.com',brgy:'Brgy. Tanzang Luma II',city:'Imus',province:'Cavite',notes:'Wants 4 cameras around the house.'})">
-                                                        <span
-                                                            class="material-symbols-outlined icon-action">visibility</span>
-                                                    </button>
-                                                    <button class="btn btn-outline-danger" data-bs-toggle="modal"
-                                                        data-bs-target="#cancelRequestModal"
-                                                        onclick="prepareCancel(2, 'Mar 19, 2026')">
-                                                        <span class="material-symbols-outlined icon-action">cancel</span>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        @forelse ($assessments as $a)
+                                            @php $badge = $statusBadge[$a->status] ?? 'secondary'; @endphp
+                                            <tr data-ref="{{ $a->id }}">
+                                                <td class="fw-semibold">{{ $a->id }}</td>
+                                                <td data-order="{{ $a->preferred_date->format('Y-m-d') }}">
+                                                    {{ $a->preferred_date->format('M j, Y') }}
+                                                </td>
+                                                <td>{{ implode(', ', $a->services ?? []) }}</td>
+                                                <td>{{ $a->cctv_subtype ?? '—' }}</td>
+                                                <td>{{ $a->time_slot }}</td>
+                                                <td><span
+                                                        class="badge bg-{{ $badge }} rounded-pill">{{ $a->status }}</span>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm" role="group">
+                                                        <button class="btn btn-outline-success" data-bs-toggle="modal"
+                                                            data-bs-target="#viewRequestModal"
+                                                            onclick="loadViewRequest({
+                                    ref: {{ Js::from($a->id) }},
+                                    date: {{ Js::from($a->preferred_date->format('M j, Y')) }},
+                                    slot: {{ Js::from($a->time_slot) }},
+                                    service: {{ Js::from(implode(', ', $a->services ?? [])) }},
+                                    subtype: {{ Js::from($a->cctv_subtype ?? '—') }},
+                                    clientType: {{ Js::from($a->client_type) }},
+                                    estab: {{ Js::from($a->establishment_type) }},
+                                    status: {{ Js::from($a->status) }},
+                                    statusClass: {{ Js::from($badge) }},
+                                    name: {{ Js::from(auth()->user()->full_name) }},
+                                    contact: {{ Js::from(auth()->user()->contact_number ?? '—') }},
+                                    email: {{ Js::from(auth()->user()->email) }},
+                                    brgy: {{ Js::from(auth()->user()->client->barangay ?? '—') }},
+                                    city: {{ Js::from(auth()->user()->client->city ?? '—') }},
+                                    province: {{ Js::from(auth()->user()->client->province ?? '—') }},
+                                    notes: {{ Js::from($a->notes ?? '') }}
+                                })">
+                                                            <span
+                                                                class="material-symbols-outlined icon-action">visibility</span>
+                                                        </button>
 
-                                        <!-- 3: Pending -->
-                                        <tr data-ref="3">
-                                            <td class="fw-semibold">3</td>
-                                            <td>Mar 14, 2026</td>
-                                            <td>Solar Setup, CCTV Setup</td>
-                                            <td>—</td>
-                                            <td>Full Day</td>
-                                            <td><span class="badge bg-warning text-dark rounded-pill">Pending</span></td>
-                                            <td>
-                                                <div class="btn-group btn-group-sm" role="group">
-                                                    <button class="btn btn-outline-success" data-bs-toggle="modal"
-                                                        data-bs-target="#viewRequestModal"
-                                                        onclick="loadViewRequest({ref:'3',date:'Mar 14, 2026',slot:'Full Day',service:'Solar Setup, CCTV Setup',subtype:'—',clientType:'Residential',estab:'Home / Residence',status:'Pending',statusClass:'warning text-dark',name:'Maria Santos',contact:'0917-123-4567',email:'maria.santos@email.com',brgy:'Brgy. Tanzang Luma II',city:'Imus',province:'Cavite',notes:''})">
-                                                        <span
-                                                            class="material-symbols-outlined icon-action">visibility</span>
-                                                    </button>
-                                                    <button class="btn btn-outline-danger" data-bs-toggle="modal"
-                                                        data-bs-target="#cancelRequestModal"
-                                                        onclick="prepareCancel(3, 'Mar 14, 2026')">
-                                                        <span class="material-symbols-outlined icon-action">cancel</span>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <!-- 4: Declined -->
-                                        <tr>
-                                            <td class="fw-semibold">4</td>
-                                            <td>Feb 5, 2026</td>
-                                            <td>Public Address</td>
-                                            <td>—</td>
-                                            <td>Afternoon</td>
-                                            <td><span class="badge bg-danger rounded-pill">Declined</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
-                                                    data-bs-target="#viewRequestModal"
-                                                    onclick="loadViewRequest({ref:'4',date:'Feb 5, 2026',slot:'Afternoon',service:'Public Address',subtype:'—',clientType:'Residential',estab:'Home / Residence',status:'Declined',statusClass:'danger',name:'Maria Santos',contact:'0917-123-4567',email:'maria.santos@email.com',brgy:'Brgy. Tanzang Luma II',city:'Imus',province:'Cavite',notes:''})">
-                                                    <span class="material-symbols-outlined icon-action">visibility</span>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                                        @if (in_array($a->status, ['Pending', 'Confirmed']))
+                                                            <button class="btn btn-outline-danger" data-bs-toggle="modal"
+                                                                data-bs-target="#cancelRequestModal"
+                                                                onclick="prepareCancel({{ $a->id }}, {{ Js::from($a->preferred_date->format('M j, Y')) }})">
+                                                                <span
+                                                                    class="material-symbols-outlined icon-action">cancel</span>
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center text-muted py-4">
+                                                    You haven't submitted any assessment requests yet.
+                                                </td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>

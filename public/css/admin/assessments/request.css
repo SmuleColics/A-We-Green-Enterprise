@@ -16,40 +16,71 @@
 }
 
 #requestsTable th:nth-child(1),
-#requestsTable td:nth-child(1) { width: 130px; white-space: nowrap; }
+#requestsTable td:nth-child(1) {
+  width: 130px;
+  white-space: nowrap;
+}
 
 #requestsTable th:nth-child(2),
-#requestsTable td:nth-child(2) { width: auto; }
+#requestsTable td:nth-child(2) {
+  width: auto;
+}
 
 #requestsTable th:nth-child(3),
-#requestsTable td:nth-child(3) { width: 130px; white-space: nowrap; }
+#requestsTable td:nth-child(3) {
+  width: 130px;
+  white-space: nowrap;
+}
 
 #requestsTable th:nth-child(4),
-#requestsTable td:nth-child(4) { width: 150px; white-space: nowrap; }
+#requestsTable td:nth-child(4) {
+  width: 150px;
+  white-space: nowrap;
+}
 
 #requestsTable th:nth-child(5),
-#requestsTable td:nth-child(5) { width: 110px; white-space: nowrap; }
+#requestsTable td:nth-child(5) {
+  width: 110px;
+  white-space: nowrap;
+}
 
 #requestsTable th:nth-child(6),
-#requestsTable td:nth-child(6) { width: 80px;  white-space: nowrap; }
+#requestsTable td:nth-child(6) {
+  width: 80px;
+  white-space: nowrap;
+}
 
 #requestsTable th:nth-child(7),
-#requestsTable td:nth-child(7) { width: 100px; white-space: nowrap; }
+#requestsTable td:nth-child(7) {
+  width: 100px;
+  white-space: nowrap;
+}
 
 #requestsTable th:nth-child(8),
-#requestsTable td:nth-child(8) { width: 110px; white-space: nowrap; }
+#requestsTable td:nth-child(8) {
+  width: 110px;
+  white-space: nowrap;
+}
 
 /* =============================================
    RESPONSIVE
    ============================================= */
 @media (max-width: 768px) {
-  .summary-card  { padding: 10px 12px; gap: 10px; }
-  .summary-value { font-size: 18px; }
+  .summary-card {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .summary-value {
+    font-size: 18px;
+  }
 
   #requestsTable th:nth-child(3),
   #requestsTable td:nth-child(3),
   #requestsTable th:nth-child(6),
-  #requestsTable td:nth-child(6) { display: none; }
+  #requestsTable td:nth-child(6) {
+    display: none;
+  }
 }
 
 /* =============================================
@@ -94,4 +125,9 @@
   justify-content: center;
   flex-shrink: 0;
   font-family: monospace;
+}
+
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
 }

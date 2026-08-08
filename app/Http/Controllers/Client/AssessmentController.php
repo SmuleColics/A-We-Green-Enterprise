@@ -88,7 +88,7 @@ class AssessmentController extends Controller
             module: 'Assessment',
             title: 'New assessment request',
             message: "{$user->full_name} — {$serviceList}, {$assessment->preferred_date->format('M j')}",
-            recipientRole: 'admin',
+            recipientRole: ['admin', 'secretary', 'super_admin'],
             notifiable: $assessment
         );
 

@@ -144,14 +144,19 @@ nav a {
 /* =============================================
    PROFILE ACCORDION
    ============================================= */
-.sb-profile-group { border-radius: 8px; overflow: hidden; }
+.sb-profile-group {
+  border-radius: 8px;
+  overflow: hidden;
+}
 
 .sb-chevron {
   transition: transform 0.2s ease;
   opacity: 0.7;
 }
 
-.sb-chevron.open { transform: rotate(180deg); }
+.sb-chevron.open {
+  transform: rotate(180deg);
+}
 
 .sb-profile-menu {
   padding-left: 12px;
@@ -182,6 +187,7 @@ nav a {
   opacity: 1;
   font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 20;
 }
+
 /* ── View Profile ── */
 .sb-profile {
   font-family: var(--sb-font);
@@ -355,7 +361,7 @@ nav a {
 
 .notif-item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.65rem;
   padding: 0.7rem 1rem;
   text-decoration: none;

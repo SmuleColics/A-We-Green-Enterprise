@@ -12,20 +12,42 @@ class NotificationController extends Controller
         string $module,
         string $title,
         string $message,
-        ?string $recipientRole = 'admin',
+        string|array|null $recipientRole = 'admin',
         ?Model $notifiable = null,
         ?int $userId = null
     ): void {
-        Notification::create([
-            'user_id' => $userId,
-            'recipient_role' => $userId ? null : $recipientRole,
-            'module' => $module,
-            'title' => $title,
-            'message' => $message,
-            'notifiable_id' => $notifiable?->id,
-            'notifiable_type' => $notifiable ? get_class($notifiable) : null,
-            'is_read' => false,
-        ]);
+        // Targeting a specific user (e.g. notifying one client) — single row, no role needed
+        if ($userId !== null) {
+            Notification::create([
+                'user_id' => $userId,
+                'recipient_role' => null,
+                'module' => $module,
+                'title' => $title,
+                'message' => $message,
+                'notifiable_id' => $notifiable?->id,
+                'notifiable_type' => $notifiable ? get_class($notifiable) : null,
+                'is_read' => false,
+            ]);
+
+            return;
+        }
+
+        // Broadcasting to one or more roles — one row per role, so each role's
+        // bell/unread-count query only ever needs to check its own rows.
+        $roles = is_array($recipientRole) ? $recipientRole : [$recipientRole];
+
+        foreach ($roles as $role) {
+            Notification::create([
+                'user_id' => null,
+                'recipient_role' => $role,
+                'module' => $module,
+                'title' => $title,
+                'message' => $message,
+                'notifiable_id' => $notifiable?->id,
+                'notifiable_type' => $notifiable ? get_class($notifiable) : null,
+                'is_read' => false,
+            ]);
+        }
     }
 
     public function index()

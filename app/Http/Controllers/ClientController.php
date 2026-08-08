@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
+use App\Models\Assessment;
 
 class ClientController extends Controller
 {
@@ -27,7 +28,20 @@ class ClientController extends Controller
 
     public function showClientAssessment()
     {
-        return view('client.assessments.client-assessment');
+        $client = auth()->user()->client;
+
+        $assessments = Assessment::where('client_id', $client->id)
+            ->orderByDesc('preferred_date')
+            ->get();
+
+        $total = $assessments->count();
+        $confirmed = $assessments->where('status', 'Confirmed')->count();
+        $pending = $assessments->where('status', 'Pending')->count();
+        $declined = $assessments->where('status', 'Declined')->count();
+
+        return view('client.assessments.client-assessment', compact(
+            'assessments', 'total', 'confirmed', 'pending', 'declined'
+        ));
     }
 
     public function showClientAssessmentForm()

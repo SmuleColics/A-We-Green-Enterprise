@@ -21,4 +21,9 @@ class Assessment extends Model
     {
         return $this->belongsTo(Client::class);
     }
+
+    public function assessors()
+    {
+        return $this->belongsToMany(\App\Models\Employee::class, 'assessment_assessor');
+    }
 }

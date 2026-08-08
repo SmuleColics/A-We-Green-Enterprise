@@ -22,4 +22,15 @@ class Employee extends Model
     {
         return $this->belongsTo(Staff::class);
     }
+
+    public function assessments()
+    {
+        return $this->belongsToMany(Assessment::class, 'assessment_assessor');
+    }
+
+    // ── Accessors ──
+    public function getFullNameAttribute()
+    {
+        return $this->staff?->user?->full_name ?? 'Unknown';
+    }
 }

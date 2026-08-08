@@ -22,7 +22,8 @@
         <a href="{{ route('assessments') }}"
             class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('assessments') ||
                     Request::routeIs('archive-assessments') ||
-                    Request::routeIs('requests') || Request::routeIs('archive-requests') ||
+                    Request::routeIs('requests') ||
+                    Request::routeIs('archive-requests') ||
                     Request::routeIs('form')) active @endif">
             <span class="material-symbols-outlined">event_available</span>
             Assessments
@@ -110,11 +111,14 @@
                     <span class="material-symbols-outlined fs-18">manage_accounts</span>
                     View Profile
                 </a>
-                <a href="{{ route('landing-page') }}"
-                    class="sb-logout btn d-flex align-items-center gap-2 px-3 py-1 w-100 border-0 bg-transparent text-start">
-                    <span class="material-symbols-outlined fs-18">logout</span>
-                    Logout
-                </a>
+                <form action="{{ route('logout') }}" method="POST" class="w-100">
+                    @csrf
+                    <button type="submit"
+                        class="sb-logout btn d-flex align-items-center gap-2 px-3 py-1 w-100 border-0 bg-transparent text-start">
+                        <span class="material-symbols-outlined fs-18">logout</span>
+                        Logout
+                    </button>
+                </form>
             </div>
         </div>
 
