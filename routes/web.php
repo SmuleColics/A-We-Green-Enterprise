@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+// CLIENT BACKEND CONTROLLER
+use App\Http\Controllers\Client\AssessmentController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'showLandingPage'])
@@ -159,3 +162,16 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('forgot-password.store');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password.update');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+
+// ========== NOTIFICATIONS ==========
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+});
+
+// CLIENT SIDE BACKEND ROUTES
+Route::middleware(['auth', 'role:client'])->group(function () {
+    Route::get('/assessment/availability', [AssessmentController::class, 'availability'])->name('assessment.availability');
+    Route::post('/assessment', [AssessmentController::class, 'store'])->name('assessment.store');
+    Route::patch('/assessment/{assessment}/cancel', [AssessmentController::class, 'cancel'])->name('assessment.cancel');
+});

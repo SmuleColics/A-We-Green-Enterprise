@@ -28,14 +28,14 @@
     @endphp
 
     <!-- ============================================================
-                                        HERO BAND
-                                        ============================================================ -->
+                                                HERO BAND
+                                                ============================================================ -->
     <section class="portal-hero">
         <div class="container-fluid px-4">
             <div class="d-flex flex-column flex-sm-row align-items-sm-start justify-content-sm-between gap-3 pt-2">
                 <div>
                     <p class="portal-hero-eyebrow mb-1">WELCOME BACK</p>
-                    <h1 class="portal-hero-title mb-2">Hello, Maria</h1>
+                    <h1 class="portal-hero-title mb-2">Hello, {{ auth()->user()->first_name }}</h1>
                     <p class="portal-hero-sub mb-0">
                         Here's an overview of your assessments, quotations, and active projects<br class="d-none d-md-block">
                         with A We Green Enterprise.
@@ -107,8 +107,8 @@
     </section>
 
     <!-- ============================================================
-                                                MAIN CONTENT
-                                                ============================================================ -->
+                                                        MAIN CONTENT
+                                                        ============================================================ -->
     <div class="container-fluid px-4 portal-content-wrap">
         <div class="portal-content-inner">
 

@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>A We Green Enterprise — @yield('title')</title>
     {{-- ========== COMPANY LOGO ========== --}}
@@ -33,6 +34,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {{-- client nav script (mobile drawer toggle) --}}
     <script src="{{ asset('js/client/client-nav.js') }}"></script>
+    <script src="{{ asset('js/includes/toast.js') }}"></script>
     @yield('scripts')
 </body>
 

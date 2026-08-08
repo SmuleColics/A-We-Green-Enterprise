@@ -46,7 +46,7 @@ class AuthController extends Controller
         ]);
 
         ActivityLogController::log(
-            'Client',
+            'Auth',           // was 'Client'
             'Created',
             "New client account registered: {$user->full_name} ({$user->email}).",
             $user->id,

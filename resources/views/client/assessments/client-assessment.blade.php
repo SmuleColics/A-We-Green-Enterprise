@@ -77,32 +77,46 @@
 
                                 <span class="section-label">Client Type</span>
                                 <div class="row g-3 mb-4">
-                                    <div class="col-6 col-md-3">
+                                    <div class="col-6 col-md-4">
                                         <div class="type-card" onclick="selectClientType(this,'Residential')">
                                             <span class="material-symbols-outlined">home</span>
                                             <h6>Residential</h6>
                                             <p>Individual homeowner</p>
                                         </div>
                                     </div>
-                                    <div class="col-6 col-md-3">
+                                    <div class="col-6 col-md-4">
                                         <div class="type-card" onclick="selectClientType(this,'Subdivision')">
                                             <span class="material-symbols-outlined">holiday_village</span>
                                             <h6>Subdivision / HOA</h6>
                                             <p>Gated community or homeowners association</p>
                                         </div>
                                     </div>
-                                    <div class="col-6 col-md-3">
+                                    <div class="col-6 col-md-4">
                                         <div class="type-card" onclick="selectClientType(this,'Commercial')">
                                             <span class="material-symbols-outlined">business</span>
                                             <h6>Commercial</h6>
                                             <p>Business or company</p>
                                         </div>
                                     </div>
-                                    <div class="col-6 col-md-3">
+                                    <div class="col-6 col-md-4">
                                         <div class="type-card" onclick="selectClientType(this,'Government')">
                                             <span class="material-symbols-outlined">account_balance</span>
                                             <h6>Government / LGU</h6>
                                             <p>Barangay, school, government office</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-4">
+                                        <div class="type-card" onclick="selectClientType(this,'Agricultural')">
+                                            <span class="material-symbols-outlined">agriculture</span>
+                                            <h6>Agricultural</h6>
+                                            <p>Farm, poultry, or aquaculture site</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-4">
+                                        <div class="type-card" onclick="selectClientType(this,'Institutional')">
+                                            <span class="material-symbols-outlined">diversity_3</span>
+                                            <h6>Institutional</h6>
+                                            <p>Church, NGO, or cooperative</p>
                                         </div>
                                     </div>
                                 </div>
@@ -122,136 +136,23 @@
                         </div>
                     </div>
 
-
                     <!-- STEP 2: Pick a Date -->
                     <div class="step-pane" id="pane2">
                         <div class="calendar-container">
                             <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h5 class="fw-semibold mb-0">March 2026</h5>
+                                <h5 class="fw-semibold mb-0" id="calendar-month-label">—</h5>
                                 <div class="d-flex gap-1">
-                                    <button class="btn btn-sm btn-light border">
+                                    <button type="button" class="btn btn-sm btn-light border" onclick="changeMonth(-1)">
                                         <span class="material-symbols-outlined fs-18">chevron_left</span>
                                     </button>
-                                    <button class="btn btn-sm btn-light border">
+                                    <button type="button" class="btn btn-sm btn-light border" onclick="changeMonth(1)">
                                         <span class="material-symbols-outlined fs-18">chevron_right</span>
                                     </button>
                                 </div>
                             </div>
 
-                            <div class="full-calendar-grid">
-                                <div class="calendar-header-cell">Sun</div>
-                                <div class="calendar-header-cell">Mon</div>
-                                <div class="calendar-header-cell">Tue</div>
-                                <div class="calendar-header-cell">Wed</div>
-                                <div class="calendar-header-cell">Thu</div>
-                                <div class="calendar-header-cell">Fri</div>
-                                <div class="calendar-header-cell">Sat</div>
-
-                                <div class="calendar-cell no-work">
-                                    <div class="calendar-date">1</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 2, 2026')">
-                                    <div class="calendar-date">2</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 3, 2026')">
-                                    <div class="calendar-date">3</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 4, 2026')">
-                                    <div class="calendar-date">4</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 5, 2026')">
-                                    <div class="calendar-date">5</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 6, 2026')">
-                                    <div class="calendar-date">6</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 7, 2026')">
-                                    <div class="calendar-date">7</div>
-                                </div>
-
-                                <div class="calendar-cell no-work">
-                                    <div class="calendar-date">8</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 9, 2026')">
-                                    <div class="calendar-date">9</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 10, 2026')">
-                                    <div class="calendar-date">10</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 11, 2026')">
-                                    <div class="calendar-date">11</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 12, 2026')">
-                                    <div class="calendar-date">12</div>
-                                </div>
-                                <div class="calendar-cell full no-click" onclick="fullAlert()">
-                                    <div class="calendar-date">13</div>
-                                    <span class="calendar-slot-badge">AM — Booked</span>
-                                    <span class="calendar-slot-badge">PM — Booked</span>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 14, 2026')">
-                                    <div class="calendar-date">14</div>
-                                </div>
-
-                                <div class="calendar-cell today partial" id="mar15"
-                                    onclick="handleMar15(this,'Mar 15, 2026')">
-                                    <div class="calendar-date" style="color:#fff;">15</div>
-                                    <span class="calendar-slot-badge">AM — Pedro</span>
-                                </div>
-                                <div class="calendar-cell no-work">
-                                    <div class="calendar-date">16</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 17, 2026')">
-                                    <div class="calendar-date">17</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 18, 2026')">
-                                    <div class="calendar-date">18</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 19, 2026')">
-                                    <div class="calendar-date">19</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 20, 2026')">
-                                    <div class="calendar-date">20</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 21, 2026')">
-                                    <div class="calendar-date">21</div>
-                                </div>
-
-                                <div class="calendar-cell no-work">
-                                    <div class="calendar-date">22</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 23, 2026')">
-                                    <div class="calendar-date">23</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 24, 2026')">
-                                    <div class="calendar-date">24</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 25, 2026')">
-                                    <div class="calendar-date">25</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 26, 2026')">
-                                    <div class="calendar-date">26</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 27, 2026')">
-                                    <div class="calendar-date">27</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 28, 2026')">
-                                    <div class="calendar-date">28</div>
-                                </div>
-
-                                <div class="calendar-cell no-work">
-                                    <div class="calendar-date">29</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 30, 2026')">
-                                    <div class="calendar-date">30</div>
-                                </div>
-                                <div class="calendar-cell" onclick="pickDate(this,'Mar 31, 2026')">
-                                    <div class="calendar-date">31</div>
-                                </div>
-                                <div class="calendar-cell no-work"></div>
-                                <div class="calendar-cell no-work"></div>
-                                <div class="calendar-cell no-work"></div>
-                                <div class="calendar-cell no-work"></div>
+                            <div class="full-calendar-grid" id="full-calendar-grid">
+                                <!-- entirely rendered by JS: header row + day cells -->
                             </div>
 
                             <div class="d-flex flex-wrap gap-3 mt-3 pt-2" style="font-size:.75rem; color:#555;">
@@ -285,7 +186,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     <!-- STEP 3: Service & Schedule -->
                     <div class="step-pane" id="pane3">
@@ -393,7 +293,6 @@
                         </div>
                     </div>
 
-
                     <!-- STEP 4: Personal Details (pre-filled) -->
                     <div class="step-pane" id="pane4">
                         <div class="card border-0 shadow-sm">
@@ -406,23 +305,24 @@
                                     <div class="col-md-6">
                                         <label class="form-label">First Name <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control form-control-sm" id="d-fname"
-                                            value="Maria" placeholder="First name">
+                                            value="{{ auth()->user()->first_name }}" placeholder="First name">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Last Name <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control form-control-sm" id="d-lname"
-                                            value="Santos" placeholder="Last name">
+                                            value="{{ auth()->user()->last_name }}" placeholder="Last name">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Contact Number <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control form-control-sm" id="d-contact"
-                                            value="0917-123-4567" placeholder="Mobile or telephone number">
+                                            value="{{ auth()->user()->contact_number }}"
+                                            placeholder="Mobile or telephone number">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Email Address</label>
                                         <input type="email" class="form-control form-control-sm" id="d-email"
-                                            value="maria.santos@email.com" placeholder="Optional">
+                                            value="{{ auth()->user()->email }}" placeholder="Optional">
                                     </div>
                                 </div>
 
@@ -431,22 +331,23 @@
                                     <div class="col-md-3">
                                         <label class="form-label">Block</label>
                                         <input type="text" class="form-control form-control-sm" id="d-block"
-                                            value="12" placeholder="Block number">
+                                            value="{{ auth()->user()->client->block }}" placeholder="Block number">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Lot</label>
                                         <input type="text" class="form-control form-control-sm" id="d-lot"
-                                            value="5" placeholder="Lot number">
+                                            value="{{ auth()->user()->client->lot }}" placeholder="Lot number">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Street / Purok / Sitio</label>
                                         <input type="text" class="form-control form-control-sm" id="d-street"
-                                            value="Sampaguita St." placeholder="Street name or purok/sitio">
+                                            value="{{ auth()->user()->client->street }}"
+                                            placeholder="Street name or purok/sitio">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Barangay <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control form-control-sm" id="d-brgy"
-                                            value="Brgy. Tanzang Luma II" placeholder="Barangay name">
+                                            value="{{ auth()->user()->client->barangay }}" placeholder="Barangay name">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Province <span class="text-danger">*</span></label>
@@ -454,14 +355,26 @@
                                             onchange="updateCities()">
                                             <option value="">— Select Province —</option>
                                             <optgroup label="NCR">
-                                                <option value="Metro Manila">Metro Manila (NCR)</option>
+                                                <option value="Metro Manila"
+                                                    {{ auth()->user()->client->province === 'Metro Manila' ? 'selected' : '' }}>
+                                                    Metro Manila (NCR)</option>
                                             </optgroup>
                                             <optgroup label="Region IV-A (CALABARZON)">
-                                                <option value="Batangas">Batangas</option>
-                                                <option value="Cavite" selected>Cavite</option>
-                                                <option value="Laguna">Laguna</option>
-                                                <option value="Quezon">Quezon</option>
-                                                <option value="Rizal">Rizal</option>
+                                                <option value="Batangas"
+                                                    {{ auth()->user()->client->province === 'Batangas' ? 'selected' : '' }}>
+                                                    Batangas</option>
+                                                <option value="Cavite"
+                                                    {{ auth()->user()->client->province === 'Cavite' ? 'selected' : '' }}>
+                                                    Cavite</option>
+                                                <option value="Laguna"
+                                                    {{ auth()->user()->client->province === 'Laguna' ? 'selected' : '' }}>
+                                                    Laguna</option>
+                                                <option value="Quezon"
+                                                    {{ auth()->user()->client->province === 'Quezon' ? 'selected' : '' }}>
+                                                    Quezon</option>
+                                                <option value="Rizal"
+                                                    {{ auth()->user()->client->province === 'Rizal' ? 'selected' : '' }}>
+                                                    Rizal</option>
                                             </optgroup>
                                         </select>
                                     </div>
@@ -469,18 +382,18 @@
                                         <label class="form-label">City / Municipality <span
                                                 class="text-danger">*</span></label>
                                         <select class="form-select form-select-sm" id="d-city">
-                                            <!-- pre-populated via JS on load -->
+                                            <!-- pre-populated via JS on load, using window.clientDefaults.city -->
                                         </select>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Zip Code</label>
                                         <input type="text" class="form-control form-control-sm" id="d-zip"
-                                            value="4103" placeholder="Postal code">
+                                            value="{{ auth()->user()->client->zip_code }}" placeholder="Postal code">
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">Notes / Special Instructions</label>
                                         <textarea class="form-control form-control-sm" id="d-notes" rows="2"
-                                            placeholder="Describe any specific requirements or concerns...">Requesting 4 cameras around the perimeter of the house.</textarea>
+                                            placeholder="Describe any specific requirements or concerns..."></textarea>
                                     </div>
                                 </div>
 
@@ -497,7 +410,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     <!-- STEP 5: Review & Submit -->
                     <div class="step-pane" id="pane5">
@@ -918,650 +830,22 @@
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
-        /* ─── State ─── */
-        const state = {
-            clientType: '',
-            estabType: '',
-            estabSize: '',
-            selectedDate: '',
-            services: [],
-            subtype: '',
-            slot: ''
+        window.clientDefaults = {
+            fname: @json(auth()->user()->first_name),
+            lname: @json(auth()->user()->last_name),
+            contact: @json(auth()->user()->contact_number),
+            email: @json(auth()->user()->email),
+            block: @json(auth()->user()->client->block),
+            lot: @json(auth()->user()->client->lot),
+            street: @json(auth()->user()->client->street),
+            brgy: @json(auth()->user()->client->barangay),
+            zip: @json(auth()->user()->client->zip_code),
+            province: @json(auth()->user()->client->province),
+            city: @json(auth()->user()->client->city),
         };
-        let currentStep = 1;
-
-        /* ─── Establishment options ─── */
-        const estabOptions = {
-            Residential: [{
-                    icon: 'home',
-                    label: 'Home / Residence',
-                    size: 'small'
-                },
-                {
-                    icon: 'apartment',
-                    label: 'Apartment / Condominium',
-                    size: 'small'
-                },
-                {
-                    icon: 'villa',
-                    label: 'Townhouse',
-                    size: 'small'
-                },
-            ],
-            Subdivision: [{
-                    icon: 'holiday_village',
-                    label: 'Subdivision / HOA',
-                    size: 'large'
-                },
-                {
-                    icon: 'location_city',
-                    label: 'Condominium Complex',
-                    size: 'large'
-                },
-            ],
-            Commercial: [{
-                    icon: 'storefront',
-                    label: 'Office / Commercial Space',
-                    size: 'small'
-                },
-                {
-                    icon: 'warehouse',
-                    label: 'Warehouse / Industrial',
-                    size: 'large'
-                },
-                {
-                    icon: 'local_mall',
-                    label: 'Mall / Shopping Center',
-                    size: 'large'
-                },
-                {
-                    icon: 'restaurant',
-                    label: 'Restaurant / Café',
-                    size: 'small'
-                },
-                {
-                    icon: 'hotel',
-                    label: 'Hotel / Resort',
-                    size: 'large'
-                },
-                {
-                    icon: 'factory',
-                    label: 'Factory / Plant',
-                    size: 'large'
-                },
-            ],
-            Government: [{
-                    icon: 'account_balance',
-                    label: 'Barangay Hall',
-                    size: 'small'
-                },
-                {
-                    icon: 'school',
-                    label: 'School / University',
-                    size: 'large'
-                },
-                {
-                    icon: 'local_hospital',
-                    label: 'Hospital / Health Center',
-                    size: 'large'
-                },
-                {
-                    icon: 'sports_soccer',
-                    label: 'Sports Facility / Gym',
-                    size: 'large'
-                },
-                {
-                    icon: 'park',
-                    label: 'Park / Public Space',
-                    size: 'large'
-                },
-                {
-                    icon: 'directions_bus',
-                    label: 'Terminal / Transport Hub',
-                    size: 'large'
-                },
-                {
-                    icon: 'local_police',
-                    label: 'Police Station / Fire',
-                    size: 'small'
-                },
-                {
-                    icon: 'museum',
-                    label: 'Museum / Cultural Center',
-                    size: 'large'
-                },
-            ]
-        };
-
-        /* ─── Cities per province ─── */
-        const cityData = {
-            'Metro Manila': [
-                'Caloocan', 'Las Piñas', 'Makati', 'Malabon', 'Mandaluyong', 'Manila',
-                'Marikina', 'Muntinlupa', 'Navotas', 'Parañaque', 'Pasay', 'Pasig',
-                'Pateros', 'Quezon City', 'San Juan', 'Taguig', 'Valenzuela'
-            ],
-            'Batangas': [
-                'Agoncillo', 'Alitagtag', 'Balayan', 'Balete', 'Batangas City', 'Bauan',
-                'Calaca', 'Calatagan', 'Cuenca', 'Ibaan', 'Laurel', 'Lemery', 'Lian',
-                'Lipa City', 'Lobo', 'Mabini', 'Malvar', 'Mataas na Kahoy', 'Nasugbu',
-                'Padre Garcia', 'Rosario', 'San Jose', 'San Juan', 'San Luis', 'San Nicolas',
-                'San Pascual', 'Santa Teresita', 'Santo Tomas', 'Taal', 'Talisay',
-                'Tanauan City', 'Taysan', 'Tingloy', 'Tuy'
-            ],
-            'Cavite': [
-                'Alfonso', 'Amadeo', 'Bacoor', 'Carmona', 'Cavite City', 'Dasmariñas',
-                'General Emilio Aguinaldo', 'General Mariano Alvarez', 'General Trias',
-                'Imus', 'Indang', 'Kawit', 'Magallanes', 'Maragondon', 'Mendez',
-                'Naic', 'Noveleta', 'Rosario', 'Silang', 'Tagaytay City', 'Tanza',
-                'Ternate', 'Trece Martires City'
-            ],
-            'Laguna': [
-                'Alaminos', 'Bay', 'Biñan City', 'Cabuyao City', 'Calamba City',
-                'Calauan', 'Cavinti', 'Famy', 'Kalayaan', 'Liliw', 'Los Baños',
-                'Luisiana', 'Lumban', 'Mabitac', 'Magdalena', 'Majayjay', 'Nagcarlan',
-                'Paete', 'Pagsanjan', 'Pakil', 'Pangil', 'Pila', 'Rizal', 'San Pablo City',
-                'San Pedro City', 'Santa Cruz', 'Santa Maria', 'Santa Rosa City',
-                'Siniloan', 'Victoria'
-            ],
-            'Quezon': [
-                'Agdangan', 'Alabat', 'Atimonan', 'Buenavista', 'Burdeos', 'Calauag',
-                'Candelaria', 'Catanauan', 'Dolores', 'General Luna', 'General Nakar',
-                'Guinayangan', 'Gumaca', 'Infanta', 'Jomalig', 'Lopez', 'Lucban',
-                'Lucena City', 'Macalelon', 'Mauban', 'Mulanay', 'Padre Burgos',
-                'Pagbilao', 'Panukulan', 'Patnanungan', 'Perez', 'Pitogo', 'Plaridel',
-                'Polillo', 'Quezon', 'Real', 'Sampaloc', 'San Andres', 'San Antonio',
-                'San Francisco', 'San Narciso', 'Sariaya', 'Tagkawayan', 'Tiaong', 'Unisan'
-            ],
-            'Rizal': [
-                'Angono', 'Antipolo City', 'Baras', 'Binangonan', 'Cainta', 'Cardona',
-                'Jala-Jala', 'Morong', 'Pililla', 'Rodriguez', 'San Mateo', 'Tanay',
-                'Taytay', 'Teresa'
-            ]
-        };
-
-        function updateCities(preselect) {
-            const prov = document.getElementById('d-province').value;
-            const sel = document.getElementById('d-city');
-            if (!prov || !cityData[prov]) {
-                sel.innerHTML = '<option value="">— Select Province First —</option>';
-                return;
-            }
-            sel.innerHTML = '<option value="">— Select City / Municipality —</option>' +
-                cityData[prov].map(c =>
-                    `<option value="${c}"${(preselect || '') === c ? ' selected' : ''}>${c}</option>`
-                ).join('');
-        }
-
-        /* Pre-fill city dropdown on page load */
-        window.addEventListener('DOMContentLoaded', function() {
-            updateCities('Imus');
-        });
-
-        /* ─── Step 1: Client Type ─── */
-        function selectClientType(el, type) {
-            document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-            state.clientType = type;
-            state.estabType = '';
-            state.estabSize = '';
-            const opts = estabOptions[type] || [];
-            document.getElementById('estab-options').innerHTML = opts.map(o => `
-        <div class="col-6 col-md-3">
-          <div class="estab-card" onclick="selectEstab(this,'${o.label}','${o.size}')">
-            <span class="material-symbols-outlined">${o.icon}</span>
-            <span class="elabel">${o.label}</span>
-          </div>
-        </div>`).join('');
-            applyBookingRules();
-        }
-
-        function selectEstab(el, label, size) {
-            document.querySelectorAll('.estab-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-            state.estabType = label;
-            state.estabSize = size;
-            updateSlotLogic();
-        }
-
-        /* ─── Booking rules for Mar 15 ─── */
-        function applyBookingRules() {
-            const cell = document.getElementById('mar15');
-            if (!cell) return;
-            if (state.clientType === 'Government') {
-                cell.classList.remove('today', 'partial');
-                cell.classList.add('full', 'no-click');
-                cell.querySelector('.calendar-date').style.color = '#bbb';
-            } else {
-                cell.classList.remove('full', 'no-click');
-                cell.classList.add('today', 'partial');
-                cell.querySelector('.calendar-date').style.color = '#fff';
-            }
-        }
-
-        function handleMar15(el, date) {
-            pickDate(el, date);
-        }
-
-        /* ─── Step 2: Pick date ─── */
-        function pickDate(el, date) {
-            if (el.classList.contains('no-click') || el.classList.contains('no-work') || el.classList.contains('full')) {
-                fullAlert();
-                return;
-            }
-            document.querySelectorAll('.calendar-cell.selected-day').forEach(c => c.classList.remove('selected-day'));
-            el.classList.add('selected-day');
-            state.selectedDate = date;
-            document.getElementById('selected-date-label').textContent = 'Selected: ' + date;
-            setTimeout(() => goStep(3), 300);
-        }
-
-        function fullAlert() {
-            alert('This date is not available for your client type. Please choose another date.');
-        }
-
-        /* ─── Step 3: Multi-select services ─── */
-        function toggleService(el, service) {
-            el.classList.toggle('selected');
-            if (el.classList.contains('selected')) {
-                if (!state.services.includes(service)) state.services.push(service);
-            } else {
-                state.services = state.services.filter(s => s !== service);
-            }
-            const hasCCTV = state.services.includes('CCTV Setup');
-            document.getElementById('cctv-subtype-section').style.display = hasCCTV ? 'block' : 'none';
-            if (!hasCCTV) {
-                state.subtype = '';
-                document.querySelectorAll('.subtype-pill').forEach(p => p.classList.remove('selected'));
-            }
-            updateSlotLogic();
-        }
-
-        function selectSubtype(el, sub) {
-            document.querySelectorAll('.subtype-pill').forEach(p => p.classList.remove('selected'));
-            el.classList.add('selected');
-            state.subtype = sub;
-        }
-
-        /* ─── Slot logic ─── */
-        function isFullDay() {
-            return state.estabSize === 'large' || state.services.length > 1;
-        }
-
-        function updateSlotLogic() {
-            const full = isFullDay();
-            const banner = document.getElementById('slot-info-banner');
-            const infoText = document.getElementById('slot-info-text');
-            const morningCard = document.getElementById('slot-morning');
-            const afternoonCard = document.getElementById('slot-afternoon');
-            const fullDayWrap = document.getElementById('slot-fullday-wrap');
-
-            if (full) {
-                fullDayWrap.style.display = 'block';
-                morningCard.closest('.col-md-6').style.display = 'none';
-                afternoonCard.closest('.col-md-6').style.display = 'none';
-                state.slot = 'Full Day';
-                banner.style.display = 'flex';
-                if (state.services.length > 1 && state.estabSize === 'large') {
-                    infoText.textContent =
-                        'Multiple services on a large establishment — a full day is required for this assessment.';
-                } else if (state.services.length > 1) {
-                    infoText.textContent =
-                        'Multiple services selected — a full day is required to cover all assessments in one visit.';
-                } else {
-                    infoText.textContent = 'This establishment type requires a full-day assessment visit.';
-                }
-            } else {
-                fullDayWrap.style.display = 'none';
-                morningCard.closest('.col-md-6').style.display = 'block';
-                afternoonCard.closest('.col-md-6').style.display = 'block';
-                if (state.slot === 'Full Day') state.slot = '';
-                document.querySelectorAll('.slot-card').forEach(c => {
-                    if (c.id !== 'slot-fullday') c.classList.remove('selected');
-                });
-                banner.style.display = 'none';
-            }
-        }
-
-        function selectSlot(el, slot) {
-            if (isFullDay()) return;
-            document.querySelectorAll('.slot-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-            state.slot = slot;
-        }
-
-        /* ─── Step navigation ─── */
-        function goStep(n) {
-            if (n > currentStep && !validateStep(currentStep)) return;
-            if (n > currentStep) {
-                const sc = document.getElementById('sc' + currentStep);
-                sc.classList.remove('active');
-                sc.classList.add('done');
-                sc.innerHTML = '✓';
-                document.getElementById('sl' + currentStep).classList.remove('active');
-                document.getElementById('sl' + currentStep).classList.add('done');
-                if (currentStep < 5) document.getElementById('sline' + currentStep).classList.add('done');
-            }
-            if (n < currentStep) {
-                for (let i = n; i <= currentStep; i++) {
-                    const sc = document.getElementById('sc' + i);
-                    sc.classList.remove('active', 'done');
-                    sc.innerHTML = i;
-                    document.getElementById('sl' + i).classList.remove('active', 'done');
-                    if (i < 5) document.getElementById('sline' + i).classList.remove('done');
-                }
-            }
-            document.getElementById('sc' + n).classList.add('active');
-            document.getElementById('sl' + n).classList.add('active');
-            document.getElementById('pane' + currentStep).classList.remove('active');
-            document.getElementById('pane' + n).classList.add('active');
-            currentStep = n;
-            if (n === 5) buildReview();
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        /* ─── Validation ─── */
-        function validateStep(s) {
-            if (s === 1) {
-                if (!state.clientType) {
-                    alert('Please select a client type.');
-                    return false;
-                }
-                if (!state.estabType) {
-                    alert('Please select an establishment type.');
-                    return false;
-                }
-            }
-            if (s === 2) {
-                if (!state.selectedDate) {
-                    alert('Please select a date from the calendar.');
-                    return false;
-                }
-            }
-            if (s === 3) {
-                if (state.services.length === 0) {
-                    alert('Please select at least one service type.');
-                    return false;
-                }
-                if (state.services.includes('CCTV Setup') && !state.subtype) {
-                    alert('Please select a CCTV service type.');
-                    return false;
-                }
-                if (!state.slot) {
-                    alert('Please select a time slot.');
-                    return false;
-                }
-            }
-            if (s === 4) {
-                if (!document.getElementById('d-fname').value.trim()) {
-                    alert('Please enter your first name.');
-                    return false;
-                }
-                if (!document.getElementById('d-lname').value.trim()) {
-                    alert('Please enter your last name.');
-                    return false;
-                }
-                if (!document.getElementById('d-contact').value.trim()) {
-                    alert('Please enter your contact number.');
-                    return false;
-                }
-                if (!document.getElementById('d-brgy').value.trim()) {
-                    alert('Please enter the barangay.');
-                    return false;
-                }
-                if (!document.getElementById('d-province').value) {
-                    alert('Please select a province.');
-                    return false;
-                }
-                if (!document.getElementById('d-city').value) {
-                    alert('Please select a city/municipality.');
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        /* ─── Build review ─── */
-        function buildReview() {
-            const fname = document.getElementById('d-fname').value.trim();
-            const lname = document.getElementById('d-lname').value.trim();
-            const contact = document.getElementById('d-contact').value.trim();
-            const email = document.getElementById('d-email').value.trim();
-            const block = document.getElementById('d-block').value.trim();
-            const lot = document.getElementById('d-lot').value.trim();
-            const street = document.getElementById('d-street').value.trim();
-            const brgy = document.getElementById('d-brgy').value.trim();
-            const city = document.getElementById('d-city').value;
-            const province = document.getElementById('d-province').value;
-            const zip = document.getElementById('d-zip').value.trim();
-            const notes = document.getElementById('d-notes').value.trim();
-
-            document.getElementById('rv-clientType').textContent = state.clientType;
-            document.getElementById('rv-estab').textContent = state.estabType;
-            document.getElementById('rv-date').textContent = state.selectedDate;
-            document.getElementById('rv-slot').textContent = state.slot;
-            document.getElementById('rv-service').textContent = state.services.join(', ') || '—';
-            document.getElementById('rv-subtype').textContent = state.subtype || '—';
-            document.getElementById('rv-subtype-row').style.display =
-                state.services.includes('CCTV Setup') ? 'flex' : 'none';
-            document.getElementById('rv-name').textContent = [fname, lname].filter(Boolean).join(' ') || '—';
-            document.getElementById('rv-contact').textContent = contact;
-            document.getElementById('rv-email').textContent = email || '—';
-            const locParts = [];
-            if (block) locParts.push('Blk ' + block);
-            if (lot) locParts.push('Lot ' + lot);
-            if (street) locParts.push(street);
-            if (brgy) locParts.push(brgy);
-            if (city) locParts.push(city);
-            if (province) locParts.push(province);
-            if (zip) locParts.push(zip);
-            document.getElementById('rv-location').textContent = locParts.join(', ') || '—';
-            document.getElementById('rv-notes').textContent = notes || '—';
-        }
-
-        /* ─── Submit ─── */
-        function submitRequest() {
-            new bootstrap.Modal(document.getElementById('successModal')).show();
-        }
-
-        /* ─── Reset wizard ─── */
-        function resetWizard() {
-            currentStep = 1;
-            for (let i = 1; i <= 5; i++) {
-                const sc = document.getElementById('sc' + i);
-                sc.classList.remove('active', 'done');
-                sc.innerHTML = i;
-                document.getElementById('sl' + i).classList.remove('active', 'done');
-                document.getElementById('pane' + i).classList.remove('active');
-                if (i < 5) document.getElementById('sline' + i).classList.remove('done');
-            }
-            document.getElementById('sc1').classList.add('active');
-            document.getElementById('sl1').classList.add('active');
-            document.getElementById('pane1').classList.add('active');
-            state.clientType = '';
-            state.estabType = '';
-            state.estabSize = '';
-            state.selectedDate = '';
-            state.services = [];
-            state.subtype = '';
-            state.slot = '';
-            document.querySelectorAll('.type-card,.estab-card,.service-card,.slot-card').forEach(c => c.classList.remove(
-                'selected'));
-            document.querySelectorAll('.subtype-pill').forEach(p => p.classList.remove('selected'));
-            document.querySelectorAll('.calendar-cell.selected-day').forEach(c => c.classList.remove('selected-day'));
-            document.getElementById('selected-date-label').textContent = 'No date selected yet.';
-            document.getElementById('cctv-subtype-section').style.display = 'none';
-            document.getElementById('slot-info-banner').style.display = 'none';
-            document.getElementById('slot-fullday-wrap').style.display = 'none';
-            const mc = document.getElementById('slot-morning').closest('.col-md-6');
-            const ac = document.getElementById('slot-afternoon').closest('.col-md-6');
-            if (mc) mc.style.display = 'block';
-            if (ac) ac.style.display = 'block';
-            document.getElementById('d-fname').value = 'Maria';
-            document.getElementById('d-lname').value = 'Santos';
-            document.getElementById('d-contact').value = '0917-123-4567';
-            document.getElementById('d-email').value = 'maria.santos@email.com';
-            document.getElementById('d-block').value = '12';
-            document.getElementById('d-lot').value = '5';
-            document.getElementById('d-street').value = 'Sampaguita St.';
-            document.getElementById('d-brgy').value = 'Brgy. Tanzang Luma II';
-            document.getElementById('d-zip').value = '4103';
-            document.getElementById('d-notes').value = 'Requesting 4 cameras around the perimeter of the house.';
-            document.getElementById('d-province').value = 'Cavite';
-            updateCities('Imus');
-        }
-
-        /* ─── View request modal ─── */
-        function loadViewRequest(d) {
-            document.getElementById('vr-ref').textContent = d.ref || '—';
-            document.getElementById('vr-date').textContent = d.date || '—';
-            document.getElementById('vr-slot').textContent = d.slot || '—';
-            document.getElementById('vr-clientType').textContent = d.clientType || '—';
-            document.getElementById('vr-estab').textContent = d.estab || '—';
-            document.getElementById('vr-service').textContent = d.service || '—';
-            document.getElementById('vr-subtype').textContent = d.subtype || '—';
-            document.getElementById('vr-name').textContent = d.name || '—';
-            document.getElementById('vr-contact').textContent = d.contact || '—';
-            document.getElementById('vr-email').textContent = d.email || '—';
-            document.getElementById('vr-brgy').textContent = d.brgy || '—';
-            document.getElementById('vr-city').textContent = d.city || '—';
-            document.getElementById('vr-province').textContent = d.province || '—';
-            document.getElementById('vr-notes').textContent = d.notes || '—';
-            document.getElementById('vr-status').innerHTML =
-                `<span class="badge bg-${d.statusClass} rounded-pill">${d.status}</span>`;
-            document.getElementById('vr-subtype-col').style.display =
-                (d.service && d.service.includes('CCTV Setup')) ? 'block' : 'none';
-        }
-
-        /* ─── DataTable ─── */
-        $(document).ready(function() {
-            $('#requestHistoryTable').DataTable({
-                pageLength: 10,
-                order: [
-                    [5, 'asc']
-                ],
-                columnDefs: [{
-                        orderable: false,
-                        targets: 6
-                    },
-                    {
-                        targets: 5,
-                        orderData: 5,
-                        render: function(data, type) {
-                            if (type === 'sort') {
-                                const txt = $(data).text().trim();
-                                if (txt === 'Confirmed') return '1';
-                                if (txt === 'Pending') return '2';
-                                if (txt === 'Declined') return '3';
-                                return '9';
-                            }
-                            return data;
-                        }
-                    }
-                ]
-            });
-        });
-
-        /* ─── Cancel Request Functions ─── */
-        let cancelRequestData = {};
-
-        function prepareCancel(ref, date) {
-            cancelRequestData = {
-                ref: ref,
-                date: date
-            };
-            document.getElementById('cancel-reason-select').value = '';
-            document.getElementById('cancel-reason-other').value = '';
-            document.getElementById('other-reason-group').classList.remove('show');
-        }
-
-        function toggleOtherReason() {
-            const select = document.getElementById('cancel-reason-select');
-            const otherGroup = document.getElementById('other-reason-group');
-            const otherInput = document.getElementById('cancel-reason-other');
-
-            if (select.value === 'other') {
-                otherGroup.classList.add('show');
-                otherInput.focus();
-            } else {
-                otherGroup.classList.remove('show');
-                otherInput.value = '';
-            }
-        }
-
-        document.getElementById('confirm-cancel-btn')?.addEventListener('click', function() {
-            const select = document.getElementById('cancel-reason-select');
-            const otherInput = document.getElementById('cancel-reason-other');
-
-            if (!select.value) {
-                alert('Please select a cancellation reason.');
-                select.focus();
-                return;
-            }
-
-            let reason = select.options[select.selectedIndex].text;
-            if (select.value === 'other' && !otherInput.value.trim()) {
-                alert('Please specify the reason for "Other".');
-                otherInput.focus();
-                return;
-            }
-            if (select.value === 'other') {
-                reason = otherInput.value.trim();
-            }
-
-            console.log('Cancelling request:', cancelRequestData.ref, 'Reason:', reason);
-
-            const table = $('#requestHistoryTable').DataTable();
-            const rowIdx = table.rows().indexes().filter(idx => {
-                const row = table.row(idx).node();
-                return row.querySelector('td:first-child').textContent.trim() === cancelRequestData.ref;
-            })[0];
-
-            if (rowIdx !== undefined) {
-                const rowData = table.row(rowIdx).data();
-                const newRow = [
-                    rowData[0],
-                    rowData[1],
-                    rowData[2],
-                    rowData[3],
-                    rowData[4],
-                    '<span class="badge bg-secondary rounded-pill">Cancelled</span>',
-                    rowData[6].replace(/data-bs-target="#cancelRequestModal"/g,
-                        'data-bs-target="#viewRequestModal"')
-                    .replace(/onclick="prepareCancel/g, 'onclick="loadViewRequest')
-                ];
-                table.row(rowIdx).data(newRow).draw();
-            }
-
-            showCancelToast(cancelRequestData.ref, reason);
-
-            bootstrap.Modal.getInstance(document.getElementById('cancelRequestModal')).hide();
-        });
-
-        function showCancelToast(ref, reason) {
-            const toastEl = $(`
-    <div class="toast align-items-center text-white bg-success border-0 position-fixed" 
-         style="top: 20px; right: 20px; z-index: 1090; min-width: 300px;" role="alert">
-      <div class="d-flex">
-        <div class="toast-body">
-          <div class="d-flex align-items-start gap-2 mb-1">
-            <span class="material-symbols-outlined text-white mt-1" style="font-size:18px;">check_circle</span>
-            <strong>Request #${ref} cancelled successfully!</strong>
-          </div>
-          <small class="opacity-90">${reason}</small>
-        </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-    </div>
-  `)[0];
-
-            document.body.appendChild(toastEl);
-            const toast = new bootstrap.Toast(toastEl);
-            toast.show();
-
-            toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
-        }
+        window.assessmentStoreUrl = @json(route('assessment.store'));
+        window.assessmentAvailabilityUrl = @json(route('assessment.availability'));
     </script>
+
+    <script src="{{ asset('js/client/client-assessment.js') }}"></script>
 @endsection

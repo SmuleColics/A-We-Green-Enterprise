@@ -52,6 +52,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {{-- sidebar script --}}
     <script src="{{ asset('js/admin/sidebar-toggle.js') }}"></script>
+    <script src="{{ asset('js/includes/toast.js') }}"></script>
     @yield('scripts')
 </body>
 
