@@ -63,10 +63,34 @@ class NotificationController extends Controller
 
     public function markAllRead()
     {
-        Notification::where('recipient_role', auth()->user()->role)
+        $user = auth()->user();
+
+        Notification::where(function ($q) use ($user) {
+            $q->where('recipient_role', $user->role)
+                ->orWhere('user_id', $user->id);
+        })
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
         return response()->json(['success' => true]);
+    }
+
+    public function markRead(Notification $notification)
+    {
+        $user = auth()->user();
+
+        abort_unless(
+            $notification->user_id === $user->id || $notification->recipient_role === $user->role,
+            403
+        );
+
+        $notification->update(['is_read' => true]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function notifiable()
+    {
+        return $this->morphTo();
     }
 }

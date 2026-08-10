@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\AssessmentRequestController;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\EmployeeController;
 // CLIENT BACKEND CONTROLLER
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Client\AssessmentController;
 use App\Http\Controllers\ClientController;
@@ -168,6 +169,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::middleware('auth')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
 });
 
 // CLIENT SIDE BACKEND ROUTES
@@ -178,8 +180,15 @@ Route::middleware(['auth', 'role:client'])->group(function () {
 });
 // ADMIN SIDE BACKEND ROUTES
 Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function () {
+    // ASSESSMENT REQUEST
     Route::get('/requests', [AssessmentRequestController::class, 'index'])->name('requests');
     Route::patch('/requests/{assessment}/confirm', [AssessmentRequestController::class, 'confirm'])->name('requests.confirm');
     Route::patch('/requests/{assessment}/decline', [AssessmentRequestController::class, 'decline'])->name('requests.decline');
     Route::patch('/requests/{assessment}/archive', [AssessmentRequestController::class, 'archive'])->name('requests.archive');
+
+    // EMPLOYEES / STAFF LISTS
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees');
+    Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+    Route::patch('/employees/{staff}', [EmployeeController::class, 'update'])->name('employees.update');
+    Route::patch('/employees/{staff}/archive', [EmployeeController::class, 'archive'])->name('employees.archive');
 });

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
+
     const POSITION_DRIVER = 'driver';
 
     const POSITION_TECHNICIAN = 'technician';

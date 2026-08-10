@@ -36,7 +36,7 @@
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-primary">inbox</span>
+                    <span class="material-symbols-outlined summary-icon muted-text">inbox</span>
                     <div>
                         <p class="summary-label">Total</p>
                         <p class="summary-value">{{ $total }}</p>

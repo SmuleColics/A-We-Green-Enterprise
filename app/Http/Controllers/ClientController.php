@@ -27,22 +27,25 @@ class ClientController extends Controller
     }
 
     public function showClientAssessment()
-    {
-        $client = auth()->user()->client;
+{
+    $client = auth()->user()->client;
 
-        $assessments = Assessment::where('client_id', $client->id)
-            ->orderByDesc('preferred_date')
-            ->get();
+    $assessments = Assessment::where('client_id', $client->id)
+        ->orderByDesc('preferred_date')
+        ->get();
 
-        $total = $assessments->count();
-        $confirmed = $assessments->where('status', 'Confirmed')->count();
-        $pending = $assessments->where('status', 'Pending')->count();
-        $declined = $assessments->where('status', 'Declined')->count();
+    $activeAssessments = $assessments->whereIn('status', ['Pending', 'Confirmed'])->values();
+    $historyAssessments = $assessments->whereIn('status', ['Declined', 'Cancelled'])->values();
 
-        return view('client.assessments.client-assessment', compact(
-            'assessments', 'total', 'confirmed', 'pending', 'declined'
-        ));
-    }
+    $total = $assessments->count();
+    $confirmed = $assessments->where('status', 'Confirmed')->count();
+    $pending = $assessments->where('status', 'Pending')->count();
+    $declined = $assessments->where('status', 'Declined')->count();
+
+    return view('client.assessments.client-assessment', compact(
+        'activeAssessments', 'historyAssessments', 'total', 'confirmed', 'pending', 'declined'
+    ));
+}
 
     public function showClientAssessmentForm()
     {

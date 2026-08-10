@@ -7,16 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Staff extends Model
 {
     protected $fillable = [
-        'user_id',
-        'staff_id',
-        'date_joined',
-        'block',
-        'lot',
-        'street',
-        'barangay',
-        'province',
-        'city',
-        'zip_code',
+        'user_id', 'staff_id', 'date_joined',
+        'block', 'lot', 'street', 'barangay', 'province', 'city', 'zip_code',
+        'is_archived', 'archived_at',
     ];
 
     protected $casts = [

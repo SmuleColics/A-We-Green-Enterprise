@@ -37,7 +37,8 @@
             <div class="tab-content">
 
                 <!-- TAB 1: BOOK ASSESSMENT -->
-                <div class="tab-pane fade show active" id="book-view" role="tabpanel">
+                <div class="tab-pane fade @if (!request('tab')) show active @endif" id="book-view"
+                    role="tabpanel">
 
                     <div class="step-wizard">
                         <div class="step-item">
@@ -494,7 +495,8 @@
                 </div>
 
                 <!-- TAB 2: MY REQUESTS -->
-                <div class="tab-pane fade" id="history-view" role="tabpanel">
+                <div class="tab-pane fade @if (request('tab') === 'history') show active @endif" id="history-view"
+                    role="tabpanel">
 
                     @php
                         $statusBadge = [
@@ -503,6 +505,7 @@
                             'Declined' => 'danger',
                             'Cancelled' => 'secondary',
                         ];
+                        $subView = request('sub', 'active');
                     @endphp
 
                     <div class="row g-3 mb-4">
@@ -544,86 +547,158 @@
                         </div>
                     </div>
 
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="requestHistoryTable" class="table table-hover mb-0 small w-100">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th class="border-0 small green-th">ID</th>
-                                            <th class="border-0 small green-th">Pref. Date</th>
-                                            <th class="border-0 small green-th">Service(s)</th>
-                                            <th class="border-0 small green-th">Sub-type</th>
-                                            <th class="border-0 small green-th">Time Slot</th>
-                                            <th class="border-0 small green-th">Status</th>
-                                            <th class="border-0 small green-th">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($assessments as $a)
-                                            @php $badge = $statusBadge[$a->status] ?? 'secondary'; @endphp
-                                            <tr data-ref="{{ $a->id }}">
-                                                <td class="fw-semibold">{{ $a->id }}</td>
-                                                <td data-order="{{ $a->preferred_date->format('Y-m-d') }}">
-                                                    {{ $a->preferred_date->format('M j, Y') }}
-                                                </td>
-                                                <td>{{ implode(', ', $a->services ?? []) }}</td>
-                                                <td>{{ $a->cctv_subtype ?? '—' }}</td>
-                                                <td>{{ $a->time_slot }}</td>
-                                                <td><span
-                                                        class="badge bg-{{ $badge }} rounded-pill">{{ $a->status }}</span>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm" role="group">
-                                                        <button class="btn btn-outline-success" data-bs-toggle="modal"
-                                                            data-bs-target="#viewRequestModal"
-                                                            onclick="loadViewRequest({
-                                    ref: {{ Js::from($a->id) }},
-                                    date: {{ Js::from($a->preferred_date->format('M j, Y')) }},
-                                    slot: {{ Js::from($a->time_slot) }},
-                                    service: {{ Js::from(implode(', ', $a->services ?? [])) }},
-                                    subtype: {{ Js::from($a->cctv_subtype ?? '—') }},
-                                    clientType: {{ Js::from($a->client_type) }},
-                                    estab: {{ Js::from($a->establishment_type) }},
-                                    status: {{ Js::from($a->status) }},
-                                    statusClass: {{ Js::from($badge) }},
-                                    name: {{ Js::from(auth()->user()->full_name) }},
-                                    contact: {{ Js::from(auth()->user()->contact_number ?? '—') }},
-                                    email: {{ Js::from(auth()->user()->email) }},
-                                    brgy: {{ Js::from(auth()->user()->client->barangay ?? '—') }},
-                                    city: {{ Js::from(auth()->user()->client->city ?? '—') }},
-                                    province: {{ Js::from(auth()->user()->client->province ?? '—') }},
-                                    notes: {{ Js::from($a->notes ?? '') }}
-                                })">
-                                                            <span
-                                                                class="material-symbols-outlined icon-action">visibility</span>
-                                                        </button>
+                    <!-- Active / History sub-toggle -->
+                    <div class="btn-group btn-group-sm mb-3" role="group" id="requestSubToggle">
+                        <button type="button"
+                            class="btn btn-outline-success @if ($subView === 'active') active @endif"
+                            data-sub="active">
+                            Active Requests
+                        </button>
+                        <button type="button"
+                            class="btn btn-outline-success @if ($subView === 'history') active @endif"
+                            data-sub="history">
+                            Request History
+                        </button>
+                    </div>
 
-                                                        @if (in_array($a->status, ['Pending', 'Confirmed']))
+                    <!-- ACTIVE: Pending + Confirmed -->
+                    <div id="sub-active-view" class="@if ($subView !== 'active') d-none @endif">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="activeRequestsTable" class="table table-hover mb-0 small w-100">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="border-0 small green-th">ID</th>
+                                                <th class="border-0 small green-th">Pref. Date</th>
+                                                <th class="border-0 small green-th">Service(s)</th>
+                                                <th class="border-0 small green-th">Sub-type</th>
+                                                <th class="border-0 small green-th">Time Slot</th>
+                                                <th class="border-0 small green-th">Status</th>
+                                                <th class="border-0 small green-th">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($activeAssessments as $a)
+                                                @php $badge = $statusBadge[$a->status] ?? 'secondary'; @endphp
+                                                <tr data-ref="{{ $a->id }}">
+                                                    <td class="fw-semibold">{{ $a->id }}</td>
+                                                    <td data-order="{{ $a->preferred_date->format('Y-m-d') }}">
+                                                        {{ $a->preferred_date->format('M j, Y') }}
+                                                    </td>
+                                                    <td>{{ implode(', ', $a->services ?? []) }}</td>
+                                                    <td>{{ $a->cctv_subtype ?? '—' }}</td>
+                                                    <td>{{ $a->time_slot }}</td>
+                                                    <td><span
+                                                            class="badge bg-{{ $badge }} rounded-pill">{{ $a->status }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm" role="group">
+                                                            <button class="btn btn-outline-success" data-bs-toggle="modal"
+                                                                data-bs-target="#viewRequestModal"
+                                                                onclick="loadViewRequest({
+                                            ref: {{ Js::from($a->id) }},
+                                            date: {{ Js::from($a->preferred_date->format('M j, Y')) }},
+                                            slot: {{ Js::from($a->time_slot) }},
+                                            service: {{ Js::from(implode(', ', $a->services ?? [])) }},
+                                            subtype: {{ Js::from($a->cctv_subtype ?? '—') }},
+                                            clientType: {{ Js::from($a->client_type) }},
+                                            estab: {{ Js::from($a->establishment_type) }},
+                                            status: {{ Js::from($a->status) }},
+                                            statusClass: {{ Js::from($badge) }},
+                                            name: {{ Js::from(auth()->user()->full_name) }},
+                                            contact: {{ Js::from(auth()->user()->contact_number ?? '—') }},
+                                            email: {{ Js::from(auth()->user()->email) }},
+                                            brgy: {{ Js::from(auth()->user()->client->barangay ?? '—') }},
+                                            city: {{ Js::from(auth()->user()->client->city ?? '—') }},
+                                            province: {{ Js::from(auth()->user()->client->province ?? '—') }},
+                                            notes: {{ Js::from($a->notes ?? '') }}
+                                        })">
+                                                                <span
+                                                                    class="material-symbols-outlined icon-action">visibility</span>
+                                                            </button>
                                                             <button class="btn btn-outline-danger" data-bs-toggle="modal"
                                                                 data-bs-target="#cancelRequestModal"
                                                                 onclick="prepareCancel({{ $a->id }}, {{ Js::from($a->preferred_date->format('M j, Y')) }})">
                                                                 <span
                                                                     class="material-symbols-outlined icon-action">cancel</span>
                                                             </button>
-                                                        @endif
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @empty
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HISTORY: Declined + Cancelled -->
+                    <div id="sub-history-view" class="@if ($subView !== 'history') d-none @endif">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="historyRequestsTable" class="table table-hover mb-0 small w-100">
+                                        <thead class="table-light">
                                             <tr>
-                                                <td colspan="7" class="text-center text-muted py-4">
-                                                    You haven't submitted any assessment requests yet.
-                                                </td>
+                                                <th class="border-0 small green-th">ID</th>
+                                                <th class="border-0 small green-th">Pref. Date</th>
+                                                <th class="border-0 small green-th">Service(s)</th>
+                                                <th class="border-0 small green-th">Sub-type</th>
+                                                <th class="border-0 small green-th">Time Slot</th>
+                                                <th class="border-0 small green-th">Status</th>
+                                                <th class="border-0 small green-th">Actions</th>
                                             </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($historyAssessments as $a)
+                                                @php $badge = $statusBadge[$a->status] ?? 'secondary'; @endphp
+                                                <tr data-ref="{{ $a->id }}">
+                                                    <td class="fw-semibold">{{ $a->id }}</td>
+                                                    <td data-order="{{ $a->preferred_date->format('Y-m-d') }}">
+                                                        {{ $a->preferred_date->format('M j, Y') }}
+                                                    </td>
+                                                    <td>{{ implode(', ', $a->services ?? []) }}</td>
+                                                    <td>{{ $a->cctv_subtype ?? '—' }}</td>
+                                                    <td>{{ $a->time_slot }}</td>
+                                                    <td><span
+                                                            class="badge bg-{{ $badge }} rounded-pill">{{ $a->status }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-success"
+                                                            data-bs-toggle="modal" data-bs-target="#viewRequestModal"
+                                                            onclick="loadViewRequest({
+                                        ref: {{ Js::from($a->id) }},
+                                        date: {{ Js::from($a->preferred_date->format('M j, Y')) }},
+                                        slot: {{ Js::from($a->time_slot) }},
+                                        service: {{ Js::from(implode(', ', $a->services ?? [])) }},
+                                        subtype: {{ Js::from($a->cctv_subtype ?? '—') }},
+                                        clientType: {{ Js::from($a->client_type) }},
+                                        estab: {{ Js::from($a->establishment_type) }},
+                                        status: {{ Js::from($a->status) }},
+                                        statusClass: {{ Js::from($badge) }},
+                                        name: {{ Js::from(auth()->user()->full_name) }},
+                                        contact: {{ Js::from(auth()->user()->contact_number ?? '—') }},
+                                        email: {{ Js::from(auth()->user()->email) }},
+                                        brgy: {{ Js::from(auth()->user()->client->barangay ?? '—') }},
+                                        city: {{ Js::from(auth()->user()->client->city ?? '—') }},
+                                        province: {{ Js::from(auth()->user()->client->province ?? '—') }},
+                                        notes: {{ Js::from($a->status === 'Cancelled' ? $a->cancellation_reason ?? ($a->notes ?? '') : $a->notes ?? '') }}
+                                    })">
+                                                            <span
+                                                                class="material-symbols-outlined icon-action">visibility</span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

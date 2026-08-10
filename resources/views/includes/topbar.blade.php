@@ -11,7 +11,7 @@
                 </button>
                 <div>
                     <h1 class="text-white mb-0 h4 fw-semibold">@yield('page-title', 'Dashboard')</h1>
-                    <p class="text-white text-opacity-75 mb-0 small">March 15, 2026</p>
+                    <p class="text-white text-opacity-75 mb-0 small">{{ now()->format('F j, Y') }}</p>
                 </div>
             </div>
 
@@ -32,12 +32,25 @@
                     <div class="dropdown-menu dropdown-menu-end topbar-notif-menu">
                         <div class="notif-header">
                             <span>Notifications</span>
-                            <a href="#" id="notif-mark-all-read" class="notif-mark-read">Mark all as read</a>
+                            <a href="#" id="notif-mark-all-read" class="notif-mark-read"
+                                data-url="{{ route('notifications.read-all') }}">Mark all as read</a>
                         </div>
                         <div class="notif-list">
-                            @forelse(($notifications ?? []) as $notif)
-                                <a href="#" class="notif-item {{ $notif->is_read ? '' : 'unread' }}">
-                                    <span class="notif-icon"><span class="material-symbols-outlined">
+                            @php
+                                $notifUrls = [
+                                    'Assessment' => route('requests'),
+                                    'Quotation' => route('quotations'),
+                                    'Project' => route('projects'),
+                                    'Task' => route('tasks'),
+                                ];
+                            @endphp
+                            @forelse (($notifications ?? []) as $notif)
+                                <a href="{{ $notifUrls[$notif->module] ?? route('dashboard') }}"
+                                    class="notif-item js-notif-item {{ $notif->is_read ? '' : 'unread' }}"
+                                    data-notif-id="{{ $notif->id }}"
+                                    data-mark-read-url="{{ route('notifications.read', $notif->id) }}">
+                                    <span class="notif-icon">
+                                        <span class="material-symbols-outlined">
                                             @switch($notif->module)
                                                 @case('Assessment')
                                                     event_available
@@ -51,10 +64,15 @@
                                                     folder
                                                 @break
 
+                                                @case('Task')
+                                                    task_alt
+                                                @break
+
                                                 @default
                                                     inbox
                                             @endswitch
-                                        </span></span>
+                                        </span>
+                                    </span>
                                     <div class="flex-1">
                                         <p class="notif-title">{{ $notif->title }}</p>
                                         <p class="notif-detail">{{ $notif->message }}</p>

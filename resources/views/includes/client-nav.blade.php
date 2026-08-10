@@ -45,7 +45,28 @@
                 </div>
                 <div class="notif-list">
                     @forelse (($notifications ?? []) as $notif)
-                        <a href="#" class="notif-item {{ $notif->is_read ? '' : 'unread' }}">
+                        @php
+                            $notifHref = route('activity-logs');
+
+                            if ($notif->module === 'Assessment') {
+                                $sub = 'active';
+                                if (
+                                    $notif->notifiable &&
+                                    in_array($notif->notifiable->status, ['Declined', 'Cancelled'])
+                                ) {
+                                    $sub = 'history';
+                                }
+                                $notifHref = route('client-assessment', ['tab' => 'history', 'sub' => $sub]);
+                            } elseif ($notif->module === 'Quotation') {
+                                $notifHref = route('client-quotation');
+                            } elseif ($notif->module === 'Project') {
+                                $notifHref = route('client-project');
+                            }
+                        @endphp
+                        <a href="{{ $notifHref }}"
+                            class="notif-item js-notif-item {{ $notif->is_read ? '' : 'unread' }}"
+                            data-notif-id="{{ $notif->id }}"
+                            data-mark-read-url="{{ route('notifications.read', $notif->id) }}">
                             <span class="notif-icon">
                                 <span class="material-symbols-outlined">
                                     @switch($notif->module)
@@ -139,5 +160,3 @@
             <span class="material-symbols-outlined">folder_open</span> Projects
         </a>
     </div>
-
-    {{-- <script src="{{ asset('js/client/client-nav.js') }}"></script> --}}

@@ -620,9 +620,9 @@ function loadViewRequest(d) {
     (d.service && d.service.includes('CCTV Setup')) ? 'block' : 'none';
 }
 
-/* ─── DataTable ─── */
+/* ─── DataTables (Active + History) + sub-toggle ─── */
 $(document).ready(function () {
-  $('#requestHistoryTable').DataTable({
+  const activeTable = $('#activeRequestsTable').DataTable({
     pageLength: 10,
     order: [
       [5, 'asc']
@@ -630,22 +630,51 @@ $(document).ready(function () {
     columnDefs: [{
       orderable: false,
       targets: 6
-    },
-    {
-      targets: 5,
-      orderData: 5,
-      render: function (data, type) {
-        if (type === 'sort') {
-          const txt = $(data).text().trim();
-          if (txt === 'Confirmed') return '1';
-          if (txt === 'Pending') return '2';
-          if (txt === 'Declined') return '3';
-          return '9';
-        }
-        return data;
-      }
+    }],
+    language: {
+      emptyTable: 'No active requests right now.'
     }
-    ]
+  });
+
+  const historyTable = $('#historyRequestsTable').DataTable({
+    pageLength: 10,
+    order: [
+      [1, 'desc']
+    ],
+    columnDefs: [{
+      orderable: false,
+      targets: 6
+    }],
+    language: {
+      emptyTable: 'No request history yet.'
+    }
+  });
+
+  document.querySelectorAll('#requestSubToggle button').forEach(btn => {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('#requestSubToggle button').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+
+      const sub = this.dataset.sub;
+      const showActive = sub === 'active';
+
+      document.getElementById('sub-active-view').classList.toggle('d-none', !showActive);
+      document.getElementById('sub-history-view').classList.toggle('d-none', showActive);
+
+      /* DataTables miscalculates column widths for tables that were hidden
+         at init time — force a recalculation now that the table is visible. */
+      if (showActive) {
+        activeTable.columns.adjust().draw();
+      } else {
+        historyTable.columns.adjust().draw();
+      }
+
+      /* Keep the URL in sync so a page refresh preserves which sub-view was open */
+      const url = new URL(window.location);
+      url.searchParams.set('tab', 'history');
+      url.searchParams.set('sub', sub);
+      window.history.replaceState({}, '', url);
+    });
   });
 });
 
@@ -712,30 +741,17 @@ document.getElementById('confirm-cancel-btn')?.addEventListener('click', functio
         return;
       }
 
-      const table = $('#requestHistoryTable').DataTable();
-      const rowIdx = table.rows().indexes().filter(idx => {
-        const row = table.row(idx).node();
-        return row.querySelector('td:first-child').textContent.trim() === String(cancelRequestData.ref);
-      })[0];
-
-      if (rowIdx !== undefined) {
-        const rowData = table.row(rowIdx).data();
-        const newRow = [
-          rowData[0],
-          rowData[1],
-          rowData[2],
-          rowData[3],
-          rowData[4],
-          '<span class="badge bg-secondary rounded-pill">Cancelled</span>',
-          rowData[6].replace(/data-bs-target="#cancelRequestModal"/g,
-            'data-bs-target="#viewRequestModal"')
-            .replace(/onclick="prepareCancel/g, 'onclick="loadViewRequest')
-        ];
-        table.row(rowIdx).data(newRow).draw();
-      }
-
+      /* The request moves from Active to History server-side (Pending/Confirmed
+         → Cancelled), so a full reload is simpler and more correct than trying
+         to relocate a row between two separate DataTables in JS. */
       showToast(data.message, 'success');
       bootstrap.Modal.getInstance(document.getElementById('cancelRequestModal')).hide();
+      setTimeout(() => {
+        const url = new URL(window.location);
+        url.searchParams.set('tab', 'history');
+        url.searchParams.set('sub', 'history');
+        window.location.href = url.toString();
+      }, 800);
     })
     .catch(() => showToast('Network error. Please try again.', 'danger'));
 });

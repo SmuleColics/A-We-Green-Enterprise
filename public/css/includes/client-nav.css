@@ -276,7 +276,7 @@
 
 .notif-item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: .65rem;
   padding: .7rem 1rem;
   text-decoration: none;

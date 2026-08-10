@@ -49,13 +49,31 @@
 
         document.getElementById('notif-mark-all-read')?.addEventListener('click', function(e) {
             e.preventDefault();
-            fetch('{{ route('notifications.read-all') }}', {
+            fetch(this.dataset.url, {
                 method: 'PATCH',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                     'Accept': 'application/json',
                 },
             }).then(() => location.reload());
+        });
+
+        document.querySelectorAll('.js-notif-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                const markReadUrl = this.dataset.markReadUrl;
+
+                fetch(markReadUrl, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                }).finally(() => {
+                    window.location.href = href;
+                });
+            });
         });
     </script>
 
