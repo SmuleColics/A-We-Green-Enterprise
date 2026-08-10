@@ -22,6 +22,19 @@
 
 @section('content')
 
+    @php
+        $positionLabels = [
+            \App\Models\Employee::POSITION_DRIVER => 'Driver',
+            \App\Models\Employee::POSITION_TECHNICIAN => 'Technician',
+            \App\Models\Employee::POSITION_DRIVER_TECHNICIAN => 'Driver / Technician',
+        ];
+        $typeLabels = [
+            \App\Models\User::ROLE_EMPLOYEE => 'Employee',
+            \App\Models\User::ROLE_SECRETARY => 'Secretary',
+            \App\Models\User::ROLE_ADMIN => 'Admin',
+        ];
+    @endphp
+
     <div class="container-fluid px-4 py-4">
 
         <!-- Summary Cards -->
@@ -31,7 +44,7 @@
                     <span class="material-symbols-outlined summary-icon green-text">badge</span>
                     <div>
                         <p class="summary-label">Total Employees</p>
-                        <p class="summary-value">6</p>
+                        <p class="summary-value">{{ $total }}</p>
                     </div>
                 </div>
             </div>
@@ -41,7 +54,7 @@
                         style="color:var(--awg-primary);">engineering</span>
                     <div>
                         <p class="summary-label">Field Employees</p>
-                        <p class="summary-value">4</p>
+                        <p class="summary-value">{{ $fieldEmployees }}</p>
                     </div>
                 </div>
             </div>
@@ -50,7 +63,7 @@
                     <span class="material-symbols-outlined summary-icon" style="color:#3b82f6;">assignment_ind</span>
                     <div>
                         <p class="summary-label">Secretaries</p>
-                        <p class="summary-value">1</p>
+                        <p class="summary-value">{{ $secretaries }}</p>
                     </div>
                 </div>
             </div>
@@ -59,7 +72,7 @@
                     <span class="material-symbols-outlined summary-icon" style="color:#8b5cf6;">admin_panel_settings</span>
                     <div>
                         <p class="summary-label">Admins</p>
-                        <p class="summary-value">1</p>
+                        <p class="summary-value">{{ $admins }}</p>
                     </div>
                 </div>
             </div>
@@ -92,144 +105,65 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="fw-semibold small">EMP-2026-001</td>
-                                <td class="fw-semibold">Ramon Dela Cruz</td>
-                                <td><span class="type-pill type-employee">Employee</span></td>
-                                <td>Technician</td>
-                                <td>0917-111-2222</td>
-                                <td>ramon.dc@email.com</td>
-                                <td class="actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewStaffModal"
-                                        onclick="loadStaffDetail({id:'EMP-2026-001',name:'Ramon Dela Cruz',type:'Employee',role:'Technician',contact:'0917-111-2222',email:'ramon.dc@email.com',address:'Block 3, Lot 5, Brgy. Tanzang Luma II, Imus, Cavite',joined:'Jan 05, 2026'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editStaffModal"
-                                        onclick="loadEditStaff({id:'EMP-2026-001',firstname:'Ramon',lastname:'Dela Cruz',type:'Employee',role:'Technician',contact:'0917-111-2222',email:'ramon.dc@email.com',address:'Block 3, Lot 5, Brgy. Tanzang Luma II, Imus, Cavite'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold small">EMP-2026-002</td>
-                                <td class="fw-semibold">Jose Bautista</td>
-                                <td><span class="type-pill type-employee">Employee</span></td>
-                                <td>Driver</td>
-                                <td>0918-222-3333</td>
-                                <td>jose.bautista@email.com</td>
-                                <td class="actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewStaffModal"
-                                        onclick="loadStaffDetail({id:'EMP-2026-002',name:'Jose Bautista',type:'Employee',role:'Driver',contact:'0918-222-3333',email:'jose.bautista@email.com',address:'Block 1, Lot 2, Brgy. Palico IV, Imus, Cavite',joined:'Jan 10, 2026'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editStaffModal"
-                                        onclick="loadEditStaff({id:'EMP-2026-002',firstname:'Jose',lastname:'Bautista',type:'Employee',role:'Driver',contact:'0918-222-3333',email:'jose.bautista@email.com',address:'Block 1, Lot 2, Brgy. Palico IV, Imus, Cavite'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold small">EMP-2026-003</td>
-                                <td class="fw-semibold">Carlo Reyes</td>
-                                <td><span class="type-pill type-employee">Employee</span></td>
-                                <td>Driver / Technician</td>
-                                <td>0919-333-4444</td>
-                                <td>carlo.reyes@email.com</td>
-                                <td class="actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewStaffModal"
-                                        onclick="loadStaffDetail({id:'EMP-2026-003',name:'Carlo Reyes',type:'Employee',role:'Driver / Technician',contact:'0919-333-4444',email:'carlo.reyes@email.com',address:'Block 4, Lot 8, Brgy. Malagasang I, Imus, Cavite',joined:'Jan 15, 2026'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editStaffModal"
-                                        onclick="loadEditStaff({id:'EMP-2026-003',firstname:'Carlo',lastname:'Reyes',type:'Employee',role:'Driver / Technician',contact:'0919-333-4444',email:'carlo.reyes@email.com',address:'Block 4, Lot 8, Brgy. Malagasang I, Imus, Cavite'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold small">EMP-2026-004</td>
-                                <td class="fw-semibold">Mark Santos</td>
-                                <td><span class="type-pill type-employee">Employee</span></td>
-                                <td>Technician</td>
-                                <td>0920-444-5555</td>
-                                <td>mark.santos@email.com</td>
-                                <td class="actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewStaffModal"
-                                        onclick="loadStaffDetail({id:'EMP-2026-004',name:'Mark Santos',type:'Employee',role:'Technician',contact:'0920-444-5555',email:'mark.santos@email.com',address:'Block 2, Lot 3, Brgy. Anabu I-A, Imus, Cavite',joined:'Jan 20, 2026'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editStaffModal"
-                                        onclick="loadEditStaff({id:'EMP-2026-004',firstname:'Mark',lastname:'Santos',type:'Employee',role:'Technician',contact:'0920-444-5555',email:'mark.santos@email.com',address:'Block 2, Lot 3, Brgy. Anabu I-A, Imus, Cavite'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold small">SEC-2026-001</td>
-                                <td class="fw-semibold">Patricia Lim</td>
-                                <td><span class="type-pill type-secretary">Secretary</span></td>
-                                <td>Secretary</td>
-                                <td>0925-100-2000</td>
-                                <td>patricia.lim@schedquote.com</td>
-                                <td class="actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewStaffModal"
-                                        onclick="loadStaffDetail({id:'SEC-2026-001',name:'Patricia Lim',type:'Secretary',role:'Secretary',contact:'0925-100-2000',email:'patricia.lim@schedquote.com',address:'Block 2, Lot 4, Brgy. Carsadang Bago I, Imus, Cavite',joined:'Jan 03, 2026'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editStaffModal"
-                                        onclick="loadEditStaff({id:'SEC-2026-001',firstname:'Patricia',lastname:'Lim',type:'Secretary',role:'Secretary',contact:'0925-100-2000',email:'patricia.lim@schedquote.com',address:'Block 2, Lot 4, Brgy. Carsadang Bago I, Imus, Cavite'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold small">ADM-2026-001</td>
-                                <td class="fw-semibold">Michael Garcia</td>
-                                <td><span class="type-pill type-admin">Admin</span></td>
-                                <td>Admin</td>
-                                <td>0927-300-4000</td>
-                                <td>michael.garcia@schedquote.com</td>
-                                <td class="actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewStaffModal"
-                                        onclick="loadStaffDetail({id:'ADM-2026-001',name:'Michael Garcia',type:'Admin',role:'Admin',contact:'0927-300-4000',email:'michael.garcia@schedquote.com',address:'Block 1, Lot 1, Brgy. Tanzang Luma II, Imus, Cavite',joined:'Jan 01, 2026'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editStaffModal"
-                                        onclick="loadEditStaff({id:'ADM-2026-001',firstname:'Michael',lastname:'Garcia',type:'Admin',role:'Admin',contact:'0927-300-4000',email:'michael.garcia@schedquote.com',address:'Block 1, Lot 1, Brgy. Tanzang Luma II, Imus, Cavite'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
+                            @forelse($staffMembers as $staff)
+                                @php
+                                    $role = $staff->user->role;
+                                    $typeLabel = $typeLabels[$role] ?? ucfirst($role);
+                                    $roleDisplay =
+                                        $role === \App\Models\User::ROLE_EMPLOYEE
+                                            ? $positionLabels[$staff->employee?->position] ?? '—'
+                                            : $typeLabel;
+
+                                    $staffPayload = [
+                                        'db_id' => $staff->id,
+                                        'id' => $staff->staff_id,
+                                        'firstname' => $staff->user->first_name,
+                                        'lastname' => $staff->user->last_name,
+                                        'name' => $staff->user->full_name,
+                                        'type' => $typeLabel,
+                                        'role' => $roleDisplay,
+                                        'position' => $staff->employee?->position,
+                                        'contact' => $staff->user->contact_number,
+                                        'email' => $staff->user->email,
+                                        'block' => $staff->block,
+                                        'lot' => $staff->lot,
+                                        'street' => $staff->street,
+                                        'barangay' => $staff->barangay,
+                                        'province' => $staff->province,
+                                        'city' => $staff->city,
+                                        'zip_code' => $staff->zip_code,
+                                        'status' => $staff->user->status,
+                                        'joined' => optional($staff->date_joined)->format('M d, Y'),
+                                    ];
+                                @endphp
+                                <tr>
+                                    <td class="fw-semibold small">{{ $staff->staff_id }}</td>
+                                    <td class="fw-semibold">{{ $staff->user->full_name }}</td>
+                                    <td><span class="type-pill type-{{ strtolower($typeLabel) }}">{{ $typeLabel }}</span>
+                                    </td>
+                                    <td>{{ $roleDisplay }}</td>
+                                    <td>{{ $staff->user->contact_number }}</td>
+                                    <td>{{ $staff->user->email }}</td>
+                                    <td class="actions-col">
+                                        <button class="btn btn-sm btn-outline-success action-btn" title="View"
+                                            data-bs-toggle="modal" data-bs-target="#viewStaffModal"
+                                            data-staff='@json($staffPayload)'
+                                            onclick="loadStaffDetail(JSON.parse(this.dataset.staff))">
+                                            <span class="material-symbols-outlined icon-action">visibility</span>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
+                                            data-bs-toggle="modal" data-bs-target="#editStaffModal"
+                                            data-staff='@json($staffPayload)'
+                                            onclick="loadEditStaff(JSON.parse(this.dataset.staff))">
+                                            <span class="material-symbols-outlined icon-action">edit</span>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive"
+                                            onclick="archiveStaff({{ $staff->id }}, '{{ $staff->user->full_name }}')">
+                                            <span class="material-symbols-outlined icon-action">archive</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -279,7 +213,7 @@
                         </div>
                         <div class="col-6">
                             <p class="detail-label fs-12">Status</p>
-                            <p class="detail-value"><span class="badge bg-success rounded-pill">Active</span></p>
+                            <p class="detail-value"><span class="badge rounded-pill" id="vs-status-badge">—</span></p>
                         </div>
 
                         <div class="col-12">
@@ -307,7 +241,8 @@
                         data-bs-dismiss="modal">
                         <span class="material-symbols-outlined fs-16">close</span>Close
                     </button>
-                    <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1"
+                        id="vs-archive-btn">
                         <span class="material-symbols-outlined fs-16">archive</span>Archive Staff
                     </button>
                 </div>
@@ -320,62 +255,104 @@
     <div class="modal fade" id="editStaffModal" tabindex="-1">
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined fs-20">manage_accounts</span>
-                        Edit Profile
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <p class="text-muted small mb-0" id="edit-staff-id">—</p>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">First Name <span class="text-danger">*</span></label>
-                            <input type="text" id="edit-firstname" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Last Name <span class="text-danger">*</span></label>
-                            <input type="text" id="edit-lastname" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Staff Type <span class="text-danger">*</span></label>
-                            <select id="edit-type" class="form-select form-select-sm" onchange="toggleEditRoleField()">
-                                <option value="Employee">Employee</option>
-                                <option value="Secretary">Secretary</option>
-                                <option value="Admin">Admin</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6" id="editRoleFieldWrap">
-                            <label class="form-label small">Employee Role <span class="text-danger">*</span></label>
-                            <select id="edit-role" class="form-select form-select-sm">
-                                <option value="Driver">Driver</option>
-                                <option value="Technician">Technician</option>
-                                <option value="Driver / Technician">Driver / Technician</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Contact Number <span class="text-danger">*</span></label>
-                            <input type="text" id="edit-contact" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Email Address</label>
-                            <input type="email" id="edit-email" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small">Address</label>
-                            <input type="text" id="edit-address" class="form-control form-control-sm">
+                <form id="editStaffForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined fs-20">manage_accounts</span>
+                            Edit Profile
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <p class="text-muted small mb-0" id="edit-staff-id">—</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">First Name <span class="text-danger">*</span></label>
+                                <input type="text" id="edit-firstname" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" id="edit-lastname" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Staff Type <span class="text-danger">*</span></label>
+                                <select id="edit-type" class="form-select form-select-sm"
+                                    onchange="toggleEditRoleField()">
+                                    <option value="Employee">Employee</option>
+                                    <option value="Secretary">Secretary</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6" id="editRoleFieldWrap">
+                                <label class="form-label small">Employee Role <span class="text-danger">*</span></label>
+                                <select id="edit-role" class="form-select form-select-sm">
+                                    <option value="driver">Driver</option>
+                                    <option value="technician">Technician</option>
+                                    <option value="driver_technician">Driver / Technician</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Contact Number <span class="text-danger">*</span></label>
+                                <input type="text" id="edit-contact" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Email Address <span class="text-danger">*</span></label>
+                                <input type="email" id="edit-email" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">New Password</label>
+                                <input type="password" id="edit-password" class="form-control form-control-sm"
+                                    placeholder="Leave blank to keep current">
+                            </div>
+                            <div class="col-12">
+                                <hr class="my-1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small">Block</label>
+                                <input type="text" id="edit-block" class="form-control form-control-sm"
+                                    placeholder="1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small">Lot</label>
+                                <input type="text" id="edit-lot" class="form-control form-control-sm"
+                                    placeholder="20">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small">Street / Purok / Sitio</label>
+                                <input type="text" id="edit-street" class="form-control form-control-sm"
+                                    placeholder="Green St.">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Barangay <span class="text-danger">*</span></label>
+                                <input type="text" id="edit-barangay" class="form-control form-control-sm"
+                                    placeholder="Olaes" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">City <span class="text-danger">*</span></label>
+                                <input type="text" id="edit-city" class="form-control form-control-sm"
+                                    placeholder="GMA" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Province <span class="text-danger">*</span></label>
+                                <input type="text" id="edit-province" class="form-control form-control-sm"
+                                    placeholder="Cavite" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Zip Code</label>
+                                <input type="text" id="edit-zip" class="form-control form-control-sm"
+                                    placeholder="4117">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success d-flex align-items-center gap-1">
-                        <span class="material-symbols-outlined fs-16">save</span>Save Changes
-                    </button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success d-flex align-items-center gap-1">
+                            <span class="material-symbols-outlined fs-16">save</span>Save Changes
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -385,66 +362,107 @@
     <div class="modal fade" id="addStaffModal" tabindex="-1">
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined fs-20">person_add</span>
-                        Add New Staff
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label small">First Name <span class="text-danger">*</span></label>
-                            <input type="text" id="add-firstname" class="form-control form-control-sm"
-                                placeholder="First name">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Last Name <span class="text-danger">*</span></label>
-                            <input type="text" id="add-lastname" class="form-control form-control-sm"
-                                placeholder="Last name">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Staff Type <span class="text-danger">*</span></label>
-                            <select id="add-type" class="form-select form-select-sm" onchange="toggleAddRoleField()">
-                                <option value="">Select type</option>
-                                <option value="Employee">Employee</option>
-                                <option value="Secretary">Secretary</option>
-                                <option value="Admin">Admin</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6" id="addRoleFieldWrap" style="display:none;">
-                            <label class="form-label small">Employee Role <span class="text-danger">*</span></label>
-                            <select id="add-role" class="form-select form-select-sm">
-                                <option value="">Select role</option>
-                                <option value="Driver">Driver</option>
-                                <option value="Technician">Technician</option>
-                                <option value="Driver / Technician">Driver / Technician</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Contact Number <span class="text-danger">*</span></label>
-                            <input type="text" id="add-contact" class="form-control form-control-sm"
-                                placeholder="0917-xxx-xxxx">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Email Address</label>
-                            <input type="email" id="add-email" class="form-control form-control-sm"
-                                placeholder="staff@email.com">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small">Address</label>
-                            <input type="text" id="add-address" class="form-control form-control-sm"
-                                placeholder="Block, Lot, Barangay, City, Province">
+                <form id="addStaffForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined fs-20">person_add</span>
+                            Add New Staff
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small">First Name <span class="text-danger">*</span></label>
+                                <input type="text" id="add-firstname" class="form-control form-control-sm"
+                                    placeholder="First name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" id="add-lastname" class="form-control form-control-sm"
+                                    placeholder="Last name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Staff Type <span class="text-danger">*</span></label>
+                                <select id="add-type" class="form-select form-select-sm" onchange="toggleAddRoleField()"
+                                    required>
+                                    <option value="">Select type</option>
+                                    <option value="Employee">Employee</option>
+                                    <option value="Secretary">Secretary</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6" id="addRoleFieldWrap" style="display:none;">
+                                <label class="form-label small">Employee Role <span class="text-danger">*</span></label>
+                                <select id="add-role" class="form-select form-select-sm">
+                                    <option value="">Select role</option>
+                                    <option value="driver">Driver</option>
+                                    <option value="technician">Technician</option>
+                                    <option value="driver_technician">Driver / Technician</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Contact Number <span class="text-danger">*</span></label>
+                                <input type="text" id="add-contact" class="form-control form-control-sm"
+                                    placeholder="0917-xxx-xxxx" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Email Address <span class="text-danger">*</span></label>
+                                <input type="email" id="add-email" class="form-control form-control-sm"
+                                    placeholder="staff@email.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Password <span class="text-danger">*</span></label>
+                                <input type="password" id="add-password" class="form-control form-control-sm"
+                                    placeholder="Min. 8 characters" required minlength="8">
+                            </div>
+                            <div class="col-12">
+                                <hr class="my-1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small">Block</label>
+                                <input type="text" id="add-block" class="form-control form-control-sm"
+                                    placeholder="1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small">Lot</label>
+                                <input type="text" id="add-lot" class="form-control form-control-sm"
+                                    placeholder="20">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small">Street / Purok / Sitio</label>
+                                <input type="text" id="add-street" class="form-control form-control-sm"
+                                    placeholder="Green St.">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Barangay <span class="text-danger">*</span></label>
+                                <input type="text" id="add-barangay" class="form-control form-control-sm"
+                                    placeholder="Olaes" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">City <span class="text-danger">*</span></label>
+                                <input type="text" id="add-city" class="form-control form-control-sm"
+                                    placeholder="GMA" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Province <span class="text-danger">*</span></label>
+                                <input type="text" id="add-province" class="form-control form-control-sm"
+                                    placeholder="Cavite" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Zip Code</label>
+                                <input type="text" id="add-zip" class="form-control form-control-sm"
+                                    placeholder="4117">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success d-flex align-items-center gap-1">
-                        <span class="material-symbols-outlined fs-16">save</span>Save Staff
-                    </button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success d-flex align-items-center gap-1">
+                            <span class="material-symbols-outlined fs-16">save</span>Save Staff
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -452,42 +470,51 @@
 
 @section('scripts')
     <script>
-        const typeColors = {
-            'Employee': {
-                bg: '#16A249',
-                avatar: 'rgba(22,162,73,.12)',
-                border: '#16A249',
-                text: '#16A249'
-            },
-            'Secretary': {
-                bg: '#3b82f6',
-                avatar: 'rgba(59,130,246,.12)',
-                border: '#3b82f6',
-                text: '#3b82f6'
-            },
-            'Admin': {
-                bg: '#8b5cf6',
-                avatar: 'rgba(139,92,246,.12)',
-                border: '#8b5cf6',
-                text: '#8b5cf6'
-            },
+        // typeColors object removed — .type-employee / .type-secretary / .type-admin
+        // already carry the right bg + text colors from employees.css, no need to duplicate in JS
+
+        const statusColors = {
+            active: 'bg-success',
+            inactive: 'bg-secondary',
+            pending: 'bg-warning text-dark'
         };
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+        // Route templates — ':id' gets swapped for the real staff DB id at call time
+        const routes = {
+            store: @json(route('employees.store')),
+            update: @json(route('employees.update', ':id')),
+            archive: @json(route('employees.archive', ':id')),
+        };
+
+        function buildAddress(d) {
+            return [
+                [d.block, d.lot].filter(Boolean).join(' Lot '),
+                d.street,
+                d.barangay,
+                d.city,
+                d.province,
+                d.zip_code,
+            ].filter(Boolean).join(', ');
+        }
 
         function loadStaffDetail(d) {
             const parts = (d.name || '').trim().split(' ');
             const initials = parts.length >= 2 ? parts[0][0] + parts[parts.length - 1][0] : (parts[0] ? parts[0][0] : '?');
-            const c = typeColors[d.type] || typeColors['Employee'];
+            const typeClass = 'type-' + (d.type || 'employee').toLowerCase();
 
             const avatar = document.getElementById('vs-avatar');
             avatar.textContent = initials.toUpperCase();
-            avatar.style.backgroundColor = c.avatar;
-            avatar.style.border = `2px solid ${c.border}`;
-            avatar.style.color = c.text;
+            avatar.className = 'staff-avatar ' + typeClass; // reuses .type-* bg/text from CSS
 
             const badge = document.getElementById('vs-type-badge');
             badge.textContent = d.type;
-            badge.style.backgroundColor = c.bg;
-            badge.style.color = '#fff';
+            badge.className = 'type-pill ' + typeClass; // same pill style as the table
+
+            const statusBadge = document.getElementById('vs-status-badge');
+            statusBadge.textContent = d.status ? d.status.charAt(0).toUpperCase() + d.status.slice(1) : '—';
+            statusBadge.className = 'badge rounded-pill ' + (statusColors[d.status] || 'bg-secondary');
 
             document.getElementById('vs-name').textContent = d.name || '—';
             document.getElementById('vs-id').textContent = d.id || '—';
@@ -496,22 +523,32 @@
             document.getElementById('vs-joined').textContent = d.joined || '—';
             document.getElementById('vs-contact').textContent = d.contact || '—';
             document.getElementById('vs-email').textContent = d.email || '—';
-            document.getElementById('vs-address').textContent = d.address || '—';
+            document.getElementById('vs-address').textContent = buildAddress(d) || '—';
+
+            document.getElementById('vs-archive-btn').onclick = () => archiveStaff(d.db_id, d.name);
         }
 
         function loadEditStaff(d) {
             document.getElementById('edit-staff-id').textContent = d.id || '';
+            document.getElementById('edit-staff-id').dataset.dbId = d.db_id;
             document.getElementById('edit-firstname').value = d.firstname || '';
             document.getElementById('edit-lastname').value = d.lastname || '';
             document.getElementById('edit-type').value = d.type || 'Employee';
             document.getElementById('edit-contact').value = d.contact || '';
             document.getElementById('edit-email').value = d.email || '';
-            document.getElementById('edit-address').value = d.address || '';
+            document.getElementById('edit-password').value = '';
+            document.getElementById('edit-block').value = d.block || '';
+            document.getElementById('edit-lot').value = d.lot || '';
+            document.getElementById('edit-street').value = d.street || '';
+            document.getElementById('edit-barangay').value = d.barangay || '';
+            document.getElementById('edit-city').value = d.city || '';
+            document.getElementById('edit-province').value = d.province || '';
+            document.getElementById('edit-zip').value = d.zip_code || '';
 
             const roleWrap = document.getElementById('editRoleFieldWrap');
             if (d.type === 'Employee') {
                 roleWrap.style.display = '';
-                document.getElementById('edit-role').value = d.role || '';
+                document.getElementById('edit-role').value = d.position || '';
             } else {
                 roleWrap.style.display = 'none';
             }
@@ -528,9 +565,117 @@
         }
 
         document.getElementById('addStaffModal').addEventListener('show.bs.modal', () => {
-            document.getElementById('add-type').value = '';
+            document.getElementById('addStaffForm').reset();
             document.getElementById('addRoleFieldWrap').style.display = 'none';
         });
+
+        async function submitJson(url, method, payload, form) {
+            clearFieldErrors(form);
+            try {
+                const res = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                const data = await res.json();
+
+                if (res.status === 422) {
+                    showFieldErrors(form, data.errors || {});
+                    return;
+                }
+
+                if (!res.ok) {
+                    alert(data.message || 'Something went wrong. Please try again.');
+                    return;
+                }
+
+                window.location.reload();
+            } catch (err) {
+                alert('Network error — please try again.');
+            }
+        }
+
+        function clearFieldErrors(form) {
+            form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+        }
+
+        function showFieldErrors(form, errors) {
+            Object.entries(errors).forEach(([field, messages]) => {
+                const prefix = form.id === 'addStaffForm' ? 'add-' : 'edit-';
+                const el = document.getElementById(prefix + field.replace('_', '')) ||
+                    document.getElementById(prefix + field);
+                if (el) {
+                    el.classList.add('is-invalid');
+                    const feedback = document.createElement('div');
+                    feedback.className = 'invalid-feedback';
+                    feedback.textContent = messages[0];
+                    el.insertAdjacentElement('afterend', feedback);
+                }
+            });
+        }
+
+        document.getElementById('addStaffForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const payload = {
+                first_name: document.getElementById('add-firstname').value,
+                last_name: document.getElementById('add-lastname').value,
+                type: document.getElementById('add-type').value,
+                position: document.getElementById('add-role').value || null,
+                contact_number: document.getElementById('add-contact').value,
+                email: document.getElementById('add-email').value,
+                password: document.getElementById('add-password').value,
+                block: document.getElementById('add-block').value,
+                lot: document.getElementById('add-lot').value,
+                street: document.getElementById('add-street').value,
+                barangay: document.getElementById('add-barangay').value,
+                city: document.getElementById('add-city').value,
+                province: document.getElementById('add-province').value,
+                zip_code: document.getElementById('add-zip').value,
+            };
+            submitJson(routes.store, 'POST', payload, this);
+        });
+
+        document.getElementById('editStaffForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const dbId = document.getElementById('edit-staff-id').dataset.dbId;
+            const payload = {
+                first_name: document.getElementById('edit-firstname').value,
+                last_name: document.getElementById('edit-lastname').value,
+                type: document.getElementById('edit-type').value,
+                position: document.getElementById('edit-role').value || null,
+                contact_number: document.getElementById('edit-contact').value,
+                email: document.getElementById('edit-email').value,
+                password: document.getElementById('edit-password').value || null,
+                block: document.getElementById('edit-block').value,
+                lot: document.getElementById('edit-lot').value,
+                street: document.getElementById('edit-street').value,
+                barangay: document.getElementById('edit-barangay').value,
+                city: document.getElementById('edit-city').value,
+                province: document.getElementById('edit-province').value,
+                zip_code: document.getElementById('edit-zip').value,
+            };
+            submitJson(routes.update.replace(':id', dbId), 'PATCH', payload, this);
+        });
+
+        function archiveStaff(dbId, name) {
+            if (!confirm(`Archive ${name}? They will be moved out of the active staff list.`)) return;
+            fetch(routes.archive.replace(':id', dbId), {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                })
+                .then(res => res.json())
+                .then(() => window.location.reload())
+                .catch(() => alert('Network error — please try again.'));
+        }
 
         $('#staffTable').DataTable({
             pageLength: 10,
@@ -544,24 +689,15 @@
             columnDefs: [{
                 orderable: false,
                 targets: 6
-            }]
+            }],
         });
 
-        $('#archiveModal').on('shown.bs.modal', function() {
-            if (!$.fn.DataTable.isDataTable('#archiveTable')) {
-                $('#archiveTable').DataTable({
-                    pageLength: 5,
-                    lengthChange: false,
-                    info: true,
-                    order: [
-                        [0, 'desc']
-                    ],
-                    columnDefs: [{
-                        orderable: false,
-                        targets: 6
-                    }]
-                });
-            }
+        $('#statusFilterGroup button').on('click', function() {
+            $('#statusFilterGroup button').removeClass('active');
+            $(this).addClass('active');
+            const filter = $(this).data('filter');
+            const table = $('#staffTable').DataTable();
+            table.column(2).search(filter === 'all' ? '' : filter, true, false).draw();
         });
     </script>
 @endsection

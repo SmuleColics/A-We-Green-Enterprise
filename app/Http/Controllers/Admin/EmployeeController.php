@@ -52,9 +52,7 @@ class EmployeeController extends Controller
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
                 'email' => $validated['email'],
-                // Temporary placeholder password. Replace with a proper
-                // "set your password" emailed-link flow before production use.
-                'password' => Hash::make(str()->random(16)),
+                'password' => Hash::make($validated['password']),
                 'role' => $role,
                 'contact_number' => $validated['contact_number'],
                 'status' => 'active',
@@ -109,6 +107,7 @@ class EmployeeController extends Controller
                 'contact_number' => $validated['contact_number'],
                 'email' => $validated['email'],
                 'role' => $newRole,
+                ...(! empty($validated['password']) ? ['password' => Hash::make($validated['password'])] : []),
             ]);
 
             $staff->update([
@@ -186,6 +185,8 @@ class EmployeeController extends Controller
                     ? Rule::unique('users', 'email')->ignore($staff->user_id)
                     : Rule::unique('users', 'email'),
             ],
+            // Only required on create; leave blank on edit to keep the current password
+            'password' => [$staff ? 'nullable' : 'required', 'string', 'min:8'],
             'block' => 'nullable|string|max:50',
             'lot' => 'nullable|string|max:50',
             'street' => 'nullable|string|max:150',

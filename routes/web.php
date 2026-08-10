@@ -178,6 +178,7 @@ Route::middleware(['auth', 'role:client'])->group(function () {
     Route::post('/assessment', [AssessmentController::class, 'store'])->name('assessment.store');
     Route::patch('/assessment/{assessment}/cancel', [AssessmentController::class, 'cancel'])->name('assessment.cancel');
 });
+
 // ADMIN SIDE BACKEND ROUTES
 Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function () {
     // ASSESSMENT REQUEST
@@ -186,8 +187,12 @@ Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function 
     Route::patch('/requests/{assessment}/decline', [AssessmentRequestController::class, 'decline'])->name('requests.decline');
     Route::patch('/requests/{assessment}/archive', [AssessmentRequestController::class, 'archive'])->name('requests.archive');
 
-    // EMPLOYEES / STAFF LISTS
+    // EMPLOYEES / STAFF LISTS (read-only for secretary too)
     Route::get('/employees', [EmployeeController::class, 'index'])->name('employees');
+});
+
+// EMPLOYEES / STAFF LISTS (write access restricted to admin & super_admin only)
+Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
     Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
     Route::patch('/employees/{staff}', [EmployeeController::class, 'update'])->name('employees.update');
     Route::patch('/employees/{staff}/archive', [EmployeeController::class, 'archive'])->name('employees.archive');
