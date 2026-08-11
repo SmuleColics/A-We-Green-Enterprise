@@ -321,7 +321,7 @@
                 </div>
                 <div class="modal-body py-3">
                     <p class="mb-1">Confirming request <strong id="aa-refNo">—</strong></p>
-                    <p class="text-muted small mb-3">Select up to 3 employees to assess this request.</p>
+                    <p class="text-muted small mb-3">Select up to 2 employees to assess this request.</p>
 
                     <div class="d-flex flex-column gap-2" id="aa-employee-list">
                         @forelse ($employees as $employee)
