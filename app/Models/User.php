@@ -14,8 +14,6 @@ class User extends Authenticatable
 
     const ROLE_EMPLOYEE = 'employee';
 
-    const ROLE_SECRETARY = 'secretary';
-
     const ROLE_ADMIN = 'admin';
 
     const ROLE_SUPER_ADMIN = 'super_admin';
@@ -62,11 +60,6 @@ class User extends Authenticatable
         return $this->role === self::ROLE_EMPLOYEE;
     }
 
-    public function isSecretary(): bool
-    {
-        return $this->role === self::ROLE_SECRETARY;
-    }
-
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;
@@ -81,7 +74,6 @@ class User extends Authenticatable
     {
         return in_array($this->role, [
             self::ROLE_EMPLOYEE,
-            self::ROLE_SECRETARY,
             self::ROLE_ADMIN,
             self::ROLE_SUPER_ADMIN,
         ]);

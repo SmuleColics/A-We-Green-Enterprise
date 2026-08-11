@@ -200,7 +200,6 @@ class AuthController extends Controller
         return match ($role) {
             User::ROLE_CLIENT => 'portal',
             User::ROLE_EMPLOYEE,
-            User::ROLE_SECRETARY,
             User::ROLE_ADMIN,
             User::ROLE_SUPER_ADMIN => 'dashboard',
             default => 'sign-in',

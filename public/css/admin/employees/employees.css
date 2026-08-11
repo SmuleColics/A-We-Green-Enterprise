@@ -1,6 +1,37 @@
 /* =============================================
    STAFF AVATAR
    ============================================= */
+/* =============================================
+   PASSWORD TOGGLE (Add/Edit Staff modals)
+   ============================================= */
+.input-icon-wrap {
+  position: relative;
+}
+
+.pe-input {
+  padding-right: 2.25rem !important;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  z-index: 5;
+  transition: color 0.15s;
+}
+
+.password-toggle:hover {
+  color: #374151;
+}
+
 .staff-avatar {
   width: 56px;
   height: 56px;
@@ -26,9 +57,20 @@
   letter-spacing: 0.02em;
 }
 
-.type-employee  { background: #d1fae5; color: #065f46; }
-.type-secretary { background: #dbeafe; color: #1e40af; }
-.type-admin     { background: #ede9fe; color: #5b21b6; }
+.type-employee {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.type-secretary {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.type-admin {
+  background: #ede9fe;
+  color: #5b21b6;
+}
 
 /* =============================================
    PAGINATION LINK COLORS

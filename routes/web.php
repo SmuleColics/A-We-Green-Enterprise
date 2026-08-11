@@ -27,9 +27,6 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
     // archive assessments
     Route::get('/archive-assessments', [AdminController::class, 'showArchiveAssessments'])->name('archive-assessments');
 
-    // assessment requests
-    Route::get('/requests', [AdminController::class, 'showAssessmentRequests'])->name('requests');
-
     // archive assessment requests
     Route::get('/archive-requests', [AdminController::class, 'showArchiveAssessmentRequests'])->name('archive-requests');
 
@@ -71,9 +68,6 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
 
     // reports
     Route::get('/reports', [AdminController::class, 'showReports'])->name('reports');
-
-    // employees
-    Route::get('/employees', [AdminController::class, 'showEmployees'])->name('employees');
 
     // archive employees
     Route::get('/archive-employees', [AdminController::class, 'showArchiveEmployees'])->name('archive-employees');
@@ -180,19 +174,16 @@ Route::middleware(['auth', 'role:client'])->group(function () {
 });
 
 // ADMIN SIDE BACKEND ROUTES
-Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function () {
+Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
     // ASSESSMENT REQUEST
     Route::get('/requests', [AssessmentRequestController::class, 'index'])->name('requests');
     Route::patch('/requests/{assessment}/confirm', [AssessmentRequestController::class, 'confirm'])->name('requests.confirm');
     Route::patch('/requests/{assessment}/decline', [AssessmentRequestController::class, 'decline'])->name('requests.decline');
     Route::patch('/requests/{assessment}/archive', [AssessmentRequestController::class, 'archive'])->name('requests.archive');
-
-    // EMPLOYEES / STAFF LISTS (read-only for secretary too)
-    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees');
 });
 
-// EMPLOYEES / STAFF LISTS (write access restricted to admin & super_admin only)
 Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees');
     Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
     Route::patch('/employees/{staff}', [EmployeeController::class, 'update'])->name('employees.update');
     Route::patch('/employees/{staff}/archive', [EmployeeController::class, 'archive'])->name('employees.archive');

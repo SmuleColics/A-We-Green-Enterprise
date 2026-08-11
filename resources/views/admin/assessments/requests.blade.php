@@ -177,14 +177,7 @@
                                         </button>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">
-                                        No assessment requests yet.
-                                    </td>
-                                </tr>
-                            @endforelse
-
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

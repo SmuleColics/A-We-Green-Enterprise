@@ -30,7 +30,6 @@
         ];
         $typeLabels = [
             \App\Models\User::ROLE_EMPLOYEE => 'Employee',
-            \App\Models\User::ROLE_SECRETARY => 'Secretary',
             \App\Models\User::ROLE_ADMIN => 'Admin',
         ];
     @endphp
@@ -43,27 +42,8 @@
                 <div class="summary-card">
                     <span class="material-symbols-outlined summary-icon green-text">badge</span>
                     <div>
-                        <p class="summary-label">Total Employees</p>
+                        <p class="summary-label">Total Staff</p>
                         <p class="summary-value">{{ $total }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon"
-                        style="color:var(--awg-primary);">engineering</span>
-                    <div>
-                        <p class="summary-label">Field Employees</p>
-                        <p class="summary-value">{{ $fieldEmployees }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon" style="color:#3b82f6;">assignment_ind</span>
-                    <div>
-                        <p class="summary-label">Secretaries</p>
-                        <p class="summary-value">{{ $secretaries }}</p>
                     </div>
                 </div>
             </div>
@@ -76,6 +56,24 @@
                     </div>
                 </div>
             </div>
+            <div class="col-6 col-md-3">
+                <div class="summary-card">
+                    <span class="material-symbols-outlined summary-icon" style="color:#f59e0b;">build</span>
+                    <div>
+                        <p class="summary-label">Technicians</p>
+                        <p class="summary-value">{{ $technicians }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="summary-card">
+                    <span class="material-symbols-outlined summary-icon" style="color:#3b82f6;">local_shipping</span>
+                    <div>
+                        <p class="summary-label">Drivers</p>
+                        <p class="summary-value">{{ $drivers }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Staff Table -->
@@ -85,8 +83,6 @@
                 <div class="mb-3 btn-group filter-btn-group" role="group" id="statusFilterGroup">
                     <button type="button" class="btn btn-sm btn-outline-secondary active" data-filter="all">All</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Admin">Admin</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary"
-                        data-filter="Secretary">Secretary</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Employee">Field
                         Employee</button>
                 </div>
@@ -105,7 +101,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($staffMembers as $staff)
+                            @foreach ($staffMembers as $staff)
                                 @php
                                     $role = $staff->user->role;
                                     $typeLabel = $typeLabels[$role] ?? ucfirst($role);
@@ -255,7 +251,7 @@
     <div class="modal fade" id="editStaffModal" tabindex="-1">
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
-                <form id="editStaffForm">
+                <form id="editStaffForm" class="needs-validation" novalidate>
                     <div class="modal-header">
                         <h5 class="modal-title d-flex align-items-center gap-2">
                             <span class="material-symbols-outlined fs-20">manage_accounts</span>
@@ -276,6 +272,7 @@
                                 <label class="form-label small">Last Name <span class="text-danger">*</span></label>
                                 <input type="text" id="edit-lastname" class="form-control form-control-sm" required>
                             </div>
+
                             <div class="col-md-6">
                                 <label class="form-label small">Staff Type <span class="text-danger">*</span></label>
                                 <select id="edit-type" class="form-select form-select-sm"
@@ -285,6 +282,11 @@
                                     <option value="Admin">Admin</option>
                                 </select>
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Contact Number <span class="text-danger">*</span></label>
+                                <input type="text" id="edit-contact" class="form-control form-control-sm" required>
+                            </div>
+
                             <div class="col-md-6" id="editRoleFieldWrap">
                                 <label class="form-label small">Employee Role <span class="text-danger">*</span></label>
                                 <select id="edit-role" class="form-select form-select-sm">
@@ -294,21 +296,27 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small">Contact Number <span class="text-danger">*</span></label>
-                                <input type="text" id="edit-contact" class="form-control form-control-sm" required>
-                            </div>
-                            <div class="col-md-6">
                                 <label class="form-label small">Email Address <span class="text-danger">*</span></label>
                                 <input type="email" id="edit-email" class="form-control form-control-sm" required>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="editPasswordFieldWrap">
                                 <label class="form-label small">New Password</label>
-                                <input type="password" id="edit-password" class="form-control form-control-sm"
-                                    placeholder="Leave blank to keep current">
+                                <div class="input-icon-wrap">
+                                    <input type="password" id="edit-password"
+                                        class="form-control form-control-sm pe-input"
+                                        placeholder="Leave blank to keep current">
+                                    <button type="button" class="password-toggle" id="toggleEditPassword"
+                                        aria-label="Show password">
+                                        <span class="material-symbols-outlined fs-16"
+                                            id="toggleEditPasswordIcon">visibility</span>
+                                    </button>
+                                </div>
                             </div>
+
                             <div class="col-12">
                                 <hr class="my-1">
                             </div>
+
                             <div class="col-md-4">
                                 <label class="form-label small">Block</label>
                                 <input type="text" id="edit-block" class="form-control form-control-sm"
@@ -362,7 +370,7 @@
     <div class="modal fade" id="addStaffModal" tabindex="-1">
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
-                <form id="addStaffForm">
+                <form id="addStaffForm" class="needs-validation" novalidate>
                     <div class="modal-header">
                         <h5 class="modal-title d-flex align-items-center gap-2">
                             <span class="material-symbols-outlined fs-20">person_add</span>
@@ -382,16 +390,22 @@
                                 <input type="text" id="add-lastname" class="form-control form-control-sm"
                                     placeholder="Last name" required>
                             </div>
+
                             <div class="col-md-6">
                                 <label class="form-label small">Staff Type <span class="text-danger">*</span></label>
                                 <select id="add-type" class="form-select form-select-sm" onchange="toggleAddRoleField()"
                                     required>
                                     <option value="">Select type</option>
                                     <option value="Employee">Employee</option>
-                                    <option value="Secretary">Secretary</option>
                                     <option value="Admin">Admin</option>
                                 </select>
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Contact Number <span class="text-danger">*</span></label>
+                                <input type="text" id="add-contact" class="form-control form-control-sm"
+                                    placeholder="0917-xxx-xxxx" required>
+                            </div>
+
                             <div class="col-md-6" id="addRoleFieldWrap" style="display:none;">
                                 <label class="form-label small">Employee Role <span class="text-danger">*</span></label>
                                 <select id="add-role" class="form-select form-select-sm">
@@ -402,23 +416,28 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small">Contact Number <span class="text-danger">*</span></label>
-                                <input type="text" id="add-contact" class="form-control form-control-sm"
-                                    placeholder="0917-xxx-xxxx" required>
-                            </div>
-                            <div class="col-md-6">
                                 <label class="form-label small">Email Address <span class="text-danger">*</span></label>
                                 <input type="email" id="add-email" class="form-control form-control-sm"
                                     placeholder="staff@email.com" required>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="addPasswordFieldWrap">
                                 <label class="form-label small">Password <span class="text-danger">*</span></label>
-                                <input type="password" id="add-password" class="form-control form-control-sm"
-                                    placeholder="Min. 8 characters" required minlength="8">
+                                <div class="input-icon-wrap">
+                                    <input type="password" id="add-password"
+                                        class="form-control form-control-sm pe-input" placeholder="Min. 8 characters"
+                                        required minlength="8">
+                                    <button type="button" class="password-toggle" id="toggleAddPassword"
+                                        aria-label="Show password">
+                                        <span class="material-symbols-outlined fs-16"
+                                            id="toggleAddPasswordIcon">visibility</span>
+                                    </button>
+                                </div>
                             </div>
+
                             <div class="col-12">
                                 <hr class="my-1">
                             </div>
+
                             <div class="col-md-4">
                                 <label class="form-label small">Block</label>
                                 <input type="text" id="add-block" class="form-control form-control-sm"
@@ -470,9 +489,6 @@
 
 @section('scripts')
     <script>
-        // typeColors object removed — .type-employee / .type-secretary / .type-admin
-        // already carry the right bg + text colors from employees.css, no need to duplicate in JS
-
         const statusColors = {
             active: 'bg-success',
             inactive: 'bg-secondary',
@@ -487,6 +503,23 @@
             update: @json(route('employees.update', ':id')),
             archive: @json(route('employees.archive', ':id')),
         };
+
+        function wirePasswordToggle(btnId, iconId, inputId) {
+            const btn = document.getElementById(btnId);
+            const icon = document.getElementById(iconId);
+            const input = document.getElementById(inputId);
+            if (!btn || !icon || !input) return;
+
+            btn.addEventListener('click', () => {
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                icon.textContent = isPassword ? 'visibility_off' : 'visibility';
+                btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+            });
+        }
+
+        wirePasswordToggle('toggleAddPassword', 'toggleAddPasswordIcon', 'add-password');
+        wirePasswordToggle('toggleEditPassword', 'toggleEditPasswordIcon', 'edit-password');
 
         function buildAddress(d) {
             return [
@@ -528,6 +561,13 @@
             document.getElementById('vs-archive-btn').onclick = () => archiveStaff(d.db_id, d.name);
         }
 
+        function setEditRoleAndPasswordLayout(isEmployee) {
+            document.getElementById('editRoleFieldWrap').style.display = isEmployee ? '' : 'none';
+            const pwWrap = document.getElementById('editPasswordFieldWrap');
+            pwWrap.classList.toggle('col-md-6', !isEmployee);
+            pwWrap.classList.toggle('col-12', isEmployee);
+        }
+
         function loadEditStaff(d) {
             document.getElementById('edit-staff-id').textContent = d.id || '';
             document.getElementById('edit-staff-id').dataset.dbId = d.db_id;
@@ -545,28 +585,33 @@
             document.getElementById('edit-province').value = d.province || '';
             document.getElementById('edit-zip').value = d.zip_code || '';
 
-            const roleWrap = document.getElementById('editRoleFieldWrap');
-            if (d.type === 'Employee') {
-                roleWrap.style.display = '';
+            const isEmployee = d.type === 'Employee';
+            setEditRoleAndPasswordLayout(isEmployee);
+            if (isEmployee) {
                 document.getElementById('edit-role').value = d.position || '';
-            } else {
-                roleWrap.style.display = 'none';
             }
         }
 
         function toggleEditRoleField() {
             const type = document.getElementById('edit-type').value;
-            document.getElementById('editRoleFieldWrap').style.display = type === 'Employee' ? '' : 'none';
+            setEditRoleAndPasswordLayout(type === 'Employee');
         }
 
         function toggleAddRoleField() {
             const type = document.getElementById('add-type').value;
-            document.getElementById('addRoleFieldWrap').style.display = type === 'Employee' ? '' : 'none';
+            const isEmployee = type === 'Employee';
+            document.getElementById('addRoleFieldWrap').style.display = isEmployee ? '' : 'none';
+
+            const pwWrap = document.getElementById('addPasswordFieldWrap');
+            pwWrap.classList.toggle('col-md-6', !isEmployee);
+            pwWrap.classList.toggle('col-12', isEmployee);
         }
 
         document.getElementById('addStaffModal').addEventListener('show.bs.modal', () => {
             document.getElementById('addStaffForm').reset();
             document.getElementById('addRoleFieldWrap').style.display = 'none';
+            document.getElementById('addPasswordFieldWrap').classList.add('col-md-6');
+            document.getElementById('addPasswordFieldWrap').classList.remove('col-12');
         });
 
         async function submitJson(url, method, payload, form) {
@@ -590,13 +635,17 @@
                 }
 
                 if (!res.ok) {
-                    alert(data.message || 'Something went wrong. Please try again.');
+                    showToast(data.message || 'Something went wrong. Please try again.', 'danger');
                     return;
                 }
 
+                sessionStorage.setItem('pendingToast', JSON.stringify({
+                    message: data.message,
+                    type: 'success',
+                }));
                 window.location.reload();
             } catch (err) {
-                alert('Network error — please try again.');
+                showToast('Network error — please try again.', 'danger');
             }
         }
 
@@ -622,6 +671,12 @@
 
         document.getElementById('addStaffForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            if (!this.checkValidity()) {
+                this.classList.add('was-validated');
+                return; // stop — do not call submitJson()
+            }
+
             const payload = {
                 first_name: document.getElementById('add-firstname').value,
                 last_name: document.getElementById('add-lastname').value,
@@ -643,6 +698,12 @@
 
         document.getElementById('editStaffForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            if (!this.checkValidity()) {
+                this.classList.add('was-validated');
+                return;
+            }
+
             const dbId = document.getElementById('edit-staff-id').dataset.dbId;
             const payload = {
                 first_name: document.getElementById('edit-firstname').value,
@@ -673,9 +734,28 @@
                     },
                 })
                 .then(res => res.json())
-                .then(() => window.location.reload())
-                .catch(() => alert('Network error — please try again.'));
+                .then(data => {
+                    sessionStorage.setItem('pendingToast', JSON.stringify({
+                        message: data.message,
+                        type: 'success',
+                    }));
+                    window.location.reload();
+                })
+                .catch(() => showToast('Network error — please try again.', 'danger'));
         }
+
+        // Show any toast queued from before a reload (Add/Edit/Archive success)
+        document.addEventListener('DOMContentLoaded', function() {
+            const pending = sessionStorage.getItem('pendingToast');
+            if (pending) {
+                const {
+                    message,
+                    type
+                } = JSON.parse(pending);
+                showToast(message, type);
+                sessionStorage.removeItem('pendingToast');
+            }
+        });
 
         $('#staffTable').DataTable({
             pageLength: 10,
@@ -690,6 +770,10 @@
                 orderable: false,
                 targets: 6
             }],
+            language: {
+                emptyTable: 'No staff members found.',
+                zeroRecords: 'No matching staff found.'
+            },
         });
 
         $('#statusFilterGroup button').on('click', function() {

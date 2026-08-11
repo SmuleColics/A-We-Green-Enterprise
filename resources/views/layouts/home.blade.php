@@ -8,7 +8,8 @@
     @hasSection('meta-description')
         <meta name="description" content="@yield('meta-description')" />
     @endif
-
+    {{-- ========== COMPANY LOGO ========== --}}
+    <link rel="icon" type="image/png" href="{{ asset('css/images/AWeGreen-Logo.svg') }}">
     {{-- ========== BOOTSTRAP LINK ========== --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
@@ -28,7 +29,7 @@
 
     {{-- ========== BOOTSTRAP JS ========== --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     {{-- ========== BOOTSTRAP FORM VALIDATION ========== --}}
     <script>
         (() => {

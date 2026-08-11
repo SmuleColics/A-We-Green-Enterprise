@@ -34,7 +34,6 @@ class Staff extends Model
 
         $prefix = match ($role) {
             User::ROLE_EMPLOYEE => 'EMP',
-            User::ROLE_SECRETARY => 'SEC',
             User::ROLE_ADMIN => 'ADM',
             default => 'STF',
         };

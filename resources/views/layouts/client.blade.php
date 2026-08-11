@@ -23,6 +23,7 @@
 <body class="portal-body">
 
     @include('includes.client-nav')
+    @include('includes.toast')
 
     <main class="portal-main pb-5">
         @yield('content')

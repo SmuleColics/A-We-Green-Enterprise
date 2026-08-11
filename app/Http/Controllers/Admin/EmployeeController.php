@@ -16,7 +16,6 @@ class EmployeeController extends Controller
 {
     private const ROLE_MAP = [
         'Employee' => User::ROLE_EMPLOYEE,
-        'Secretary' => User::ROLE_SECRETARY,
         'Admin' => User::ROLE_ADMIN,
     ];
 
@@ -26,19 +25,30 @@ class EmployeeController extends Controller
             ->where('is_archived', false)
             ->whereHas('user', fn ($q) => $q->whereIn('role', [
                 User::ROLE_EMPLOYEE,
-                User::ROLE_SECRETARY,
                 User::ROLE_ADMIN,
             ]))
             ->orderByDesc('created_at')
             ->get();
 
         $total = $staffMembers->count();
-        $fieldEmployees = $staffMembers->filter(fn ($s) => $s->user->role === User::ROLE_EMPLOYEE)->count();
-        $secretaries = $staffMembers->filter(fn ($s) => $s->user->role === User::ROLE_SECRETARY)->count();
         $admins = $staffMembers->filter(fn ($s) => $s->user->role === User::ROLE_ADMIN)->count();
 
+        $technicians = $staffMembers->filter(
+            fn ($s) => in_array($s->employee?->position, [
+                Employee::POSITION_TECHNICIAN,
+                Employee::POSITION_DRIVER_TECHNICIAN,
+            ])
+        )->count();
+
+        $drivers = $staffMembers->filter(
+            fn ($s) => in_array($s->employee?->position, [
+                Employee::POSITION_DRIVER,
+                Employee::POSITION_DRIVER_TECHNICIAN,
+            ])
+        )->count();
+
         return view('admin.employees.employees', compact(
-            'staffMembers', 'total', 'fieldEmployees', 'secretaries', 'admins'
+            'staffMembers', 'total', 'admins', 'technicians', 'drivers'
         ));
     }
 
@@ -98,6 +108,7 @@ class EmployeeController extends Controller
     public function update(Request $request, Staff $staff)
     {
         $validated = $this->validateStaff($request, $staff);
+        $currentTypeLabel = array_search($staff->user->role, self::ROLE_MAP, true) ?: 'Employee';
         $newRole = self::ROLE_MAP[$validated['type']];
 
         DB::transaction(function () use ($validated, $staff, $newRole) {
