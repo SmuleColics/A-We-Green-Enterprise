@@ -54,15 +54,17 @@ class Task extends Model
     }
 
     // ── Accessors ──
-    public function getStatusBadgeAttribute(): string
+    public function getStatusBadgeAttribute()
     {
-        return match ($this->status) {
-            'Pending' => 'bg-warning text-dark',
-            'In Progress' => 'bg-info text-white',
-            'Completed' => 'bg-success text-white',
-            'Declined' => 'bg-danger text-white',
-            default => 'bg-secondary text-white',
-        };
+        $colors = [
+            'Completed' => 'success',
+            'Pending' => 'secondary',
+            'In Progress' => 'primary',
+            'Declined' => 'danger',
+        ];
+        $color = $colors[$this->status] ?? 'secondary';
+
+        return "<span class=\"badge bg-{$color}\">{$this->status}</span>";
     }
 
     public function getStatusIconAttribute(): string

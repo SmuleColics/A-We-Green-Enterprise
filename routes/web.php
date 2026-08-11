@@ -16,7 +16,7 @@ Route::get('/', [HomeController::class, 'showLandingPage'])
     ->name('landing-page');
 
 // ========== ADMIN SIDE ==========
-// Accessible by secretary, admin, super_admin
+// Accessible by admin & super_admin
 Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function () {
 
     // dashboard
@@ -45,9 +45,6 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
 
     // quotation proposal
     Route::get('/proposals', [AdminController::class, 'showQuotationProposals'])->name('proposals');
-
-    // tasks
-    Route::get('/tasks', [AdminController::class, 'showTasks'])->name('tasks');
 
     // archive tasks
     Route::get('/archive-tasks', [AdminController::class, 'showArchiveTasks'])->name('archive-tasks');
@@ -184,10 +181,18 @@ Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
+    // EMPLOYEES
     Route::get('/employees', [EmployeeController::class, 'index'])->name('employees');
     Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
     Route::patch('/employees/{staff}', [EmployeeController::class, 'update'])->name('employees.update');
     Route::patch('/employees/{staff}/archive', [EmployeeController::class, 'archive'])->name('employees.archive');
+
+    // TASKS (Admin + SuperAdmin)
+    Route::get('/tasks', [App\Http\Controllers\Admin\TaskController::class, 'index'])->name('tasks');
+    Route::get('/tasks/{task}/details', [App\Http\Controllers\Admin\TaskController::class, 'show'])->name('tasks.show');
+    Route::post('/tasks/create', [App\Http\Controllers\Admin\TaskController::class, 'create'])->name('tasks.create');
+    Route::post('/tasks/{task}/update', [App\Http\Controllers\Admin\TaskController::class, 'update'])->name('tasks.update');
+    Route::post('/tasks/{task}/delete', [App\Http\Controllers\Admin\TaskController::class, 'destroy'])->name('tasks.destroy');
 });
 
 // ──────────────────────────────────────────
@@ -198,8 +203,3 @@ Route::middleware(['auth', 'employee'])->prefix('employee')->name('employee.')->
     Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
     Route::post('/tasks/{task}/update', [TaskController::class, 'update'])->name('tasks.update');
 });
-
-// Also add this global route (if not already present)
-Route::get('/tasks', function () {
-    return redirect()->route('employee.tasks');
-})->name('tasks')->middleware('auth');

@@ -52,10 +52,10 @@ class AdminController extends Controller
     }
 
     // TASKS
-    public function showTasks()
-    {
-        return view('admin.tasks.tasks');
-    }
+    // public function showTasks()
+    // {
+    //     return view('admin.tasks.tasks');
+    // }
 
     public function showArchiveTasks()
     {
