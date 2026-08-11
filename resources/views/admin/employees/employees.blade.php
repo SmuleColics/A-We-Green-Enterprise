@@ -522,14 +522,15 @@
         wirePasswordToggle('toggleEditPassword', 'toggleEditPasswordIcon', 'edit-password');
 
         function buildAddress(d) {
-            return [
-                [d.block, d.lot].filter(Boolean).join(' Lot '),
+            const line1 = [
+                d.block ? `Blk ${d.block}` : null,
+                d.lot ? `Lot ${d.lot}` : null,
                 d.street,
-                d.barangay,
-                d.city,
-                d.province,
-                d.zip_code,
             ].filter(Boolean).join(', ');
+
+            return [line1, d.barangay, d.city, d.province, d.zip_code]
+                .filter(Boolean)
+                .join(', ');
         }
 
         function loadStaffDetail(d) {
