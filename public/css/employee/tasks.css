@@ -1,0 +1,231 @@
+/* ──────────────────────────────────────────
+   EMPLOYEE TASKS PAGE STYLES
+   ────────────────────────────────────────── */
+
+/* Summary Cards */
+.summary-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #10b981;
+}
+
+.summary-icon {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Task Table */
+#tasksTable {
+  font-size: 0.875rem;
+}
+
+#tasksTable thead th {
+  border-bottom: 2px solid #e5e7eb;
+  color: #10b981;
+  font-weight: 600;
+  padding: 1rem;
+  background-color: #f9fafb;
+}
+
+#tasksTable tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+#tasksTable tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+#tasksTable tbody td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+/* Task Description Preview */
+.task-desc-preview {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  font-weight: 500;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge span.material-symbols-outlined {
+  font-size: 14px;
+}
+
+/* Status Badge Colors */
+.bg-warning {
+  background-color: #fef3c7 !important;
+  color: #92400e;
+}
+
+.bg-info {
+  background-color: #cffafe !important;
+  color: #164e63;
+}
+
+.bg-success {
+  background-color: #dcfce7 !important;
+  color: #166534;
+}
+
+.bg-danger {
+  background-color: #fee2e2 !important;
+  color: #991b1b;
+}
+
+/* Action Buttons */
+.btn-group-sm {
+  gap: 0.25rem;
+}
+
+.btn-group-sm .btn {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.btn-group-sm .btn .material-symbols-outlined {
+  font-size: 16px;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.btn-outline-info:hover {
+  background-color: #0dcaf0;
+  color: white;
+}
+
+.btn-outline-success:hover {
+  background-color: #198754;
+  color: white;
+}
+
+.btn-outline-warning:hover {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Filter Button Group */
+.filter-btn-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.filter-btn-group .btn {
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.filter-btn-group .btn.active {
+  background-color: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+
+/* Empty State */
+.text-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal Styles */
+.modal-header {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.modal-title {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.task-details-section {
+  padding: 0.5rem 0;
+}
+
+.task-details-section p {
+  margin-bottom: 0.5rem;
+}
+
+.task-details-section .text-muted {
+  color: #6b7280;
+}
+
+.task-details-section .fw-semibold {
+  color: #1f2937;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .summary-card {
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .summary-value {
+    font-size: 1.5rem;
+  }
+
+  #tasksTable {
+    font-size: 0.75rem;
+  }
+
+  #tasksTable tbody td {
+    padding: 0.75rem;
+  }
+
+  .btn-group-sm {
+    flex-direction: column;
+  }
+
+  .btn-group-sm .btn {
+    width: 100%;
+  }
+}

@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Client\AssessmentController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\Employee\TaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
@@ -188,3 +189,17 @@ Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
     Route::patch('/employees/{staff}', [EmployeeController::class, 'update'])->name('employees.update');
     Route::patch('/employees/{staff}/archive', [EmployeeController::class, 'archive'])->name('employees.archive');
 });
+
+// ──────────────────────────────────────────
+// EMPLOYEE ROUTES
+// ──────────────────────────────────────────
+Route::middleware(['auth', 'employee'])->prefix('employee')->name('employee.')->group(function () {
+    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks');
+    Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
+    Route::post('/tasks/{task}/update', [TaskController::class, 'update'])->name('tasks.update');
+});
+
+// Also add this global route (if not already present)
+Route::get('/tasks', function () {
+    return redirect()->route('employee.tasks');
+})->name('tasks')->middleware('auth');

@@ -24,6 +24,11 @@ class Assessment extends Model
 
     public function assessors()
     {
-        return $this->belongsToMany(\App\Models\Employee::class, 'assessment_assessor');
+        return $this->belongsToMany(Employee::class, 'assessment_assessor');
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }

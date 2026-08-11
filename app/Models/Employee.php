@@ -28,6 +28,11 @@ class Employee extends Model
         return $this->belongsToMany(Assessment::class, 'assessment_assessor');
     }
 
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
     // ── Accessors ──
     public function getFullNameAttribute()
     {
