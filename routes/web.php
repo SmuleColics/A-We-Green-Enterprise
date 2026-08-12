@@ -1,13 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\AssessmentRequestController;
+use App\Http\Controllers\Admin\AssessmentScheduleController;
 use App\Http\Controllers\Admin\EmployeeController;
-// CLIENT BACKEND CONTROLLER
+use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Client\AssessmentController;
 use App\Http\Controllers\ClientController;
-use App\Http\Controllers\Employee\TaskController;
+use App\Http\Controllers\Employee\TaskController as EmployeeTaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
@@ -15,191 +16,345 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'showLandingPage'])
     ->name('landing-page');
 
-// ========== ADMIN SIDE ==========
-// Accessible by admin & super_admin
+// ==========================================================
+// ADMIN SIDE
+// Accessible by secretary, admin, and super_admin
+// ==========================================================
 Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function () {
 
-    // dashboard
-    Route::get('/dashboard', [AdminController::class, 'showDashboard'])->name('dashboard');
+    // Dashboard
+    Route::get('/dashboard', [AdminController::class, 'showDashboard'])
+        ->name('dashboard');
 
-    // assessments
-    Route::get('/assessments', [AdminController::class, 'showAssessments'])->name('assessments');
+    // Archive assessments
+    Route::get('/archive-assessments', [AdminController::class, 'showArchiveAssessments'])
+        ->name('archive-assessments');
 
-    // archive assessments
-    Route::get('/archive-assessments', [AdminController::class, 'showArchiveAssessments'])->name('archive-assessments');
+    // Archive assessment requests
+    Route::get('/archive-requests', [AdminController::class, 'showArchiveAssessmentRequests'])
+        ->name('archive-requests');
 
-    // archive assessment requests
-    Route::get('/archive-requests', [AdminController::class, 'showArchiveAssessmentRequests'])->name('archive-requests');
+    // Admin assessment requests (secondary view)
+    Route::get('/archiverequest', [AdminController::class, 'showArchiveAssessmentRequests'])
+        ->name('archive-request');
 
-    // admin assessment requests (secondary view)
-    Route::get('/archiverequest', [AdminController::class, 'showArchiveAssessmentRequests'])->name('archive-request');
+    // Assessment form
+    Route::get('/forms', [AdminController::class, 'showAssessmentForms'])
+        ->name('form');
 
-    // assessment form
-    Route::get('/forms', [AdminController::class, 'showAssessmentForms'])->name('form');
+    // Quotations
+    Route::get('/quotations', [AdminController::class, 'showQuotations'])
+        ->name('quotations');
 
-    // quotations
-    Route::get('/quotations', [AdminController::class, 'showQuotations'])->name('quotations');
+    // Archive quotations
+    Route::get('/archive-quotations', [AdminController::class, 'showArchiveQuotations'])
+        ->name('archive-quotations');
 
-    // archive quotations
-    Route::get('/archive-quotations', [AdminController::class, 'showArchiveQuotations'])->name('archive-quotations');
+    // Quotation proposal
+    Route::get('/proposals', [AdminController::class, 'showQuotationProposals'])
+        ->name('proposals');
 
-    // quotation proposal
-    Route::get('/proposals', [AdminController::class, 'showQuotationProposals'])->name('proposals');
+    // Archive tasks
+    Route::get('/archive-tasks', [AdminController::class, 'showArchiveTasks'])
+        ->name('archive-tasks');
 
-    // archive tasks
-    Route::get('/archive-tasks', [AdminController::class, 'showArchiveTasks'])->name('archive-tasks');
+    // Projects
+    Route::get('/projects', [AdminController::class, 'showProjects'])
+        ->name('projects');
 
-    // projects
-    Route::get('/projects', [AdminController::class, 'showProjects'])->name('projects');
+    // Archive projects
+    Route::get('/archive-projects', [AdminController::class, 'showArchiveProjects'])
+        ->name('archive-projects');
 
-    // archive projects
-    Route::get('/archive-projects', [AdminController::class, 'showArchiveProjects'])->name('archive-projects');
+    // Project monitoring
+    Route::get('/monitoring', [AdminController::class, 'showMonitoring'])
+        ->name('monitoring');
 
-    // project monitoring
-    Route::get('/monitoring', [AdminController::class, 'showMonitoring'])->name('monitoring');
+    // Checklists
+    Route::get('/checklists', [AdminController::class, 'showChecklists'])
+        ->name('checklists');
 
-    // checklists
-    Route::get('/checklists', [AdminController::class, 'showChecklists'])->name('checklists');
+    // Archive checklists
+    Route::get('/archive-checklists', [AdminController::class, 'showArchiveChecklists'])
+        ->name('archive-checklists');
 
-    // archive checklists
-    Route::get('/archive-checklists', [AdminController::class, 'showArchiveChecklists'])->name('archive-checklists');
+    // Reports
+    Route::get('/reports', [AdminController::class, 'showReports'])
+        ->name('reports');
 
-    // reports
-    Route::get('/reports', [AdminController::class, 'showReports'])->name('reports');
+    // Archive employees
+    Route::get('/archive-employees', [AdminController::class, 'showArchiveEmployees'])
+        ->name('archive-employees');
 
-    // archive employees
-    Route::get('/archive-employees', [AdminController::class, 'showArchiveEmployees'])->name('archive-employees');
+    // Clients
+    Route::get('/clients', [AdminController::class, 'showClients'])
+        ->name('clients');
 
-    // clients
-    Route::get('/clients', [AdminController::class, 'showClients'])->name('clients');
+    // Archive clients
+    Route::get('/archive-clients', [AdminController::class, 'showArchiveClients'])
+        ->name('archive-clients');
 
-    // archive clients
-    Route::get('/archive-clients', [AdminController::class, 'showArchiveClients'])->name('archive-clients');
+    // Materials
+    Route::get('/materials', [AdminController::class, 'showMaterials'])
+        ->name('materials');
 
-    // materials
-    Route::get('/materials', [AdminController::class, 'showMaterials'])->name('materials');
+    // Archive materials
+    Route::get('/archive-materials', [AdminController::class, 'showArchiveMaterials'])
+        ->name('archive-materials');
 
-    // archive materials
-    Route::get('/archive-materials', [AdminController::class, 'showArchiveMaterials'])->name('archive-materials');
+    // Admin settings
+    Route::get('/admin-settings', [AdminController::class, 'showAdminSettings'])
+        ->name('admin-settings');
 
-    // admin-settings
-    Route::get('/admin-settings', [AdminController::class, 'showAdminSettings'])->name('admin-settings');
+    // Admin activity logs
+    Route::get('/admin-activity-logs', [AdminController::class, 'showAdminActivityLogs'])
+        ->name('admin-activity-logs');
 
-    // admin activity logs
-    Route::get('/admin-activity-logs', [AdminController::class, 'showAdminActivityLogs'])->name('admin-activity-logs');
-
-    // admin profile
-    Route::get('/admin-profile', [AdminController::class, 'showAdminProfile'])->name('admin-profile');
-
+    // Admin profile
+    Route::get('/admin-profile', [AdminController::class, 'showAdminProfile'])
+        ->name('admin-profile');
 });
 
-// ========== EMPLOYEE SIDE ==========
-// Accessible by client only
+// ==========================================================
+// EMPLOYEE SIDE
+// ==========================================================
+// Currently disabled
+//
 // Route::middleware(['auth', 'role:employee'])->group(function () {
-//     Route::get('/emp-assessments', [EmployeeController::class, 'showE,mpAssessments'])->name('emp-assessments');
+//     Route::get('/emp-assessments', [EmployeeController::class, 'showEmpAssessments'])
+//         ->name('emp-assessments');
 // });
 
-// ========== CLIENT SIDE ==========
+// ==========================================================
+// CLIENT SIDE
 // Accessible by client only
+// ==========================================================
 Route::middleware(['auth', 'role:client'])->group(function () {
 
-    // portal
-    Route::get('/portal', [ClientController::class, 'showPortal'])->name('portal');
+    // Portal
+    Route::get('/portal', [ClientController::class, 'showPortal'])
+        ->name('portal');
 
-    // assessment
-    Route::get('/client-assessment', [ClientController::class, 'showClientAssessment'])->name('client-assessment');
+    // Assessment
+    Route::get('/client-assessment', [ClientController::class, 'showClientAssessment'])
+        ->name('client-assessment');
 
-    // assessment form
-    Route::get('/assessment-form', [ClientController::class, 'showClientAssessmentForm'])->name('assessment-form');
+    // Assessment form
+    Route::get('/assessment-form', [ClientController::class, 'showClientAssessmentForm'])
+        ->name('assessment-form');
 
-    // quotations
-    Route::get('/client-quotation', [ClientController::class, 'showClientQuotation'])->name('client-quotation');
+    // Quotations
+    Route::get('/client-quotation', [ClientController::class, 'showClientQuotation'])
+        ->name('client-quotation');
 
-    // view quotations
-    Route::get('/quotation-view', [ClientController::class, 'showClientViewQuotation'])->name('quotation-view');
+    // View quotation
+    Route::get('/quotation-view', [ClientController::class, 'showClientViewQuotation'])
+        ->name('quotation-view');
 
-    // view project list
-    Route::get('/client-project', [ClientController::class, 'showClientProject'])->name('client-project');
+    // View project list
+    Route::get('/client-project', [ClientController::class, 'showClientProject'])
+        ->name('client-project');
 
-    // view project monitoring
-    Route::get('/project-monitoring', [ClientController::class, 'showProjectMonitoring'])->name('project-monitoring');
+    // View project monitoring
+    Route::get('/project-monitoring', [ClientController::class, 'showProjectMonitoring'])
+        ->name('project-monitoring');
 
-    // view profile
-    Route::get('/profile', [ClientController::class, 'showClientProfile'])->name('profile');
+    // View profile
+    Route::get('/profile', [ClientController::class, 'showClientProfile'])
+        ->name('profile');
 
-    // view settings
-    Route::get('/settings', [ClientController::class, 'showClientSettings'])->name('settings');
+    // View settings
+    Route::get('/settings', [ClientController::class, 'showClientSettings'])
+        ->name('settings');
 
-    // view activity logs
-    Route::get('/activity-logs', [ClientController::class, 'showActivityLogs'])->name('activity-logs');
-
+    // View activity logs
+    Route::get('/activity-logs', [ClientController::class, 'showActivityLogs'])
+        ->name('activity-logs');
 });
 
-// ========== HOME PAGE SIDE ==========
-// Public — no auth required
-// sign in
-Route::get('/sign-in', [HomeController::class, 'showSignIn'])->name('sign-in');
+// ==========================================================
+// HOME PAGE SIDE
+// Public — no authentication required
+// ==========================================================
 
-// register
-Route::get('/register', [HomeController::class, 'showRegister'])->name('register');
+// Sign in
+Route::get('/sign-in', [HomeController::class, 'showSignIn'])
+    ->name('sign-in');
 
-// forgot password
-Route::get('/forgot-password', [HomeController::class, 'showForgotPassword'])->name('forgot-password');
+// Register
+Route::get('/register', [HomeController::class, 'showRegister'])
+    ->name('register');
 
-// reset password
-Route::get('/reset-password', [HomeController::class, 'showResetPassword'])->name('reset-password');
+// Forgot password
+Route::get('/forgot-password', [HomeController::class, 'showForgotPassword'])
+    ->name('forgot-password');
 
-// ========== AUTH ACTIONS (form submissions) ==========
-Route::post('/register', [AuthController::class, 'register'])->name('register.store');
-Route::post('/sign-in', [AuthController::class, 'login'])->name('sign-in.store');
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
-Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('forgot-password.store');
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password.update');
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+// Reset password
+Route::get('/reset-password', [HomeController::class, 'showResetPassword'])
+    ->name('reset-password');
 
-// ========== NOTIFICATIONS ==========
+// ==========================================================
+// AUTH ACTIONS
+// ==========================================================
+
+// Register
+Route::post('/register', [AuthController::class, 'register'])
+    ->name('register.store');
+
+// Sign in
+Route::post('/sign-in', [AuthController::class, 'login'])
+    ->name('sign-in.store');
+
+// Logout
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+
+// Forgot password
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])
+    ->name('forgot-password.store');
+
+// Reset password
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+    ->name('reset-password.update');
+
+// ==========================================================
+// NOTIFICATIONS
+// ==========================================================
 Route::middleware('auth')->group(function () {
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
-    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+
+    Route::get('/notifications', [NotificationController::class, 'index'])
+        ->name('notifications.index');
+
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead'])
+        ->name('notifications.read-all');
+
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markRead'])
+        ->name('notifications.read');
 });
 
-// CLIENT SIDE BACKEND ROUTES
+// ==========================================================
+// CLIENT BACKEND ROUTES
+// ==========================================================
 Route::middleware(['auth', 'role:client'])->group(function () {
-    Route::get('/assessment/availability', [AssessmentController::class, 'availability'])->name('assessment.availability');
-    Route::post('/assessment', [AssessmentController::class, 'store'])->name('assessment.store');
-    Route::patch('/assessment/{assessment}/cancel', [AssessmentController::class, 'cancel'])->name('assessment.cancel');
+
+    // Assessment availability
+    Route::get('/assessment/availability', [AssessmentController::class, 'availability'])
+        ->name('assessment.availability');
+
+    // Submit assessment
+    Route::post('/assessment', [AssessmentController::class, 'store'])
+        ->name('assessment.store');
+
+    // Cancel assessment
+    Route::patch('/assessment/{assessment}/cancel', [AssessmentController::class, 'cancel'])
+        ->name('assessment.cancel');
 });
 
-// ADMIN SIDE BACKEND ROUTES
+// ==========================================================
+// ADMIN ASSESSMENT REQUEST ROUTES
+// Accessible by admin and super_admin
+// ==========================================================
 Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
-    // ASSESSMENT REQUEST
-    Route::get('/requests', [AssessmentRequestController::class, 'index'])->name('requests');
-    Route::patch('/requests/{assessment}/confirm', [AssessmentRequestController::class, 'confirm'])->name('requests.confirm');
-    Route::patch('/requests/{assessment}/decline', [AssessmentRequestController::class, 'decline'])->name('requests.decline');
-    Route::patch('/requests/{assessment}/archive', [AssessmentRequestController::class, 'archive'])->name('requests.archive');
+
+    // Assessment requests
+    Route::get('/requests', [AssessmentRequestController::class, 'index'])
+        ->name('requests');
+
+    // Confirm assessment
+    Route::patch('/requests/{assessment}/confirm', [AssessmentRequestController::class, 'confirm'])
+        ->name('requests.confirm');
+
+    // Decline assessment
+    Route::patch('/requests/{assessment}/decline', [AssessmentRequestController::class, 'decline'])
+        ->name('requests.decline');
+
+    // Archive assessment request
+    Route::patch('/requests/{assessment}/archive', [AssessmentRequestController::class, 'archive'])
+        ->name('requests.archive');
 });
 
+// ==========================================================
+// ADMIN EMPLOYEE ROUTES
+// Accessible by admin and super_admin
+// ==========================================================
 Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
-    // EMPLOYEES
-    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees');
-    Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
-    Route::patch('/employees/{staff}', [EmployeeController::class, 'update'])->name('employees.update');
-    Route::patch('/employees/{staff}/archive', [EmployeeController::class, 'archive'])->name('employees.archive');
 
-    // TASKS (Admin + SuperAdmin)
-    Route::get('/tasks', [App\Http\Controllers\Admin\TaskController::class, 'index'])->name('tasks');
-    Route::get('/tasks/{task}/details', [App\Http\Controllers\Admin\TaskController::class, 'show'])->name('tasks.show');
-    Route::post('/tasks/create', [App\Http\Controllers\Admin\TaskController::class, 'create'])->name('tasks.create');
-    Route::post('/tasks/{task}/update', [App\Http\Controllers\Admin\TaskController::class, 'update'])->name('tasks.update');
-    Route::post('/tasks/{task}/delete', [App\Http\Controllers\Admin\TaskController::class, 'destroy'])->name('tasks.destroy');
+    // Employees
+    Route::get('/employees', [EmployeeController::class, 'index'])
+        ->name('employees');
+
+    Route::post('/employees', [EmployeeController::class, 'store'])
+        ->name('employees.store');
+
+    Route::patch('/employees/{staff}', [EmployeeController::class, 'update'])
+        ->name('employees.update');
+
+    Route::patch('/employees/{staff}/archive', [EmployeeController::class, 'archive'])
+        ->name('employees.archive');
 });
 
-// ──────────────────────────────────────────
+// ==========================================================
+// ADMIN TASK ROUTES
+// ==========================================================
+Route::middleware(['auth', 'role:admin,super_admin'])
+    ->prefix('admin')
+    ->group(function () {
+
+        // Task list
+        Route::get('/tasks', [TaskController::class, 'index'])
+            ->name('tasks');
+
+        // Task details
+        Route::get('/tasks/{task}/details', [TaskController::class, 'show'])
+            ->name('admin.tasks.show');
+
+        // Create task
+        Route::post('/tasks/create', [TaskController::class, 'create'])
+            ->name('admin.tasks.create');
+
+        // Update task
+        Route::post('/tasks/{task}/update', [TaskController::class, 'update'])
+            ->name('admin.tasks.update');
+
+        // Archive task (replaces the old hard-delete)
+        Route::post('/tasks/{task}/archive', [TaskController::class, 'archive'])
+            ->name('admin.tasks.archive');
+
+        // Restore an archived task
+        Route::post('/tasks/{task}/unarchive', [TaskController::class, 'unarchive'])
+            ->name('admin.tasks.unarchive');
+
+        // List archived tasks (for the Archived Tasks modal)
+        Route::get('/tasks/archived', [TaskController::class, 'archived'])
+            ->name('admin.tasks.archived');
+    });
+
+// ==========================================================
+// ADMIN ASSESSMENT ROUTES
+// ==========================================================
+Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function () {
+    Route::get('/assessments', [AssessmentScheduleController::class, 'index'])->name('assessments');
+    Route::patch('/assessments/{assessment}/archive', [AssessmentScheduleController::class, 'archive'])->name('assessments.archive');
+});
+
+// ==========================================================
 // EMPLOYEE ROUTES
-// ──────────────────────────────────────────
-Route::middleware(['auth', 'employee'])->prefix('employee')->name('employee.')->group(function () {
-    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks');
-    Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
-    Route::post('/tasks/{task}/update', [TaskController::class, 'update'])->name('tasks.update');
-});
+// ==========================================================
+Route::middleware(['auth', 'employee'])
+    ->prefix('employee')
+    ->name('employee.')
+    ->group(function () {
+
+        // Employee task list
+        Route::get('/tasks', [EmployeeTaskController::class, 'index'])
+            ->name('tasks');
+
+        // Employee task details
+        Route::get('/tasks/{task}', [EmployeeTaskController::class, 'show'])
+            ->name('tasks.show');
+
+        // Employee update task
+        Route::post('/tasks/{task}/update', [EmployeeTaskController::class, 'update'])
+            ->name('tasks.update');
+    });

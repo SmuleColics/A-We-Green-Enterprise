@@ -9,6 +9,7 @@ use App\Models\Assessment;
 use App\Models\Employee;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AssessmentRequestController extends Controller
 {
@@ -38,21 +39,40 @@ class AssessmentRequestController extends Controller
             'employee_ids.*' => 'exists:employees,id',
         ]);
 
-        $assessment->update(['status' => 'Confirmed']);
-        $assessment->assessors()->sync($validated['employee_ids']);
-
         $clientName = $assessment->client->user->full_name;
 
-        // ──── Activity Log ────
+        $assignedEmployees = DB::transaction(function () use ($assessment, $validated, $clientName) {
+            $assessment->update(['status' => 'Confirmed']);
+            $assessment->assessors()->sync($validated['employee_ids']);
+
+            $assignedEmployees = Employee::whereIn('id', $validated['employee_ids'])
+                ->with('staff.user')
+                ->get();
+
+            foreach ($assignedEmployees as $employee) {
+                Task::create([
+                    'employee_id' => $employee->id,
+                    'assessment_id' => $assessment->id,
+                    'title' => "Assessment for {$clientName}",
+                    'description' => 'Conduct assessment for services: '.implode(', ', $assessment->services),
+                    'due_date' => $assessment->preferred_date,
+                    'status' => 'Pending',
+                ]);
+            }
+
+            return $assignedEmployees;
+        });
+
+        $assessorNames = $assignedEmployees->pluck('full_name')->implode(', ');
+
         ActivityLogController::log(
             'Assessment',
             'Approved',
-            "Assessment request #{$assessment->id} for {$clientName} confirmed and assigned to ".count($validated['employee_ids']).' assessor(s).',
+            "Assessment request #{$assessment->id} for {$clientName} confirmed and assigned to {$assessorNames}.",
             auth()->id(),
             auth()->user()->full_name
         );
 
-        // ──── Notify Client ────
         NotificationController::notify(
             module: 'Assessment',
             title: 'Your assessment request was confirmed',
@@ -62,25 +82,11 @@ class AssessmentRequestController extends Controller
             userId: $assessment->client->user_id
         );
 
-        // ──── Create Tasks & Notify Employees ────
-        foreach ($validated['employee_ids'] as $employee_id) {
-            $employee = Employee::find($employee_id);
-
-            // Create task
-            Task::create([
-                'employee_id' => $employee_id,
-                'assessment_id' => $assessment->id,
-                'title' => "Assessment for {$clientName}",
-                'description' => 'Conduct assessment for services: '.implode(', ', $assessment->services),
-                'due_date' => $assessment->preferred_date,
-                'status' => 'Pending',
-            ]);
-
-            // Notify the employee about their task
+        foreach ($assignedEmployees as $employee) {
             NotificationController::notify(
                 module: 'Task',
                 title: 'New Assessment Task Assigned',
-                message: "You have been assigned to assess {$clientName} on {$assessment->preferred_date->format('M j, Y')}",
+                message: "You've been assigned to assess {$clientName}'s request on {$assessment->preferred_date->format('M j, Y')} ({$assessment->time_slot}).",
                 recipientRole: null,
                 notifiable: $assessment,
                 userId: $employee->staff->user_id

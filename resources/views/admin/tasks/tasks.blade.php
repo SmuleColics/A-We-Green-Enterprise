@@ -11,7 +11,7 @@
 @section('topbar-actions')
     <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-bs-toggle="modal"
         data-bs-target="#archivedModal">
-        <span class="material-symbols-outlined fs-17">inventory_2</span>
+        <span class="material-symbols-outlined fs-17">archive</span>
         Archived Tasks
     </button>
     <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text" data-bs-toggle="modal"
@@ -38,7 +38,7 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined text-secondary summary-icon">assignment</span>
+                    <span class="material-symbols-outlined text-warning summary-icon">schedule</span>
                     <div>
                         <p class="summary-label">To Do</p>
                         <p class="summary-value" id="cnt-todo">{{ $pending ?? 0 }}</p>
@@ -56,10 +56,10 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined text-warning summary-icon">pause_circle</span>
+                    <span class="material-symbols-outlined text-danger summary-icon">cancel</span>
                     <div>
-                        <p class="summary-label">On Hold</p>
-                        <p class="summary-value" id="cnt-onhold">0</p>
+                        <p class="summary-label">Declined</p>
+                        <p class="summary-value" id="cnt-declined">{{ $declined ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -77,6 +77,8 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Pending">To Do</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="In Progress">In
                             Progress</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                            data-filter="Declined">Declined</button>
                     </div>
                 </div>
 
@@ -109,21 +111,13 @@
                                             onclick="openEdit({{ $task->id }})">
                                             <span class="material-symbols-outlined icon-action">edit</span>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-secondary action-btn" title="Delete"
-                                            onclick="deleteTaskConfirm({{ $task->id }})">
-                                            <span class="material-symbols-outlined icon-action">delete</span>
+                                        <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive"
+                                            onclick="archiveTaskConfirm({{ $task->id }})">
+                                            <span class="material-symbols-outlined icon-action">archive</span>
                                         </button>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">
-                                        <span class="material-symbols-outlined d-block mb-2"
-                                            style="font-size:48px;color:#d1d5db;">inbox</span>
-                                        No tasks yet
-                                    </td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -135,7 +129,7 @@
 
     <!-- ── View Task Modal ── -->
     <div class="modal fade" id="viewTaskModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Task Details</h5>
@@ -154,7 +148,7 @@
 
     <!-- ── Assign Task Modal ── -->
     <div class="modal fade" id="assignModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+        <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Assign Task</h5>
@@ -191,10 +185,10 @@
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label small">Description <span class="text-danger">*</span></label>
-                                <textarea class="form-control" name="description" id="taskDescription" rows="3" placeholder="Task details..."
+                                <textarea class="form-control" name="description" id="taskDescription" rows="2" placeholder="Task details..."
                                     required></textarea>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label class="form-label small">Due Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" name="due_date" id="taskDueDate" required>
                             </div>
@@ -216,7 +210,7 @@
 
     <!-- ── Edit Task Modal ── -->
     <div class="modal fade" id="editTaskModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Task</h5>
@@ -233,11 +227,20 @@
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label small">Description <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="editTaskDescription" rows="3" required></textarea>
+                                <textarea class="form-control" id="editTaskDescription" rows="2" required></textarea>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">Due Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="editTaskDueDate" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Status <span class="text-danger">*</span></label>
+                                <select class="form-select" id="editTaskStatus" required>
+                                    <option value="Pending">To Do</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Done</option>
+                                    <option value="Declined">Declined</option>
+                                </select>
                             </div>
                         </div>
                     </form>
@@ -254,24 +257,26 @@
     </div>
 
 
-    <!-- ── Delete Confirm Modal ── -->
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+    <!-- ── Archive Confirm Modal ── -->
+    <div class="modal fade" id="archiveConfirmModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
                 <div class="modal-header border-0 pb-0">
-                    <h6 class="modal-title fw-semibold">Delete Task?</h6>
+                    <h6 class="modal-title fw-semibold">Archive this task?</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body pt-2">
-                    <p class="small text-muted mb-0">This task will be permanently deleted. This action cannot be undone.
+                    <p class="small text-muted mb-0">
+                        This task will be moved to the archive. You can restore it anytime from
+                        <strong>Archived Tasks</strong>.
                     </p>
                 </div>
                 <div class="modal-footer border-0 pt-1">
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-danger" id="confirmDeleteBtn"
-                        onclick="confirmDelete()">
-                        <span class="material-symbols-outlined me-1"
-                            style="font-size:14px;vertical-align:middle;">delete</span>Delete
+                    <button type="button" class="btn btn-sm btn-warning d-flex align-items-center gap-1"
+                        id="confirmArchiveBtn" onclick="confirmArchive()">
+                        <span class="material-symbols-outlined fs-15">archive</span>
+                        Archive
                     </button>
                 </div>
             </div>
@@ -281,17 +286,19 @@
 
     <!-- ── Archived Tasks Modal ── -->
     <div class="modal fade" id="archivedModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary fs-22">inventory_2</span>
+                        <span class="material-symbols-outlined text-secondary fs-22">archive</span>
                         <h5 class="modal-title mb-0">Archived Tasks</h5>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="text-muted text-center py-3 small">Archive feature coming soon</p>
+                    <div id="archivedTasksBody">
+                        <p class="text-muted text-center py-3 small">Loading...</p>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -306,6 +313,7 @@
     <script>
         let dtTable = null;
         let currentTaskId = null;
+        const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
         function initTable() {
             if (dtTable) dtTable.destroy();
@@ -331,9 +339,19 @@
 
         function openView(taskId) {
             currentTaskId = taskId;
-            fetch(`/admin/tasks/${taskId}/details`)
-                .then(response => response.json())
+            fetch(`/admin/tasks/${taskId}/details`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
                 .then(data => {
+                    if (!data.success || !data.task) throw new Error('Invalid response format');
                     const task = data.task;
                     const content = `
                         <div class="row g-2 mb-3">
@@ -343,17 +361,17 @@
                             </div>
                             <div class="col-sm-6">
                                 <p class="text-muted small mb-1">Assigned To</p>
-                                <p class="mb-0">${task.employee.staff.user.full_name}</p>
+                                <p class="mb-0">${task.employee?.staff?.user?.full_name || 'N/A'}</p>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-12">
                                 <p class="text-muted small mb-1">Assessment</p>
-                                <p class="mb-0">Assessment #${task.assessment.id} - ${task.assessment.client.user.full_name}</p>
+                                <p class="mb-0">Assessment #${task.assessment?.id || 'N/A'} - ${task.assessment?.client?.user?.full_name || 'N/A'}</p>
                             </div>
                             <div class="col-sm-6">
                                 <p class="text-muted small mb-1">Due Date</p>
                                 <p class="mb-0">${new Date(task.due_date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <p class="text-muted small mb-1">Status</p>
                                 <span class="badge bg-${getStatusBadgeClass(task.status)}">${task.status}</span>
                             </div>
@@ -361,7 +379,7 @@
                         <hr class="my-3">
                         <div class="mb-3">
                             <p class="fw-semibold small text-uppercase section-label">Description</p>
-                            <p>${task.description}</p>
+                            <p class="small">${task.description || 'No description'}</p>
                         </div>
                     `;
                     document.getElementById('viewTaskContent').innerHTML = content;
@@ -369,49 +387,60 @@
                 })
                 .catch(err => {
                     console.error('Error:', err);
-                    alert('Failed to load task details');
+                    alert('Failed to load task details: ' + err.message);
                 });
         }
 
         function openEdit(taskId) {
             currentTaskId = taskId;
-            fetch(`/admin/tasks/${taskId}/details`)
-                .then(response => response.json())
+            fetch(`/admin/tasks/${taskId}/details`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
                 .then(data => {
+                    if (!data.success || !data.task) throw new Error('Invalid response format');
                     const task = data.task;
                     document.getElementById('editTaskId').value = task.id;
                     document.getElementById('editTaskTitle').value = task.title;
                     document.getElementById('editTaskDescription').value = task.description;
                     document.getElementById('editTaskDueDate').value = task.due_date;
+                    document.getElementById('editTaskStatus').value = task.status;
                     new bootstrap.Modal(document.getElementById('editTaskModal')).show();
                 })
                 .catch(err => {
                     console.error('Error:', err);
-                    alert('Failed to load task');
+                    alert('Failed to load task: ' + err.message);
                 });
         }
 
-        function deleteTaskConfirm(taskId) {
+        function archiveTaskConfirm(taskId) {
             currentTaskId = taskId;
-            new bootstrap.Modal(document.getElementById('deleteConfirmModal')).show();
+            new bootstrap.Modal(document.getElementById('archiveConfirmModal')).show();
         }
 
-        function confirmDelete() {
+        function confirmArchive() {
             if (!currentTaskId) return;
-            fetch(`/admin/tasks/${currentTaskId}/delete`, {
+            fetch(`/admin/tasks/${currentTaskId}/archive`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': CSRF_TOKEN
                     }
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
+                        bootstrap.Modal.getInstance(document.getElementById('archiveConfirmModal')).hide();
                         location.reload();
                     } else {
-                        alert('Error: ' + (data.message || 'Failed to delete task'));
+                        alert('Error: ' + (data.message || 'Failed to archive task'));
                     }
                 })
                 .catch(err => {
@@ -420,10 +449,90 @@
                 });
         }
 
+        function loadArchivedTasks() {
+            const body = document.getElementById('archivedTasksBody');
+            body.innerHTML = '<p class="text-muted text-center py-3 small">Loading...</p>';
+
+            fetch('/admin/tasks/archived', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success || !data.tasks.length) {
+                        body.innerHTML = '<p class="text-muted text-center py-3 small">No archived tasks.</p>';
+                        return;
+                    }
+
+                    const rows = data.tasks.map(t => `
+                        <tr>
+                            <td class="fw-semibold small">${t.title}</td>
+                            <td class="small">${t.employee_name}</td>
+                            <td>${t.status_badge}</td>
+                            <td class="text-muted small">${t.due_date}</td>
+                            <td class="text-muted small">${t.archived_at ?? '—'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-success" title="Restore" onclick="restoreTask(${t.id})">
+                                    <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;">restore</span>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    body.innerHTML = `
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0 small">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Task</th>
+                                        <th>Assigned To</th>
+                                        <th>Status</th>
+                                        <th>Due Date</th>
+                                        <th>Archived On</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rows}</tbody>
+                            </table>
+                        </div>`;
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    body.innerHTML = '<p class="text-danger text-center py-3 small">Failed to load archived tasks.</p>';
+                });
+        }
+
+        function restoreTask(taskId) {
+            fetch(`/admin/tasks/${taskId}/unarchive`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + (data.message || 'Failed to restore task'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    alert('An error occurred');
+                });
+        }
+
+        document.getElementById('archivedModal').addEventListener('show.bs.modal', loadArchivedTasks);
+
         function submitCreateTask() {
             const formData = {
                 employee_id: document.getElementById('employeeSelect').value,
-                assessment_id: document.getElementById('assessmentSelect').value || 1, // Temporary placeholder
+                assessment_id: document.getElementById('assessmentSelect').value || 1,
                 title: document.getElementById('taskTitle').value,
                 description: document.getElementById('taskDescription').value,
                 due_date: document.getElementById('taskDueDate').value,
@@ -438,7 +547,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': CSRF_TOKEN
                     },
                     body: JSON.stringify(formData)
                 })
@@ -463,9 +572,10 @@
                 title: document.getElementById('editTaskTitle').value,
                 description: document.getElementById('editTaskDescription').value,
                 due_date: document.getElementById('editTaskDueDate').value,
+                status: document.getElementById('editTaskStatus').value,
             };
 
-            if (!formData.title || !formData.description || !formData.due_date) {
+            if (!formData.title || !formData.description || !formData.due_date || !formData.status) {
                 alert('Please fill in all required fields');
                 return;
             }
@@ -474,7 +584,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': CSRF_TOKEN
                     },
                     body: JSON.stringify(formData)
                 })
@@ -493,15 +603,14 @@
                 });
         }
 
-        function statusBadge(status) {
+        function getStatusBadgeClass(status) {
             const map = {
-                'Done': 'bg-success',
-                'To Do': 'bg-secondary',
-                'In Progress': 'bg-primary',
-                'On Hold': 'bg-warning text-dark'
+                'Completed': 'success',
+                'Pending': 'warning text-dark',
+                'In Progress': 'primary',
+                'Declined': 'danger'
             };
-            const cls = map[status] || 'bg-secondary';
-            return `<span class="badge rounded-pill ${cls}">${status}</span>`;
+            return map[status] || 'secondary';
         }
 
         $(document).ready(() => {

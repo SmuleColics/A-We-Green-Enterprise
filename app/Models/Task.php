@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Model
 {
@@ -11,54 +12,42 @@ class Task extends Model
         'assessment_id',
         'title',
         'description',
-        'status',
         'due_date',
+        'status',
         'completed_at',
+        'is_archived',
+        'archived_at',
     ];
 
     protected $casts = [
-        'due_date' => 'date',
+        'due_date' => 'datetime',
         'completed_at' => 'datetime',
+        'archived_at' => 'datetime',
     ];
 
-    // ── Relationships ──
-    public function employee()
+    // ──────────────────────────────────────────
+    // RELATIONSHIPS
+    // ──────────────────────────────────────────
+
+    public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
     }
 
-    public function assessment()
+    public function assessment(): BelongsTo
     {
         return $this->belongsTo(Assessment::class);
     }
 
-    // ── Status Helpers ──
-    public function isPending(): bool
-    {
-        return $this->status === 'Pending';
-    }
+    // ──────────────────────────────────────────
+    // ACCESSORS
+    // ──────────────────────────────────────────
 
-    public function isInProgress(): bool
-    {
-        return $this->status === 'In Progress';
-    }
-
-    public function isCompleted(): bool
-    {
-        return $this->status === 'Completed';
-    }
-
-    public function isDeclined(): bool
-    {
-        return $this->status === 'Declined';
-    }
-
-    // ── Accessors ──
     public function getStatusBadgeAttribute()
     {
         $colors = [
             'Completed' => 'success',
-            'Pending' => 'secondary',
+            'Pending' => 'warning text-dark',
             'In Progress' => 'primary',
             'Declined' => 'danger',
         ];
@@ -67,24 +56,42 @@ class Task extends Model
         return "<span class=\"badge bg-{$color}\">{$this->status}</span>";
     }
 
-    public function getStatusIconAttribute(): string
+    public function getStatusIconAttribute()
     {
-        return match ($this->status) {
-            'Pending' => 'schedule',
-            'In Progress' => 'pending_actions',
+        $icons = [
             'Completed' => 'check_circle',
+            'Pending' => 'schedule',
+            'In Progress' => 'autorenew',
             'Declined' => 'cancel',
-            default => 'help',
-        };
+        ];
+
+        return $icons[$this->status] ?? 'help';
     }
 
-    public function getDaysUntilDueAttribute(): ?int
+    public function getStatusLabelAttribute()
     {
-        return $this->due_date?->diffInDays(now(), false);
+        $labels = [
+            'Completed' => 'Done',
+            'Pending' => 'To Do',
+            'In Progress' => 'In Progress',
+            'Declined' => 'Declined',
+        ];
+
+        return $labels[$this->status] ?? $this->status;
     }
 
-    public function getIsOverdueAttribute(): bool
+    public function getIsCompletedAttribute()
     {
-        return $this->due_date < now()->toDateString() && ! $this->isCompleted();
+        return $this->status === 'Completed';
+    }
+
+    public function getIsOverdueAttribute()
+    {
+        return $this->status !== 'Completed' && $this->due_date->isPast();
+    }
+
+    public function getDaysUntilDueAttribute()
+    {
+        return now()->diffInDays($this->due_date, false);
     }
 }
