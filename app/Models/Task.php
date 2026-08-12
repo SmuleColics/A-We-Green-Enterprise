@@ -15,6 +15,7 @@ class Task extends Model
         'due_date',
         'status',
         'completed_at',
+        'completed_via_task_id',
         'is_archived',
         'archived_at',
     ];
@@ -37,6 +38,11 @@ class Task extends Model
     public function assessment(): BelongsTo
     {
         return $this->belongsTo(Assessment::class);
+    }
+
+    public function completedVia(): BelongsTo
+    {
+        return $this->belongsTo(Task::class, 'completed_via_task_id');
     }
 
     // ──────────────────────────────────────────
@@ -93,5 +99,10 @@ class Task extends Model
     public function getDaysUntilDueAttribute()
     {
         return now()->diffInDays($this->due_date, false);
+    }
+
+    public function getIsAutoCompletedAttribute()
+    {
+        return ! is_null($this->completed_via_task_id);
     }
 }

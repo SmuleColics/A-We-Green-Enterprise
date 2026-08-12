@@ -54,10 +54,6 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
     Route::get('/proposals', [AdminController::class, 'showQuotationProposals'])
         ->name('proposals');
 
-    // Archive tasks
-    Route::get('/archive-tasks', [AdminController::class, 'showArchiveTasks'])
-        ->name('archive-tasks');
-
     // Projects
     Route::get('/projects', [AdminController::class, 'showProjects'])
         ->name('projects');
@@ -328,6 +324,10 @@ Route::middleware(['auth', 'role:admin,super_admin'])
         // List archived tasks (for the Archived Tasks modal)
         Route::get('/tasks/archived', [TaskController::class, 'archived'])
             ->name('admin.tasks.archived');
+
+        // Archived tasks page (admin/super_admin only)
+        Route::get('/tasks-archive', [TaskController::class, 'archivedPage'])
+            ->name('archive-tasks');
     });
 
 // ==========================================================

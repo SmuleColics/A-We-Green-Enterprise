@@ -37,6 +37,8 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
+        $task->load('completedVia');
+
         return response()->json([
             'success' => true,
             'task' => [
@@ -50,6 +52,10 @@ class TaskController extends Controller
                 'days_until_due' => $task->days_until_due,
                 'is_overdue' => $task->is_overdue,
                 'completed_at' => $task->completed_at?->format('Y-m-d H:i:s'),
+                'completed_at' => $task->completed_at?->format('Y-m-d H:i:s'),
+                'archived_at' => $task->archived_at?->format('Y-m-d H:i:s'),
+                'completed_via_task_id' => $task->completed_via_task_id,
+                'is_auto_completed' => $task->is_auto_completed,
                 'employee' => [
                     'id' => $task->employee->id,
                     'position' => $task->employee->position,
@@ -83,45 +89,112 @@ class TaskController extends Controller
         ]);
 
         $previousStatus = $task->status;
+        $statusChanged = isset($validated['status']) && $validated['status'] !== $previousStatus;
+        $justCompleted = $statusChanged && $validated['status'] === 'Completed';
+        $justReverted = $statusChanged && $previousStatus === 'Completed' && $validated['status'] !== 'Completed';
 
-        if (isset($validated['status'])) {
-            if ($validated['status'] === 'Completed' && $previousStatus !== 'Completed') {
-                $validated['completed_at'] = now();
-            } elseif ($validated['status'] !== 'Completed' && $previousStatus === 'Completed') {
-                $validated['completed_at'] = null;
-            }
+        if ($justCompleted) {
+            $validated['completed_at'] = now();
+            $validated['completed_via_task_id'] = null; // this is a direct/manual completion
+        } elseif ($justReverted) {
+            $validated['completed_at'] = null;
+            $validated['completed_via_task_id'] = null;
         }
 
         $task->update($validated);
 
-        $logMessage = "Task #{$task->id} updated.";
+        $logMessage = $statusChanged
+            ? "Task #{$task->id} status changed from {$previousStatus} to {$validated['status']}."
+            : "Task #{$task->id} updated.";
 
-        if (isset($validated['status']) && $validated['status'] !== $previousStatus) {
-            $logMessage = "Task #{$task->id} status changed from {$previousStatus} to {$validated['status']}.";
+        ActivityLogController::log('Task', 'Updated', $logMessage, auth()->id(), auth()->user()->full_name);
 
-            // Guard against a missing employee/staff/user chain before notifying —
-            // task.employee_id could point to a deleted or orphaned record.
-            $userId = $employee->staff?->user_id;
-
+        // Notify the task's own employee about a direct status change (not for cascade-synced siblings, they get their own message below).
+        if ($statusChanged) {
+            $userId = $task->employee?->staff?->user_id;
             if ($userId) {
                 NotificationController::notify(
                     module: 'Task',
-                    title: 'New Task Assigned',
-                    message: "You have been assigned a new task: {$validated['title']}",
+                    title: 'Task Status Updated',
+                    message: "Your task \"{$task->title}\" status was updated to {$validated['status']}.",
                     recipientRole: null,
-                    notifiable: $assessment,
+                    notifiable: $task->assessment,
                     userId: $userId
                 );
             }
         }
 
-        ActivityLogController::log(
-            'Task',
-            'Updated',
-            $logMessage,
-            auth()->id(),
-            auth()->user()->full_name
-        );
+        // ── Sync: completing this task auto-completes sibling tasks on the same assessment ──
+        if ($justCompleted) {
+            $siblings = Task::where('assessment_id', $task->assessment_id)
+                ->where('id', '!=', $task->id)
+                ->where('is_archived', false)
+                ->where('status', '!=', 'Completed')
+                ->get();
+
+            foreach ($siblings as $sibling) {
+                $sibling->update([
+                    'status' => 'Completed',
+                    'completed_at' => now(),
+                    'completed_via_task_id' => $task->id,
+                ]);
+
+                ActivityLogController::log(
+                    'Task',
+                    'Updated',
+                    "Task #{$sibling->id} auto-completed (synced with Task #{$task->id} on assessment #{$task->assessment_id}).",
+                    auth()->id(),
+                    auth()->user()->full_name
+                );
+
+                $userId = $sibling->employee?->staff?->user_id;
+                if ($userId) {
+                    NotificationController::notify(
+                        module: 'Task',
+                        title: 'Task Completed',
+                        message: "Your task \"{$sibling->title}\" was marked Completed automatically because a related task on the same assessment was finished.",
+                        recipientRole: null,
+                        notifiable: $task->assessment,
+                        userId: $userId
+                    );
+                }
+            }
+        }
+
+        // ── Reverse sync: only revert siblings that were completed BECAUSE of this task, never independently-completed ones ──
+        if ($justReverted) {
+            $syncedSiblings = Task::where('completed_via_task_id', $task->id)
+                ->where('is_archived', false)
+                ->get();
+
+            foreach ($syncedSiblings as $sibling) {
+                $sibling->update([
+                    'status' => 'Pending',
+                    'completed_at' => null,
+                    'completed_via_task_id' => null,
+                ]);
+
+                ActivityLogController::log(
+                    'Task',
+                    'Updated',
+                    "Task #{$sibling->id} auto-reopened (Task #{$task->id} it was synced from was reverted).",
+                    auth()->id(),
+                    auth()->user()->full_name
+                );
+
+                $userId = $sibling->employee?->staff?->user_id;
+                if ($userId) {
+                    NotificationController::notify(
+                        module: 'Task',
+                        title: 'Task Reopened',
+                        message: "Your task \"{$sibling->title}\" was reopened because a related task on the same assessment was reverted.",
+                        recipientRole: null,
+                        notifiable: $task->assessment,
+                        userId: $userId
+                    );
+                }
+            }
+        }
 
         return response()->json([
             'success' => true,
@@ -249,5 +322,22 @@ class TaskController extends Controller
             'success' => true,
             'tasks' => $tasks,
         ]);
+    }
+
+    public function archivedPage()
+    {
+        $tasks = Task::with(['employee.staff.user', 'assessment.client.user'])
+            ->where('is_archived', true)
+            ->orderByDesc('archived_at')
+            ->get();
+
+        $completed = $tasks->where('status', 'Completed')->count();
+        $inProgress = $tasks->where('status', 'In Progress')->count();
+        $pending = $tasks->where('status', 'Pending')->count();
+        $declined = $tasks->where('status', 'Declined')->count();
+
+        return view('admin.tasks.archive-tasks', compact(
+            'tasks', 'completed', 'inProgress', 'pending', 'declined'
+        ));
     }
 }

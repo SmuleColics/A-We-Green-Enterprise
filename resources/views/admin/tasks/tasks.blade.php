@@ -9,11 +9,10 @@
 @section('page-title', 'Tasks')
 
 @section('topbar-actions')
-    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-bs-toggle="modal"
-        data-bs-target="#archivedModal">
+    <a href="{{ route('archive-tasks') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">archive</span>
         Archived Tasks
-    </button>
+    </a>
     <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text" data-bs-toggle="modal"
         data-bs-target="#assignModal">
         <span class="material-symbols-outlined me-1 fs-18">add</span>
@@ -283,30 +282,6 @@
         </div>
     </div>
 
-
-    <!-- ── Archived Tasks Modal ── -->
-    <div class="modal fade" id="archivedModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary fs-22">archive</span>
-                        <h5 class="modal-title mb-0">Archived Tasks</h5>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="archivedTasksBody">
-                        <p class="text-muted text-center py-3 small">Loading...</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 @endsection
 
 @section('scripts')
@@ -314,6 +289,15 @@
         let dtTable = null;
         let currentTaskId = null;
         const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+        // Fires a toast, then reloads — stashes the message so it survives the reload.
+        function toastThenReload(message, type = 'success') {
+            sessionStorage.setItem('pendingToast', JSON.stringify({
+                message,
+                type
+            }));
+            location.reload();
+        }
 
         function initTable() {
             if (dtTable) dtTable.destroy();
@@ -354,40 +338,41 @@
                     if (!data.success || !data.task) throw new Error('Invalid response format');
                     const task = data.task;
                     const content = `
-                        <div class="row g-2 mb-3">
-                            <div class="col-sm-6">
-                                <p class="text-muted small mb-1">Task Title</p>
-                                <p class="fw-semibold mb-0">${task.title}</p>
-                            </div>
-                            <div class="col-sm-6">
-                                <p class="text-muted small mb-1">Assigned To</p>
-                                <p class="mb-0">${task.employee?.staff?.user?.full_name || 'N/A'}</p>
-                            </div>
-                            <div class="col-sm-12">
-                                <p class="text-muted small mb-1">Assessment</p>
-                                <p class="mb-0">Assessment #${task.assessment?.id || 'N/A'} - ${task.assessment?.client?.user?.full_name || 'N/A'}</p>
-                            </div>
-                            <div class="col-sm-6">
-                                <p class="text-muted small mb-1">Due Date</p>
-                                <p class="mb-0">${new Date(task.due_date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                            </div>
-                            <div class="col-sm-6">
-                                <p class="text-muted small mb-1">Status</p>
-                                <span class="badge bg-${getStatusBadgeClass(task.status)}">${task.status}</span>
-                            </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Task Title</p>
+                            <p class="fw-semibold mb-0">${task.title}</p>
                         </div>
-                        <hr class="my-3">
-                        <div class="mb-3">
-                            <p class="fw-semibold small text-uppercase section-label">Description</p>
-                            <p class="small">${task.description || 'No description'}</p>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Assigned To</p>
+                            <p class="mb-0">${task.employee?.staff?.user?.full_name || 'N/A'}</p>
                         </div>
-                    `;
+                        <div class="col-sm-12">
+                            <p class="text-muted small mb-1">Assessment</p>
+                            <p class="mb-0">Assessment #${task.assessment?.id || 'N/A'} - ${task.assessment?.client?.user?.full_name || 'N/A'}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Due Date</p>
+                            <p class="mb-0">${new Date(task.due_date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Status</p>
+                            <span class="badge bg-${getStatusBadgeClass(task.status)}">${task.status}</span>
+                            ${task.is_auto_completed ? '<span class="badge bg-light text-muted ms-1">Auto-synced</span>' : ''}
+                        </div>
+                    </div>
+                    <hr class="my-3">
+                    <div class="mb-3">
+                        <p class="fw-semibold small text-uppercase section-label">Description</p>
+                        <p class="small">${task.description || 'No description'}</p>
+                    </div>
+                `;
                     document.getElementById('viewTaskContent').innerHTML = content;
                     new bootstrap.Modal(document.getElementById('viewTaskModal')).show();
                 })
                 .catch(err => {
                     console.error('Error:', err);
-                    alert('Failed to load task details: ' + err.message);
+                    showToast('Failed to load task details: ' + err.message, 'danger');
                 });
         }
 
@@ -416,7 +401,7 @@
                 })
                 .catch(err => {
                     console.error('Error:', err);
-                    alert('Failed to load task: ' + err.message);
+                    showToast('Failed to load task: ' + err.message, 'danger');
                 });
         }
 
@@ -438,96 +423,16 @@
                 .then(data => {
                     if (data.success) {
                         bootstrap.Modal.getInstance(document.getElementById('archiveConfirmModal')).hide();
-                        location.reload();
+                        toastThenReload(data.message || 'Task archived.', 'success');
                     } else {
-                        alert('Error: ' + (data.message || 'Failed to archive task'));
+                        showToast('Error: ' + (data.message || 'Failed to archive task'), 'danger');
                     }
                 })
                 .catch(err => {
                     console.error('Error:', err);
-                    alert('An error occurred');
+                    showToast('An error occurred', 'danger');
                 });
         }
-
-        function loadArchivedTasks() {
-            const body = document.getElementById('archivedTasksBody');
-            body.innerHTML = '<p class="text-muted text-center py-3 small">Loading...</p>';
-
-            fetch('/admin/tasks/archived', {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.success || !data.tasks.length) {
-                        body.innerHTML = '<p class="text-muted text-center py-3 small">No archived tasks.</p>';
-                        return;
-                    }
-
-                    const rows = data.tasks.map(t => `
-                        <tr>
-                            <td class="fw-semibold small">${t.title}</td>
-                            <td class="small">${t.employee_name}</td>
-                            <td>${t.status_badge}</td>
-                            <td class="text-muted small">${t.due_date}</td>
-                            <td class="text-muted small">${t.archived_at ?? '—'}</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-success" title="Restore" onclick="restoreTask(${t.id})">
-                                    <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;">restore</span>
-                                </button>
-                            </td>
-                        </tr>
-                    `).join('');
-
-                    body.innerHTML = `
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover mb-0 small">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Task</th>
-                                        <th>Assigned To</th>
-                                        <th>Status</th>
-                                        <th>Due Date</th>
-                                        <th>Archived On</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>${rows}</tbody>
-                            </table>
-                        </div>`;
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                    body.innerHTML = '<p class="text-danger text-center py-3 small">Failed to load archived tasks.</p>';
-                });
-        }
-
-        function restoreTask(taskId) {
-            fetch(`/admin/tasks/${taskId}/unarchive`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': CSRF_TOKEN
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        alert('Error: ' + (data.message || 'Failed to restore task'));
-                    }
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                    alert('An error occurred');
-                });
-        }
-
-        document.getElementById('archivedModal').addEventListener('show.bs.modal', loadArchivedTasks);
 
         function submitCreateTask() {
             const formData = {
@@ -539,7 +444,7 @@
             };
 
             if (!formData.employee_id || !formData.title || !formData.description || !formData.due_date) {
-                alert('Please fill in all required fields');
+                showToast('Please fill in all required fields', 'warning');
                 return;
             }
 
@@ -555,14 +460,14 @@
                 .then(data => {
                     if (data.success) {
                         bootstrap.Modal.getInstance(document.getElementById('assignModal')).hide();
-                        location.reload();
+                        toastThenReload(data.message || 'Task created.', 'success');
                     } else {
-                        alert('Error: ' + (data.message || 'Failed to create task'));
+                        showToast('Error: ' + (data.message || 'Failed to create task'), 'danger');
                     }
                 })
                 .catch(err => {
                     console.error('Error:', err);
-                    alert('An error occurred');
+                    showToast('An error occurred', 'danger');
                 });
         }
 
@@ -576,7 +481,7 @@
             };
 
             if (!formData.title || !formData.description || !formData.due_date || !formData.status) {
-                alert('Please fill in all required fields');
+                showToast('Please fill in all required fields', 'warning');
                 return;
             }
 
@@ -592,14 +497,14 @@
                 .then(data => {
                     if (data.success) {
                         bootstrap.Modal.getInstance(document.getElementById('editTaskModal')).hide();
-                        location.reload();
+                        toastThenReload(data.message || 'Task updated.', 'success');
                     } else {
-                        alert('Error: ' + (data.message || 'Failed to update task'));
+                        showToast('Error: ' + (data.message || 'Failed to update task'), 'danger');
                     }
                 })
                 .catch(err => {
                     console.error('Error:', err);
-                    alert('An error occurred');
+                    showToast('An error occurred', 'danger');
                 });
         }
 
@@ -615,6 +520,21 @@
 
         $(document).ready(() => {
             initTable();
+
+            // Show any toast that was stashed before a reload (see toastThenReload).
+            const pending = sessionStorage.getItem('pendingToast');
+            if (pending) {
+                sessionStorage.removeItem('pendingToast');
+                try {
+                    const {
+                        message,
+                        type
+                    } = JSON.parse(pending);
+                    showToast(message, type);
+                } catch (e) {
+                    console.error('Failed to parse pending toast', e);
+                }
+            }
         });
     </script>
 @endsection

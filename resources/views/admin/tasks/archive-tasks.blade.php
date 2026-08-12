@@ -23,37 +23,37 @@
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-secondary">inventory_2</span>
-                    <div>
-                        <p class="summary-label">Total Archived</p>
-                        <p class="summary-value">16</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
+                    <span class="material-symbols-outlined text-success summary-icon">check_circle</span>
                     <div>
                         <p class="summary-label">Done</p>
-                        <p class="summary-value">10</p>
+                        <p class="summary-value">{{ $completed ?? 0 }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-primary">autorenew</span>
+                    <span class="material-symbols-outlined text-warning summary-icon">schedule</span>
+                    <div>
+                        <p class="summary-label">To Do</p>
+                        <p class="summary-value">{{ $pending ?? 0 }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="summary-card">
+                    <span class="material-symbols-outlined text-primary summary-icon">autorenew</span>
                     <div>
                         <p class="summary-label">In Progress</p>
-                        <p class="summary-value">3</p>
+                        <p class="summary-value">{{ $inProgress ?? 0 }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-warning">pause_circle</span>
+                    <span class="material-symbols-outlined text-danger summary-icon">cancel</span>
                     <div>
-                        <p class="summary-label">On Hold / To Do</p>
-                        <p class="summary-value">3</p>
+                        <p class="summary-label">Declined</p>
+                        <p class="summary-value">{{ $declined ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -63,12 +63,18 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body">
 
-                <div class="mb-3 btn-group filter-btn-group" role="group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary active" data-filter="all">All</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Done">Done</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="In Progress">In Progress</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="To Do">To Do</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="On Hold">On Hold</button>
+                <div class="mb-3">
+                    <div class="btn-group filter-btn-group" role="group" id="statusFilterGroup">
+                        <button type="button" class="btn btn-sm btn-outline-secondary active"
+                            data-filter="all">All</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                            data-filter="Completed">Done</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Pending">To Do</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="In Progress">In
+                            Progress</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                            data-filter="Declined">Declined</button>
+                    </div>
                 </div>
 
                 <div class="table-responsive">
@@ -76,10 +82,8 @@
                         <thead class="table-light">
                             <tr>
                                 <th class="border-0 small green-text">Task</th>
-                                <th class="border-0 small green-text">Project</th>
-                                <th class="border-0 small green-text">Assignee</th>
-                                <th class="border-0 small green-text">Priority</th>
-                                <th class="border-0 small green-text">Start Date</th>
+                                <th class="border-0 small green-text">Assigned To</th>
+                                <th class="border-0 small green-text">Assessment</th>
                                 <th class="border-0 small green-text">Due Date</th>
                                 <th class="border-0 small green-text">Status</th>
                                 <th class="border-0 small green-text">Archived On</th>
@@ -87,174 +91,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="fw-semibold">Install Smoke Detectors</td>
-                                <td class="text-muted small">Fire Alarm System – Pasig</td>
-                                <td>Ana Garcia</td>
-                                <td><span class="badge rounded-pill bg-danger">High</span></td>
-                                <td>Mar 05, 2026</td>
-                                <td>Mar 08, 2026</td>
-                                <td><span class="badge rounded-pill bg-success">Done</span></td>
-                                <td class="text-muted small">Mar 10, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewArchivedTaskModal"
-                                        onclick="loadArchivedTask({
-                                            name:'Install Smoke Detectors',
-                                            project:'Fire Alarm System – Pasig',
-                                            assignee:'Ana Garcia',
-                                            priority:'High', priorityClass:'danger',
-                                            start:'Mar 05, 2026', due:'Mar 08, 2026',
-                                            status:'Done', statusClass:'success',
-                                            archivedOn:'Mar 10, 2026'
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Site Survey & Documentation</td>
-                                <td class="text-muted small">Network Setup – BGC Office</td>
-                                <td>Marco Rivera</td>
-                                <td><span class="badge rounded-pill bg-success">Low</span></td>
-                                <td>Mar 15, 2026</td>
-                                <td>Mar 18, 2026</td>
-                                <td><span class="badge rounded-pill bg-success">Done</span></td>
-                                <td class="text-muted small">Mar 20, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewArchivedTaskModal"
-                                        onclick="loadArchivedTask({
-                                            name:'Site Survey & Documentation',
-                                            project:'Network Setup – BGC Office',
-                                            assignee:'Marco Rivera',
-                                            priority:'Low', priorityClass:'success',
-                                            start:'Mar 15, 2026', due:'Mar 18, 2026',
-                                            status:'Done', statusClass:'success',
-                                            archivedOn:'Mar 20, 2026'
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Cable Tray Installation</td>
-                                <td class="text-muted small">CCTV Installation – Makati Branch</td>
-                                <td>Carlo Mendoza</td>
-                                <td><span class="badge rounded-pill bg-warning text-dark">Medium</span></td>
-                                <td>Feb 20, 2026</td>
-                                <td>Feb 25, 2026</td>
-                                <td><span class="badge rounded-pill bg-primary">In Progress</span></td>
-                                <td class="text-muted small">Mar 01, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewArchivedTaskModal"
-                                        onclick="loadArchivedTask({
-                                            name:'Cable Tray Installation',
-                                            project:'CCTV Installation – Makati Branch',
-                                            assignee:'Carlo Mendoza',
-                                            priority:'Medium', priorityClass:'warning text-dark',
-                                            start:'Feb 20, 2026', due:'Feb 25, 2026',
-                                            status:'In Progress', statusClass:'primary',
-                                            archivedOn:'Mar 01, 2026'
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Conduit Pipe Layout</td>
-                                <td class="text-muted small">Access Control – Alabang</td>
-                                <td>Jomar Tan</td>
-                                <td><span class="badge rounded-pill bg-danger">High</span></td>
-                                <td>Feb 10, 2026</td>
-                                <td>Feb 14, 2026</td>
-                                <td><span class="badge rounded-pill bg-warning text-dark">On Hold</span></td>
-                                <td class="text-muted small">Feb 20, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewArchivedTaskModal"
-                                        onclick="loadArchivedTask({
-                                            name:'Conduit Pipe Layout',
-                                            project:'Access Control – Alabang',
-                                            assignee:'Jomar Tan',
-                                            priority:'High', priorityClass:'danger',
-                                            start:'Feb 10, 2026', due:'Feb 14, 2026',
-                                            status:'On Hold', statusClass:'warning text-dark',
-                                            archivedOn:'Feb 20, 2026'
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Ground Rod Installation</td>
-                                <td class="text-muted small">Solar Street Lighting – Taguig</td>
-                                <td>Marco Rivera</td>
-                                <td><span class="badge rounded-pill bg-success">Low</span></td>
-                                <td>Jan 20, 2026</td>
-                                <td>Jan 22, 2026</td>
-                                <td><span class="badge rounded-pill bg-success">Done</span></td>
-                                <td class="text-muted small">Feb 01, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewArchivedTaskModal"
-                                        onclick="loadArchivedTask({
-                                            name:'Ground Rod Installation',
-                                            project:'Solar Street Lighting – Taguig',
-                                            assignee:'Marco Rivera',
-                                            priority:'Low', priorityClass:'success',
-                                            start:'Jan 20, 2026', due:'Jan 22, 2026',
-                                            status:'Done', statusClass:'success',
-                                            archivedOn:'Feb 01, 2026'
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Wiring Diagram Preparation</td>
-                                <td class="text-muted small">Fire Alarm System – Pasig</td>
-                                <td>Carlo Mendoza</td>
-                                <td><span class="badge rounded-pill bg-warning text-dark">Medium</span></td>
-                                <td>Jan 10, 2026</td>
-                                <td>Jan 12, 2026</td>
-                                <td><span class="badge rounded-pill bg-success">Done</span></td>
-                                <td class="text-muted small">Jan 20, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewArchivedTaskModal"
-                                        onclick="loadArchivedTask({
-                                            name:'Wiring Diagram Preparation',
-                                            project:'Fire Alarm System – Pasig',
-                                            assignee:'Carlo Mendoza',
-                                            priority:'Medium', priorityClass:'warning text-dark',
-                                            start:'Jan 10, 2026', due:'Jan 12, 2026',
-                                            status:'Done', statusClass:'success',
-                                            archivedOn:'Jan 20, 2026'
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
+                            @forelse($tasks ?? [] as $task)
+                                <tr data-status="{{ $task->status }}" data-task-id="{{ $task->id }}">
+                                    <td class="fw-semibold">{{ $task->title }}</td>
+                                    <td>{{ $task->employee->staff->user->full_name ?? 'N/A' }}</td>
+                                    <td class="text-muted small">Assessment #{{ $task->assessment->id ?? 'N/A' }}</td>
+                                    <td class="text-muted">{{ $task->due_date->format('M j, Y') }}</td>
+                                    <td>{!! $task->status_badge !!}</td>
+                                    <td class="text-muted small">{{ $task->archived_at?->format('M j, Y') ?? '—' }}</td>
+                                    <td class="text-nowrap actions-col">
+                                        <button class="btn btn-sm btn-outline-success action-btn" title="View"
+                                            onclick="openView({{ $task->id }})">
+                                            <span class="material-symbols-outlined icon-action">visibility</span>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary action-btn" title="Restore"
+                                            onclick="restoreTaskConfirm({{ $task->id }})">
+                                            <span class="material-symbols-outlined icon-action">unarchive</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -266,67 +122,47 @@
 
 
     <!-- ── View Archived Task Modal ── -->
-    <div class="modal fade" id="viewArchivedTaskModal" tabindex="-1">
-        <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal fade" id="viewTaskModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined fs-20">task_alt</span>
-                        Task Details
-                    </h5>
+                    <h5 class="modal-title">Task Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-
-                    <p class="section-label">Task Info</p>
-                    <div class="row g-2 mb-2">
-                        <div class="col-12">
-                            <p class="detail-label small mb-0">Task Name</p>
-                            <p class="detail-value small fw-semibold" id="vat-name">—</p>
-                        </div>
-                        <div class="col-12">
-                            <p class="detail-label small mb-0">Project</p>
-                            <p class="detail-value small" id="vat-project">—</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="detail-label small mb-0">Assignee</p>
-                            <p class="detail-value small" id="vat-assignee">—</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="detail-label small mb-0">Priority</p>
-                            <p class="detail-value small" id="vat-priority">—</p>
-                        </div>
-                    </div>
-
-                    <p class="section-label">Schedule</p>
-                    <div class="row g-2 mb-2">
-                        <div class="col-6">
-                            <p class="detail-label small mb-0">Start Date</p>
-                            <p class="detail-value small" id="vat-start">—</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="detail-label small mb-0">Due Date</p>
-                            <p class="detail-value small" id="vat-due">—</p>
-                        </div>
-                    </div>
-
-                    <p class="section-label">Status</p>
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <p class="detail-label small mb-0">Task Status</p>
-                            <p class="detail-value small" id="vat-status">—</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="detail-label small mb-0">Archived On</p>
-                            <p class="detail-value small" id="vat-archivedOn">—</p>
-                        </div>
-                    </div>
-
+                <div class="modal-body" id="viewTaskContent">
+                    <!-- Loaded via AJAX -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-1"
+                        onclick="restoreTaskConfirm(currentTaskId)">
                         <span class="material-symbols-outlined fs-17">unarchive</span>Restore
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ── Restore Confirm Modal ── -->
+    <div class="modal fade" id="restoreConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-semibold">Restore this task?</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <p class="small text-muted mb-0">
+                        This task will be moved back to the active <strong>Tasks</strong> list.
+                    </p>
+                </div>
+                <div class="modal-footer border-0 pt-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary d-flex align-items-center gap-1"
+                        id="confirmRestoreBtn" onclick="confirmRestore()">
+                        <span class="material-symbols-outlined fs-15">unarchive</span>
+                        Restore
                     </button>
                 </div>
             </div>
@@ -337,27 +173,157 @@
 
 @section('scripts')
     <script>
-        function loadArchivedTask(d) {
-            document.getElementById('vat-name').textContent       = d.name       || '—';
-            document.getElementById('vat-project').textContent    = d.project    || '—';
-            document.getElementById('vat-assignee').textContent   = d.assignee   || '—';
-            document.getElementById('vat-start').textContent      = d.start      || '—';
-            document.getElementById('vat-due').textContent        = d.due        || '—';
-            document.getElementById('vat-archivedOn').textContent = d.archivedOn || '—';
-            document.getElementById('vat-priority').innerHTML =
-                `<span class="badge rounded-pill bg-${d.priorityClass}">${d.priority}</span>`;
-            document.getElementById('vat-status').innerHTML =
-                `<span class="badge rounded-pill bg-${d.statusClass}">${d.status}</span>`;
+        let dtTable = null;
+        let currentTaskId = null;
+        const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+        function toastThenReload(message, type = 'success') {
+            sessionStorage.setItem('pendingToast', JSON.stringify({
+                message,
+                type
+            }));
+            location.reload();
         }
 
-        $(document).ready(function() {
-            $('#archiveTasksTable').DataTable({
-                pageLength: 10,
-                lengthChange: true,
-                info: true,
-                order: [[7, 'desc']],
-                columnDefs: [{ orderable: false, targets: 8 }]
+        function initTable() {
+            if (dtTable) dtTable.destroy();
+            dtTable = $('#archiveTasksTable').DataTable({
+                pageLength: 25,
+                columnDefs: [{
+                    orderable: false,
+                    targets: 6
+                }],
+                order: [
+                    [5, 'desc']
+                ],
+                searching: true
             });
+        }
+
+        document.getElementById('statusFilterGroup').addEventListener('click', function(event) {
+            const btn = event.target.closest('[data-filter]');
+            if (!btn || !dtTable) return;
+            this.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filter = btn.dataset.filter;
+            dtTable.column(4).search(filter === 'all' ? '' : filter, false, false).draw();
+        });
+
+        function openView(taskId) {
+            currentTaskId = taskId;
+            fetch(`/admin/tasks/${taskId}/details`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.success || !data.task) throw new Error('Invalid response format');
+                    const task = data.task;
+                    const content = `
+                        <div class="row g-2 mb-3">
+                            <div class="col-sm-6">
+                                <p class="text-muted small mb-1">Task Title</p>
+                                <p class="fw-semibold mb-0">${task.title}</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="text-muted small mb-1">Assigned To</p>
+                                <p class="mb-0">${task.employee?.staff?.user?.full_name || 'N/A'}</p>
+                            </div>
+                            <div class="col-sm-12">
+                                <p class="text-muted small mb-1">Assessment</p>
+                                <p class="mb-0">Assessment #${task.assessment?.id || 'N/A'} - ${task.assessment?.client?.user?.full_name || 'N/A'}</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="text-muted small mb-1">Due Date</p>
+                                <p class="mb-0">${new Date(task.due_date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="text-muted small mb-1">Status</p>
+                                <span class="badge bg-${getStatusBadgeClass(task.status)}">${task.status}</span>
+                                ${task.is_auto_completed ? '<span class="badge bg-light text-muted ms-1">Auto-synced</span>' : ''}
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="text-muted small mb-1">Archived On</p>
+                                <p class="mb-0">${task.archived_at ? new Date(task.archived_at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}</p>
+                            </div>
+                        </div>
+                        <hr class="my-3">
+                        <div class="mb-3">
+                            <p class="fw-semibold small text-uppercase section-label">Description</p>
+                            <p class="small">${task.description || 'No description'}</p>
+                        </div>
+                    `;
+                    document.getElementById('viewTaskContent').innerHTML = content;
+                    new bootstrap.Modal(document.getElementById('viewTaskModal')).show();
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    showToast('Failed to load task details: ' + err.message, 'danger');
+                });
+        }
+
+        function restoreTaskConfirm(taskId) {
+            currentTaskId = taskId;
+            bootstrap.Modal.getInstance(document.getElementById('viewTaskModal'))?.hide();
+            new bootstrap.Modal(document.getElementById('restoreConfirmModal')).show();
+        }
+
+        function confirmRestore() {
+            if (!currentTaskId) return;
+            fetch(`/admin/tasks/${currentTaskId}/unarchive`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        bootstrap.Modal.getInstance(document.getElementById('restoreConfirmModal')).hide();
+                        toastThenReload(data.message || 'Task restored.', 'success');
+                    } else {
+                        showToast('Error: ' + (data.message || 'Failed to restore task'), 'danger');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    showToast('An error occurred', 'danger');
+                });
+        }
+
+        function getStatusBadgeClass(status) {
+            const map = {
+                'Completed': 'success',
+                'Pending': 'warning text-dark',
+                'In Progress': 'primary',
+                'Declined': 'danger'
+            };
+            return map[status] || 'secondary';
+        }
+
+        $(document).ready(() => {
+            initTable();
+
+            const pending = sessionStorage.getItem('pendingToast');
+            if (pending) {
+                sessionStorage.removeItem('pendingToast');
+                try {
+                    const {
+                        message,
+                        type
+                    } = JSON.parse(pending);
+                    showToast(message, type);
+                } catch (e) {
+                    console.error('Failed to parse pending toast', e);
+                }
+            }
         });
     </script>
 @endsection
