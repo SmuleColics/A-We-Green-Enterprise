@@ -16,11 +16,9 @@
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
     </a>
-    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text" data-bs-toggle="modal"
-        data-bs-target="#scheduleModal">
-        <span class="material-symbols-outlined me-1 fs-18">add</span>
-        Schedule Assessment
-    </button>
+    <a href="{{ route('requests') }}" class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text">
+        View Assessment Requests
+    </a>
 @endsection
 
 <div class="container-fluid px-4 py-4">
@@ -40,9 +38,7 @@
                 </button>
             </li>
         </ul>
-        <a href="{{ route('requests') }}" class="btn btn-sm btn-light fw-semibold d-flex align-items-center">
-            View Assessment Requests
-        </a>
+
     </div>
 
     <!-- Tab Content -->
@@ -90,25 +86,38 @@
         <!-- ── List View ── -->
         <div class="tab-pane fade" id="list-view" role="tabpanel">
             <div class="row g-3 mb-4">
-                <div class="col-6 col-md-4">
+
+                <div class="col-6 col-md-3">
                     <div class="summary-card">
-                        <span class="material-symbols-outlined summary-icon text-primary">inbox</span>
+                        <span class="material-symbols-outlined summary-icon muted-text">inbox</span>
                         <div>
-                            <p class="summary-label">Total Confirmed</p>
+                            <p class="summary-label">Total</p>
                             <p class="summary-value">{{ $total }}</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-md-4">
+
+                <div class="col-6 col-md-3">
+                    <div class="summary-card">
+                        <span class="material-symbols-outlined summary-icon text-primary">description</span>
+                        <div>
+                            <p class="summary-label">Submitted Form</p>
+                            <p class="summary-value">{{ $submittedFormCount }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3">
                     <div class="summary-card">
                         <span class="material-symbols-outlined summary-icon text-warning">pending</span>
                         <div>
-                            <p class="summary-label">Pending (Not Yet Conducted)</p>
+                            <p class="summary-label">Pending</p>
                             <p class="summary-value">{{ $pendingCount }}</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-md-4">
+
+                <div class="col-6 col-md-3">
                     <div class="summary-card">
                         <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
                         <div>
@@ -117,6 +126,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="card border-0 shadow-sm">
@@ -193,6 +203,15 @@
                                 })">
                                                 <span class="material-symbols-outlined icon-action">visibility</span>
                                             </button>
+                                            @if ($a->derived_status === 'Done Assessment' || $a->derived_status === 'Submitted Form')
+                                                <a href="{{ route('assessments.form.edit', $a) }}"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    title="{{ $a->assessment_form_completed_at ? 'Open Assessment Form' : 'Create Assessment Form' }}">
+                                                    <span class="material-symbols-outlined icon-action">
+                                                        {{ $a->assessment_form_completed_at ? 'visibility' : 'description' }}
+                                                    </span>
+                                                </a>
+                                            @endif
                                             <button class="btn btn-sm btn-outline-secondary" title="Archive"
                                                 onclick="archiveAssessment({{ $a->id }})">
                                                 <span class="material-symbols-outlined icon-action">archive</span>
@@ -347,116 +366,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ── Schedule Assessment Modal ── -->
-<div class="modal fade" id="scheduleModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Schedule Assessment</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body overflow-y-scroll">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label small">Client Name *</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small">Contact Number *</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small">Email (Optional)</label>
-                        <input type="email" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small">Client Type *</label>
-                        <select class="form-select">
-                            <option value="">Select</option>
-                            <option>Residential</option>
-                            <option>Commercial</option>
-                            <option>Government/LGU</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small">Service Type *</label>
-                        <select class="form-select">
-                            <option value="">Select</option>
-                            <option>CCTV Setup</option>
-                            <option>Solar Street Light</option>
-                            <option>Solar Setup</option>
-                            <option>Public Address System</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small">Establishment Type *</label>
-                        <select class="form-select">
-                            <option value="">Select</option>
-                            <option>Home / Residence</option>
-                            <option>Office / Commercial</option>
-                            <option>Subdivision / Barangay</option>
-                            <option>Government Facility</option>
-                        </select>
-                    </div>
-
-                    <div class="col-12">
-                        <p class="text-muted small fw-semibold mb-0 mt-1 text-uppercase"
-                            style="letter-spacing:.05em;">Location</p>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small">Block (Optional)</label>
-                        <input type="text" class="form-control" placeholder="e.g. Block 3">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small">Lot (Optional)</label>
-                        <input type="text" class="form-control" placeholder="e.g. Lot 12">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label small">Barangay *</label>
-                        <input type="text" class="form-control" placeholder="e.g. Brgy. Molino III">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small">City / Municipality *</label>
-                        <input type="text" class="form-control" placeholder="e.g. Bacoor">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small">Province *</label>
-                        <input type="text" class="form-control" placeholder="e.g. Cavite">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label small">Date *</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small">Time Slot *</label>
-                        <select class="form-select">
-                            <option value="">Select</option>
-                            <option>Morning</option>
-                            <option>Afternoon</option>
-                            <option>Full Day</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small">Assessor *</label>
-                        <select class="form-select">
-                            <option value="">Select</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small">Notes (Optional)</label>
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-success">Schedule</button>
             </div>
         </div>
     </div>

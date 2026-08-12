@@ -196,7 +196,10 @@ function renderCalendar() {
 
   fetch(url, { headers: { 'Accept': 'application/json' } })
     .then(res => res.json())
-    .then(data => buildCalendarGrid(data || {}))
+    .then(data => {
+      window.currentAvailability = data || {};
+      buildCalendarGrid(window.currentAvailability);
+    })
     .catch(() => {
       showToast('Could not load availability for this month. Showing dates as open.', 'warning');
       buildCalendarGrid({});
@@ -287,11 +290,29 @@ function buildCalendarGrid(availability) {
 }
 
 function pickDate(el, displayDate, isoDate) {
-  document.querySelectorAll('.calendar-cell.selected-day').forEach(c => c.classList.remove('selected-day'));
+  const booked = window.currentAvailability?.[isoDate] || {
+    morning: false,
+    afternoon: false
+  };
+
+  // Full-day assessments need both AM and PM available.
+  if (isFullDay() && (booked.morning || booked.afternoon)) {
+    showToast(
+      'This assessment requires a full day, but this date already has a booked AM or PM slot. Please choose another date.',
+      'danger'
+    );
+    return;
+  }
+
+  document.querySelectorAll('.calendar-cell.selected-day')
+    .forEach(cell => cell.classList.remove('selected-day'));
+
   el.classList.add('selected-day');
   state.selectedDate = isoDate;
   state.selectedDateDisplay = displayDate;
-  document.getElementById('selected-date-label').textContent = 'Selected: ' + displayDate;
+  document.getElementById('selected-date-label').textContent =
+    'Selected: ' + displayDate;
+
   setTimeout(() => goStep(3), 300);
 }
 
@@ -327,6 +348,44 @@ function isFullDay() {
   return state.estabSize === 'large' || state.services.length > 1;
 }
 
+function getSelectedDateSlots() {
+  return window.currentAvailability?.[state.selectedDate] || {
+    morning: false,
+    afternoon: false
+  };
+}
+
+function clearSelectedDate() {
+  state.selectedDate = '';
+  state.selectedDateDisplay = '';
+
+  document.querySelectorAll('.calendar-cell.selected-day')
+    .forEach(cell => cell.classList.remove('selected-day'));
+
+  document.getElementById('selected-date-label').textContent =
+    'No date selected yet.';
+}
+
+function setSlotAvailability(card, slot, isBooked) {
+  card.classList.toggle('slot-unavailable', isBooked);
+  card.setAttribute('aria-disabled', isBooked ? 'true' : 'false');
+
+  const oldStatus = card.querySelector('.slot-status');
+  if (oldStatus) oldStatus.remove();
+
+  if (isBooked) {
+    card.insertAdjacentHTML(
+      'beforeend',
+      `<div class="slot-status">${slot} already booked</div>`
+    );
+
+    if (state.slot === slot) {
+      state.slot = '';
+      card.classList.remove('selected');
+    }
+  }
+}
+
 function updateSlotLogic() {
   const full = isFullDay();
   const banner = document.getElementById('slot-info-banner');
@@ -334,6 +393,27 @@ function updateSlotLogic() {
   const morningCard = document.getElementById('slot-morning');
   const afternoonCard = document.getElementById('slot-afternoon');
   const fullDayWrap = document.getElementById('slot-fullday-wrap');
+  const booked = getSelectedDateSlots();
+
+  setSlotAvailability(morningCard, 'Morning', booked.morning);
+  setSlotAvailability(afternoonCard, 'Afternoon', booked.afternoon);
+
+  // A whole-day assessment cannot use a date where either AM or PM is booked.
+  if (full && state.selectedDate && (booked.morning || booked.afternoon)) {
+    clearSelectedDate();
+    state.slot = '';
+    showToast(
+      'A full-day assessment requires an entirely available date. Please select another date.',
+      'danger'
+    );
+
+    if (currentStep === 3) {
+      goStep(2);
+      renderCalendar();
+    }
+
+    return;
+  }
 
   if (full) {
     fullDayWrap.style.display = 'block';
@@ -341,30 +421,49 @@ function updateSlotLogic() {
     afternoonCard.closest('.col-md-6').style.display = 'none';
     state.slot = 'Full Day';
     banner.style.display = 'flex';
-    if (state.services.length > 1 && state.estabSize === 'large') {
-      infoText.textContent =
-        'Multiple services on a large establishment — a full day is required for this assessment.';
-    } else if (state.services.length > 1) {
-      infoText.textContent =
-        'Multiple services selected — a full day is required to cover all assessments in one visit.';
-    } else {
-      infoText.textContent = 'This establishment type requires a full-day assessment visit.';
-    }
-  } else {
-    fullDayWrap.style.display = 'none';
-    morningCard.closest('.col-md-6').style.display = 'block';
-    afternoonCard.closest('.col-md-6').style.display = 'block';
-    if (state.slot === 'Full Day') state.slot = '';
-    document.querySelectorAll('.slot-card').forEach(c => {
-      if (c.id !== 'slot-fullday') c.classList.remove('selected');
-    });
-    banner.style.display = 'none';
+
+    infoText.textContent =
+      'This assessment requires a full-day visit.';
+    return;
+  }
+
+  fullDayWrap.style.display = 'none';
+  morningCard.closest('.col-md-6').style.display = 'block';
+  afternoonCard.closest('.col-md-6').style.display = 'block';
+  banner.style.display = 'none';
+
+  morningCard.classList.toggle('opacity-50', booked.morning);
+  afternoonCard.classList.toggle('opacity-50', booked.afternoon);
+
+  if (booked.morning && state.slot === 'Morning') {
+    state.slot = '';
+    morningCard.classList.remove('selected');
+  }
+
+  if (booked.afternoon && state.slot === 'Afternoon') {
+    state.slot = '';
+    afternoonCard.classList.remove('selected');
   }
 }
 
 function selectSlot(el, slot) {
   if (isFullDay()) return;
-  document.querySelectorAll('.slot-card').forEach(c => c.classList.remove('selected'));
+
+  const booked = getSelectedDateSlots();
+
+  if (slot === 'Morning' && booked.morning) {
+    showToast('The morning slot is already booked for this date.', 'danger');
+    return;
+  }
+
+  if (slot === 'Afternoon' && booked.afternoon) {
+    showToast('The afternoon slot is already booked for this date.', 'danger');
+    return;
+  }
+
+  document.querySelectorAll('.slot-card')
+    .forEach(card => card.classList.remove('selected'));
+
   el.classList.add('selected');
   state.slot = slot;
 }
@@ -402,6 +501,82 @@ function goStep(n) {
   });
 }
 
+function setFieldError(field, message) {
+  field.classList.add('is-invalid');
+
+  let feedback = field.nextElementSibling;
+  if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+    feedback = document.createElement('div');
+    feedback.className = 'invalid-feedback';
+    field.insertAdjacentElement('afterend', feedback);
+  }
+
+  feedback.textContent = message;
+}
+
+function clearFieldError(field) {
+  field.classList.remove('is-invalid');
+
+  const feedback = field.nextElementSibling;
+  if (feedback?.classList.contains('invalid-feedback')) {
+    feedback.remove();
+  }
+}
+
+function validateRequiredField(id, message) {
+  const field = document.getElementById(id);
+
+  if (!field.value.trim()) {
+    setFieldError(field, message);
+    return false;
+  }
+
+  clearFieldError(field);
+  return true;
+}
+
+function validateEmailField(id) {
+  const field = document.getElementById(id);
+  const value = field.value.trim();
+
+  if (!value) {
+    setFieldError(field, 'Email address is required.');
+    return false;
+  }
+
+  if (!field.checkValidity()) {
+    setFieldError(field, 'Please enter a valid email address.');
+    return false;
+  }
+
+  clearFieldError(field);
+  return true;
+}
+
+function clearDetailErrorsOnInput() {
+  const fields = [
+    'd-fname', 'd-lname', 'd-contact', 'd-email',
+    'd-block', 'd-lot', 'd-street', 'd-brgy',
+    'd-province', 'd-city', 'd-zip'
+  ];
+
+  fields.forEach(id => {
+    const field = document.getElementById(id);
+
+    field.addEventListener('input', () => {
+      if (field.value.trim()) clearFieldError(field);
+    });
+
+    field.addEventListener('change', () => {
+      if (field.value.trim()) clearFieldError(field);
+    });
+  });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  clearDetailErrorsOnInput();
+});
+
 /* ─── Validation ─── */
 function validateStep(s) {
   if (s === 1) {
@@ -409,57 +584,60 @@ function validateStep(s) {
       showToast('Please select a client type.', 'danger');
       return false;
     }
+
     if (!state.estabType) {
       showToast('Please select an establishment type.', 'danger');
       return false;
     }
   }
+
   if (s === 2) {
     if (!state.selectedDate) {
       showToast('Please select a date from the calendar.', 'danger');
       return false;
     }
   }
+
   if (s === 3) {
     if (state.services.length === 0) {
       showToast('Please select at least one service type.', 'danger');
       return false;
     }
+
     if (state.services.includes('CCTV Setup') && !state.subtype) {
       showToast('Please select a CCTV service type.', 'danger');
       return false;
     }
+
     if (!state.slot) {
       showToast('Please select a time slot.', 'danger');
       return false;
     }
   }
+
   if (s === 4) {
-    if (!document.getElementById('d-fname').value.trim()) {
-      showToast('Please enter your first name.', 'danger');
-      return false;
-    }
-    if (!document.getElementById('d-lname').value.trim()) {
-      showToast('Please enter your last name.', 'danger');
-      return false;
-    }
-    if (!document.getElementById('d-contact').value.trim()) {
-      showToast('Please enter your contact number.', 'danger');
-      return false;
-    }
-    if (!document.getElementById('d-brgy').value.trim()) {
-      showToast('Please enter the barangay.', 'danger');
-      return false;
-    }
-    if (!document.getElementById('d-province').value) {
-      showToast('Please select a province.', 'danger');
-      return false;
-    }
-    if (!document.getElementById('d-city').value) {
-      showToast('Please select a city/municipality.', 'danger');
+    const validations = [
+      validateRequiredField('d-fname', 'First name is required.'),
+      validateRequiredField('d-lname', 'Last name is required.'),
+      validateRequiredField('d-contact', 'Contact number is required.'),
+      validateEmailField('d-email'),
+      validateRequiredField('d-block', 'Block is required.'),
+      validateRequiredField('d-lot', 'Lot is required.'),
+      validateRequiredField('d-street', 'Street / Purok / Sitio is required.'),
+      validateRequiredField('d-brgy', 'Barangay is required.'),
+      validateRequiredField('d-province', 'Please select a province.'),
+      validateRequiredField('d-city', 'Please select a city or municipality.'),
+      validateRequiredField('d-zip', 'Zip code is required.')
+    ];
+
+    const firstInvalid = document.querySelector('#pane4 .is-invalid');
+
+    if (validations.includes(false)) {
+      firstInvalid?.focus();
       return false;
     }
   }
+
   return true;
 }
 

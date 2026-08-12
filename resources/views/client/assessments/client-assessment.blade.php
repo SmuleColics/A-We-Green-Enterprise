@@ -306,24 +306,24 @@
                                     <div class="col-md-6">
                                         <label class="form-label">First Name <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control form-control-sm" id="d-fname"
-                                            value="{{ auth()->user()->first_name }}" placeholder="First name">
+                                            value="{{ auth()->user()->first_name }}" placeholder="First name" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Last Name <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control form-control-sm" id="d-lname"
-                                            value="{{ auth()->user()->last_name }}" placeholder="Last name">
+                                            value="{{ auth()->user()->last_name }}" placeholder="Last name" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Contact Number <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control form-control-sm" id="d-contact"
                                             value="{{ auth()->user()->contact_number }}"
-                                            placeholder="Mobile or telephone number">
+                                            placeholder="Mobile or telephone number" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Email Address</label>
+                                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
                                         <input type="email" class="form-control form-control-sm" id="d-email"
-                                            value="{{ auth()->user()->email }}" placeholder="Optional">
+                                            value="{{ auth()->user()->email }}" placeholder="Email address" required>
                                     </div>
                                 </div>
 
@@ -332,28 +332,30 @@
                                     <div class="col-md-3">
                                         <label class="form-label">Block</label>
                                         <input type="text" class="form-control form-control-sm" id="d-block"
-                                            value="{{ auth()->user()->client->block }}" placeholder="Block number">
+                                            value="{{ auth()->user()->client->block }}" placeholder="Block number"
+                                            required>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Lot</label>
                                         <input type="text" class="form-control form-control-sm" id="d-lot"
-                                            value="{{ auth()->user()->client->lot }}" placeholder="Lot number">
+                                            value="{{ auth()->user()->client->lot }}" placeholder="Lot number" required>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Street / Purok / Sitio</label>
                                         <input type="text" class="form-control form-control-sm" id="d-street"
                                             value="{{ auth()->user()->client->street }}"
-                                            placeholder="Street name or purok/sitio">
+                                            placeholder="Street name or purok/sitio" required>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">Barangay <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control form-control-sm" id="d-brgy"
-                                            value="{{ auth()->user()->client->barangay }}" placeholder="Barangay name">
+                                            value="{{ auth()->user()->client->barangay }}" placeholder="Barangay name"
+                                            required>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Province <span class="text-danger">*</span></label>
                                         <select class="form-select form-select-sm" id="d-province"
-                                            onchange="updateCities()">
+                                            onchange="updateCities()" required>
                                             <option value="">— Select Province —</option>
                                             <optgroup label="NCR">
                                                 <option value="Metro Manila"
@@ -382,14 +384,15 @@
                                     <div class="col-md-4">
                                         <label class="form-label">City / Municipality <span
                                                 class="text-danger">*</span></label>
-                                        <select class="form-select form-select-sm" id="d-city">
+                                        <select class="form-select form-select-sm" id="d-city" required>
                                             <!-- pre-populated via JS on load, using window.clientDefaults.city -->
                                         </select>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label">Zip Code</label>
+                                        <label class="form-label">Zip Code <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control form-control-sm" id="d-zip"
-                                            value="{{ auth()->user()->client->zip_code }}" placeholder="Postal code">
+                                            value="{{ auth()->user()->client->zip_code }}" placeholder="Postal code"
+                                            required>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">Notes / Special Instructions</label>

@@ -11,6 +11,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Employee\TaskController as EmployeeTaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Admin\AssessmentFormController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'showLandingPage'])
@@ -37,10 +38,6 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
     // Admin assessment requests (secondary view)
     Route::get('/archiverequest', [AdminController::class, 'showArchiveAssessmentRequests'])
         ->name('archive-request');
-
-    // Assessment form
-    Route::get('/forms', [AdminController::class, 'showAssessmentForms'])
-        ->name('form');
 
     // Quotations
     Route::get('/quotations', [AdminController::class, 'showQuotations'])
@@ -336,6 +333,11 @@ Route::middleware(['auth', 'role:admin,super_admin'])
 Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function () {
     Route::get('/assessments', [AssessmentScheduleController::class, 'index'])->name('assessments');
     Route::patch('/assessments/{assessment}/archive', [AssessmentScheduleController::class, 'archive'])->name('assessments.archive');
+    Route::get('/assessments/{assessment}/form', [AssessmentFormController::class, 'edit'])
+    ->name('assessments.form.edit');
+
+    Route::put('/assessments/{assessment}/form', [AssessmentFormController::class, 'update'])
+    ->name('assessments.form.update');
 });
 
 // ==========================================================

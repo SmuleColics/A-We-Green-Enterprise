@@ -30,11 +30,6 @@ class AdminController extends Controller
         return view('admin.assessments.archive-requests');
     }
 
-    public function showAssessmentForms()
-    {
-        return view('admin.assessments.forms');
-    }
-
     // QUOTATION
     public function showQuotations()
     {

@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Controller;
 use App\Models\Assessment;
+use App\Models\Client;
+use App\Models\Employee;
+use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
 
 class AssessmentScheduleController extends Controller
@@ -24,16 +27,25 @@ class AssessmentScheduleController extends Controller
 
         $total = $assessments->count();
         $doneCount = $assessments->where('derived_status', 'Done Assessment')->count();
+        $submittedFormCount = $assessments->where('derived_status', 'Submitted Form')->count();
         $pendingCount = $assessments->where('derived_status', 'Pending')->count();
 
-        // Grouped by date for the calendar view — keyed by Y-m-d so the
-        // JS calendar renderer can look up a day's bookings directly.
         $byDate = $assessments
             ->groupBy(fn ($a) => $a->preferred_date->format('Y-m-d'))
             ->map(fn ($dayAssessments) => $dayAssessments->map(fn ($a) => $this->toCardArray($a))->values());
 
+        $clients = Client::with('user')->get();
+        $employees = Employee::with('staff.user')->get();
+
         return view('admin.assessments.assessments', compact(
-            'assessments', 'byDate', 'total', 'doneCount', 'pendingCount'
+            'assessments',
+            'byDate',
+            'total',
+            'doneCount',
+            'submittedFormCount',
+            'pendingCount',
+            'clients',
+            'employees'
         ));
     }
 
@@ -65,6 +77,10 @@ class AssessmentScheduleController extends Controller
      */
     private function deriveStatus(Assessment $assessment): string
     {
+        if ($assessment->assessment_form_completed_at) {
+            return 'Submitted Form';
+        }
+
         if ($assessment->tasks->isEmpty()) {
             return 'Pending';
         }

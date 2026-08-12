@@ -1,4 +1,3 @@
-
 :root {
   --green-light: #e8f5ee;
   --green-mid: rgba(22, 162, 73, .12);
@@ -6,6 +5,20 @@
 
 * {
   box-sizing: border-box;
+}
+
+.slot-card.slot-unavailable {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background-color: #f8f9fa;
+  border-color: #dc3545;
+}
+
+.slot-status {
+  margin-top: 8px;
+  color: #dc3545;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 /* Page background — different from the portal page,
@@ -672,7 +685,9 @@ body {
    PAGE HERO
    (same technique as assessment.css / quotation.css)
    ============================================= */
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   background: #f7f5f2;
@@ -724,6 +739,11 @@ body {
    RESPONSIVE
    ============================================= */
 @media (max-width: 575.98px) {
-  .main-content { padding: 0 1rem 2rem; }
-  .page-hero { padding: 1.25rem 1rem 3rem; }
+  .main-content {
+    padding: 0 1rem 2rem;
+  }
+
+  .page-hero {
+    padding: 1.25rem 1rem 3rem;
+  }
 }
