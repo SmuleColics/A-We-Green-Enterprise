@@ -174,7 +174,7 @@
                                         <td>{{ $assessorNames }}</td>
                                         <td>
                                             <span
-                                                class="badge rounded-pill bg-{{ $a->derived_status === 'Done Assessment' ? 'success' : 'warning text-dark' }}">
+                                                class="badge rounded-pill {{ $a->derived_status === 'Done Assessment' ? 'bg-success' : ($a->derived_status === 'Submitted Form' ? 'bg-primary text-white' : 'bg-warning text-dark') }}">
                                                 {{ $a->derived_status }}
                                             </span>
                                         </td>
@@ -207,13 +207,13 @@
                                                 <a href="{{ route('assessments.form.edit', $a) }}"
                                                     class="btn btn-sm btn-outline-primary"
                                                     title="{{ $a->assessment_form_completed_at ? 'Open Assessment Form' : 'Create Assessment Form' }}">
-                                                    <span class="material-symbols-outlined icon-action">
-                                                        {{ $a->assessment_form_completed_at ? 'visibility' : 'description' }}
+                                                <span class="material-symbols-outlined icon-action">
+                                                        {{ $a->assessment_form_completed_at ? 'article' : 'description' }}
                                                     </span>
                                                 </a>
                                             @endif
                                             <button class="btn btn-sm btn-outline-secondary" title="Archive"
-                                                onclick="archiveAssessment({{ $a->id }})">
+                                                onclick="archiveAssessmentConfirm({{ $a->id }})">
                                                 <span class="material-symbols-outlined icon-action">archive</span>
                                             </button>
                                         </td>
@@ -371,6 +371,32 @@
     </div>
 </div>
 
+<!-- ── Archive Confirm Modal ── -->
+<div class="modal fade" id="archiveConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h6 class="modal-title fw-semibold">Archive this assessment?</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <p class="small text-muted mb-0">
+                    This assessment will be moved to the archive. You can restore it anytime from
+                    <strong>View Archives</strong>.
+                </p>
+            </div>
+            <div class="modal-footer border-0 pt-1">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-sm btn-warning d-flex align-items-center gap-1"
+                    id="confirmArchiveBtn" onclick="confirmArchiveAssessment()">
+                    <span class="material-symbols-outlined fs-15">archive</span>
+                    Archive
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -383,9 +409,16 @@
         return document.querySelector('meta[name="csrf-token"]').content;
     }
 
-    function archiveAssessment(id) {
-        if (!confirm('Archive this assessment? You can restore it from View Archives.')) return;
-        fetch(`/assessments/${id}/archive`, {
+    let currentArchiveAssessmentId = null;
+
+    function archiveAssessmentConfirm(id) {
+        currentArchiveAssessmentId = id;
+        new bootstrap.Modal(document.getElementById('archiveConfirmModal')).show();
+    }
+
+    function confirmArchiveAssessment() {
+        if (!currentArchiveAssessmentId) return;
+        fetch(`/assessments/${currentArchiveAssessmentId}/archive`, {
                 method: 'PATCH',
                 headers: {
                     'Accept': 'application/json',
@@ -394,6 +427,7 @@
             })
             .then(res => res.json())
             .then(data => {
+                bootstrap.Modal.getInstance(document.getElementById('archiveConfirmModal')).hide();
                 showToast(data.message, 'success');
                 setTimeout(() => location.reload(), 800);
             })

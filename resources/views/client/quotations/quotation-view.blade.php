@@ -1,4 +1,4 @@
-@extends('layouts.client')
+﻿@extends('layouts.client')
 
 @section('title', 'View Quotation')
 
@@ -10,7 +10,7 @@
 
     <div class="page-wrapper">
         <div class="page-hero">
-            <h2>Quotation QT-2026-002</h2>
+            <h2>Quotation {{ $quotation->reference_number }}</h2>
             <p>Review the details below and let us know how you'd like to proceed.</p>
         </div>
 
@@ -23,44 +23,61 @@
                         <span class="material-symbols-outlined fs-15">arrow_back</span>
                         Back to Quotations
                     </a>
-                    {{-- Only shown if this quotation originated from an assessment request --}}
-                    <a href="{{ route('assessment-form') }}#history-view"
+                    <a href="{{ route('client-assessment.show', $quotation->assessment) }}"
                         class="btn btn-sm btn-outline-success d-flex align-items-center gap-1">
                         View Assessment Details
                     </a>
                 </div>
 
                 <!-- Info Banner -->
-                <div class="alert alert-warning d-flex align-items-start gap-2 mb-4">
-                    <span class="material-symbols-outlined fs-18">info</span>
-                    <p class="mb-0 small">This quotation is awaiting your review. Approve to proceed, or reject with a
-                        reason if changes are needed.</p>
-                </div>
+                @if ($quotation->status === 'Approved')
+                    <div class="alert alert-success d-flex align-items-start gap-2 mb-4">
+                        <span class="material-symbols-outlined fs-18">check_circle</span>
+                        <p class="mb-0 small">You approved this quotation. Our team will reach out to schedule the next
+                            steps.</p>
+                    </div>
+                @elseif ($quotation->status === 'Rejected')
+                    <div class="alert alert-danger d-flex align-items-start gap-2 mb-4">
+                        <span class="material-symbols-outlined fs-18">cancel</span>
+                        <p class="mb-0 small">You requested changes to this quotation. Our team will follow up with a
+                            revised quote.</p>
+                    </div>
+                @else
+                    <div class="alert alert-warning d-flex align-items-start gap-2 mb-4">
+                        <span class="material-symbols-outlined fs-18">info</span>
+                        <p class="mb-0 small">This quotation is awaiting your review. Approve to proceed, or reject with a
+                            reason if changes are needed.</p>
+                    </div>
+                @endif
 
                 <!-- Section 1: Quotation Details -->
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <h6 class="fw-semibold mb-0">Quotation Details</h6>
-                            <span class="badge bg-warning text-dark rounded-pill fs-11">Pending Review</span>
+                            <span class="badge rounded-pill fs-11
+                                @if ($quotation->status === 'Approved') bg-success
+                                @elseif ($quotation->status === 'Rejected') bg-danger
+                                @else bg-warning text-dark
+                                @endif">{{ $quotation->status === 'Sent' ? 'Pending Review' : $quotation->status }}</span>
                         </div>
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label class="form-label small">Reference Number</label>
-                                <input type="text" class="form-control bg-light" value="QT-2026-002" readonly>
+                                <input type="text" class="form-control bg-light" value="{{ $quotation->reference_number }}" readonly>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small">Date</label>
-                                <input type="text" class="form-control bg-light" value="March 11, 2026" readonly>
+                                <input type="text" class="form-control bg-light" value="{{ $quotation->sent_at?->format('F j, Y') }}" readonly>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small">Service Type</label>
-                                <input type="text" class="form-control bg-light" value="Solar Setup" readonly>
+                                <input type="text" class="form-control bg-light" value="{{ $quotation->service_type }}" readonly>
                             </div>
                             <div class="col-12">
                                 <label class="form-label small">Subject / Project Title</label>
                                 <input type="text" class="form-control bg-light"
-                                    value="Solar Panel Installation — Reyes Residence" readonly>
+                                    value="{{ $quotation->project_title }}" readonly>
                             </div>
                         </div>
                     </div>
@@ -85,59 +102,40 @@
                                         <th class="w-70 text-end">QTY</th>
                                         <th class="w-90">Unit</th>
                                         <th>Description</th>
-                                        <th class="w-145 text-end">Unit Price (₱)</th>
+                                        <th class="w-145 text-end">Price (₱)</th>
                                         <th class="w-145 text-end">Total (₱)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="text-end">10</td>
-                                        <td>pcs</td>
-                                        <td>Solar Panel 400W Monocrystalline</td>
-                                        <td class="text-end">₱9,500.00</td>
-                                        <td class="fw-medium text-end">₱95,000.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">1</td>
-                                        <td>unit</td>
-                                        <td>5kW Hybrid Inverter</td>
-                                        <td class="text-end">₱18,000.00</td>
-                                        <td class="fw-medium text-end">₱18,000.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end">1</td>
-                                        <td>lot</td>
-                                        <td>Mounting Structure and Accessories</td>
-                                        <td class="text-end">₱7,000.00</td>
-                                        <td class="fw-medium text-end">₱7,000.00</td>
+                                    @foreach ($quotation->items as $item)
+                                        <tr>
+                                            <td class="text-end"><input type="text" class="form-control form-control-sm bg-light text-end" value="{{ rtrim(rtrim($item->quantity, '0'), '.') }}" readonly></td>
+                                            <td><input type="text" class="form-control form-control-sm bg-light" value="{{ $item->unit }}" readonly></td>
+                                            <td><input type="text" class="form-control form-control-sm bg-light" value="{{ $item->description }}" readonly></td>
+                                            <td class="text-end"><input type="text" class="form-control form-control-sm bg-light text-end" value="{{ number_format($item->unit_price, 2) }}" readonly></td>
+                                            <td class="fw-medium align-middle text-end">₱{{ number_format($item->line_total, 2) }}</td>
+                                        </tr>
+                                    @endforeach
+                                    <tr class="labor-row">
+                                        <td class="text-end"><input type="text" class="form-control form-control-sm bg-light text-end" value="1" readonly></td>
+                                        <td><input type="text" class="form-control form-control-sm bg-light" value="lot" readonly></td>
+                                        <td><input type="text" class="form-control form-control-sm bg-light" value="Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY" readonly></td>
+                                        <td class="text-end"><input type="text" class="form-control form-control-sm bg-light text-end" value="{{ number_format($quotation->labor_total, 2) }}" readonly></td>
+                                        <td class="fw-medium align-middle text-end">₱{{ number_format($quotation->labor_total, 2) }}</td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
-                                    <tr class="labor-row">
-                                        <td colspan="2" class="align-middle">
-                                            <span class="fw-semibold small text-muted text-center">LABOR</span>
+                                    <tr>
+                                        <td colspan="5" class="text-center p-1">
+                                            <p class="quote-inclusion-note mb-0">Quoted Price with <span class="fw-bold">VALUE ADDED TAX</span> Inclusion</p>
                                         </td>
-                                        <td class="align-middle small text-muted">Overall labor charge</td>
-                                        <td class="text-end small text-muted">20%</td>
-                                        <td class="fw-medium text-end">₱24,000.00</td>
+                                    </tr>
+                                    <tr class="grand-total-row">
+                                        <td colspan="4" class="text-center"><span class="fw-bold text-center ps-5">ONE (1) YEAR FULL WARRANTY</span></td>
+                                        <td class="fw-bold text-end">₱{{ number_format($quotation->grand_total, 2) }}</td>
                                     </tr>
                                 </tfoot>
                             </table>
-                        </div>
-
-                        <div class="d-flex flex-column align-items-end mt-4 pt-3 border-top gap-1">
-                            <div class="d-flex justify-content-between totals-row small text-muted">
-                                <span>Subtotal</span>
-                                <span>₱120,000.00</span>
-                            </div>
-                            <div class="d-flex justify-content-between totals-row small text-muted">
-                                <span>Labor (20%)</span>
-                                <span>₱24,000.00</span>
-                            </div>
-                            <div class="d-flex justify-content-between totals-row mt-1 pt-2 border-top">
-                                <span class="fw-semibold">Grand Total</span>
-                                <span class="h5 green-text fw-semibold mb-0">₱144,000.00</span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -161,19 +159,22 @@
 
                 <!-- Client Actions -->
                 <div class="d-flex justify-content-between align-items-center pb-5">
-                    <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1">
+                    <a target="_blank" href="{{ route('client-quotation.print', $quotation) }}"
+                        class="btn btn-outline-secondary d-flex align-items-center gap-1">
                         <span class="material-symbols-outlined fs-18">download</span>
                         Download PDF
-                    </button>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
-                            data-bs-target="#rejectQuotationModal">
-                            Reject
-                        </button>
-                        <button type="button" class="btn btn-success">
-                            Approve Quotation
-                        </button>
-                    </div>
+                    </a>
+                    @if ($quotation->status === 'Sent')
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                                data-bs-target="#rejectQuotationModal">
+                                Reject
+                            </button>
+                            <button type="button" class="btn btn-success">
+                                Approve Quotation
+                            </button>
+                        </div>
+                    @endif
                 </div>
 
             </div>

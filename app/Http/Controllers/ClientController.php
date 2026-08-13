@@ -30,11 +30,17 @@ class ClientController extends Controller
 {
     $client = auth()->user()->client;
 
-    $assessments = Assessment::where('client_id', $client->id)
+    $assessments = Assessment::with('tasks')
+        ->where('client_id', $client->id)
         ->orderByDesc('preferred_date')
         ->get();
 
-    $activeAssessments = $assessments->whereIn('status', ['Pending', 'Confirmed'])->values();
+    $activeAssessments = $assessments->whereIn('status', ['Pending', 'Confirmed'])->values()
+        ->map(function ($a) {
+            $a->derived_status = $a->status === 'Confirmed' ? $a->deriveStatus() : $a->status;
+
+            return $a;
+        });
     $historyAssessments = $assessments->whereIn('status', ['Declined', 'Cancelled'])->values();
 
     $total = $assessments->count();
@@ -50,6 +56,22 @@ class ClientController extends Controller
     public function showClientAssessmentForm()
     {
         return view('client.assessments.assessment-form');
+    }
+
+    public function showAssessmentDetails(Assessment $assessment)
+    {
+        abort_unless($assessment->client_id === auth()->user()->client->id, 403);
+        $assessment->load(['client.user', 'items.material', 'assessors.staff.user', 'quotation']);
+
+        return view('client.assessments.assessment-view', compact('assessment'));
+    }
+
+    public function printAssessment(Assessment $assessment)
+    {
+        abort_unless($assessment->client_id === auth()->user()->client->id, 403);
+        $assessment->load(['client.user', 'items.material']);
+
+        return view('print.assessment', compact('assessment'));
     }
 
     public function showClientQuotation()

@@ -56,11 +56,29 @@
 #lineItemsTable tfoot td { font-size: 14px; padding-top: 10px; }
 
 /* =============================================
-   TOTALS ROW
+   LABOR / INSTALLATION ROW
    ============================================= */
-.totals-row {
-  width: 280px;
-  justify-content: space-between;
+.labor-row {
+  background: rgba(22, 162, 73, 0.04);
+}
+
+/* =============================================
+   GRAND TOTAL ROW (table tfoot)
+   ============================================= */
+.grand-total-row td {
+  background: rgba(22, 162, 73, 0.10);
+  color: var(--awg-primary-dark);
+  font-size: 14px;
+  padding: 12px;
+  border-top: 2px solid var(--awg-primary);
+}
+
+/* =============================================
+   QUOTE INCLUSION NOTE (VAT / Warranty)
+   ============================================= */
+.quote-inclusion-note {
+  font-size: 13px;
+  color: var(--body-text);
 }
 
 /* =============================================

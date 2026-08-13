@@ -507,6 +507,8 @@
                             'Confirmed' => 'success',
                             'Declined' => 'danger',
                             'Cancelled' => 'secondary',
+                            'Done Assessment' => 'info text-dark',
+                            'Submitted Form' => 'primary text-white',
                         ];
                         $subView = request('sub', 'active');
                     @endphp
@@ -583,7 +585,7 @@
                                         </thead>
                                         <tbody>
                                             @forelse ($activeAssessments as $a)
-                                                @php $badge = $statusBadge[$a->status] ?? 'secondary'; @endphp
+                                                @php $badge = $statusBadge[$a->derived_status] ?? 'secondary'; @endphp
                                                 <tr data-ref="{{ $a->id }}">
                                                     <td class="fw-semibold">{{ $a->id }}</td>
                                                     <td data-order="{{ $a->preferred_date->format('Y-m-d') }}">
@@ -593,7 +595,7 @@
                                                     <td>{{ $a->cctv_subtype ?? '—' }}</td>
                                                     <td>{{ $a->time_slot }}</td>
                                                     <td><span
-                                                            class="badge bg-{{ $badge }} rounded-pill">{{ $a->status }}</span>
+                                                            class="badge bg-{{ $badge }} rounded-pill">{{ $a->derived_status }}</span>
                                                     </td>
                                                     <td>
                                                         <div class="btn-group btn-group-sm" role="group">
@@ -607,7 +609,7 @@
                                             subtype: {{ Js::from($a->cctv_subtype ?? '—') }},
                                             clientType: {{ Js::from($a->client_type) }},
                                             estab: {{ Js::from($a->establishment_type) }},
-                                            status: {{ Js::from($a->status) }},
+                                            status: {{ Js::from($a->derived_status) }},
                                             statusClass: {{ Js::from($badge) }},
                                             name: {{ Js::from(auth()->user()->full_name) }},
                                             contact: {{ Js::from(auth()->user()->contact_number ?? '—') }},
@@ -620,12 +622,20 @@
                                                                 <span
                                                                     class="material-symbols-outlined icon-action">visibility</span>
                                                             </button>
-                                                            <button class="btn btn-outline-danger" data-bs-toggle="modal"
-                                                                data-bs-target="#cancelRequestModal"
-                                                                onclick="prepareCancel({{ $a->id }}, {{ Js::from($a->preferred_date->format('M j, Y')) }})">
-                                                                <span
-                                                                    class="material-symbols-outlined icon-action">cancel</span>
-                                                            </button>
+                                                            @if ($a->derived_status === 'Submitted Form')
+                                                                <a href="{{ route('client-assessment.show', $a) }}"
+                                                                    class="btn btn-outline-primary" title="View Assessment Details">
+                                                                    <span
+                                                                        class="material-symbols-outlined icon-action">description</span>
+                                                                </a>
+                                                            @else
+                                                                <button class="btn btn-outline-danger" data-bs-toggle="modal"
+                                                                    data-bs-target="#cancelRequestModal"
+                                                                    onclick="prepareCancel({{ $a->id }}, {{ Js::from($a->preferred_date->format('M j, Y')) }})">
+                                                                    <span
+                                                                        class="material-symbols-outlined icon-action">cancel</span>
+                                                                </button>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                 </tr>

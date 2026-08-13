@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Quotations')
 
@@ -13,11 +13,6 @@
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
     </a>
-    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center green-text"
-        data-bs-toggle="modal" data-bs-target="#newQuotationModal">
-        <span class="material-symbols-outlined me-1 fs-18">add</span>
-        New Quotation
-    </button>
 @endsection
 
 @section('content')
@@ -31,7 +26,7 @@
                     <span class="material-symbols-outlined summary-icon text-primary">inbox</span>
                     <div>
                         <p class="summary-label">Total</p>
-                        <p class="summary-value">26</p>
+                        <p class="summary-value">{{ $quotations->count() }}</p>
                     </div>
                 </div>
             </div>
@@ -40,16 +35,7 @@
                     <span class="material-symbols-outlined summary-icon muted-text">send</span>
                     <div>
                         <p class="summary-label">Sent</p>
-                        <p class="summary-value">8</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-warning">rate_review</span>
-                    <div>
-                        <p class="summary-label">Pending</p>
-                        <p class="summary-value">5</p>
+                        <p class="summary-value">{{ $quotations->where('status', 'Sent')->count() }}</p>
                     </div>
                 </div>
             </div>
@@ -58,7 +44,16 @@
                     <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
                     <div>
                         <p class="summary-label">Approved</p>
-                        <p class="summary-value">12</p>
+                        <p class="summary-value">{{ $quotations->where('status', 'Approved')->count() }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="summary-card">
+                    <span class="material-symbols-outlined summary-icon text-danger">cancel</span>
+                    <div>
+                        <p class="summary-label">Rejected</p>
+                        <p class="summary-value">{{ $quotations->where('status', 'Rejected')->count() }}</p>
                     </div>
                 </div>
             </div>
@@ -71,12 +66,9 @@
                     <div class="btn-group filter-btn-group" role="group" id="statusFilterGroup">
                         <button type="button" class="btn btn-sm btn-outline-secondary active"
                             data-filter="all">All</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"
-                            data-filter="Approved">Approved</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Sent">Sent</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary"
-                            data-filter="Pending">Pending</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Draft">Draft</button>
+                            data-filter="Approved">Approved</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary"
                             data-filter="Rejected">Rejected</button>
                     </div>
@@ -96,238 +88,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- Approved — show form button --}}
-                            <tr>
-                                <td>QT-2026-003</td>
-                                <td>Anna Garcia</td>
-                                <td>Solar Street Light</td>
-                                <td>₱850,000.00</td>
-                                <td>Mar 12, 2026</td>
-                                <td><span class="badge bg-success rounded-pill" data-status="1">Approved</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <a href="{{ route('proposals') }}" class="btn btn-sm btn-outline-success action-btn"
-                                        title="Open Form">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
-                                        onclick="loadQuotationDetail({
-                                            refNo:'QT-2026-003', date:'Mar 12, 2026', status:'Approved', statusClass:'success',
-                                            client:'Anna Garcia', service:'Solar Street Light',
-                                            subject:'Solar Street Lighting Installation — Barangay Road',
-                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
-                                            items:[
-                                                {qty:20, unit:'pcs', image:'', desc:'Solar Street Light 100W', price:32500, total:650000},
-                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:200000, total:200000}
-                                            ],
-                                            total:850000
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#newQuotationModal">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            {{-- Approved — show form button --}}
-                            <tr>
-                                <td>QT-2026-006</td>
-                                <td>Roberto Lim</td>
-                                <td>Solar Street Light</td>
-                                <td>₱750,000.00</td>
-                                <td>Mar 15, 2026</td>
-                                <td><span class="badge bg-success rounded-pill" data-status="1">Approved</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <a href="{{ route('form') }}" class="btn btn-sm btn-outline-success action-btn"
-                                        title="Open Form">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
-                                        onclick="loadQuotationDetail({
-                                            refNo:'QT-2026-006', date:'Mar 15, 2026', status:'Approved', statusClass:'success',
-                                            client:'Roberto Lim', service:'Solar Street Light',
-                                            subject:'Solar Street Lighting – Taguig',
-                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
-                                            items:[
-                                                {qty:18, unit:'pcs', image:'', desc:'Solar Street Light 100W', price:32500, total:585000},
-                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:165000, total:165000}
-                                            ],
-                                            total:750000
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#newQuotationModal">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            {{-- Sent — placeholder --}}
-                            <tr>
-                                <td>QT-2026-002</td>
-                                <td>John Reyes</td>
-                                <td>Solar Setup</td>
-                                <td>₱120,000.00</td>
-                                <td>Mar 11, 2026</td>
-                                <td><span class="badge bg-primary text-white rounded-pill" data-status="2">Sent</span>
-                                </td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
-                                        onclick="loadQuotationDetail({
-                                            refNo:'QT-2026-002', date:'Mar 11, 2026', status:'Sent', statusClass:'primary text-white',
-                                            client:'John Reyes', service:'Solar Setup',
-                                            subject:'Solar Setup Installation – BGC Office',
-                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
-                                            items:[
-                                                {qty:6, unit:'pcs', image:'{{ asset('css/images/materials/solar-panel-330w.jpg') }}', desc:'Solar Panel 450W', price:12000, total:72000},
-                                                {qty:1, unit:'unit', image:'{{ asset('css/images/materials/solar-inverter-3kw.jpg') }}', desc:'Inverter 5kW', price:28000, total:28000},
-                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:20000, total:20000}
-                                            ],
-                                            total:120000
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#newQuotationModal">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            {{-- For Review — placeholder --}}
-                            <tr>
-                                <td>QT-2026-001</td>
-                                <td>Maria Santos</td>
-                                <td>CCTV Setup</td>
-                                <td>₱45,000.00</td>
-                                <td>Mar 10, 2026</td>
-                                <td><span class="badge bg-warning text-dark rounded-pill" data-status="3">For
-                                        Review</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
-                                        onclick="loadQuotationDetail({
-                                            refNo:'QT-2026-001', date:'Mar 10, 2026', status:'For Review', statusClass:'warning text-dark',
-                                            client:'Maria Santos', service:'CCTV Setup',
-                                            subject:'CCTV Installation – Makati Branch',
-                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
-                                            items:[
-                                                {qty:4, unit:'pcs', image:'{{ asset('css/images/materials/ip-camera.jpg') }}', desc:'IP Camera 4MP Outdoor', price:3500, total:14000},
-                                                {qty:1, unit:'unit', image:'{{ asset('css/images/materials/nvr-8ch.jpg') }}', desc:'8-Channel NVR Recorder', price:8500, total:8500},
-                                                {qty:50, unit:'meters', image:'{{ asset('css/images/materials/cat6-cable.jpg') }}', desc:'CAT6 LAN Cable', price:45, total:2250},
-                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:4950, total:4950}
-                                            ],
-                                            total:29700
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#newQuotationModal">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            {{-- Draft — placeholder --}}
-                            <tr>
-                                <td>QT-2026-004</td>
-                                <td>Pedro Cruz</td>
-                                <td>Public Address System</td>
-                                <td>₱95,000.00</td>
-                                <td>Mar 13, 2026</td>
-                                <td><span class="badge bg-secondary rounded-pill" data-status="4">Draft</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
-                                        onclick="loadQuotationDetail({
-                                            refNo:'QT-2026-004', date:'Mar 13, 2026', status:'Draft', statusClass:'secondary',
-                                            client:'Pedro Cruz', service:'Public Address System',
-                                            subject:'PA System Installation – Alabang',
-                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
-                                            items:[
-                                                {qty:8, unit:'pcs', image:'{{ asset('css/images/materials/horn-speaker-30w.jpg') }}', desc:'Ceiling Speaker 20W', price:2200, total:17600},
-                                                {qty:1, unit:'unit', image:'{{ asset('css/images/materials/mixer-amp-100w.jpg') }}', desc:'PA Amplifier 240W', price:22000, total:22000},
-                                                {qty:100, unit:'meters', image:'', desc:'Speaker Wire', price:35, total:3500},
-                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:51900, total:51900}
-                                            ],
-                                            total:95000
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#newQuotationModal">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            {{-- Rejected — placeholder --}}
-                            <tr>
-                                <td>QT-2026-005</td>
-                                <td>Lisa Tan</td>
-                                <td>CCTV Setup</td>
-                                <td>₱55,000.00</td>
-                                <td>Mar 14, 2026</td>
-                                <td><span class="badge bg-danger rounded-pill" data-status="5">Rejected</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewQuotationModal"
-                                        onclick="loadQuotationDetail({
-                                            refNo:'QT-2026-005', date:'Mar 14, 2026', status:'Rejected', statusClass:'danger',
-                                            client:'Lisa Tan', service:'CCTV Setup',
-                                            subject:'CCTV System – Quezon City',
-                                            message:'In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.',
-                                            items:[
-                                                {qty:6, unit:'pcs', image:'{{ asset('css/images/materials/ip-camera.jpg') }}', desc:'IP Camera 4MP Outdoor', price:3500, total:21000},
-                                                {qty:1, unit:'unit', image:'{{ asset('css/images/materials/nvr-8ch.jpg') }}', desc:'8-Channel NVR Recorder', price:8500, total:8500},
-                                                {qty:60, unit:'meters', image:'{{ asset('css/images/materials/cat6-cable.jpg') }}', desc:'CAT6 LAN Cable', price:45, total:2700},
-                                                {qty:1, unit:'lot', image:'', desc:'Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY', price:22800, total:22800}
-                                            ],
-                                            total:55000
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#newQuotationModal">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
+                            @foreach ($quotations as $quotation)
+                                <tr>
+                                    <td>{{ $quotation->reference_number }}</td>
+                                    <td>{{ $quotation->assessment->client->user->full_name }}</td>
+                                    <td>{{ $quotation->service_type }}</td>
+                                    <td>₱{{ number_format($quotation->grand_total, 2) }}</td>
+                                    <td data-order="{{ $quotation->sent_at?->format('Y-m-d') }}">{{ $quotation->sent_at?->format('M d, Y') }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill
+                                            @if ($quotation->status === 'Approved') bg-success
+                                            @elseif ($quotation->status === 'Rejected') bg-danger
+                                            @else bg-primary text-white
+                                            @endif">{{ $quotation->status }}</span>
+                                    </td>
+                                    <td class="text-nowrap actions-col">
+                                        <a href="{{ route('quotations.show', $quotation) }}" class="btn btn-sm btn-outline-primary action-btn" title="View Quotation"><span class="material-symbols-outlined icon-action">visibility</span></a>
+                                        <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive"
+                                            onclick="archiveQuotationConfirm({{ $quotation->id }})">
+                                            <span class="material-symbols-outlined icon-action">archive</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -336,342 +119,27 @@
 
     </div>
 
-
-    <!-- ── View Quotation Modal ── -->
-    <div class="modal fade" id="viewQuotationModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <!-- ── Archive Confirm Modal ── -->
+    <div class="modal fade" id="archiveConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined fs-20">request_quote</span>
-                        Quotation Details
-                    </h5>
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-semibold">Archive this quotation?</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-
-                    <!-- Quotation Info -->
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <p class="section-label fs-11">Quotation Info</p>
-                        </div>
-                        <div class="col-md-3">
-                            <p class="detail-label fs-12">Reference No.</p>
-                            <p class="detail-value fw-semibold fs-14" id="vq-refNo">—</p>
-                        </div>
-                        <div class="col-md-3">
-                            <p class="detail-label fs-12">Date</p>
-                            <p class="detail-value fs-14" id="vq-date">—</p>
-                        </div>
-                        <div class="col-md-3">
-                            <p class="detail-label fs-12">Status</p>
-                            <p class="detail-value fs-14" id="vq-status">—</p>
-                        </div>
-                        <div class="col-md-3">
-                            <p class="detail-label fs-12">Service</p>
-                            <p class="detail-value fs-14" id="vq-service">—</p>
-                        </div>
-
-                        <!-- Client Info -->
-                        <div class="col-12">
-                            <p class="section-label fs-11">Client Info</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="detail-label fs-12">Client Name</p>
-                            <p class="detail-value fw-semibold fs-14" id="vq-client">—</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="detail-label fs-12">Subject / Project Title</p>
-                            <p class="detail-value fs-14" id="vq-subject">—</p>
-                        </div>
-
-                        <!-- Opening Message -->
-                        <div class="col-12">
-                            <p class="section-label fs-11">Opening Message</p>
-                        </div>
-                        <div class="col-12">
-                            <p class="detail-value fs-14 mb-0" id="vq-message">—</p>
-                        </div>
-
-                        <!-- Line Items -->
-                        <div class="col-12">
-                            <p class="section-label fs-11">Line Items</p>
-                        </div>
-                        <div class="col-12">
-                            <div class="table-responsive">
-                                <table class="table table-sm mb-0 small">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th class="fs-12">Qty</th>
-                                            <th class="fs-12">Unit</th>
-                                            <th class="fs-12">Description</th>
-                                            <th class="fs-12 text-end">Price</th>
-                                            <th class="fs-12 text-end">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="vq-lineitems">
-                                        <!-- populated via JS -->
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="5" class="text-center p-1">
-                                                <p class="quote-inclusion-note mb-0 fs-12">
-                                                    Quoted Price with <span class="fw-bold">VALUE ADDED TAX</span> Inclusion
-                                                </p>
-                                            </td>
-                                        </tr>
-                                        <tr class="grand-total-row">
-                                            <td colspan="4" class="text-center">
-                                                <span class="fw-bold fs-12">ONE (1) YEAR FULL WARRANTY</span>
-                                            </td>
-                                            <td class="fw-bold text-end fs-14" id="vq-total">—</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
+                <div class="modal-body pt-2">
+                    <p class="small text-muted mb-0">
+                        This quotation will be moved to the archive. You can restore it anytime from
+                        <strong>View Archives</strong>.
+                    </p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1" data-bs-dismiss="modal">
-                        <span class="material-symbols-outlined fs-16">close</span>Close
+                <div class="modal-footer border-0 pt-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-warning d-flex align-items-center gap-1"
+                        id="confirmArchiveBtn" onclick="confirmArchiveQuotation()">
+                        <span class="material-symbols-outlined fs-15">archive</span>
+                        Archive
                     </button>
-                    <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1">
-                        <span class="material-symbols-outlined fs-16">picture_as_pdf</span>Preview PDF
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ── New Quotation Modal ── -->
-    <div class="modal fade" id="newQuotationModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">New Quotation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-
-                    <!-- Info Banner -->
-                    <div class="alert alert-info d-flex align-items-start gap-2 mb-4">
-                        <span class="material-symbols-outlined fs-18">info</span>
-                        <p class="mb-0 small">Fill in the quotation details below. If auto-filled from an assessment,
-                            review before sending.</p>
-                    </div>
-
-                    <!-- Section 1: Quotation Details -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h6 class="fw-semibold mb-3">Quotation Details</h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label small">Reference Number</label>
-                                    <input type="text" class="form-control bg-light" value="QT-2026-007" readonly>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small">Date</label>
-                                    <input type="date" class="form-control" value="2026-03-17">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small">Client Name *</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small">Service Type *</label>
-                                    <select class="form-select">
-                                        <option value="">Select</option>
-                                        <option>CCTV Setup</option>
-                                        <option>Solar Street Light</option>
-                                        <option>Solar Setup</option>
-                                        <option>Public Address System</option>
-                                    </select>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label small">Subject / Project Title *</label>
-                                    <input type="text" class="form-control"
-                                        placeholder="e.g. CCTV System Installation — Reyes Residence">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 2: Opening Message -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h6 class="fw-semibold mb-3">Opening Message</h6>
-                            <textarea class="form-control" rows="3">In response to your most valued request, A We Green Enterprise is pleased to submit our proposal for your requirement as per ACTUAL ASSESSMENT.</textarea>
-                        </div>
-                    </div>
-
-                    <!-- Section 3: Line Items -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h6 class="fw-semibold mb-3">Line Items</h6>
-                            <div class="table-responsive">
-                                <table class="table table-sm mb-0" id="lineItemsTable">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th class="w-70">QTY</th>
-                                            <th class="w-90">Unit</th>
-                                            <th>Description</th>
-                                            <th class="w-140">Price (₱)</th>
-                                            <th class="w-140">Total (₱)</th>
-                                            <th class="w-40"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {{-- Camera --}}
-                                        <tr>
-                                            <td><input type="number" class="form-control form-control-sm" value="4"
-                                                    min="1"></td>
-                                            <td>
-                                                <div class="item-unit-cell">
-                                                    <div class="item-thumb-wrap">
-                                                        <img src="{{ asset('css/images/materials/ip-camera.jpg') }}"
-                                                            alt="CCTV Camera" class="item-thumb"
-                                                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                                        <div class="item-thumb-fallback" style="display:none;">
-                                                            <span class="material-symbols-outlined">image_not_supported</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><input type="text" class="form-control form-control-sm"
-                                                    value="IP Camera 4MP Outdoor"></td>
-                                            <td><input type="number" class="form-control form-control-sm"
-                                                    value="3500"></td>
-                                            <td class="fw-medium align-middle">₱14,000.00</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-danger">
-                                                    <span class="material-symbols-outlined icon-action">delete</span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        {{-- NVR/DVR --}}
-                                        <tr>
-                                            <td><input type="number" class="form-control form-control-sm" value="1"
-                                                    min="1"></td>
-                                            <td>
-                                                <div class="item-unit-cell">
-                                                    <div class="item-thumb-wrap">
-                                                        <img src="{{ asset('css/images/materials/nvr-8ch.jpg') }}"
-                                                            alt="Digital Video Recorder" class="item-thumb"
-                                                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                                        <div class="item-thumb-fallback" style="display:none;">
-                                                            <span class="material-symbols-outlined">image_not_supported</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><input type="text" class="form-control form-control-sm"
-                                                    value="8-Channel NVR Recorder"></td>
-                                            <td><input type="number" class="form-control form-control-sm"
-                                                    value="8500"></td>
-                                            <td class="fw-medium align-middle">₱8,500.00</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-danger">
-                                                    <span class="material-symbols-outlined icon-action">delete</span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        {{-- Cable --}}
-                                        <tr>
-                                            <td><input type="number" class="form-control form-control-sm" value="50"
-                                                    min="1"></td>
-                                            <td>
-                                                <div class="item-unit-cell">
-                                                    <div class="item-thumb-wrap">
-                                                        <img src="{{ asset('css/images/materials/cat6-cable.jpg') }}"
-                                                            alt="Cat6 Cable" class="item-thumb"
-                                                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                                        <div class="item-thumb-fallback" style="display:none;">
-                                                            <span class="material-symbols-outlined">image_not_supported</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><input type="text" class="form-control form-control-sm"
-                                                    value="CAT6 LAN Cable"></td>
-                                            <td><input type="number" class="form-control form-control-sm"
-                                                    value="45"></td>
-                                            <td class="fw-medium align-middle">₱2,250.00</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-danger">
-                                                    <span class="material-symbols-outlined icon-action">delete</span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        {{-- Labor / Installation --}}
-                                        <tr class="labor-row">
-                                            <td><input type="number" class="form-control form-control-sm" value="1"
-                                                    min="1"></td>
-                                            <td><input type="text" class="form-control form-control-sm"
-                                                    value="lot"></td>
-                                            <td><input type="text" class="form-control form-control-sm"
-                                                    value="Installation, Testing and Maintenance — with ONE (1) YEAR FULL WARRANTY"></td>
-                                            <td><input type="number" class="form-control form-control-sm"
-                                                    value="4950"></td>
-                                            <td class="fw-medium align-middle">₱4,950.00</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-danger">
-                                                    <span class="material-symbols-outlined icon-action">delete</span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="6" class="text-center p-1">
-                                                <p class="quote-inclusion-note mb-0">
-                                                    Quoted Price with <span class="fw-bold">VALUE ADDED TAX</span> Inclusion
-                                                </p>
-                                            </td>
-                                        </tr>
-                                        <tr class="grand-total-row">
-                                            <td colspan="4" class="text-center"><span class="fw-bold text-center ps-5">ONE (1)
-                                                    YEAR FULL WARRANTY</span></td>
-                                            <td class="fw-bold text-end">₱29,700.00</td>
-                                            <td></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                            <button class="btn btn-sm btn-outline-primary mt-3 d-flex align-items-center gap-1">
-                                <span class="material-symbols-outlined fs-18">add</span>
-                                Add Item
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Section 4: Terms and Conditions -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h6 class="fw-semibold mb-3">Terms and Conditions</h6>
-                            <div class="bg-light rounded p-3 small text-muted">
-                                <p class="mb-2">• Misuse, abuse, negligence, caused by accident or equipment tampering
-                                    shall render this warranty void. The warranty does not cover any product or items
-                                    damaged by abnormal, severe voltage fluctuation or main AC supply, fire, flood,
-                                    lightning and all other acts of God.</p>
-                                <p class="mb-2">• All supplied items are still the property of A We Green Enterprise
-                                    unless full payment is received.</p>
-                                <p class="mb-0">• A We Green Enterprise has the right to pull out all items supplied that
-                                    do not comply with the terms and conditions.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline-secondary">Save Draft</button>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-outline-secondary">Preview PDF</button>
-                        <button type="button" class="btn btn-success">Send to Client</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -681,77 +149,50 @@
 
 @section('scripts')
     <script>
-        function loadQuotationDetail(d) {
-            document.getElementById('vq-refNo').textContent = d.refNo || '—';
-            document.getElementById('vq-date').textContent = d.date || '—';
-            document.getElementById('vq-service').textContent = d.service || '—';
-            document.getElementById('vq-client').textContent = d.client || '—';
-            document.getElementById('vq-subject').textContent = d.subject || '—';
-            document.getElementById('vq-message').textContent = d.message || '—';
-            document.getElementById('vq-status').innerHTML =
-                `<span class="badge bg-${d.statusClass} rounded-pill">${d.status}</span>`;
+        let currentArchiveQuotationId = null;
 
-            const tbody = document.getElementById('vq-lineitems');
-            tbody.innerHTML = '';
-            (d.items || []).forEach(item => {
-                const unitCell = item.image
-                    ? `<div class="item-unit-cell">
-                           <div class="item-thumb-wrap item-thumb-wrap-sm">
-                               <img src="${item.image}" alt="${item.desc}" class="item-thumb"
-                                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                               <div class="item-thumb-fallback" style="display:none;">
-                                   <span class="material-symbols-outlined">image_not_supported</span>
-                               </div>
-                           </div>
-                       </div>`
-                    : (item.unit || '—');
+        function archiveQuotationConfirm(id) {
+            currentArchiveQuotationId = id;
+            new bootstrap.Modal(document.getElementById('archiveConfirmModal')).show();
+        }
 
-                tbody.innerHTML += `
-                    <tr>
-                        <td class="fs-13">${item.qty}</td>
-                        <td class="fs-13">${unitCell}</td>
-                        <td class="fs-13">${item.desc}</td>
-                        <td class="fs-13 text-end">₱${item.price.toLocaleString('en-PH', {minimumFractionDigits:2})}</td>
-                        <td class="fs-13 text-end">₱${item.total.toLocaleString('en-PH', {minimumFractionDigits:2})}</td>
-                    </tr>`;
-            });
-
-            document.getElementById('vq-total').textContent = '₱' + (d.total || 0).toLocaleString('en-PH', {minimumFractionDigits:2});
+        function confirmArchiveQuotation() {
+            if (!currentArchiveQuotationId) return;
+            fetch(`/quotations/${currentArchiveQuotationId}/archive`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    bootstrap.Modal.getInstance(document.getElementById('archiveConfirmModal')).hide();
+                    showToast(data.message, 'success');
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => showToast('Network error. Please try again.', 'danger'));
         }
 
         $(document).ready(function() {
-            jQuery.fn.dataTable.ext.type.order['status-priority-pre'] = function(data) {
-                return $(data).data('status') || 0;
-            };
-
-            $('#quotationsTable').DataTable({
+            const table = $('#quotationsTable').DataTable({
                 pageLength: 10,
                 columnDefs: [{
-                        orderable: false,
-                        targets: 6
-                    },
-                    {
-                        type: 'status-priority',
-                        targets: 5
-                    }
-                ],
+                    orderable: false,
+                    targets: 6
+                }],
                 order: [
-                    [5, 'asc']
+                    [4, 'desc']
                 ]
             });
 
-            $('#archiveModal').on('shown.bs.modal', function() {
-                if (!$.fn.DataTable.isDataTable('#archiveTable')) {
-                    $('#archiveTable').DataTable({
-                        pageLength: 5,
-                        lengthChange: false,
-                        info: true,
-                        columnDefs: [{
-                            orderable: false,
-                            targets: 6
-                        }]
-                    });
-                }
+            document.getElementById('statusFilterGroup').addEventListener('click', function(event) {
+                const btn = event.target.closest('[data-filter]');
+                if (!btn) return;
+                this.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.dataset.filter;
+                table.column(5).search(filter === 'all' ? '' : filter, false, false).draw();
             });
         });
     </script>

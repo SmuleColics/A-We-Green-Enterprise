@@ -20,7 +20,7 @@ class AssessmentScheduleController extends Controller
             ->orderBy('preferred_date')
             ->get()
             ->map(function ($assessment) {
-                $assessment->derived_status = $this->deriveStatus($assessment);
+                $assessment->derived_status = $assessment->deriveStatus();
 
                 return $assessment;
             });
@@ -71,26 +71,6 @@ class AssessmentScheduleController extends Controller
     }
 
     /**
-     * "Done Assessment" once every Task tied to this assessment is
-     * Completed. No tasks yet (shouldn't normally happen once assessors
-     * are assigned at confirm time) falls back to "Pending".
-     */
-    private function deriveStatus(Assessment $assessment): string
-    {
-        if ($assessment->assessment_form_completed_at) {
-            return 'Submitted Form';
-        }
-
-        if ($assessment->tasks->isEmpty()) {
-            return 'Pending';
-        }
-
-        return $assessment->tasks->every(fn ($task) => $task->status === 'Completed')
-            ? 'Done Assessment'
-            : 'Pending';
-    }
-
-    /**
      * Shape expected by the existing openDayModal()/loadAssessmentDetail()
      * JS on the assessments blade — keeps the frontend untouched.
      */
@@ -112,7 +92,7 @@ class AssessmentScheduleController extends Controller
             'establishment' => $a->establishment_type,
             'assessor' => $a->assessors->pluck('full_name')->implode(', ') ?: '—',
             'status' => $a->derived_status,
-            'statusClass' => $a->derived_status === 'Done Assessment' ? 'success' : 'warning text-dark',
+            'statusClass' => $a->derived_status === 'Done Assessment' ? 'success' : ($a->derived_status === 'Submitted Form' ? 'primary text-white' : 'warning text-dark'),
             'block' => $client->block ?? '—',
             'lot' => $client->lot ?? '—',
             'brgy' => $client->barangay ?? '—',

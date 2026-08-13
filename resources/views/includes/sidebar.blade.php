@@ -24,13 +24,13 @@
                     Request::routeIs('archive-assessments') ||
                     Request::routeIs('requests') ||
                     Request::routeIs('archive-requests') ||
-                    Request::routeIs('form')) active @endif">
+                    Request::routeIs('assessments.form.*')) active @endif">
             <span class="material-symbols-outlined">event_available</span>
             Assessments
         </a>
 
         <a href="{{ route('quotations') }}"
-            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('quotations') || Request::routeIs('archive-quotations') || Request::routeIs('proposals')) active @endif">
+            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('quotations') || Request::routeIs('quotations.show') || Request::routeIs('archive-quotations') || Request::routeIs('proposals')) active @endif">
             <span class="material-symbols-outlined">request_quote</span>
             Quotations
         </a>

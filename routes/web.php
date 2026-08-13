@@ -14,6 +14,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Employee\TaskController as EmployeeTaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\QuotationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'showLandingPage'])
@@ -42,7 +43,7 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
         ->name('archive-request');
 
     // Quotations
-    Route::get('/quotations', [AdminController::class, 'showQuotations'])
+    Route::get('/quotations', [QuotationController::class, 'adminIndex'])
         ->name('quotations');
 
     // Archive quotations
@@ -50,7 +51,7 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
         ->name('archive-quotations');
 
     // Quotation proposal
-    Route::get('/proposals', [AdminController::class, 'showQuotationProposals'])
+    Route::get('/proposals', [QuotationController::class, 'adminIndex'])
         ->name('proposals');
 
     // Projects
@@ -134,13 +135,21 @@ Route::middleware(['auth', 'role:client'])->group(function () {
     Route::get('/assessment-form', [ClientController::class, 'showClientAssessmentForm'])
         ->name('assessment-form');
 
+    // View assessment details
+    Route::get('/client-assessment/{assessment}', [ClientController::class, 'showAssessmentDetails'])
+        ->name('client-assessment.show');
+    Route::get('/client-assessment/{assessment}/print', [ClientController::class, 'printAssessment'])
+        ->name('client-assessment.print');
+
     // Quotations
-    Route::get('/client-quotation', [ClientController::class, 'showClientQuotation'])
+    Route::get('/client-quotation', [QuotationController::class, 'clientIndex'])
         ->name('client-quotation');
 
     // View quotation
-    Route::get('/quotation-view', [ClientController::class, 'showClientViewQuotation'])
+    Route::get('/quotation-view/{quotation}', [QuotationController::class, 'clientShow'])
         ->name('quotation-view');
+    Route::get('/client-quotation/{quotation}/print', [QuotationController::class, 'clientPrint'])
+        ->name('client-quotation.print');
 
     // View project list
     Route::get('/client-project', [ClientController::class, 'showClientProject'])
@@ -332,6 +341,7 @@ Route::middleware(['auth', 'role:admin,super_admin'])
 // ADMIN ASSESSMENT ROUTES
 // ==========================================================
 Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function () {
+    Route::get('/quotations/{quotation}', [QuotationController::class, 'adminShow'])->name('quotations.show');
     Route::get('/assessments', [AssessmentScheduleController::class, 'index'])->name('assessments');
     Route::patch('/assessments/{assessment}/archive', [AssessmentScheduleController::class, 'archive'])->name('assessments.archive');
     Route::get('/assessments/{assessment}/form', [AssessmentFormController::class, 'edit'])
@@ -339,6 +349,12 @@ Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function 
 
     Route::put('/assessments/{assessment}/form', [AssessmentFormController::class, 'update'])
         ->name('assessments.form.update');
+    Route::get('/assessments/{assessment}/form/print', [AssessmentFormController::class, 'print'])
+        ->name('assessments.form.print');
+    Route::get('/quotations/{quotation}/print', [QuotationController::class, 'print'])
+        ->name('quotations.print');
+    Route::patch('/quotations/{quotation}/archive', [QuotationController::class, 'archive'])
+        ->name('quotations.archive');
 });
 
 // ==========================================================

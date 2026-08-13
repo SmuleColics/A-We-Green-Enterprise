@@ -1,4 +1,4 @@
-@extends('layouts.client')
+﻿@extends('layouts.client')
 
 @section('title', 'Quotations')
 
@@ -24,7 +24,7 @@
                         <span class="material-symbols-outlined summary-icon green-text">inbox</span>
                         <div>
                             <p class="summary-label">Total</p>
-                            <p class="summary-value">4</p>
+                            <p class="summary-value">{{ $quotations->count() }}</p>
                         </div>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                         <span class="material-symbols-outlined summary-icon text-warning">rate_review</span>
                         <div>
                             <p class="summary-label">Pending Review</p>
-                            <p class="summary-value">1</p>
+                            <p class="summary-value">{{ $quotations->where('status', 'Sent')->count() }}</p>
                         </div>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                         <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
                         <div>
                             <p class="summary-label">Approved</p>
-                            <p class="summary-value">2</p>
+                            <p class="summary-value">{{ $quotations->where('status', 'Approved')->count() }}</p>
                         </div>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                         <span class="material-symbols-outlined summary-icon text-danger">cancel</span>
                         <div>
                             <p class="summary-label">Rejected</p>
-                            <p class="summary-value">1</p>
+                            <p class="summary-value">{{ $quotations->where('status', 'Rejected')->count() }}</p>
                         </div>
                     </div>
                 </div>
@@ -81,59 +81,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-
-                                <tr data-status="Sent">
-                                    <td>QT-2026-002</td>
-                                    <td>Solar Setup</td>
-                                    <td>Mar 11, 2026</td>
-                                    <td>₱120,000.00</td>
-                                    <td><span class="badge bg-warning text-dark rounded-pill">Pending Review</span></td>
-                                    <td class="text-nowrap">
-                                        <a href="{{ route('quotation-view', 'QT-2026-002') }}" class="btn btn-sm btn-outline-success" title="View">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                <tr data-status="Approved">
-                                    <td>QT-2026-003</td>
-                                    <td>Solar Street Light</td>
-                                    <td>Mar 12, 2026</td>
-                                    <td>₱850,000.00</td>
-                                    <td><span class="badge bg-success rounded-pill">Approved</span></td>
-                                    <td class="text-nowrap">
-                                        <a href="{{ route('quotation-view', 'QT-2026-003') }}" class="btn btn-sm btn-outline-success" title="View">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                <tr data-status="Approved">
-                                    <td>QT-2026-006</td>
-                                    <td>Solar Street Light</td>
-                                    <td>Mar 15, 2026</td>
-                                    <td>₱750,000.00</td>
-                                    <td><span class="badge bg-success rounded-pill">Approved</span></td>
-                                    <td class="text-nowrap">
-                                        <a href="{{ route('quotation-view', 'QT-2026-006') }}" class="btn btn-sm btn-outline-success" title="View">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                <tr data-status="Rejected">
-                                    <td>QT-2026-005</td>
-                                    <td>CCTV Setup</td>
-                                    <td>Mar 14, 2026</td>
-                                    <td>₱55,000.00</td>
-                                    <td><span class="badge bg-danger rounded-pill">Rejected</span></td>
-                                    <td class="text-nowrap">
-                                        <a href="{{ route('quotation-view', 'QT-2026-005') }}" class="btn btn-sm btn-outline-success" title="View">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </a>
-                                    </td>
-                                </tr>
-
+                                @foreach ($quotations as $quotation)
+                                    <tr data-status="{{ $quotation->status }}">
+                                        <td>{{ $quotation->reference_number }}</td>
+                                        <td>{{ $quotation->service_type }}</td>
+                                        <td>{{ $quotation->sent_at?->format('M d, Y') }}</td>
+                                        <td>₱{{ number_format($quotation->grand_total, 2) }}</td>
+                                        <td>
+                                            <span class="badge rounded-pill
+                                                @if ($quotation->status === 'Approved') bg-success
+                                                @elseif ($quotation->status === 'Rejected') bg-danger
+                                                @else bg-warning text-dark
+                                                @endif">{{ $quotation->status === 'Sent' ? 'Pending Review' : $quotation->status }}</span>
+                                        </td>
+                                        <td class="text-nowrap"><a href="{{ route('quotation-view', $quotation) }}" class="btn btn-sm btn-outline-success" title="View"><span class="material-symbols-outlined icon-action">visibility</span></a></td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -162,10 +125,7 @@
                 $('#statusFilterGroup .btn').removeClass('active');
                 $(this).addClass('active');
                 const filter = $(this).data('filter');
-                table.column(4).search(filter === 'all' ? '' : filter, true, false).draw();
-                // Simpler + more reliable: filter by data-status attribute on row
                 if (filter === 'all') {
-                    table.search('').draw();
                     $('#quotationsTable tbody tr').show();
                 } else {
                     $('#quotationsTable tbody tr').each(function() {

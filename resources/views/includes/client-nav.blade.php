@@ -14,10 +14,10 @@
         <a href="{{ route('portal') }}" class="@if (Request::routeIs('portal')) active @endif">
             <span class="material-symbols-outlined">account_circle</span> Client Portal
         </a>
-        <a href="{{ route('client-assessment') }}" class="@if (Request::routeIs('client-assessment')) active @endif">
+        <a href="{{ route('client-assessment') }}" class="@if (Request::routeIs('client-assessment*')) active @endif">
             <span class="material-symbols-outlined">calendar_month</span> Assessment
         </a>
-        <a href="{{ route('client-quotation') }}" class="@if (Request::routeIs('client-quotation')) active @endif">
+        <a href="{{ route('client-quotation') }}" class="@if (Request::routeIs('client-quotation*') || Request::routeIs('quotation-view')) active @endif">
             <span class="material-symbols-outlined">receipt_long</span> Quotations
         </a>
         <a href="{{ route('client-project') }}" class="@if (Request::routeIs('client-project')) active @endif">
@@ -150,10 +150,10 @@
         <a href="{{ route('portal') }}" class="@if (Request::routeIs('portal')) active @endif">
             <span class="material-symbols-outlined">account_circle</span> Client Portal
         </a>
-        <a href="{{ route('client-assessment') }}" class="@if (Request::routeIs('client-assessment')) active @endif">
+        <a href="{{ route('client-assessment') }}" class="@if (Request::routeIs('client-assessment*')) active @endif">
             <span class="material-symbols-outlined">calendar_month</span> Assessment
         </a>
-        <a href="{{ route('client-quotation') }}" class="@if (Request::routeIs('client-quotation')) active @endif">
+        <a href="{{ route('client-quotation') }}" class="@if (Request::routeIs('client-quotation*') || Request::routeIs('quotation-view')) active @endif">
             <span class="material-symbols-outlined">receipt_long</span> Quotations
         </a>
         <a href="{{ route('client-project') }}" class="@if (Request::routeIs('client-project')) active @endif">

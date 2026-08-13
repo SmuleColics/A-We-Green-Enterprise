@@ -38,4 +38,29 @@ class Assessment extends Model
     {
         return $this->hasMany(AssessmentItem::class);
     }
+
+    public function quotation()
+    {
+        return $this->hasOne(Quotation::class);
+    }
+
+    /**
+     * "Done Assessment" once every Task tied to this assessment is
+     * Completed. No tasks yet (shouldn't normally happen once assessors
+     * are assigned at confirm time) falls back to "Pending".
+     */
+    public function deriveStatus(): string
+    {
+        if ($this->assessment_form_completed_at) {
+            return 'Submitted Form';
+        }
+
+        if ($this->tasks->isEmpty()) {
+            return 'Pending';
+        }
+
+        return $this->tasks->every(fn ($task) => $task->status === 'Completed')
+            ? 'Done Assessment'
+            : 'Pending';
+    }
 }
