@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\AssessmentFormController;
 use App\Http\Controllers\Admin\AssessmentRequestController;
 use App\Http\Controllers\Admin\AssessmentScheduleController;
+use App\Http\Controllers\Admin\ClientController as AdminClientController;
 use App\Http\Controllers\Admin\EmployeeController;
+use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
@@ -11,7 +14,6 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Employee\TaskController as EmployeeTaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\Admin\AssessmentFormController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'showLandingPage'])
@@ -78,10 +80,6 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
     // Archive employees
     Route::get('/archive-employees', [AdminController::class, 'showArchiveEmployees'])
         ->name('archive-employees');
-
-    // Clients
-    Route::get('/clients', [AdminController::class, 'showClients'])
-        ->name('clients');
 
     // Archive clients
     Route::get('/archive-clients', [AdminController::class, 'showArchiveClients'])
@@ -196,6 +194,7 @@ Route::post('/register', [AuthController::class, 'register'])
 
 // Sign in
 Route::post('/sign-in', [AuthController::class, 'login'])
+    ->middleware('throttle:5,1')
     ->name('sign-in.store');
 
 // Logout
@@ -205,10 +204,12 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 // Forgot password
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])
+    ->middleware('throttle:3,1')
     ->name('forgot-password.store');
 
 // Reset password
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+    ->middleware('throttle:5,1')
     ->name('reset-password.update');
 
 // ==========================================================
@@ -334,11 +335,39 @@ Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function 
     Route::get('/assessments', [AssessmentScheduleController::class, 'index'])->name('assessments');
     Route::patch('/assessments/{assessment}/archive', [AssessmentScheduleController::class, 'archive'])->name('assessments.archive');
     Route::get('/assessments/{assessment}/form', [AssessmentFormController::class, 'edit'])
-    ->name('assessments.form.edit');
+        ->name('assessments.form.edit');
 
     Route::put('/assessments/{assessment}/form', [AssessmentFormController::class, 'update'])
-    ->name('assessments.form.update');
+        ->name('assessments.form.update');
 });
+
+// ==========================================================
+// ADMIN MATERIALS ROUTES
+// ==========================================================
+Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function () {
+    Route::get('/materials', [MaterialController::class, 'index'])->name('materials');
+    Route::post('/materials', [MaterialController::class, 'store'])->name('materials.store');
+    Route::put('/materials/{material}', [MaterialController::class, 'update'])
+        ->name('materials.update');
+    Route::patch('/materials/{material}/archive', [MaterialController::class, 'archive'])->name('materials.archive');
+    Route::post('/materials/{material}/unarchive', [MaterialController::class, 'unarchive'])->name('materials.unarchive');
+    Route::get('/materials/archived', [MaterialController::class, 'archived'])->name('materials.archived');
+});
+
+// ==========================================================
+// ADMIN CLIENT ROUTES
+// ==========================================================
+Route::middleware(['auth', 'role:secretary,admin,super_admin'])
+    ->prefix('admin')
+    ->group(function () {
+        Route::get('/clients', [AdminClientController::class, 'index'])->name('clients');
+        Route::post('/clients', [AdminClientController::class, 'store'])->name('clients.store');
+        Route::get('/clients/{client}/details', [AdminClientController::class, 'show'])->name('clients.show');
+        Route::post('/clients/{client}/update', [AdminClientController::class, 'update'])->name('clients.update');
+        Route::post('/clients/{client}/archive', [AdminClientController::class, 'archive'])->name('clients.archive');
+        Route::post('/clients/{client}/unarchive', [AdminClientController::class, 'unarchive'])->name('clients.unarchive');
+        Route::get('/clients/archived', [AdminClientController::class, 'archived'])->name('clients.archived');
+    });
 
 // ==========================================================
 // EMPLOYEE ROUTES

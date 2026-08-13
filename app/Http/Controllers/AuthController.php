@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ResetPasswordCodeMail;
 use App\Models\Client;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,15 +29,19 @@ class AuthController extends Controller
             'contact_number' => 'nullable|string|max:20',
         ]);
 
-        $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => User::ROLE_CLIENT,
-            'contact_number' => $request->contact_number,
-            'status' => 'active',
-        ]);
+        try {
+            $user = User::create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'password' => $request->password,
+                'role' => User::ROLE_CLIENT,
+                'contact_number' => $request->contact_number,
+                'status' => 'active',
+            ]);
+        } catch (QueryException $e) {
+            return back()->withErrors(['email' => 'This email is already registered.'])->withInput();
+        }
 
         Client::create([
             'user_id' => $user->id,
@@ -129,23 +134,25 @@ class AuthController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
-        if (! User::where('email', $request->email)->exists()) {
-            return back()
-                ->with('error', "We couldn't find an account with that email address.")
-                ->withInput();
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            $code = random_int(100000, 999999);
+
+            DB::table('password_reset_codes')->updateOrInsert(
+                ['email' => $request->email],
+                [
+                    'code' => Hash::make($code),
+                    'attempts' => 0,
+                    'created_at' => now(),
+                ]
+            );
+
+            Mail::to($request->email)->send(new ResetPasswordCodeMail((string) $code));
         }
 
-        $code = random_int(100000, 999999);
-
-        DB::table('password_reset_codes')->updateOrInsert(
-            ['email' => $request->email],
-            ['code' => Hash::make($code), 'created_at' => now()]
-        );
-
-        Mail::to($request->email)->send(new ResetPasswordCodeMail((string) $code));
-
         return redirect()->route('reset-password', ['email' => $request->email])
-            ->with('success', 'A 6-digit reset code has been sent to your email.');
+            ->with('success', 'If an account exists for that email, a 6-digit reset code has been sent.');
     }
 
     // ─────────────────────────────────────────
@@ -162,12 +169,22 @@ class AuthController extends Controller
 
         $record = DB::table('password_reset_codes')->where('email', $request->email)->first();
 
-        if (! $record || ! Hash::check($request->code, $record->code)) {
-            return back()->withErrors(['code' => 'Invalid reset code.'])->withInput();
+        if (! $record) {
+            return back()->withErrors(['code' => 'Invalid or expired reset code.'])->withInput();
+        }
+
+        if ($record->attempts >= 5) {
+            return back()->withErrors(['code' => 'Too many failed attempts. Please request a new code.'])->withInput();
         }
 
         if (now()->diffInMinutes($record->created_at) > 15) {
             return back()->withErrors(['code' => 'This code has expired. Please request a new one.'])->withInput();
+        }
+
+        if (! Hash::check($request->code, $record->code)) {
+            DB::table('password_reset_codes')->where('email', $request->email)->increment('attempts');
+
+            return back()->withErrors(['code' => 'Invalid reset code.'])->withInput();
         }
 
         $user = User::where('email', $request->email)->first();

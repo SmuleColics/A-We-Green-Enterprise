@@ -63,9 +63,9 @@ class TaskController extends Controller
         $this->authorize('update', $task);
 
         $validated = $request->validate([
-            'status' => 'required|in:Pending,In Progress,Completed,Declined',
+            'status' => 'required|in:Pending,In Progress,Completed,On Hold',
             'notes' => 'nullable|string|max:500',
-            'decline_reason' => 'nullable|string|max:500',
+            'hold_reason' => 'nullable|string|max:500',
         ]);
 
         $oldStatus = $task->status;
@@ -88,11 +88,11 @@ class TaskController extends Controller
             auth()->user()->full_name
         );
 
-        if ($validated['status'] === 'Declined') {
+        if ($validated['status'] === 'On Hold') {
             NotificationController::notify(
                 module: 'Task',
-                title: 'Task Declined',
-                message: "{$employeeName} declined the assessment task for {$clientName}.",
+                title: 'Task On Hold',
+                message: "{$employeeName} placed the assessment task for {$clientName} on hold.",
                 recipientRole: ['admin', 'secretary', 'super_admin'],
                 notifiable: $task->assessment
             );

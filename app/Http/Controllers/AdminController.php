@@ -116,13 +116,6 @@ class AdminController extends Controller
         return view('admin.clients.archive-clients');
     }
 
-    // MATERIALS
-
-    public function showMaterials()
-    {
-        return view('admin.materials.materials');
-    }
-
     public function showArchiveMaterials()
     {
         return view('admin.materials.archive-materials');

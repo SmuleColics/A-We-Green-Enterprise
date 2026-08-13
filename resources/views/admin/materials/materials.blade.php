@@ -9,12 +9,13 @@
 @section('page-title', 'Materials')
 
 @section('topbar-actions')
-    <a href="{{ route('archive-materials') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
+    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-bs-toggle="modal"
+        data-bs-target="#archiveModal">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
-    </a>
-    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text"
-        data-bs-toggle="modal" data-bs-target="#addMaterialModal">
+    </button>
+    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text" data-bs-toggle="modal"
+        data-bs-target="#addMaterialModal">
         <span class="material-symbols-outlined fs-17">add_box</span>
         Add Material
     </button>
@@ -28,37 +29,37 @@
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon green-text">inventory_2</span>
+                    <span class="material-symbols-outlined summary-icon muted-text">inventory_2</span>
                     <div>
                         <p class="summary-label">Total Items</p>
-                        <p class="summary-value">48</p>
+                        <p class="summary-value">{{ $total }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
+                    <span class="material-symbols-outlined summary-icon green-text">videocam</span>
                     <div>
-                        <p class="summary-label">In Stock</p>
-                        <p class="summary-value">35</p>
+                        <p class="summary-label">CCTV</p>
+                        <p class="summary-value">{{ $byCategory['CCTV'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-warning">warning</span>
+                    <span class="material-symbols-outlined summary-icon text-primary">speaker</span>
                     <div>
-                        <p class="summary-label">Low Stock</p>
-                        <p class="summary-value">9</p>
+                        <p class="summary-label">PA System</p>
+                        <p class="summary-value">{{ $byCategory['PA System'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-danger">cancel</span>
+                    <span class="material-symbols-outlined summary-icon text-warning">wb_sunny</span>
                     <div>
-                        <p class="summary-label">Out of Stock</p>
-                        <p class="summary-value">4</p>
+                        <p class="summary-label">Solar</p>
+                        <p class="summary-value">{{ $byCategory['Solar'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -68,7 +69,7 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body">
 
-                <div class="mb-3 btn-group filter-btn-group" role="group">
+                <div class="mb-3 btn-group filter-btn-group" role="group" id="categoryFilterGroup">
                     <button type="button" class="btn btn-sm btn-outline-secondary active" data-filter="all">All</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="CCTV">CCTV</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Solar">Solar</button>
@@ -84,402 +85,87 @@
                                 <th class="border-0 small green-text">Item</th>
                                 <th class="border-0 small green-text">Category</th>
                                 <th class="border-0 small green-text">Unit</th>
-                                <th class="border-0 small green-text">In Stock</th>
                                 <th class="border-0 small green-text">Unit Cost (₱)</th>
-                                <th class="border-0 small green-text">Status</th>
+                                <th class="border-0 small green-text">Selling Price (₱)</th>
+                                <th class="border-0 small green-text">Supplier</th>
                                 <th class="border-0 small green-text">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-
-                            {{-- CCTV --}}
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="mat-thumb-wrap">
-                                            <img src="{{ asset('css/images/materials/ip-camera.jpg') }}"
-                                                alt="IP Camera 2MP Outdoor" class="mat-thumb"
-                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                            <div class="mat-thumb-fallback" style="display:none;">
-                                                <span class="material-symbols-outlined">image_not_supported</span>
+                            @php
+                                $catClass = [
+                                    'CCTV' => 'cat-cctv',
+                                    'Solar' => 'cat-solar',
+                                    'PA System' => 'cat-pa',
+                                    'General' => 'cat-general',
+                                ];
+                            @endphp
+                            @foreach ($materials as $m)
+                                @php
+                                    $payload = [
+                                        'id' => $m->id,
+                                        'name' => $m->name,
+                                        'image' => $m->image_url,
+                                        'category' => $m->category,
+                                        'unit' => $m->unit,
+                                        'cost' => number_format($m->unit_cost, 2),
+                                        'costRaw' => $m->unit_cost,
+                                        'price' => $m->selling_price ? number_format($m->selling_price, 2) : null,
+                                        'priceRaw' => $m->selling_price,
+                                        'markup' => $m->markup_percent,
+                                        'description' => $m->description,
+                                        'supplier' => $m->supplier,
+                                        'location' => $m->location,
+                                    ];
+                                @endphp
+                                <tr data-category="{{ $m->category }}">
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="mat-thumb-wrap">
+                                                <img src="{{ $m->image_url ?? '' }}" alt="{{ $m->name }}"
+                                                    class="mat-thumb"
+                                                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                                <div class="mat-thumb-fallback"
+                                                    style="{{ $m->image_url ? 'display:none;' : 'display:flex;' }}">
+                                                    <span class="material-symbols-outlined">image_not_supported</span>
+                                                </div>
                                             </div>
+                                            <span class="fw-semibold">{{ $m->name }}</span>
                                         </div>
-                                        <span class="fw-semibold">IP Camera 2MP Outdoor</span>
-                                    </div>
-                                </td>
-                                <td><span class="cat-badge cat-cctv">CCTV</span></td>
-                                <td>pcs</td>
-                                <td>24</td>
-                                <td>₱2,500.00</td>
-                                <td><span class="badge bg-success rounded-pill">In Stock</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'IP Camera 2MP Outdoor',image:'{{ asset('css/images/materials/ip-camera.jpg') }}',category:'CCTV',unit:'pcs',stock:24,cost:'₱2,500.00',status:'In Stock',description:'2 Megapixel outdoor IP camera with night vision and weatherproof casing.',supplier:'TechPro Supplies',location:'Shelf A-1'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'IP Camera 2MP Outdoor',image:'{{ asset('css/images/materials/ip-camera.jpg') }}',category:'CCTV',unit:'pcs',stock:24,cost:2500,description:'2 Megapixel outdoor IP camera with night vision and weatherproof casing.',supplier:'TechPro Supplies',location:'Shelf A-1'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="mat-thumb-wrap">
-                                            <img src="{{ asset('css/images/materials/nvr-8ch.jpg') }}"
-                                                alt="8-Channel NVR with 2TB HDD" class="mat-thumb"
-                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                            <div class="mat-thumb-fallback" style="display:none;">
-                                                <span class="material-symbols-outlined">image_not_supported</span>
-                                            </div>
-                                        </div>
-                                        <span class="fw-semibold">8-Channel NVR with 2TB HDD</span>
-                                    </div>
-                                </td>
-                                <td><span class="cat-badge cat-cctv">CCTV</span></td>
-                                <td>unit</td>
-                                <td>8</td>
-                                <td>₱8,500.00</td>
-                                <td><span class="badge bg-success rounded-pill">In Stock</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'8-Channel NVR with 2TB HDD',image:'{{ asset('css/images/materials/nvr-8ch.jpg') }}',category:'CCTV',unit:'unit',stock:8,cost:'₱8,500.00',status:'In Stock',description:'8-channel network video recorder bundled with 2TB hard drive.',supplier:'NetVision Inc.',location:'Shelf A-2'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'8-Channel NVR with 2TB HDD',image:'{{ asset('css/images/materials/nvr-8ch.jpg') }}',category:'CCTV',unit:'unit',stock:8,cost:8500,description:'8-channel network video recorder bundled with 2TB hard drive.',supplier:'NetVision Inc.',location:'Shelf A-2'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="mat-thumb-wrap">
-                                            <img src="" alt="Cat6 UTP Cable" class="mat-thumb"
-                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                            <div class="mat-thumb-fallback" style="display:flex;">
-                                                <span class="material-symbols-outlined">image_not_supported</span>
-                                            </div>
-                                        </div>
-                                        <span class="fw-semibold">Cat6 UTP Cable</span>
-                                    </div>
-                                </td>
-                                <td><span class="cat-badge cat-cctv">CCTV</span></td>
-                                <td>roll</td>
-                                <td>3</td>
-                                <td>₱1,800.00</td>
-                                <td><span class="badge bg-warning text-dark rounded-pill">Low Stock</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Cat6 UTP Cable',image:'',category:'CCTV',unit:'roll',stock:3,cost:'₱1,800.00',status:'Low Stock',description:'Cat6 unshielded twisted pair cable, 305m per roll.',supplier:'CablePro PH',location:'Shelf B-1'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Cat6 UTP Cable',image:'',category:'CCTV',unit:'roll',stock:3,cost:1800,description:'Cat6 unshielded twisted pair cable, 305m per roll.',supplier:'CablePro PH',location:'Shelf B-1'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="mat-thumb-wrap">
-                                            <img src="" alt="DC Power Supply 12V 5A" class="mat-thumb"
-                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                            <div class="mat-thumb-fallback" style="display:flex;">
-                                                <span class="material-symbols-outlined">image_not_supported</span>
-                                            </div>
-                                        </div>
-                                        <span class="fw-semibold">DC Power Supply 12V 5A</span>
-                                    </div>
-                                </td>
-                                <td><span class="cat-badge cat-cctv">CCTV</span></td>
-                                <td>pcs</td>
-                                <td>0</td>
-                                <td>₱650.00</td>
-                                <td><span class="badge bg-danger rounded-pill">Out of Stock</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'DC Power Supply 12V 5A',image:'',category:'CCTV',unit:'pcs',stock:0,cost:'₱650.00',status:'Out of Stock',description:'12V 5A CCTV power supply with multi-output ports.',supplier:'PowerTech Supplies',location:'Shelf A-3'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'DC Power Supply 12V 5A',image:'',category:'CCTV',unit:'pcs',stock:0,cost:650,description:'12V 5A CCTV power supply with multi-output ports.',supplier:'PowerTech Supplies',location:'Shelf A-3'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            {{-- Solar --}}
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="mat-thumb-wrap">
-                                            <img src="{{ asset('css/images/materials/solar-panel-330w.jpg') }}"
-                                                alt="Solar Panel 330W Monocrystalline" class="mat-thumb"
-                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                            <div class="mat-thumb-fallback" style="display:none;">
-                                                <span class="material-symbols-outlined">image_not_supported</span>
-                                            </div>
-                                        </div>
-                                        <span class="fw-semibold">Solar Panel 330W Monocrystalline</span>
-                                    </div>
-                                </td>
-                                <td><span class="cat-badge cat-solar">Solar</span></td>
-                                <td>pcs</td>
-                                <td>12</td>
-                                <td>₱6,500.00</td>
-                                <td><span class="badge bg-success rounded-pill">In Stock</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Solar Panel 330W Monocrystalline',image:'{{ asset('css/images/materials/solar-panel-330w.jpg') }}',category:'Solar',unit:'pcs',stock:12,cost:'₱6,500.00',status:'In Stock',description:'High-efficiency 330W monocrystalline solar panel.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Solar Panel 330W Monocrystalline',image:'{{ asset('css/images/materials/solar-panel-330w.jpg') }}',category:'Solar',unit:'pcs',stock:12,cost:6500,description:'High-efficiency 330W monocrystalline solar panel.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="mat-thumb-wrap">
-                                            <img src="{{ asset('css/images/materials/solar-inverter-3kw.jpg') }}"
-                                                alt="Solar Inverter 3kW" class="mat-thumb"
-                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                            <div class="mat-thumb-fallback" style="display:none;">
-                                                <span class="material-symbols-outlined">image_not_supported</span>
-                                            </div>
-                                        </div>
-                                        <span class="fw-semibold">Solar Inverter 3kW</span>
-                                    </div>
-                                </td>
-                                <td><span class="cat-badge cat-solar">Solar</span></td>
-                                <td>unit</td>
-                                <td>4</td>
-                                <td>₱18,000.00</td>
-                                <td><span class="badge bg-warning text-dark rounded-pill">Low Stock</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Solar Inverter 3kW',image:'{{ asset('css/images/materials/solar-inverter-3kw.jpg') }}',category:'Solar',unit:'unit',stock:4,cost:'₱18,000.00',status:'Low Stock',description:'3kW pure sine wave solar inverter with built-in MPPT charge controller.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Solar Inverter 3kW',image:'{{ asset('css/images/materials/solar-inverter-3kw.jpg') }}',category:'Solar',unit:'unit',stock:4,cost:18000,description:'3kW pure sine wave solar inverter with built-in MPPT charge controller.',supplier:'SolarGreen PH',location:'Warehouse Row C'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="mat-thumb-wrap">
-                                            <img src="" alt="Lithium Battery 100Ah" class="mat-thumb"
-                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                            <div class="mat-thumb-fallback" style="display:flex;">
-                                                <span class="material-symbols-outlined">image_not_supported</span>
-                                            </div>
-                                        </div>
-                                        <span class="fw-semibold">Lithium Battery 100Ah</span>
-                                    </div>
-                                </td>
-                                <td><span class="cat-badge cat-solar">Solar</span></td>
-                                <td>unit</td>
-                                <td>0</td>
-                                <td>₱22,000.00</td>
-                                <td><span class="badge bg-danger rounded-pill">Out of Stock</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Lithium Battery 100Ah',image:'',category:'Solar',unit:'unit',stock:0,cost:'₱22,000.00',status:'Out of Stock',description:'100Ah LiFePO4 lithium deep cycle battery for solar storage.',supplier:'BatteryKing PH',location:'Warehouse Row D'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Lithium Battery 100Ah',image:'',category:'Solar',unit:'unit',stock:0,cost:22000,description:'100Ah LiFePO4 lithium deep cycle battery for solar storage.',supplier:'BatteryKing PH',location:'Warehouse Row D'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            {{-- PA System --}}
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="mat-thumb-wrap">
-                                            <img src="{{ asset('css/images/materials/horn-speaker-30w.jpg') }}"
-                                                alt="Horn Speaker 30W" class="mat-thumb"
-                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                            <div class="mat-thumb-fallback" style="display:none;">
-                                                <span class="material-symbols-outlined">image_not_supported</span>
-                                            </div>
-                                        </div>
-                                        <span class="fw-semibold">Horn Speaker 30W</span>
-                                    </div>
-                                </td>
-                                <td><span class="cat-badge cat-pa">PA System</span></td>
-                                <td>pcs</td>
-                                <td>18</td>
-                                <td>₱950.00</td>
-                                <td><span class="badge bg-success rounded-pill">In Stock</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Horn Speaker 30W',image:'{{ asset('css/images/materials/horn-speaker-30w.jpg') }}',category:'PA System',unit:'pcs',stock:18,cost:'₱950.00',status:'In Stock',description:'30W weather-resistant horn speaker for outdoor PA systems.',supplier:'AudioPro PH',location:'Shelf D-1'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Horn Speaker 30W',image:'{{ asset('css/images/materials/horn-speaker-30w.jpg') }}',category:'PA System',unit:'pcs',stock:18,cost:950,description:'30W weather-resistant horn speaker for outdoor PA systems.',supplier:'AudioPro PH',location:'Shelf D-1'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="mat-thumb-wrap">
-                                            <img src="{{ asset('css/images/materials/mixer-amp-100w.jpg') }}"
-                                                alt="100W Mixer Amplifier" class="mat-thumb"
-                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                            <div class="mat-thumb-fallback" style="display:none;">
-                                                <span class="material-symbols-outlined">image_not_supported</span>
-                                            </div>
-                                        </div>
-                                        <span class="fw-semibold">100W Mixer Amplifier</span>
-                                    </div>
-                                </td>
-                                <td><span class="cat-badge cat-pa">PA System</span></td>
-                                <td>unit</td>
-                                <td>5</td>
-                                <td>₱7,200.00</td>
-                                <td><span class="badge bg-success rounded-pill">In Stock</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'100W Mixer Amplifier',image:'{{ asset('css/images/materials/mixer-amp-100w.jpg') }}',category:'PA System',unit:'unit',stock:5,cost:'₱7,200.00',status:'In Stock',description:'100W rack-mount mixer amplifier with 3 mic inputs and 1 aux input.',supplier:'AudioPro PH',location:'Shelf D-2'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'100W Mixer Amplifier',image:'{{ asset('css/images/materials/mixer-amp-100w.jpg') }}',category:'PA System',unit:'unit',stock:5,cost:7200,description:'100W rack-mount mixer amplifier with 3 mic inputs and 1 aux input.',supplier:'AudioPro PH',location:'Shelf D-2'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            {{-- General --}}
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="mat-thumb-wrap">
-                                            <img src="" alt="Cable Ties (100pcs/bag)" class="mat-thumb"
-                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                            <div class="mat-thumb-fallback" style="display:flex;">
-                                                <span class="material-symbols-outlined">image_not_supported</span>
-                                            </div>
-                                        </div>
-                                        <span class="fw-semibold">Cable Ties (100pcs/bag)</span>
-                                    </div>
-                                </td>
-                                <td><span class="cat-badge cat-general">General</span></td>
-                                <td>bag</td>
-                                <td>22</td>
-                                <td>₱85.00</td>
-                                <td><span class="badge bg-success rounded-pill">In Stock</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Cable Ties (100pcs/bag)',image:'',category:'General',unit:'bag',stock:22,cost:'₱85.00',status:'In Stock',description:'Assorted nylon cable ties, 100 pieces per bag.',supplier:'Hardware Plus',location:'Shelf E-1'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Cable Ties (100pcs/bag)',image:'',category:'General',unit:'bag',stock:22,cost:85,description:'Assorted nylon cable ties, 100 pieces per bag.',supplier:'Hardware Plus',location:'Shelf E-1'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="mat-thumb-wrap">
-                                            <img src="" alt="Electrical Tape" class="mat-thumb"
-                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                            <div class="mat-thumb-fallback" style="display:flex;">
-                                                <span class="material-symbols-outlined">image_not_supported</span>
-                                            </div>
-                                        </div>
-                                        <span class="fw-semibold">Electrical Tape</span>
-                                    </div>
-                                </td>
-                                <td><span class="cat-badge cat-general">General</span></td>
-                                <td>roll</td>
-                                <td>2</td>
-                                <td>₱35.00</td>
-                                <td><span class="badge bg-warning text-dark rounded-pill">Low Stock</span></td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                        data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                        onclick="loadMaterial({name:'Electrical Tape',image:'',category:'General',unit:'roll',stock:2,cost:'₱35.00',status:'Low Stock',description:'PVC insulation electrical tape, black.',supplier:'Hardware Plus',location:'Shelf E-2'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                        data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                        onclick="loadEditMaterial({name:'Electrical Tape',image:'',category:'General',unit:'roll',stock:2,cost:35,description:'PVC insulation electrical tape, black.',supplier:'Hardware Plus',location:'Shelf E-2'})">
-                                        <span class="material-symbols-outlined icon-action">edit</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive">
-                                        <span class="material-symbols-outlined icon-action">archive</span>
-                                    </button>
-                                </td>
-                            </tr>
-
+                                    </td>
+                                    <td><span
+                                            class="cat-badge {{ $catClass[$m->category] ?? '' }}">{{ $m->category }}</span>
+                                    </td>
+                                    <td>{{ $m->unit }}</td>
+                                    <td>₱{{ number_format($m->unit_cost, 2) }}</td>
+                                    <td>
+                                        @if ($m->selling_price)
+                                            ₱{{ number_format($m->selling_price, 2) }}
+                                        @else
+                                            <span class="text-muted small">—</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $m->supplier ?? '—' }}</td>
+                                    <td class="text-nowrap actions-col">
+                                        <button class="btn btn-sm btn-outline-success action-btn" title="View"
+                                            data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
+                                            data-material='@json($payload)'
+                                            onclick="loadMaterial(JSON.parse(this.dataset.material))">
+                                            <span class="material-symbols-outlined icon-action">visibility</span>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
+                                            data-bs-toggle="modal" data-bs-target="#editMaterialModal"
+                                            data-material='@json($payload)'
+                                            onclick="loadEditMaterial(JSON.parse(this.dataset.material))">
+                                            <span class="material-symbols-outlined icon-action">edit</span>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive"
+                                            onclick="archiveMaterial({{ $m->id }}, {{ Js::from($m->name) }})">
+                                            <span class="material-symbols-outlined icon-action">archive</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -506,7 +192,8 @@
                         <div class="mat-view-img-wrap">
                             <img id="vm-image" src="" alt="" class="mat-view-img"
                                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                            <div class="mat-thumb-fallback mat-thumb-fallback-lg" id="vm-image-fallback" style="display:none;">
+                            <div class="mat-thumb-fallback mat-thumb-fallback-lg" id="vm-image-fallback"
+                                style="display:none;">
                                 <span class="material-symbols-outlined">image_not_supported</span>
                             </div>
                         </div>
@@ -516,33 +203,29 @@
                         </div>
                     </div>
 
-                    <p class="section-label">Stock Information</p>
+                    <p class="section-label">Item Information</p>
                     <div class="row g-2 mb-2">
                         <div class="col-4">
                             <p class="detail-label small mb-0">Unit</p>
                             <p class="detail-value small fw-semibold" id="vm-unit">—</p>
                         </div>
                         <div class="col-4">
-                            <p class="detail-label small mb-0">In Stock</p>
-                            <p class="detail-value small fw-semibold" id="vm-stock">—</p>
+                            <p class="detail-label small mb-0">Unit Cost</p>
+                            <p class="detail-value small fw-semibold" id="vm-cost">—</p>
                         </div>
                         <div class="col-4">
-                            <p class="detail-label small mb-0">Status</p>
-                            <p class="detail-value small" id="vm-status">—</p>
+                            <p class="detail-label small mb-0">Selling Price</p>
+                            <p class="detail-value small fw-semibold green-text" id="vm-price">—</p>
                         </div>
-                        <div class="col-6">
-                            <p class="detail-label small mb-0">Unit Cost</p>
-                            <p class="detail-value small fw-semibold green-text" id="vm-cost">—</p>
+                        <div class="col-12" id="vm-markup-wrap" style="display:none;">
+                            <p class="detail-label small mb-0">Markup</p>
+                            <p class="detail-value small" id="vm-markup">—</p>
                         </div>
                         <div class="col-6">
                             <p class="detail-label small mb-0">Supplier</p>
                             <p class="detail-value small" id="vm-supplier">—</p>
                         </div>
-                    </div>
-
-                    <p class="section-label">Storage</p>
-                    <div class="row g-2 mb-2">
-                        <div class="col-12">
+                        <div class="col-6">
                             <p class="detail-label small mb-0">Location</p>
                             <p class="detail-value small" id="vm-location">—</p>
                         </div>
@@ -557,7 +240,8 @@
                         data-bs-dismiss="modal">
                         <span class="material-symbols-outlined fs-16">close</span>Close
                     </button>
-                    <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1"
+                        id="vm-archive-btn">
                         <span class="material-symbols-outlined fs-16">archive</span>Archive
                     </button>
                 </div>
@@ -570,84 +254,102 @@
     <div class="modal fade" id="editMaterialModal" tabindex="-1">
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined fs-20">edit</span>
-                        Edit Material
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label small">Item Name <span class="text-danger">*</span></label>
-                            <input type="text" id="edit-mat-name" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Category <span class="text-danger">*</span></label>
-                            <select id="edit-mat-category" class="form-select form-select-sm">
-                                <option>CCTV</option>
-                                <option>Solar</option>
-                                <option>PA System</option>
-                                <option>General</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Unit <span class="text-danger">*</span></label>
-                            <select id="edit-mat-unit" class="form-select form-select-sm">
-                                <option>pcs</option>
-                                <option>unit</option>
-                                <option>roll</option>
-                                <option>bag</option>
-                                <option>set</option>
-                                <option>meters</option>
-                                <option>lot</option>
-                                <option>box</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Quantity in Stock <span class="text-danger">*</span></label>
-                            <input type="number" id="edit-mat-stock" class="form-control form-control-sm"
-                                min="0">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Unit Cost (₱) <span class="text-danger">*</span></label>
-                            <input type="number" id="edit-mat-cost" class="form-control form-control-sm"
-                                min="0">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Supplier</label>
-                            <input type="text" id="edit-mat-supplier" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Storage Location</label>
-                            <input type="text" id="edit-mat-location" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small">Description</label>
-                            <textarea id="edit-mat-description" class="form-control form-control-sm" rows="2"></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small">Item Photo</label>
-                            <div class="mat-upload-area" id="editUploadArea" onclick="document.getElementById('edit-mat-image').click()">
-                                <img id="editImagePreview" src="" alt="" class="mat-upload-preview" style="display:none;">
-                                <div id="editUploadPlaceholder">
-                                    <span class="material-symbols-outlined text-muted" style="font-size:32px;">add_photo_alternate</span>
-                                    <p class="small text-muted mb-0 mt-1">Click to replace photo</p>
-                                    <p class="text-muted mb-0" style="font-size:11px;">JPG, PNG — shown in quotations</p>
+                <form id="editMaterialForm" class="needs-validation" novalidate>
+                    <div class="modal-header">
+                        <h5 class="modal-title d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined fs-20">edit</span>
+                            Edit Material
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label small">Item Name <span class="text-danger">*</span></label>
+                                <input type="text" id="edit-mat-name" class="form-control form-control-sm"
+                                    placeholder="e.g. IP Camera 2MP Outdoor" required>
+                                <div class="invalid-feedback">Item name is required.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Category <span class="text-danger">*</span></label>
+                                <select id="edit-mat-category" class="form-select form-select-sm" required>
+                                    <option value="">Select category</option>
+                                    <option>CCTV</option>
+                                    <option>Solar</option>
+                                    <option>PA System</option>
+                                    <option>General</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a category.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Unit <span class="text-danger">*</span></label>
+                                <select id="edit-mat-unit" class="form-select form-select-sm" required>
+                                    <option value="">Select unit</option>
+                                    <option>pcs</option>
+                                    <option>unit</option>
+                                    <option>roll</option>
+                                    <option>bag</option>
+                                    <option>set</option>
+                                    <option>meters</option>
+                                    <option>lot</option>
+                                    <option>box</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a unit.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Unit Cost (₱) <span class="text-danger">*</span></label>
+                                <input type="number" id="edit-mat-cost" class="form-control form-control-sm"
+                                    placeholder="0.00" min="0" step="0.01" required>
+                                <div class="invalid-feedback">Please enter a valid cost.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Selling Price (₱)</label>
+                                <input type="number" id="edit-mat-price" class="form-control form-control-sm"
+                                    placeholder="0.00" min="0" step="0.01">
+                                <p class="text-muted mb-0" style="font-size:11px;">Leave blank if pricing varies per
+                                    quotation</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Supplier</label>
+                                <input type="text" id="edit-mat-supplier" class="form-control form-control-sm"
+                                    placeholder="Supplier name">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Storage Location</label>
+                                <input type="text" id="edit-mat-location" class="form-control form-control-sm"
+                                    placeholder="e.g. Shelf A-1">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small">Description</label>
+                                <textarea id="edit-mat-description" class="form-control form-control-sm" rows="2"
+                                    placeholder="Brief description of the item..."></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small">Item Photo</label>
+                                <div class="mat-upload-area" id="editUploadArea"
+                                    onclick="document.getElementById('edit-mat-image').click()">
+                                    <img id="editImagePreview" src="" alt="" class="mat-upload-preview"
+                                        style="display:none;">
+                                    <div id="editUploadPlaceholder">
+                                        <span class="material-symbols-outlined text-muted"
+                                            style="font-size:32px;">add_photo_alternate</span>
+                                        <p class="small text-muted mb-0 mt-1">Click to replace photo</p>
+                                        <p class="text-muted mb-0" style="font-size:11px;">JPG, PNG — shown in quotations
+                                        </p>
+                                    </div>
+                                    <input type="file" id="edit-mat-image" accept="image/*" class="d-none"
+                                        onchange="previewMatImage(this, 'editImagePreview', 'editUploadPlaceholder')">
                                 </div>
-                                <input type="file" id="edit-mat-image" accept="image/*" class="d-none"
-                                    onchange="previewMatImage(this, 'editImagePreview', 'editUploadPlaceholder')">
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success d-flex align-items-center gap-1">
-                        <span class="material-symbols-outlined fs-16">save</span>Save Changes
-                    </button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success d-flex align-items-center gap-1">
+                            <span class="material-symbols-outlined fs-16">save</span>Save Changes
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -657,86 +359,102 @@
     <div class="modal fade" id="addMaterialModal" tabindex="-1">
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined fs-20">add_box</span>
-                        Add New Material
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label small">Item Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm"
-                                placeholder="e.g. IP Camera 2MP Outdoor">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Category <span class="text-danger">*</span></label>
-                            <select class="form-select form-select-sm">
-                                <option value="">Select category</option>
-                                <option>CCTV</option>
-                                <option>Solar</option>
-                                <option>PA System</option>
-                                <option>General</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Unit <span class="text-danger">*</span></label>
-                            <select class="form-select form-select-sm">
-                                <option value="">Select unit</option>
-                                <option>pcs</option>
-                                <option>unit</option>
-                                <option>roll</option>
-                                <option>bag</option>
-                                <option>set</option>
-                                <option>meters</option>
-                                <option>lot</option>
-                                <option>box</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Quantity in Stock <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control form-control-sm" placeholder="0" min="0">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Unit Cost (₱) <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control form-control-sm" placeholder="0.00"
-                                min="0">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Supplier</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="Supplier name">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small">Storage Location</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="e.g. Shelf A-1">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small">Description</label>
-                            <textarea class="form-control form-control-sm" rows="2" placeholder="Brief description of the item..."></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small">Item Photo</label>
-                            <div class="mat-upload-area" id="addUploadArea" onclick="document.getElementById('add-mat-image').click()">
-                                <img id="addImagePreview" src="" alt="" class="mat-upload-preview" style="display:none;">
-                                <div id="addUploadPlaceholder">
-                                    <span class="material-symbols-outlined text-muted" style="font-size:32px;">add_photo_alternate</span>
-                                    <p class="small text-muted mb-0 mt-1">Click to upload item photo</p>
-                                    <p class="text-muted mb-0" style="font-size:11px;">JPG, PNG — shown in quotations</p>
+                <form id="addMaterialForm" class="needs-validation" novalidate>
+                    <div class="modal-header">
+                        <h5 class="modal-title d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined fs-20">add_box</span>
+                            Add New Material
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label small">Item Name <span class="text-danger">*</span></label>
+                                <input type="text" id="add-mat-name" class="form-control form-control-sm"
+                                    placeholder="e.g. IP Camera 2MP Outdoor" required>
+                                <div class="invalid-feedback">Item name is required.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Category <span class="text-danger">*</span></label>
+                                <select id="add-mat-category" class="form-select form-select-sm" required>
+                                    <option value="">Select category</option>
+                                    <option>CCTV</option>
+                                    <option>Solar</option>
+                                    <option>PA System</option>
+                                    <option>General</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a category.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Unit <span class="text-danger">*</span></label>
+                                <select id="add-mat-unit" class="form-select form-select-sm" required>
+                                    <option value="">Select unit</option>
+                                    <option>pcs</option>
+                                    <option>unit</option>
+                                    <option>roll</option>
+                                    <option>bag</option>
+                                    <option>set</option>
+                                    <option>meters</option>
+                                    <option>lot</option>
+                                    <option>box</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a unit.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Unit Cost (₱) <span class="text-danger">*</span></label>
+                                <input type="number" id="add-mat-cost" class="form-control form-control-sm"
+                                    placeholder="0.00" min="0" step="0.01" required>
+                                <div class="invalid-feedback">Please enter a valid cost.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Selling Price (₱)</label>
+                                <input type="number" id="add-mat-price" class="form-control form-control-sm"
+                                    placeholder="0.00" min="0" step="0.01">
+                                <p class="text-muted mb-0" style="font-size:11px;">Leave blank if pricing varies per
+                                    quotation</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Supplier</label>
+                                <input type="text" id="add-mat-supplier" class="form-control form-control-sm"
+                                    placeholder="Supplier name">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Storage Location</label>
+                                <input type="text" id="add-mat-location" class="form-control form-control-sm"
+                                    placeholder="e.g. Shelf A-1">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small">Description</label>
+                                <textarea id="add-mat-description" class="form-control form-control-sm" rows="2"
+                                    placeholder="Brief description of the item..."></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small">Item Photo</label>
+                                <div class="mat-upload-area" id="addUploadArea"
+                                    onclick="document.getElementById('add-mat-image').click()">
+                                    <img id="addImagePreview" src="" alt="" class="mat-upload-preview"
+                                        style="display:none;">
+                                    <div id="addUploadPlaceholder">
+                                        <span class="material-symbols-outlined text-muted"
+                                            style="font-size:32px;">add_photo_alternate</span>
+                                        <p class="small text-muted mb-0 mt-1">Click to upload item photo</p>
+                                        <p class="text-muted mb-0" style="font-size:11px;">JPG, PNG — shown in quotations
+                                        </p>
+                                    </div>
+                                    <input type="file" id="add-mat-image" accept="image/*" class="d-none"
+                                        onchange="previewMatImage(this, 'addImagePreview', 'addUploadPlaceholder')">
                                 </div>
-                                <input type="file" id="add-mat-image" accept="image/*" class="d-none"
-                                    onchange="previewMatImage(this, 'addImagePreview', 'addUploadPlaceholder')">
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success d-flex align-items-center gap-1">
-                        <span class="material-symbols-outlined fs-16">save</span>Save Material
-                    </button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success d-flex align-items-center gap-1">
+                            <span class="material-symbols-outlined fs-16">save</span>Save Material
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -754,47 +472,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="table-responsive">
-                        <table id="archiveTable" class="table table-hover mb-0 small w-100">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0 small green-text">Item</th>
-                                    <th class="border-0 small green-text">Category</th>
-                                    <th class="border-0 small green-text">Unit</th>
-                                    <th class="border-0 small green-text">Last Stock</th>
-                                    <th class="border-0 small green-text">Status</th>
-                                    <th class="border-0 small green-text">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="fw-semibold">Video Balun Passive</td>
-                                    <td><span class="cat-badge cat-cctv">CCTV</span></td>
-                                    <td>pairs</td>
-                                    <td>0</td>
-                                    <td><span class="badge bg-secondary rounded-pill">Archived</span></td>
-                                    <td class="text-nowrap actions-col">
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="Restore">
-                                            <span class="material-symbols-outlined icon-action">unarchive</span>
-                                            Restore
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-semibold">MC4 Solar Connector Set</td>
-                                    <td><span class="cat-badge cat-solar">Solar</span></td>
-                                    <td>set</td>
-                                    <td>2</td>
-                                    <td><span class="badge bg-secondary rounded-pill">Archived</span></td>
-                                    <td class="text-nowrap actions-col">
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="Restore">
-                                            <span class="material-symbols-outlined icon-action">unarchive</span>
-                                            Restore
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div id="archivedMaterialsBody">
+                        <p class="text-muted text-center py-3 small">Loading...</p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -808,8 +487,25 @@
 
 @section('scripts')
     <script>
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+        const routes = {
+            store: @json(route('materials.store')),
+            update: @json(route('materials.update', ':id')),
+            archive: @json(route('materials.archive', ':id')),
+            unarchive: @json(route('materials.unarchive', ':id')),
+            archived: @json(route('materials.archived')),
+        };
+
+        const catMap = {
+            CCTV: 'cat-cctv',
+            Solar: 'cat-solar',
+            'PA System': 'cat-pa',
+            General: 'cat-general',
+        };
+
         function loadMaterial(d) {
-            const img      = document.getElementById('vm-image');
+            const img = document.getElementById('vm-image');
             const fallback = document.getElementById('vm-image-fallback');
 
             if (d.image) {
@@ -823,42 +519,40 @@
 
             document.getElementById('vm-name').textContent = d.name || '—';
             document.getElementById('vm-unit').textContent = d.unit || '—';
-            document.getElementById('vm-stock').textContent = d.stock ?? '—';
-            document.getElementById('vm-cost').textContent = d.cost || '—';
+            document.getElementById('vm-cost').textContent = '₱' + (d.cost || '0.00');
+            document.getElementById('vm-price').textContent = d.price ? ('₱' + d.price) : '—';
             document.getElementById('vm-supplier').textContent = d.supplier || '—';
             document.getElementById('vm-location').textContent = d.location || '—';
             document.getElementById('vm-description').textContent = d.description || '—';
 
+            const markupWrap = document.getElementById('vm-markup-wrap');
+            if (d.markup !== null && d.markup !== undefined) {
+                document.getElementById('vm-markup').textContent = `${d.markup}% above cost`;
+                markupWrap.style.display = '';
+            } else {
+                markupWrap.style.display = 'none';
+            }
+
             const badge = document.getElementById('vm-category-badge');
             badge.textContent = d.category || '—';
-            const catMap = {
-                CCTV: 'cat-cctv',
-                Solar: 'cat-solar',
-                'PA System': 'cat-pa',
-                General: 'cat-general'
-            };
             badge.className = `cat-badge ${catMap[d.category] || ''}`;
 
-            const statusMap = {
-                'In Stock': 'bg-success',
-                'Low Stock': 'bg-warning text-dark',
-                'Out of Stock': 'bg-danger'
-            };
-            document.getElementById('vm-status').innerHTML =
-                `<span class="badge rounded-pill ${statusMap[d.status] || 'bg-secondary'}">${d.status}</span>`;
+            document.getElementById('vm-archive-btn').onclick = () => archiveMaterial(d.id, d.name);
         }
 
         function loadEditMaterial(d) {
+            document.getElementById('editMaterialForm').dataset.materialId = d.id;
             document.getElementById('edit-mat-name').value = d.name || '';
-            document.getElementById('edit-mat-category').value = d.category || 'CCTV';
-            document.getElementById('edit-mat-unit').value = d.unit || 'pcs';
-            document.getElementById('edit-mat-stock').value = d.stock ?? 0;
-            document.getElementById('edit-mat-cost').value = d.cost ?? 0;
+            document.getElementById('edit-mat-category').value = d.category || '';
+            document.getElementById('edit-mat-unit').value = d.unit || '';
+            document.getElementById('edit-mat-cost').value = d.costRaw ?? '';
+            document.getElementById('edit-mat-price').value = d.priceRaw ?? '';
             document.getElementById('edit-mat-supplier').value = d.supplier || '';
             document.getElementById('edit-mat-location').value = d.location || '';
             document.getElementById('edit-mat-description').value = d.description || '';
+            document.getElementById('edit-mat-image').value = '';
 
-            const preview     = document.getElementById('editImagePreview');
+            const preview = document.getElementById('editImagePreview');
             const placeholder = document.getElementById('editUploadPlaceholder');
             if (d.image) {
                 preview.src = d.image;
@@ -875,7 +569,7 @@
             if (!file) return;
             const reader = new FileReader();
             reader.onload = e => {
-                const preview     = document.getElementById(previewId);
+                const preview = document.getElementById(previewId);
                 const placeholder = document.getElementById(placeholderId);
                 preview.src = e.target.result;
                 preview.style.display = 'block';
@@ -883,6 +577,161 @@
             };
             reader.readAsDataURL(file);
         }
+
+        document.getElementById('addMaterialModal').addEventListener('show.bs.modal', () => {
+            document.getElementById('addMaterialForm').reset();
+            document.getElementById('addMaterialForm').classList.remove('was-validated');
+            document.getElementById('addImagePreview').style.display = 'none';
+            document.getElementById('addUploadPlaceholder').style.display = '';
+        });
+
+        async function submitMaterialForm(form, url) {
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const formData = new FormData();
+            const prefix = form.id === 'addMaterialForm' ? 'add-mat-' : 'edit-mat-';
+            formData.append('name', document.getElementById(prefix + 'name').value);
+            formData.append('category', document.getElementById(prefix + 'category').value);
+            formData.append('unit', document.getElementById(prefix + 'unit').value);
+            formData.append('unit_cost', document.getElementById(prefix + 'cost').value);
+            formData.append('selling_price', document.getElementById(prefix + 'price').value);
+            formData.append('supplier', document.getElementById(prefix + 'supplier').value);
+            formData.append('location', document.getElementById(prefix + 'location').value);
+            formData.append('description', document.getElementById(prefix + 'description').value);
+
+            const imageInput = document.getElementById(prefix + 'image');
+            if (imageInput.files[0]) {
+                formData.append('image', imageInput.files[0]);
+            }
+
+            if (form.id === 'editMaterialForm') {
+                formData.append('_method', 'PUT');
+            }
+
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                    },
+                    body: formData,
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showToast(data.message || 'Something went wrong. Please try again.', 'danger');
+                    return;
+                }
+
+                showToast(data.message, 'success');
+                setTimeout(() => location.reload(), 800);
+            } catch (err) {
+                showToast('Network error — please try again.', 'danger');
+            }
+        }
+
+        document.getElementById('addMaterialForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitMaterialForm(this, routes.store);
+        });
+
+        document.getElementById('editMaterialForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = this.dataset.materialId;
+            submitMaterialForm(this, routes.update.replace(':id', id));
+        });
+
+        function archiveMaterial(id, name) {
+            if (!confirm(`Archive ${name}? You can restore it anytime from View Archives.`)) return;
+            fetch(routes.archive.replace(':id', id), {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    showToast(data.message, 'success');
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => showToast('Network error — please try again.', 'danger'));
+        }
+
+        function restoreMaterial(id) {
+            fetch(routes.unarchive.replace(':id', id), {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    showToast(data.message, 'success');
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => showToast('Network error — please try again.', 'danger'));
+        }
+
+        function loadArchivedMaterials() {
+            const body = document.getElementById('archivedMaterialsBody');
+            body.innerHTML = '<p class="text-muted text-center py-3 small">Loading...</p>';
+
+            fetch(routes.archived, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success || !data.materials.length) {
+                        body.innerHTML = '<p class="text-muted text-center py-3 small">No archived materials.</p>';
+                        return;
+                    }
+
+                    const rows = data.materials.map(m => `
+                        <tr>
+                            <td class="fw-semibold small">${m.name}</td>
+                            <td><span class="cat-badge ${catMap[m.category] || ''}">${m.category}</span></td>
+                            <td class="small">${m.unit}</td>
+                            <td class="text-muted small">${m.archived_at ?? '—'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-success" title="Restore" onclick="restoreMaterial(${m.id})">
+                                    <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;">unarchive</span>
+                                    Restore
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    body.innerHTML = `
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0 small">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Category</th>
+                                        <th>Unit</th>
+                                        <th>Archived On</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rows}</tbody>
+                            </table>
+                        </div>`;
+                })
+                .catch(() => {
+                    body.innerHTML =
+                        '<p class="text-danger text-center py-3 small">Failed to load archived materials.</p>';
+                });
+        }
+
+        document.getElementById('archiveModal').addEventListener('show.bs.modal', loadArchivedMaterials);
 
         $('#materialsTable').DataTable({
             pageLength: 10,
@@ -894,25 +743,19 @@
             ],
             columnDefs: [{
                 orderable: false,
-                targets: 6
-            }]
+                targets: 5
+            }],
+            language: {
+                emptyTable: 'No materials found.',
+                zeroRecords: 'No matching materials found.'
+            },
         });
 
-        $('#archiveModal').on('shown.bs.modal', function() {
-            if (!$.fn.DataTable.isDataTable('#archiveTable')) {
-                $('#archiveTable').DataTable({
-                    pageLength: 5,
-                    lengthChange: false,
-                    info: true,
-                    order: [
-                        [0, 'asc']
-                    ],
-                    columnDefs: [{
-                        orderable: false,
-                        targets: 5
-                    }]
-                });
-            }
+        $('#categoryFilterGroup button').on('click', function() {
+            $('#categoryFilterGroup button').removeClass('active');
+            $(this).addClass('active');
+            const filter = $(this).data('filter');
+            $('#materialsTable').DataTable().column(1).search(filter === 'all' ? '' : filter, true, false).draw();
         });
     </script>
 @endsection

@@ -27,7 +27,7 @@
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-secondary">checklist</span>
+                    <span class="material-symbols-outlined summary-icon muted-text">checklist</span>
                     <div>
                         <p class="summary-label">Total Checklists</p>
                         <p class="summary-value">4</p>

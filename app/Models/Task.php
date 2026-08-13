@@ -55,7 +55,7 @@ class Task extends Model
             'Completed' => 'success',
             'Pending' => 'warning text-dark',
             'In Progress' => 'primary',
-            'Declined' => 'danger',
+            'On Hold' => 'secondary',
         ];
         $color = $colors[$this->status] ?? 'secondary';
 
@@ -68,7 +68,7 @@ class Task extends Model
             'Completed' => 'check_circle',
             'Pending' => 'schedule',
             'In Progress' => 'autorenew',
-            'Declined' => 'cancel',
+            'On Hold' => 'pause_circle',
         ];
 
         return $icons[$this->status] ?? 'help';
@@ -80,7 +80,7 @@ class Task extends Model
             'Completed' => 'Done',
             'Pending' => 'To Do',
             'In Progress' => 'In Progress',
-            'Declined' => 'Declined',
+            'On Hold' => 'On Hold',
         ];
 
         return $labels[$this->status] ?? $this->status;

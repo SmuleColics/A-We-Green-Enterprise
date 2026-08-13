@@ -33,4 +33,9 @@ class Client extends Model
 
         return "CLT-{$year}-".str_pad($count, 3, '0', STR_PAD_LEFT);
     }
+
+    public function assessments()
+    {
+        return $this->hasMany(Assessment::class);
+    }
 }

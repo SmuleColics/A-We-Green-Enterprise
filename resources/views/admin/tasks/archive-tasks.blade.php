@@ -50,10 +50,10 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined text-danger summary-icon">cancel</span>
+                    <span class="material-symbols-outlined text-secondary summary-icon">pause_circle</span>
                     <div>
-                        <p class="summary-label">Declined</p>
-                        <p class="summary-value">{{ $declined ?? 0 }}</p>
+                        <p class="summary-label">On Hold</p>
+                        <p class="summary-value">{{ $onHold ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="In Progress">In
                             Progress</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary"
-                            data-filter="Declined">Declined</button>
+                            data-filter="On Hold">On Hold</button>
                     </div>
                 </div>
 
@@ -303,7 +303,7 @@
                 'Completed': 'success',
                 'Pending': 'warning text-dark',
                 'In Progress': 'primary',
-                'Declined': 'danger'
+                'On Hold': 'secondary'
             };
             return map[status] || 'secondary';
         }

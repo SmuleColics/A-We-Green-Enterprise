@@ -32,7 +32,7 @@ class AssessmentController extends Controller
             'barangay' => 'required|string|max:150',
             'province' => 'required|string|max:100',
             'city' => 'required|string|max:100',
-            'zip_code' => 'nullable|string|max:10',
+            'zip_code' => 'required|string|max:10',
             'notes' => 'nullable|string|max:1000',
         ]);
 

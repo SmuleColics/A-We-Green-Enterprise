@@ -142,9 +142,9 @@
                                             @endif
 
                                             @if ($task->isPending() || $task->isInProgress())
-                                                <button type="button" class="btn btn-outline-danger btn-decline-task"
-                                                    data-task-id="{{ $task->id }}" title="Decline Task">
-                                                    <span class="material-symbols-outlined">close</span>
+                                                <button type="button" class="btn btn-outline-secondary btn-hold-task"
+                                                    data-task-id="{{ $task->id }}" title="Put Task On Hold">
+                                                    <span class="material-symbols-outlined">pause_circle</span>
                                                 </button>
                                             @endif
                                         </div>
@@ -202,7 +202,7 @@
                             <option value="">-- Select Status --</option>
                             <option value="In Progress">In Progress</option>
                             <option value="Completed">Completed</option>
-                            <option value="Declined">Declined</option>
+                            <option value="On Hold">On Hold</option>
                         </select>
                     </div>
 
@@ -212,10 +212,10 @@
                             placeholder="Add any notes about task completion..."></textarea>
                     </div>
 
-                    <div class="mb-3" id="declineReasonContainer" style="display: none;">
-                        <label for="declineReason" class="form-label">Reason for Decline</label>
-                        <textarea id="declineReason" name="decline_reason" class="form-control" rows="3"
-                            placeholder="Why are you declining this task?" required></textarea>
+                    <div class="mb-3" id="holdReasonContainer" style="display: none;">
+                        <label for="holdReason" class="form-label">Reason for Hold</label>
+                        <textarea id="holdReason" name="hold_reason" class="form-control" rows="3"
+                            placeholder="Why is this task being put on hold?" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-top">
@@ -292,11 +292,11 @@
             });
         });
 
-        // Decline Task
-        document.querySelectorAll('.btn-decline-task').forEach(btn => {
+        // Put task on hold
+        document.querySelectorAll('.btn-hold-task').forEach(btn => {
             btn.addEventListener('click', function() {
                 const taskId = this.getAttribute('data-task-id');
-                showDeclineModal(taskId);
+                showHoldModal(taskId);
             });
         });
 
@@ -306,9 +306,9 @@
             const taskId = document.getElementById('taskIdInput').value;
             const status = document.getElementById('taskStatus').value;
             const notes = document.getElementById('completionNote').value || null;
-            const declineReason = document.getElementById('declineReason').value || null;
+            const holdReason = document.getElementById('holdReason').value || null;
 
-            submitTaskStatusUpdate(taskId, status, notes, declineReason);
+            submitTaskStatusUpdate(taskId, status, notes, holdReason);
         });
 
         // Show/hide fields based on status selection
@@ -316,8 +316,8 @@
             const status = this.value;
             document.getElementById('completionNoteContainer').style.display =
                 status === 'Completed' ? 'block' : 'none';
-            document.getElementById('declineReasonContainer').style.display =
-                status === 'Declined' ? 'block' : 'none';
+            document.getElementById('holdReasonContainer').style.display =
+                status === 'On Hold' ? 'block' : 'none';
         });
     });
 
@@ -392,18 +392,18 @@
         new bootstrap.Modal(document.getElementById('updateTaskStatusModal')).show();
     }
 
-    function showDeclineModal(taskId) {
+    function showHoldModal(taskId) {
         document.getElementById('taskIdInput').value = taskId;
-        document.getElementById('taskStatus').value = 'Declined';
+        document.getElementById('taskStatus').value = 'On Hold';
         document.getElementById('taskStatus').dispatchEvent(new Event('change'));
         new bootstrap.Modal(document.getElementById('updateTaskStatusModal')).show();
     }
 
-    function submitTaskStatusUpdate(taskId, status, notes, declineReason) {
+    function submitTaskStatusUpdate(taskId, status, notes, holdReason) {
         const payload = {
             status: status,
             notes: notes,
-            decline_reason: declineReason
+            hold_reason: holdReason
         };
 
         fetch(`/tasks/${taskId}/update`, {

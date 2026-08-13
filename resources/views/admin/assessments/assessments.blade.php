@@ -99,6 +99,16 @@
 
                 <div class="col-6 col-md-3">
                     <div class="summary-card">
+                        <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
+                        <div>
+                            <p class="summary-label">Done Assessment</p>
+                            <p class="summary-value">{{ $doneCount }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <div class="summary-card">
                         <span class="material-symbols-outlined summary-icon text-primary">description</span>
                         <div>
                             <p class="summary-label">Submitted Form</p>
@@ -113,16 +123,6 @@
                         <div>
                             <p class="summary-label">Pending</p>
                             <p class="summary-value">{{ $pendingCount }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="summary-card">
-                        <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
-                        <div>
-                            <p class="summary-label">Done Assessment</p>
-                            <p class="summary-value">{{ $doneCount }}</p>
                         </div>
                     </div>
                 </div>

@@ -37,7 +37,7 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined text-warning summary-icon">schedule</span>
+                    <span class="material-symbols-outlined text-warning summary-icon muted-text">schedule</span>
                     <div>
                         <p class="summary-label">To Do</p>
                         <p class="summary-value" id="cnt-todo">{{ $pending ?? 0 }}</p>
@@ -55,10 +55,10 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined text-danger summary-icon">cancel</span>
+                    <span class="material-symbols-outlined text-secondary summary-icon text-warning">pause_circle</span>
                     <div>
-                        <p class="summary-label">Declined</p>
-                        <p class="summary-value" id="cnt-declined">{{ $declined ?? 0 }}</p>
+                        <p class="summary-label">On Hold</p>
+                        <p class="summary-value" id="cnt-on-hold">{{ $onHold ?? 0 }}</p>
                     </div>
                 </div>
             </div>
@@ -76,8 +76,8 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Pending">To Do</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="In Progress">In
                             Progress</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary"
-                            data-filter="Declined">Declined</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="On Hold">On
+                            Hold</button>
                     </div>
                 </div>
 
@@ -238,7 +238,7 @@
                                     <option value="Pending">To Do</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Completed">Done</option>
-                                    <option value="Declined">Declined</option>
+                                    <option value="On Hold">On Hold</option>
                                 </select>
                             </div>
                         </div>
@@ -513,7 +513,7 @@
                 'Completed': 'success',
                 'Pending': 'warning text-dark',
                 'In Progress': 'primary',
-                'Declined': 'danger'
+                'On Hold': 'secondary'
             };
             return map[status] || 'secondary';
         }

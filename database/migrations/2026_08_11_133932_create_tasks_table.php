@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('assessment_id')->constrained('assessments');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('status', ['Pending', 'In Progress', 'Completed', 'Declined'])->default('Pending');
+            $table->enum('status', ['Pending', 'In Progress', 'Completed', 'On Hold'])->default('Pending');
             $table->date('due_date');
             $table->timestamps();
         });

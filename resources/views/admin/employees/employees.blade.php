@@ -40,7 +40,7 @@
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon green-text">badge</span>
+                    <span class="material-symbols-outlined summary-icon muted-text">badge</span>
                     <div>
                         <p class="summary-label">Total Staff</p>
                         <p class="summary-value">{{ $total }}</p>
@@ -49,7 +49,7 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon" style="color:#8b5cf6;">admin_panel_settings</span>
+                    <span class="material-symbols-outlined summary-icon green-text">admin_panel_settings</span>
                     <div>
                         <p class="summary-label">Admins</p>
                         <p class="summary-value">{{ $admins }}</p>
@@ -58,7 +58,7 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon" style="color:#f59e0b;">build</span>
+                    <span class="material-symbols-outlined summary-icon text-primary">build</span>
                     <div>
                         <p class="summary-label">Technicians</p>
                         <p class="summary-value">{{ $technicians }}</p>
@@ -67,7 +67,7 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon" style="color:#3b82f6;">local_shipping</span>
+                    <span class="material-symbols-outlined summary-icon text-warning">local_shipping</span>
                     <div>
                         <p class="summary-label">Drivers</p>
                         <p class="summary-value">{{ $drivers }}</p>

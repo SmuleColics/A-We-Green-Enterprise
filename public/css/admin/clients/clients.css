@@ -1,6 +1,18 @@
 /* =============================================
    CLIENTS TABLE — COLUMN WIDTHS
    ============================================= */
+
+.toggle-pw {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-pw .material-symbols-outlined {
+  line-height: 1;
+  display: block;
+}
+
 #clientsTable th {
   font-size: 12px;
   font-weight: 600;
@@ -16,28 +28,50 @@
 }
 
 #clientsTable th:nth-child(1),
-#clientsTable td:nth-child(1) { width: 130px; white-space: nowrap; }
+#clientsTable td:nth-child(1) {
+  width: 130px;
+  white-space: nowrap;
+}
 
 #clientsTable th:nth-child(2),
-#clientsTable td:nth-child(2) { width: auto; }
+#clientsTable td:nth-child(2) {
+  width: auto;
+}
 
 #clientsTable th:nth-child(3),
-#clientsTable td:nth-child(3) { width: 130px; white-space: nowrap; }
+#clientsTable td:nth-child(3) {
+  width: 130px;
+  white-space: nowrap;
+}
 
 #clientsTable th:nth-child(4),
-#clientsTable td:nth-child(4) { width: 200px; }
+#clientsTable td:nth-child(4) {
+  width: 200px;
+}
 
 #clientsTable th:nth-child(5),
-#clientsTable td:nth-child(5) { width: 120px; white-space: nowrap; }
+#clientsTable td:nth-child(5) {
+  width: 120px;
+  white-space: nowrap;
+}
 
 #clientsTable th:nth-child(6),
-#clientsTable td:nth-child(6) { width: 160px; white-space: nowrap; }
+#clientsTable td:nth-child(6) {
+  width: 160px;
+  white-space: nowrap;
+}
 
 #clientsTable th:nth-child(7),
-#clientsTable td:nth-child(7) { width: 100px; white-space: nowrap; }
+#clientsTable td:nth-child(7) {
+  width: 100px;
+  white-space: nowrap;
+}
 
 #clientsTable th:nth-child(8),
-#clientsTable td:nth-child(8) { width:  90px; white-space: nowrap; }
+#clientsTable td:nth-child(8) {
+  width: 90px;
+  white-space: nowrap;
+}
 
 /* =============================================
    CLIENT AVATAR
@@ -71,9 +105,20 @@
   white-space: nowrap;
 }
 
-.type-residential { background: #dbeafe; color: #1e40af; }
-.type-commercial  { background: #fef3c7; color: #92400e; }
-.type-government  { background: #d1fae5; color: #065f46; }
+.type-residential {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.type-commercial {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.type-government {
+  background: #d1fae5;
+  color: #065f46;
+}
 
 /* =============================================
    VIEW CLIENT MODAL — SECTION / DETAIL LABELS
@@ -93,8 +138,15 @@
   border-top: none;
 }
 
-.detail-label { color: var(--muted-text); margin-bottom: 1px; }
-.detail-value { color: var(--body-text);  margin-bottom: 0; }
+.detail-label {
+  color: var(--muted-text);
+  margin-bottom: 1px;
+}
+
+.detail-value {
+  color: var(--body-text);
+  margin-bottom: 0;
+}
 
 /* =============================================
    PAGINATION LINK COLORS
@@ -120,6 +172,9 @@
    RESPONSIVE
    ============================================= */
 @media (max-width: 768px) {
+
   #clientsTable th:nth-child(4),
-  #clientsTable td:nth-child(4) { display: none; }
+  #clientsTable td:nth-child(4) {
+    display: none;
+  }
 }

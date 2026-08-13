@@ -28,10 +28,10 @@ class TaskController extends Controller
         $pending = $tasks->where('status', 'Pending')->count();
         $inProgress = $tasks->where('status', 'In Progress')->count();
         $completed = $tasks->where('status', 'Completed')->count();
-        $declined = $tasks->where('status', 'Declined')->count();
+        $onHold = $tasks->where('status', 'On Hold')->count();
 
         return view('admin.tasks.tasks', compact(
-            'tasks', 'employees', 'assessments', 'total', 'pending', 'inProgress', 'completed', 'declined'
+            'tasks', 'employees', 'assessments', 'total', 'pending', 'inProgress', 'completed', 'onHold'
         ));
     }
 
@@ -85,7 +85,7 @@ class TaskController extends Controller
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'due_date' => 'nullable|date',
-            'status' => 'nullable|in:Pending,In Progress,Completed,Declined',
+            'status' => 'nullable|in:Pending,In Progress,Completed,On Hold',
         ]);
 
         $previousStatus = $task->status;
@@ -334,10 +334,10 @@ class TaskController extends Controller
         $completed = $tasks->where('status', 'Completed')->count();
         $inProgress = $tasks->where('status', 'In Progress')->count();
         $pending = $tasks->where('status', 'Pending')->count();
-        $declined = $tasks->where('status', 'Declined')->count();
+        $onHold = $tasks->where('status', 'On Hold')->count();
 
         return view('admin.tasks.archive-tasks', compact(
-            'tasks', 'completed', 'inProgress', 'pending', 'declined'
+            'tasks', 'completed', 'inProgress', 'pending', 'onHold'
         ));
     }
 }
