@@ -52,6 +52,30 @@ class EmployeeController extends Controller
         ));
     }
 
+    public function availability(Request $request, Employee $employee)
+    {
+        $validated = $request->validate([
+            'start' => 'required|date',
+            'end' => 'required|date|after_or_equal:start',
+            'ignore_project_task_id' => 'nullable|integer|exists:project_tasks,id',
+            'required_position' => 'nullable|in:technician,driver',
+        ]);
+
+        $conflicts = $employee->conflictingAssignments(
+            $validated['start'],
+            $validated['end'],
+            $validated['ignore_project_task_id'] ?? null
+        );
+
+        return response()->json([
+            'available' => $conflicts->isEmpty(),
+            'conflicts' => $conflicts,
+            'qualifies' => isset($validated['required_position'])
+                ? $employee->qualifiesForPosition($validated['required_position'])
+                : null,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $this->validateStaff($request);

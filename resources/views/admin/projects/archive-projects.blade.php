@@ -104,7 +104,7 @@
                                 <td><span class="badge rounded-pill bg-success" data-status="1">Completed</span></td>
                                 <td class="text-muted small">Feb 01, 2026</td>
                                 <td class="text-nowrap actions-col">
-                                    <a href="{{ route('monitoring') }}"
+                                    <a href="{{ route('projects') }}"
                                         class="btn btn-sm btn-outline-success action-btn" title="View">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </a>
@@ -130,7 +130,7 @@
                                 <td><span class="badge rounded-pill bg-danger" data-status="2">Cancelled</span></td>
                                 <td class="text-muted small">Jan 05, 2026</td>
                                 <td class="text-nowrap actions-col">
-                                    <a href="{{ route('monitoring') }}"
+                                    <a href="{{ route('projects') }}"
                                         class="btn btn-sm btn-outline-success action-btn" title="View">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </a>
@@ -156,7 +156,7 @@
                                 <td><span class="badge rounded-pill bg-success" data-status="1">Completed</span></td>
                                 <td class="text-muted small">Dec 10, 2025</td>
                                 <td class="text-nowrap actions-col">
-                                    <a href="{{ route('monitoring') }}"
+                                    <a href="{{ route('projects') }}"
                                         class="btn btn-sm btn-outline-success action-btn" title="View">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </a>
@@ -182,7 +182,7 @@
                                 <td><span class="badge rounded-pill bg-warning text-dark" data-status="3">On Hold</span></td>
                                 <td class="text-muted small">Nov 01, 2025</td>
                                 <td class="text-nowrap actions-col">
-                                    <a href="{{ route('monitoring') }}"
+                                    <a href="{{ route('projects') }}"
                                         class="btn btn-sm btn-outline-success action-btn" title="View">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </a>
@@ -208,7 +208,7 @@
                                 <td><span class="badge rounded-pill bg-success" data-status="1">Completed</span></td>
                                 <td class="text-muted small">Oct 10, 2025</td>
                                 <td class="text-nowrap actions-col">
-                                    <a href="{{ route('monitoring') }}"
+                                    <a href="{{ route('projects') }}"
                                         class="btn btn-sm btn-outline-success action-btn" title="View">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </a>
@@ -234,7 +234,7 @@
                                 <td><span class="badge rounded-pill bg-danger" data-status="2">Cancelled</span></td>
                                 <td class="text-muted small">Sep 01, 2025</td>
                                 <td class="text-nowrap actions-col">
-                                    <a href="{{ route('monitoring') }}"
+                                    <a href="{{ route('projects') }}"
                                         class="btn btn-sm btn-outline-success action-btn" title="View">
                                         <span class="material-symbols-outlined icon-action">visibility</span>
                                     </a>

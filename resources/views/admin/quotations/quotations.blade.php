@@ -50,9 +50,9 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-danger">cancel</span>
+                    <span class="material-symbols-outlined summary-icon text-danger">rate_review</span>
                     <div>
-                        <p class="summary-label">Rejected</p>
+                        <p class="summary-label">Revision Requested</p>
                         <p class="summary-value">{{ $quotations->where('status', 'Rejected')->count() }}</p>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary"
                             data-filter="Approved">Approved</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary"
-                            data-filter="Rejected">Rejected</button>
+                            data-filter="Revision Requested">Revision Requested</button>
                     </div>
                 </div>
 
@@ -100,10 +100,15 @@
                                             @if ($quotation->status === 'Approved') bg-success
                                             @elseif ($quotation->status === 'Rejected') bg-danger
                                             @else bg-primary text-white
-                                            @endif">{{ $quotation->status }}</span>
+                                            @endif"
+                                            @if ($quotation->status === 'Rejected' && $quotation->revision_reason_category)
+                                                title="{{ $quotation->revision_reason_category }}{{ $quotation->revision_reason ? ' — ' . $quotation->revision_reason : '' }}"
+                                            @endif
+                                            >{{ $quotation->status === 'Rejected' ? 'Revision Requested' : $quotation->status }}</span>
                                     </td>
                                     <td class="text-nowrap actions-col">
                                         <a href="{{ route('quotations.show', $quotation) }}" class="btn btn-sm btn-outline-primary action-btn" title="View Quotation"><span class="material-symbols-outlined icon-action">visibility</span></a>
+                                        <a target="_blank" href="{{ route('quotations.print', $quotation) }}" class="btn btn-sm btn-outline-secondary action-btn" title="Preview PDF"><span class="material-symbols-outlined icon-action">print</span></a>
                                         <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive"
                                             onclick="archiveQuotationConfirm({{ $quotation->id }})">
                                             <span class="material-symbols-outlined icon-action">archive</span>

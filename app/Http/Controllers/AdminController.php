@@ -58,27 +58,12 @@ class AdminController extends Controller
     }
 
     // PROJECTS
-    public function showProjects()
-    {
-        return view('admin.projects.projects');
-    }
-
     public function showArchiveProjects()
     {
         return view('admin.projects.archive-projects');
     }
 
-    public function showMonitoring()
-    {
-        return view('admin.projects.monitoring');
-    }
-
     // CHECKLISTS
-
-    public function showChecklists()
-    {
-        return view('admin.checklists.checklists');
-    }
 
     public function showArchiveChecklists()
     {

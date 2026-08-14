@@ -12,6 +12,24 @@
 @endphp
 @section('content')
 <div class="container-fluid px-4 py-4">
+@if ($quotation && $quotation->status === 'Rejected')
+    <div class="alert alert-danger d-flex align-items-start gap-2 mb-4">
+        <span class="material-symbols-outlined fs-18">rate_review</span>
+        <div class="small">
+            <p class="mb-1"><strong>The client requested changes to this quotation</strong>
+                @if ($quotation->revision_requested_at)
+                    on {{ $quotation->revision_requested_at->format('F j, Y') }}
+                @endif
+                .</p>
+            @if ($quotation->revision_reason_category)
+                <p class="mb-1"><strong>Reason:</strong> {{ $quotation->revision_reason_category }}</p>
+            @endif
+            @if ($quotation->revision_reason)
+                <p class="mb-0"><strong>Details:</strong> {{ $quotation->revision_reason }}</p>
+            @endif
+        </div>
+    </div>
+@endif
 <form method="POST" action="{{ route('assessments.form.update', $assessment) }}">
 @csrf @method('PUT')
 <div class="card border-0 shadow-sm mb-4"><div class="card-body"><div class="row g-3">

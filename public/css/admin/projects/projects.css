@@ -1,4 +1,18 @@
 /* =============================================
+   SUMMARY CARDS — force equal size across rows
+   (row-cols wraps 5 cards into uneven rows at small
+   breakpoints; flexbox only stretches within one row,
+   so pin a min-height and stop labels from wrapping)
+   ============================================= */
+.project-summary-row .summary-card {
+  min-height: 86px;
+}
+
+.project-summary-row .summary-label {
+  white-space: nowrap;
+}
+
+/* =============================================
    PROGRESS BAR CONTAINER
    ============================================= */
 .progress-container {

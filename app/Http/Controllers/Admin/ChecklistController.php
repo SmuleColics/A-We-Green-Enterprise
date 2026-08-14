@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\Controller;
+use App\Models\Project;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class ChecklistController extends Controller
+{
+    public function index()
+    {
+        $projects = Project::with('quotation.assessment.client.user', 'checklistItems')
+            ->where('is_archived', false)
+            ->latest()
+            ->get();
+
+        $total = $projects->count();
+        $completed = $projects->filter(fn ($p) => $p->checklistProgress() === 100)->count();
+        $onHold = $projects->where('status', 'On Hold')->count();
+        $inProgress = $total - $completed - $onHold;
+
+        return view('admin.checklists.checklists', compact('projects', 'total', 'completed', 'inProgress', 'onHold'));
+    }
+
+    public function edit(Project $project)
+    {
+        $project->load('checklistItems.material', 'quotation.assessment.client.user');
+
+        return view('admin.checklists.edit', compact('project'));
+    }
+
+    public function print(Project $project)
+    {
+        $project->load('checklistItems', 'quotation.assessment.client.user');
+
+        return view('print.checklist', compact('project'));
+    }
+
+    public function update(Request $request, Project $project)
+    {
+        $validated = $request->validate([
+            'items' => 'required|array',
+            'items.*.id' => 'required|integer|exists:checklist_items,id',
+            'items.*.outgoing_quantity' => 'nullable|numeric|min:0',
+            'items.*.is_not_applicable' => 'nullable|boolean',
+            'items.*.is_completed' => 'nullable|boolean',
+            'items.*.returned_quantity' => 'nullable|numeric|min:0',
+        ]);
+
+        $items = $project->checklistItems()->get()->keyBy('id');
+
+        foreach ($validated['items'] as $row) {
+            $item = $items->get($row['id']);
+            if (! $item) continue;
+
+            $isNotApplicable = (bool) ($row['is_not_applicable'] ?? false);
+            $isCompleted = (bool) ($row['is_completed'] ?? false);
+            $outgoingQuantity = $row['outgoing_quantity'] ?? null;
+            $returnedQuantity = $row['returned_quantity'] ?? null;
+
+            $item->update([
+                'outgoing_quantity' => $outgoingQuantity,
+                'outgoing_at' => $outgoingQuantity !== null ? ($item->outgoing_at ?? now()) : null,
+                'is_not_applicable' => $isNotApplicable,
+                'is_completed' => $isCompleted,
+                'completed_at' => $isCompleted ? ($item->completed_at ?? now()) : null,
+                'returned_quantity' => $returnedQuantity,
+                'returned_at' => $returnedQuantity !== null ? ($item->returned_at ?? now()) : null,
+            ]);
+        }
+
+        ActivityLogController::log(
+            'Checklist',
+            'Updated',
+            "Materials checklist for project {$project->reference_number} was updated.",
+            Auth::id(),
+            Auth::user()->full_name
+        );
+
+        return redirect()
+            ->route('checklists.edit', $project)
+            ->with('success', 'Checklist updated.');
+    }
+}

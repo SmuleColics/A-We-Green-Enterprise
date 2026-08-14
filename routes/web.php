@@ -3,9 +3,13 @@
 use App\Http\Controllers\Admin\AssessmentFormController;
 use App\Http\Controllers\Admin\AssessmentRequestController;
 use App\Http\Controllers\Admin\AssessmentScheduleController;
+use App\Http\Controllers\Admin\ChecklistController;
 use App\Http\Controllers\Admin\ClientController as AdminClientController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\MaterialController;
+use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
+use App\Http\Controllers\Admin\ProjectTaskController;
+use App\Http\Controllers\Admin\ProjectUpdateController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
@@ -54,21 +58,9 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
     Route::get('/proposals', [QuotationController::class, 'adminIndex'])
         ->name('proposals');
 
-    // Projects
-    Route::get('/projects', [AdminController::class, 'showProjects'])
-        ->name('projects');
-
     // Archive projects
     Route::get('/archive-projects', [AdminController::class, 'showArchiveProjects'])
         ->name('archive-projects');
-
-    // Project monitoring
-    Route::get('/monitoring', [AdminController::class, 'showMonitoring'])
-        ->name('monitoring');
-
-    // Checklists
-    Route::get('/checklists', [AdminController::class, 'showChecklists'])
-        ->name('checklists');
 
     // Archive checklists
     Route::get('/archive-checklists', [AdminController::class, 'showArchiveChecklists'])
@@ -150,6 +142,10 @@ Route::middleware(['auth', 'role:client'])->group(function () {
         ->name('quotation-view');
     Route::get('/client-quotation/{quotation}/print', [QuotationController::class, 'clientPrint'])
         ->name('client-quotation.print');
+    Route::post('/quotation-view/{quotation}/approve', [QuotationController::class, 'approve'])
+        ->name('client-quotation.approve');
+    Route::post('/quotation-view/{quotation}/request-revision', [QuotationController::class, 'requestRevision'])
+        ->name('client-quotation.request-revision');
 
     // View project list
     Route::get('/client-project', [ClientController::class, 'showClientProject'])
@@ -355,6 +351,26 @@ Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function 
         ->name('quotations.print');
     Route::patch('/quotations/{quotation}/archive', [QuotationController::class, 'archive'])
         ->name('quotations.archive');
+    Route::post('/quotations/{quotation}/upload-contract', [QuotationController::class, 'uploadContract'])
+        ->name('quotations.upload-contract');
+
+    Route::get('/projects', [AdminProjectController::class, 'index'])->name('projects');
+    Route::get('/projects/{project}', [AdminProjectController::class, 'show'])->name('projects.show');
+    Route::put('/projects/{project}', [AdminProjectController::class, 'update'])->name('projects.update');
+    Route::patch('/projects/{project}/archive', [AdminProjectController::class, 'archive'])->name('projects.archive');
+
+    Route::post('/projects/{project}/tasks', [ProjectTaskController::class, 'store'])->name('project-tasks.store');
+    Route::put('/project-tasks/{task}', [ProjectTaskController::class, 'update'])->name('project-tasks.update');
+    Route::patch('/project-tasks/{task}/archive', [ProjectTaskController::class, 'archive'])->name('project-tasks.archive');
+
+    Route::post('/projects/{project}/updates', [ProjectUpdateController::class, 'store'])->name('project-updates.store');
+
+    Route::get('/checklists', [ChecklistController::class, 'index'])->name('checklists');
+    Route::get('/checklists/{project}', [ChecklistController::class, 'edit'])->name('checklists.edit');
+    Route::put('/checklists/{project}', [ChecklistController::class, 'update'])->name('checklists.update');
+    Route::get('/checklists/{project}/print', [ChecklistController::class, 'print'])->name('checklists.print');
+
+    Route::get('/employees/{employee}/availability', [EmployeeController::class, 'availability'])->name('employees.availability');
 });
 
 // ==========================================================

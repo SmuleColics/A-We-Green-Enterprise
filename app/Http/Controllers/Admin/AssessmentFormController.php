@@ -50,6 +50,7 @@ class AssessmentFormController extends Controller
         ]);
 
         $isNewQuotation = ! $assessment->quotation()->exists();
+        $wasRevisionRequested = $assessment->quotation?->status === 'Rejected';
         $quotation = DB::transaction(function () use ($assessment, $validated) {
             $assessment->update([
                 'assessment_notes' => $validated['assessment_notes'] ?? null,
@@ -73,6 +74,7 @@ class AssessmentFormController extends Controller
                 'service_type' => $service, 'project_title' => $service . ' - ' . $assessment->client->user->full_name,
                 'labor_rate' => $rate, 'materials_subtotal' => $subtotal, 'labor_total' => $subtotal * ($rate / 100),
                 'grand_total' => $subtotal * (1 + $rate / 100), 'status' => 'Sent', 'sent_at' => now(),
+                'revision_reason_category' => null, 'revision_reason' => null, 'revision_requested_at' => null,
             ]);
             $quotation->items()->delete();
             $grouped = $assessment->items->groupBy(fn ($item) => $item->material?->category === 'General' ? 'accessories' : 'item');
@@ -88,11 +90,13 @@ class AssessmentFormController extends Controller
 
         if ($isNewQuotation) {
             NotificationController::notify('Quotation', 'New quotation available', "Your quotation {$quotation->reference_number} is ready for review.", null, $quotation, $assessment->client->user_id);
+        } elseif ($wasRevisionRequested) {
+            NotificationController::notify('Quotation', 'Revised quotation ready', "Your requested changes were applied. Quotation {$quotation->reference_number} is ready for review.", null, $quotation, $assessment->client->user_id);
         }
 
         return redirect()
             ->route('quotations.show', $quotation)
-            ->with('success', $isNewQuotation ? 'Assessment form saved and quotation sent to the client.' : 'Assessment form and its quotation were updated.');
+            ->with('success', $isNewQuotation ? 'Assessment form saved and quotation sent to the client.' : ($wasRevisionRequested ? 'Assessment form updated and the revised quotation was sent to the client.' : 'Assessment form and its quotation were updated.'));
     }
 
     public function print(Assessment $assessment)

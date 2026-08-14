@@ -212,6 +212,12 @@
                                                     </span>
                                                 </a>
                                             @endif
+                                            @if ($a->assessment_form_completed_at)
+                                                <a target="_blank" href="{{ route('assessments.form.print', $a) }}"
+                                                    class="btn btn-sm btn-outline-secondary" title="Preview PDF">
+                                                    <span class="material-symbols-outlined icon-action">print</span>
+                                                </a>
+                                            @endif
                                             <button class="btn btn-sm btn-outline-secondary" title="Archive"
                                                 onclick="archiveAssessmentConfirm({{ $a->id }})">
                                                 <span class="material-symbols-outlined icon-action">archive</span>

@@ -39,8 +39,17 @@
                 @elseif ($quotation->status === 'Rejected')
                     <div class="alert alert-danger d-flex align-items-start gap-2 mb-4">
                         <span class="material-symbols-outlined fs-18">cancel</span>
-                        <p class="mb-0 small">You requested changes to this quotation. Our team will follow up with a
-                            revised quote.</p>
+                        <div class="small">
+                            <p class="mb-1">You requested changes to this quotation on
+                                {{ $quotation->revision_requested_at?->format('F j, Y') }}. Our team will follow up
+                                with a revised quote.</p>
+                            @if ($quotation->revision_reason_category)
+                                <p class="mb-1"><strong>Reason:</strong> {{ $quotation->revision_reason_category }}</p>
+                            @endif
+                            @if ($quotation->revision_reason)
+                                <p class="mb-0"><strong>Details:</strong> {{ $quotation->revision_reason }}</p>
+                            @endif
+                        </div>
                     </div>
                 @else
                     <div class="alert alert-warning d-flex align-items-start gap-2 mb-4">
@@ -170,7 +179,7 @@
                                 data-bs-target="#rejectQuotationModal">
                                 Reject
                             </button>
-                            <button type="button" class="btn btn-success">
+                            <button type="button" class="btn btn-success" id="approveQuotationBtn">
                                 Approve Quotation
                             </button>
                         </div>
@@ -195,18 +204,116 @@
                 </div>
                 <div class="modal-body py-3">
                     <p class="mb-3">Let us know what you'd like adjusted, and our team will send a revised quotation.</p>
-                    <label class="form-label small fw-semibold text-muted mb-2 d-block">Reason / Requested Changes <span
-                            class="text-danger">*</span></label>
-                    <textarea class="form-control" rows="4"
+                    <label class="form-label small fw-semibold text-muted mb-2 d-block">What would you like changed?
+                        <span class="text-danger">*</span></label>
+                    <select class="form-select mb-3" id="revisionCategoryInput">
+                        <option value="" selected disabled>Select a reason...</option>
+                        @foreach (\App\Models\Quotation::REVISION_REASON_CATEGORIES as $category)
+                            <option value="{{ $category }}">{{ $category }}</option>
+                        @endforeach
+                    </select>
+                    <label class="form-label small fw-semibold text-muted mb-2 d-block">Additional details <span
+                            class="text-muted fw-normal">(optional)</span></label>
+                    <textarea class="form-control" id="revisionReasonInput" rows="3"
                         placeholder="e.g. Please revise the quantity of solar panels to 8 units..."></textarea>
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="btn btn-outline-secondary btn-sm"
                         data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger btn-sm px-4">Submit Request</button>
+                    <button type="button" class="btn btn-danger btn-sm px-4" id="submitRevisionBtn">Submit
+                        Request</button>
                 </div>
             </div>
         </div>
     </div>
 
+@endsection
+
+@section('scripts')
+    <script>
+        function csrfToken() {
+            return document.querySelector('meta[name="csrf-token"]').content;
+        }
+
+        document.getElementById('approveQuotationBtn')?.addEventListener('click', function() {
+            const btn = this;
+            btn.disabled = true;
+            fetch("{{ route('client-quotation.approve', $quotation) }}", {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken(),
+                    },
+                })
+                .then(res => res.json().then(data => ({
+                    status: res.status,
+                    data
+                })))
+                .then(({
+                    status,
+                    data
+                }) => {
+                    if (status !== 200 || !data.success) {
+                        showToast(data.message || 'Unable to approve this quotation.', 'danger');
+                        btn.disabled = false;
+                        return;
+                    }
+                    showToast(data.message, 'success');
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => {
+                    showToast('Network error. Please try again.', 'danger');
+                    btn.disabled = false;
+                });
+        });
+
+        document.getElementById('submitRevisionBtn')?.addEventListener('click', function() {
+            const btn = this;
+            const categorySelect = document.getElementById('revisionCategoryInput');
+            const textarea = document.getElementById('revisionReasonInput');
+            const reasonCategory = categorySelect.value;
+            const reason = textarea.value.trim();
+
+            if (!reasonCategory) {
+                showToast('Please select what you would like changed.', 'danger');
+                categorySelect.focus();
+                return;
+            }
+
+            btn.disabled = true;
+            fetch("{{ route('client-quotation.request-revision', $quotation) }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken(),
+                    },
+                    body: JSON.stringify({
+                        reason_category: reasonCategory,
+                        reason
+                    }),
+                })
+                .then(res => res.json().then(data => ({
+                    status: res.status,
+                    data
+                })))
+                .then(({
+                    status,
+                    data
+                }) => {
+                    if (status !== 200 || !data.success) {
+                        showToast(data.message || 'Unable to submit your request.', 'danger');
+                        btn.disabled = false;
+                        return;
+                    }
+                    showToast(data.message, 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('rejectQuotationModal')).hide();
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => {
+                    showToast('Network error. Please try again.', 'danger');
+                    btn.disabled = false;
+                });
+        });
+    </script>
 @endsection
