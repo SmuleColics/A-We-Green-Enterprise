@@ -86,32 +86,47 @@
                         <thead class="table-light">
                             <tr>
                                 <th class="border-0 small green-text">Task</th>
+                                <th class="border-0 small green-text">Type</th>
                                 <th class="border-0 small green-text">Assigned To</th>
-                                <th class="border-0 small green-text">Assessment</th>
+                                <th class="border-0 small green-text">Context</th>
                                 <th class="border-0 small green-text">Due Date</th>
                                 <th class="border-0 small green-text">Status</th>
                                 <th class="border-0 small green-text">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="tasksBody">
-                            @forelse($tasks ?? [] as $task)
-                                <tr data-status="{{ $task->status }}" data-task-id="{{ $task->id }}">
-                                    <td class="fw-semibold">{{ $task->title }}</td>
-                                    <td>{{ $task->employee->staff->user->full_name ?? 'N/A' }}</td>
-                                    <td class="text-muted small">Assessment #{{ $task->assessment->id }}</td>
-                                    <td class="text-muted">{{ $task->due_date->format('M j, Y') }}</td>
-                                    <td>{!! $task->status_badge !!}</td>
+                            @forelse($allTasks ?? [] as $task)
+                                <tr data-status="{{ $task['status'] }}" data-task-id="{{ $task['id'] }}"
+                                    data-task-type="{{ $task['type'] }}">
+                                    <td class="fw-semibold">{{ $task['title'] }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill {{ $task['type'] === 'project' ? 'bg-info-subtle text-info' : 'bg-light text-dark border' }}">
+                                            {{ $task['type'] === 'project' ? 'Project' : 'Assessment' }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $task['employee_name'] }}</td>
+                                    <td class="text-muted small">
+                                        <a href="{{ $task['context_url'] }}" class="green-text text-decoration-none fw-semibold">{{ $task['context_label'] }}</a>
+                                    </td>
+                                    <td class="text-muted">{{ $task['due_date']->format('M j, Y') }}</td>
+                                    <td>{!! $task['status_badge'] !!}</td>
                                     <td class="text-nowrap actions-col">
                                         <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                            onclick="openView({{ $task->id }})">
+                                            onclick="openView({{ $task['id'] }}, '{{ $task['type'] }}')">
                                             <span class="material-symbols-outlined icon-action">visibility</span>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                            onclick="openEdit({{ $task->id }})">
-                                            <span class="material-symbols-outlined icon-action">edit</span>
-                                        </button>
+                                        @if ($task['type'] === 'assessment')
+                                            <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
+                                                onclick="openEdit({{ $task['id'] }})">
+                                                <span class="material-symbols-outlined icon-action">edit</span>
+                                            </button>
+                                        @else
+                                            <a href="{{ $task['context_url'] }}" class="btn btn-sm btn-outline-primary action-btn" title="Manage on project page">
+                                                <span class="material-symbols-outlined icon-action">open_in_new</span>
+                                            </a>
+                                        @endif
                                         <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive"
-                                            onclick="archiveTaskConfirm({{ $task->id }})">
+                                            onclick="archiveTaskConfirm({{ $task['id'] }}, '{{ $task['type'] }}')">
                                             <span class="material-symbols-outlined icon-action">archive</span>
                                         </button>
                                     </td>
@@ -154,52 +169,104 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="createTaskForm">
-                        @csrf
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label small">Employee <span class="text-danger">*</span></label>
-                                <select class="form-select" name="employee_id" id="employeeSelect" required>
-                                    <option value="">-- Select Employee --</option>
-                                    @forelse($employees ?? [] as $employee)
-                                        <option value="{{ $employee->id }}">{{ $employee->staff->user->full_name }}
-                                            ({{ $employee->position }})
-                                        </option>
-                                    @empty
-                                        <option disabled>No employees available</option>
-                                    @endforelse
-                                </select>
+                    <div class="btn-group w-100 mb-3" role="group">
+                        <button type="button" class="btn btn-sm btn-success" id="typeAssessmentBtn" onclick="setAssignType('assessment')">
+                            Assessment Task
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-success" id="typeProjectBtn" onclick="setAssignType('project')">
+                            Project Task
+                        </button>
+                    </div>
+
+                    <!-- ── Assessment Task ── -->
+                    <div id="assessmentTaskFields">
+                        <form id="createTaskForm">
+                            @csrf
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small">Employee <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="employee_id" id="employeeSelect" required>
+                                        <option value="">-- Select Employee --</option>
+                                        @forelse($employees ?? [] as $employee)
+                                            <option value="{{ $employee->id }}">{{ $employee->staff->user->full_name }}
+                                                ({{ $employee->position }})
+                                            </option>
+                                        @empty
+                                            <option disabled>No employees available</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small">Assessment <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="assessment_id" id="assessmentSelect" required>
+                                        <option value="">-- Select Assessment --</option>
+                                        @forelse ($assessments ?? [] as $assessment)
+                                            <option value="{{ $assessment->id }}">
+                                                #{{ $assessment->id }} — {{ $assessment->client->user->full_name }}
+                                                ({{ $assessment->preferred_date->format('M j, Y') }})
+                                            </option>
+                                        @empty
+                                            <option disabled>No assessments available</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <p class="text-muted small mb-0">
+                                        <span class="material-symbols-outlined fs-15" style="vertical-align:middle;">info</span>
+                                        Assessors already get a task automatically when an assessment is confirmed.
+                                        Use this for extra work on that same assessment, assigned to any
+                                        technician or driver — not just the ones already assigned as assessors.
+                                    </p>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label small">Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="title" id="taskTitle"
+                                        placeholder="e.g., Prepare site photos for the report" required>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label small">Description <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" name="description" id="taskDescription" rows="2" placeholder="Task details..."
+                                        required></textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label small">Due Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" name="due_date" id="taskDueDate" required>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label small">Assessment <span class="text-danger">*</span></label>
-                                <select class="form-select" name="assessment_id" id="assessmentSelect" disabled required>
-                                    <option value="">-- Coming Soon (Projects Feature) --</option>
-                                </select>
-                                <small class="text-muted">Available once Projects feature is complete</small>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label small">Title <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="title" id="taskTitle"
-                                    placeholder="e.g., Install DVR and HDD" required>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label small">Description <span class="text-danger">*</span></label>
-                                <textarea class="form-control" name="description" id="taskDescription" rows="2" placeholder="Task details..."
-                                    required></textarea>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label small">Due Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" name="due_date" id="taskDueDate" required>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+
+                    <!-- ── Project Task ── -->
+                    <div id="projectTaskFields" class="d-none">
+                        <p class="text-muted small mb-3">
+                            Project tasks need a role check and an employee-availability check against that
+                            project's schedule, so they're created from the project's own page. Pick a project
+                            to continue there.
+                        </p>
+                        <label class="form-label small">Project <span class="text-danger">*</span></label>
+                        <select class="form-select" id="goToProjectSelect">
+                            <option value="">-- Select Project --</option>
+                            @forelse ($projects ?? [] as $project)
+                                <option value="{{ route('projects.show', $project) }}?tab=tasks">
+                                    {{ $project->reference_number }} — {{ $project->project_title }}
+                                </option>
+                            @empty
+                                <option disabled>No projects available</option>
+                            @endforelse
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" onclick="submitCreateTask()">
+                    <button type="button" class="btn btn-success" id="createTaskBtn" onclick="submitCreateTask()">
                         <span class="material-symbols-outlined me-1"
                             style="font-size:16px;vertical-align:middle;">assignment_ind</span>
                         Create Task
+                    </button>
+                    <button type="button" class="btn btn-success d-none" id="goToProjectBtn" onclick="goToProject()">
+                        <span class="material-symbols-outlined me-1"
+                            style="font-size:16px;vertical-align:middle;">open_in_new</span>
+                        Go to Project
                     </button>
                 </div>
             </div>
@@ -288,7 +355,29 @@
     <script>
         let dtTable = null;
         let currentTaskId = null;
+        let currentTaskType = 'assessment';
         const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content || '';
+        const projectTasksData = @json($projectTasksForJs ?? []);
+
+        function goToProject() {
+            const url = document.getElementById('goToProjectSelect').value;
+            if (!url) { showToast('Please select a project.', 'warning'); return; }
+            window.location.href = url;
+        }
+
+        function setAssignType(type) {
+            const isProject = type === 'project';
+            document.getElementById('assessmentTaskFields').classList.toggle('d-none', isProject);
+            document.getElementById('projectTaskFields').classList.toggle('d-none', !isProject);
+            document.getElementById('createTaskBtn').classList.toggle('d-none', isProject);
+            document.getElementById('goToProjectBtn').classList.toggle('d-none', !isProject);
+            document.getElementById('typeAssessmentBtn').classList.toggle('btn-success', !isProject);
+            document.getElementById('typeAssessmentBtn').classList.toggle('btn-outline-success', isProject);
+            document.getElementById('typeProjectBtn').classList.toggle('btn-success', isProject);
+            document.getElementById('typeProjectBtn').classList.toggle('btn-outline-success', !isProject);
+        }
+
+        document.getElementById('assignModal').addEventListener('hidden.bs.modal', () => setAssignType('assessment'));
 
         // Fires a toast, then reloads — stashes the message so it survives the reload.
         function toastThenReload(message, type = 'success') {
@@ -305,7 +394,7 @@
                 pageLength: 25,
                 columnDefs: [{
                     orderable: false,
-                    targets: 5
+                    targets: 6
                 }],
                 order: [],
                 searching: true
@@ -318,11 +407,58 @@
             this.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const filter = btn.dataset.filter;
-            dtTable.column(4).search(filter === 'all' ? '' : filter, false, false).draw();
+            dtTable.column(5).search(filter === 'all' ? '' : filter, false, false).draw();
         });
 
-        function openView(taskId) {
+        function openView(taskId, type = 'assessment') {
             currentTaskId = taskId;
+            currentTaskType = type;
+
+            if (type === 'project') {
+                const task = projectTasksData.find(t => t.id === taskId);
+                if (!task) return;
+                const content = `
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Task Title</p>
+                            <p class="fw-semibold mb-0">${task.title}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Assigned To</p>
+                            <p class="mb-0">${task.employee_name}</p>
+                        </div>
+                        <div class="col-sm-12">
+                            <p class="text-muted small mb-1">Project</p>
+                            <p class="mb-0"><a href="${task.project_url}">${task.project_label}</a></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Required Role</p>
+                            <p class="mb-0 text-capitalize">${task.required_position.replace('_', '/')}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Dates</p>
+                            <p class="mb-0">${task.start_date} – ${task.due_date}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Status</p>
+                            <span class="badge bg-${getStatusBadgeClass(task.status)}">${task.status}</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Progress</p>
+                            <p class="mb-0">${task.progress}%</p>
+                        </div>
+                    </div>
+                    <hr class="my-3">
+                    <div class="mb-3">
+                        <p class="fw-semibold small text-uppercase section-label">Description</p>
+                        <p class="small">${task.description || 'No description'}</p>
+                    </div>
+                `;
+                document.getElementById('viewTaskContent').innerHTML = content;
+                new bootstrap.Modal(document.getElementById('viewTaskModal')).show();
+                return;
+            }
+
             fetch(`/admin/tasks/${taskId}/details`, {
                     method: 'GET',
                     headers: {
@@ -378,6 +514,7 @@
 
         function openEdit(taskId) {
             currentTaskId = taskId;
+            currentTaskType = 'assessment';
             fetch(`/admin/tasks/${taskId}/details`, {
                     method: 'GET',
                     headers: {
@@ -405,17 +542,25 @@
                 });
         }
 
-        function archiveTaskConfirm(taskId) {
+        function archiveTaskConfirm(taskId, type = 'assessment') {
             currentTaskId = taskId;
+            currentTaskType = type;
             new bootstrap.Modal(document.getElementById('archiveConfirmModal')).show();
         }
 
         function confirmArchive() {
             if (!currentTaskId) return;
-            fetch(`/admin/tasks/${currentTaskId}/archive`, {
-                    method: 'POST',
+
+            const url = currentTaskType === 'project'
+                ? `/project-tasks/${currentTaskId}/archive`
+                : `/admin/tasks/${currentTaskId}/archive`;
+            const method = currentTaskType === 'project' ? 'PATCH' : 'POST';
+
+            fetch(url, {
+                    method,
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                         'X-CSRF-TOKEN': CSRF_TOKEN
                     }
                 })
@@ -437,13 +582,13 @@
         function submitCreateTask() {
             const formData = {
                 employee_id: document.getElementById('employeeSelect').value,
-                assessment_id: document.getElementById('assessmentSelect').value || 1,
+                assessment_id: document.getElementById('assessmentSelect').value,
                 title: document.getElementById('taskTitle').value,
                 description: document.getElementById('taskDescription').value,
                 due_date: document.getElementById('taskDueDate').value,
             };
 
-            if (!formData.employee_id || !formData.title || !formData.description || !formData.due_date) {
+            if (!formData.employee_id || !formData.assessment_id || !formData.title || !formData.description || !formData.due_date) {
                 showToast('Please fill in all required fields', 'warning');
                 return;
             }

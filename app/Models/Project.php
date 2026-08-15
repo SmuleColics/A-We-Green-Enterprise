@@ -46,6 +46,11 @@ class Project extends Model
         return $this->tasks->where('is_archived', false);
     }
 
+    public function activeUpdates()
+    {
+        return $this->updates->where('is_archived', false);
+    }
+
     /**
      * Recompute status from task states after a task changes.
      * 'On Hold' is an admin-only override and is never touched here.

@@ -282,9 +282,28 @@ body.portal-body {
   box-shadow: var(--shadow-soft);
 }
 
-.recent-activity {
-  max-height: 610px;
+.recent-activity-body {
+  max-height: 530px;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.recent-activity-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.recent-activity-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.recent-activity-body::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 999px;
+}
+
+.recent-activity-body::-webkit-scrollbar-thumb:hover {
+  background-color: var(--muted-text);
 }
 
 /* ============================================================

@@ -30,4 +30,17 @@ class ProjectTask extends Model
     {
         return $employee->qualifiesForPosition($this->required_position);
     }
+
+    public function getStatusBadgeAttribute()
+    {
+        $colors = [
+            'Completed' => 'success',
+            'Pending' => 'warning text-dark',
+            'In Progress' => 'primary',
+            'On Hold' => 'secondary',
+        ];
+        $color = $colors[$this->status] ?? 'secondary';
+
+        return "<span class=\"badge bg-{$color}\">{$this->status}</span>";
+    }
 }

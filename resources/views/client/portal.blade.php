@@ -197,56 +197,58 @@
                                 </a>
                             </div>
 
-                            @if ($today->isEmpty() && $thisWeek->isEmpty() && $older->isEmpty())
-                                <div class="text-center py-5">
-                                    <span class="material-symbols-outlined text-muted" style="font-size:40px;">inbox</span>
-                                    <p class="text-muted mt-2 mb-0">No activity yet. Your assessment, quotation, and project
-                                        updates will show up here.</p>
-                                </div>
-                            @else
-                                @foreach (['TODAY' => $today, 'THIS WEEK' => $thisWeek, 'OLDER' => $older] as $label => $group)
-                                    @if ($group->isNotEmpty())
-                                        <p
-                                            class="activity-group-label @unless ($loop->first) mt-4 @endunless">
-                                            {{ $label }}</p>
-                                        <ul class="list-unstyled activity-list mb-0">
-                                            @foreach ($group as $log)
-                                                @php
-                                                    $badge = $actionBadges[$log->action] ?? [
-                                                        'label' => strtoupper($log->action),
-                                                        'class' => 'badge-review',
-                                                    ];
-                                                    $icon = $moduleIcons[$log->module] ?? 'inbox';
-                                                @endphp
-                                                <li>
-                                                    <a href="#" class="activity-item text-decoration-none">
-                                                        <span class="activity-icon">
-                                                            <span
-                                                                class="material-symbols-outlined">{{ $icon }}</span>
-                                                        </span>
-                                                        <div class="flex-1">
-                                                            <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
-                                                                <span class="activity-title">{{ $log->module }}
-                                                                    {{ strtolower($log->action) }}</span>
+                            <div class="recent-activity-body">
+                                @if ($today->isEmpty() && $thisWeek->isEmpty() && $older->isEmpty())
+                                    <div class="text-center py-5">
+                                        <span class="material-symbols-outlined text-muted" style="font-size:40px;">inbox</span>
+                                        <p class="text-muted mt-2 mb-0">No activity yet. Your assessment, quotation, and project
+                                            updates will show up here.</p>
+                                    </div>
+                                @else
+                                    @foreach (['TODAY' => $today, 'THIS WEEK' => $thisWeek, 'OLDER' => $older] as $label => $group)
+                                        @if ($group->isNotEmpty())
+                                            <p
+                                                class="activity-group-label @unless ($loop->first) mt-4 @endunless">
+                                                {{ $label }}</p>
+                                            <ul class="list-unstyled activity-list mb-0">
+                                                @foreach ($group as $log)
+                                                    @php
+                                                        $badge = $actionBadges[$log->action] ?? [
+                                                            'label' => strtoupper($log->action),
+                                                            'class' => 'badge-review',
+                                                        ];
+                                                        $icon = $moduleIcons[$log->module] ?? 'inbox';
+                                                    @endphp
+                                                    <li>
+                                                        <a href="#" class="activity-item text-decoration-none">
+                                                            <span class="activity-icon">
                                                                 <span
-                                                                    class="activity-badge {{ $badge['class'] }}">{{ $badge['label'] }}</span>
+                                                                    class="material-symbols-outlined">{{ $icon }}</span>
+                                                            </span>
+                                                            <div class="flex-1">
+                                                                <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                                                                    <span class="activity-title">{{ $log->module }}
+                                                                        {{ strtolower($log->action) }}</span>
+                                                                    <span
+                                                                        class="activity-badge {{ $badge['class'] }}">{{ $badge['label'] }}</span>
+                                                                </div>
+                                                                <p class="activity-detail mb-1">{{ $log->description }}</p>
+                                                                <p class="activity-date mb-0">
+                                                                    <span class="material-symbols-outlined fs-12"
+                                                                        style="vertical-align:middle;">schedule</span>
+                                                                    {{ $log->created_at->format('M j, Y · g:i A') }}
+                                                                </p>
                                                             </div>
-                                                            <p class="activity-detail mb-1">{{ $log->description }}</p>
-                                                            <p class="activity-date mb-0">
-                                                                <span class="material-symbols-outlined fs-12"
-                                                                    style="vertical-align:middle;">schedule</span>
-                                                                {{ $log->created_at->format('M j, Y · g:i A') }}
-                                                            </p>
-                                                        </div>
-                                                        <span
-                                                            class="activity-arrow material-symbols-outlined">arrow_forward</span>
-                                                    </a>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    @endif
-                                @endforeach
-                            @endif
+                                                            <span
+                                                                class="activity-arrow material-symbols-outlined">arrow_forward</span>
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            </div>
                         </div>
                     </div>
 

@@ -36,40 +36,22 @@ body {
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Mobile: toggle shows it */
-/* #adminSidebar.show {
-  transform: translateX(0);
-} */
+/* Mobile: hidden by default (above), shown via Bootstrap's own Offcanvas
+   JS/CSS (.show sets transform + visibility) — see sidebar-toggle.js */
 
-/* Desktop: visible by default, toggle hides it */
+/* Desktop: visible by default, plain static panel (not an offcanvas overlay);
+   toggle hides it via .collapsed. visibility is forced because Bootstrap's
+   base .offcanvas rule defaults to hidden outside of its own .show state. */
 @media (min-width: 576px) {
   #adminSidebar {
     transform: translateX(0);
+    visibility: visible !important;
   }
 
   #adminSidebar.collapsed {
     transform: translateX(-100%);
   }
 
-}
-
-/* ── Backdrop (mobile only) ── */
-.sb-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1044;
-}
-
-.sb-backdrop.show {
-  display: block;
-}
-
-@media (min-width: 576px) {
-  .sb-backdrop {
-    display: none !important;
-  }
 }
 
 nav a {

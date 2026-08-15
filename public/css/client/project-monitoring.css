@@ -64,6 +64,44 @@ body {
 .badge-green { background: #d1fae5; color: #065f46; }
 
 /* =============================================
+   LAYOUT — NAV TABS (matches admin/projects)
+   ============================================= */
+.nav-tabs {
+  border-bottom: none;
+  background-color: transparent;
+  padding: 0;
+  box-shadow: none;
+  display: inline-flex;
+  gap: 0;
+}
+
+.nav-tabs .nav-link {
+  color: #6c757d;
+  background-color: #e9ecef !important;
+  border: none;
+  font-weight: 500;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 0;
+  transition: all 0.2s;
+}
+
+.nav-tabs .nav-item:first-child .nav-link { border-radius: 6px 0 0 6px; }
+.nav-tabs .nav-item:last-child .nav-link  { border-radius: 0 6px 6px 0; }
+
+.nav-tabs .nav-link.active {
+  color: #212529;
+  background-color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.nav-tabs .nav-link:hover:not(.active) {
+  background-color: #dee2e6;
+  color: #495057;
+}
+
+/* =============================================
    DETAIL CARD
    ============================================= */
 .detail-card {

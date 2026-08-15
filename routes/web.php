@@ -152,7 +152,7 @@ Route::middleware(['auth', 'role:client'])->group(function () {
         ->name('client-project');
 
     // View project monitoring
-    Route::get('/project-monitoring', [ClientController::class, 'showProjectMonitoring'])
+    Route::get('/project-monitoring/{project}', [ClientController::class, 'showProjectMonitoring'])
         ->name('project-monitoring');
 
     // View profile
@@ -362,8 +362,13 @@ Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function 
     Route::post('/projects/{project}/tasks', [ProjectTaskController::class, 'store'])->name('project-tasks.store');
     Route::put('/project-tasks/{task}', [ProjectTaskController::class, 'update'])->name('project-tasks.update');
     Route::patch('/project-tasks/{task}/archive', [ProjectTaskController::class, 'archive'])->name('project-tasks.archive');
+    Route::post('/project-tasks/{task}/unarchive', [ProjectTaskController::class, 'unarchive'])->name('project-tasks.unarchive');
+    Route::get('/projects/{project}/tasks/archived', [ProjectTaskController::class, 'archivedPage'])->name('project-tasks.archived');
 
     Route::post('/projects/{project}/updates', [ProjectUpdateController::class, 'store'])->name('project-updates.store');
+    Route::post('/project-updates/{update}/archive', [ProjectUpdateController::class, 'archive'])->name('project-updates.archive');
+    Route::post('/project-updates/{update}/unarchive', [ProjectUpdateController::class, 'unarchive'])->name('project-updates.unarchive');
+    Route::get('/projects/{project}/updates/archived', [ProjectUpdateController::class, 'archivedPage'])->name('project-updates.archived');
 
     Route::get('/checklists', [ChecklistController::class, 'index'])->name('checklists');
     Route::get('/checklists/{project}', [ChecklistController::class, 'edit'])->name('checklists.edit');

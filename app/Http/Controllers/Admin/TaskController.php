@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\NotificationController;
 use App\Models\Assessment;
 use App\Models\Employee;
+use App\Models\Project;
+use App\Models\ProjectTask;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -19,19 +21,62 @@ class TaskController extends Controller
             ->orderByDesc('due_date')
             ->get();
 
+        $projectTasks = ProjectTask::with(['employee.staff.user', 'project'])
+            ->where('is_archived', false)
+            ->orderByDesc('due_date')
+            ->get();
+
         $employees = Employee::with('staff.user')->get();
         $assessments = Assessment::with(['client.user', 'assessors.staff.user'])
             ->where('is_archived', false)
             ->get();
+        $projects = Project::where('is_archived', false)->orderBy('project_title')->get();
 
-        $total = $tasks->count();
-        $pending = $tasks->where('status', 'Pending')->count();
-        $inProgress = $tasks->where('status', 'In Progress')->count();
-        $completed = $tasks->where('status', 'Completed')->count();
-        $onHold = $tasks->where('status', 'On Hold')->count();
+        $allTasks = $tasks->map(fn ($t) => [
+            'type' => 'assessment',
+            'id' => $t->id,
+            'title' => $t->title,
+            'employee_name' => $t->employee->staff->user->full_name ?? 'N/A',
+            'context_label' => 'Assessment #' . $t->assessment->id,
+            'context_url' => route('assessments.form.edit', $t->assessment),
+            'due_date' => $t->due_date,
+            'status' => $t->status,
+            'status_badge' => $t->status_badge,
+        ])->concat($projectTasks->map(fn ($pt) => [
+            'type' => 'project',
+            'id' => $pt->id,
+            'title' => $pt->title,
+            'employee_name' => $pt->employee->full_name ?? 'Unassigned',
+            'context_label' => $pt->project->reference_number,
+            'context_url' => route('projects.show', $pt->project) . '?tab=tasks',
+            'due_date' => $pt->due_date,
+            'status' => $pt->status,
+            'status_badge' => $pt->status_badge,
+        ]))->sortByDesc('due_date')->values();
+
+        $projectTasksForJs = $projectTasks->map(fn ($pt) => [
+            'id' => $pt->id,
+            'title' => $pt->title,
+            'description' => $pt->description,
+            'employee_name' => $pt->employee->full_name ?? 'Unassigned',
+            'required_position' => $pt->required_position,
+            'project_label' => $pt->project->reference_number . ' — ' . $pt->project->project_title,
+            'project_url' => route('projects.show', $pt->project) . '?tab=tasks',
+            'start_date' => $pt->start_date->format('Y-m-d'),
+            'due_date' => $pt->due_date->format('Y-m-d'),
+            'status' => $pt->status,
+            'progress' => $pt->progress(),
+        ])->values();
+
+        $total = $allTasks->count();
+        $pending = $allTasks->where('status', 'Pending')->count();
+        $inProgress = $allTasks->where('status', 'In Progress')->count();
+        $completed = $allTasks->where('status', 'Completed')->count();
+        $onHold = $allTasks->where('status', 'On Hold')->count();
 
         return view('admin.tasks.tasks', compact(
-            'tasks', 'employees', 'assessments', 'total', 'pending', 'inProgress', 'completed', 'onHold'
+            'allTasks', 'projectTasksForJs', 'employees', 'assessments', 'projects',
+            'total', 'pending', 'inProgress', 'completed', 'onHold'
         ));
     }
 

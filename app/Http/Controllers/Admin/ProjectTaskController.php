@@ -60,7 +60,8 @@ class ProjectTaskController extends Controller
 
         return redirect()
             ->route('projects.show', $project)
-            ->with('success', "Task \"{$task->title}\" created.");
+            ->with('success', "Task \"{$task->title}\" created.")
+            ->with('expand_section', 'tasksSection');
     }
 
     public function update(Request $request, ProjectTask $task)
@@ -97,7 +98,8 @@ class ProjectTaskController extends Controller
 
         return redirect()
             ->route('projects.show', $project)
-            ->with('success', "Task \"{$task->title}\" updated.");
+            ->with('success', "Task \"{$task->title}\" updated.")
+            ->with('expand_section', 'tasksSection');
     }
 
     public function archive(ProjectTask $task)
@@ -120,6 +122,39 @@ class ProjectTaskController extends Controller
             'success' => true,
             'message' => "Task \"{$task->title}\" moved to archive.",
         ]);
+    }
+
+    public function unarchive(ProjectTask $task)
+    {
+        $task->update(['is_archived' => false, 'archived_at' => null]);
+
+        $project = $task->project;
+        $project->load('tasks');
+        $project->syncStatusFromTasks();
+
+        ActivityLogController::log(
+            'Project',
+            'Restored',
+            "Task \"{$task->title}\" on project {$project->reference_number} was restored.",
+            Auth::id(),
+            Auth::user()->full_name
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => "Task \"{$task->title}\" restored.",
+        ]);
+    }
+
+    public function archivedPage(Project $project)
+    {
+        $tasks = $project->tasks()
+            ->where('is_archived', true)
+            ->with(['employee.staff.user', 'checklistItems'])
+            ->reorder('archived_at', 'desc')
+            ->get();
+
+        return view('admin.projects.archive-tasks', compact('project', 'tasks'));
     }
 
     private function validateTask(Request $request): array

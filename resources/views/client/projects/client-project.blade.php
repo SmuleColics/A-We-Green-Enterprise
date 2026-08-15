@@ -24,7 +24,7 @@
                         <span class="material-symbols-outlined summary-icon text-primary">folder_open</span>
                         <div>
                             <p class="summary-label">Total Projects</p>
-                            <p class="summary-value">3</p>
+                            <p class="summary-value">{{ $total }}</p>
                         </div>
                     </div>
                 </div>
@@ -32,8 +32,8 @@
                     <div class="summary-card">
                         <span class="material-symbols-outlined summary-icon text-success">play_circle</span>
                         <div>
-                            <p class="summary-label">Active</p>
-                            <p class="summary-value">1</p>
+                            <p class="summary-label">In Progress</p>
+                            <p class="summary-value">{{ $inProgress }}</p>
                         </div>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                         <span class="material-symbols-outlined summary-icon text-warning">pause_circle</span>
                         <div>
                             <p class="summary-label">On Hold</p>
-                            <p class="summary-value">0</p>
+                            <p class="summary-value">{{ $onHold }}</p>
                         </div>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                         <span class="material-symbols-outlined summary-icon text-primary">check_circle</span>
                         <div>
                             <p class="summary-label">Completed</p>
-                            <p class="summary-value">2</p>
+                            <p class="summary-value">{{ $completed }}</p>
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,8 @@
                     <div class="mb-3">
                         <div class="btn-group filter-btn-group" role="group" id="statusFilterGroup">
                             <button type="button" class="btn btn-sm btn-outline-secondary active" data-filter="all">All</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Active">Active</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Not Started">Not Started</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="In Progress">In Progress</button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="On Hold">On Hold</button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Completed">Completed</button>
                         </div>
@@ -82,67 +83,39 @@
                                 </tr>
                             </thead>
                             <tbody>
-
-                                <tr data-status="Active">
-                                    <td class="fw-semibold small">PRJ-2026-001</td>
-                                    <td class="fw-semibold">CCTV Installation – Santos Residence</td>
-                                    <td>CCTV Setup</td>
-                                    <td>
-                                        <div class="progress-container">
-                                            <div class="progress hpx-6">
-                                                <div class="progress-bar bg-success wp-65"></div>
+                                @forelse ($projects as $project)
+                                    <tr data-status="{{ $project->status }}">
+                                        <td class="fw-semibold small">{{ $project->reference_number }}</td>
+                                        <td class="fw-semibold">{{ $project->project_title }}</td>
+                                        <td>{{ $project->service_type }}</td>
+                                        <td>
+                                            <div class="progress-container">
+                                                <div class="progress hpx-6">
+                                                    <div class="progress-bar bg-success" style="width:{{ $project->taskProgress() }}%"></div>
+                                                </div>
+                                                <small class="text-muted">{{ $project->taskProgress() }}%</small>
                                             </div>
-                                            <small class="text-muted">65%</small>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-success rounded-pill">Active</span></td>
-                                    <td class="text-nowrap">
-                                        <a href="{{ route('project-monitoring', 'PRJ-2026-001') }}" class="btn btn-sm btn-outline-success" title="View">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                <tr data-status="Completed">
-                                    <td class="fw-semibold small">PRJ-2025-089</td>
-                                    <td class="fw-semibold">Solar Setup – Home Rooftop</td>
-                                    <td>Solar Setup</td>
-                                    <td>
-                                        <div class="progress-container">
-                                            <div class="progress hpx-6">
-                                                <div class="progress-bar bg-success wp-100"></div>
-                                            </div>
-                                            <small class="text-muted">100%</small>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-primary rounded-pill">Completed</span></td>
-                                    <td class="text-nowrap">
-                                        <a href="{{ route('project-monitoring', 'PRJ-2025-089') }}" class="btn btn-sm btn-outline-success" title="View">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                <tr data-status="Completed">
-                                    <td class="fw-semibold small">PRJ-2025-074</td>
-                                    <td class="fw-semibold">Public Address System – Backyard Event Hall</td>
-                                    <td>Public Address System</td>
-                                    <td>
-                                        <div class="progress-container">
-                                            <div class="progress hpx-6">
-                                                <div class="progress-bar bg-success wp-100"></div>
-                                            </div>
-                                            <small class="text-muted">100%</small>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-primary rounded-pill">Completed</span></td>
-                                    <td class="text-nowrap">
-                                        <a href="{{ route('project-monitoring', 'PRJ-2025-074') }}" class="btn btn-sm btn-outline-success" title="View">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </a>
-                                    </td>
-                                </tr>
-
+                                        </td>
+                                        <td>
+                                            <span class="badge rounded-pill
+                                                @if ($project->status === 'Completed') bg-primary
+                                                @elseif ($project->status === 'On Hold') bg-warning text-dark
+                                                @elseif ($project->status === 'In Progress') bg-success
+                                                @else bg-secondary
+                                                @endif">{{ $project->status }}</span>
+                                        </td>
+                                        <td class="text-nowrap">
+                                            <a href="{{ route('project-monitoring', $project) }}" class="btn btn-sm btn-outline-success" title="View">
+                                                <span class="material-symbols-outlined icon-action">visibility</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">No projects yet. Projects
+                                            appear here once your approved quotation's contract is confirmed.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

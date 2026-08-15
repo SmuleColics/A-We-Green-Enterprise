@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Assessment;
+use App\Models\Project;
 
 class ClientController extends Controller
 {
@@ -86,12 +87,37 @@ class ClientController extends Controller
 
     public function showClientProject()
     {
-        return view('client.projects.client-project');
+        $client = auth()->user()->client;
+
+        $projects = Project::with('quotation.assessment')
+            ->whereHas('quotation.assessment', fn ($q) => $q->where('client_id', $client->id))
+            ->where('is_archived', false)
+            ->orderByDesc('created_at')
+            ->get();
+
+        $total = $projects->count();
+        $notStarted = $projects->where('status', 'Not Started')->count();
+        $inProgress = $projects->where('status', 'In Progress')->count();
+        $onHold = $projects->where('status', 'On Hold')->count();
+        $completed = $projects->where('status', 'Completed')->count();
+
+        return view('client.projects.client-project', compact(
+            'projects', 'total', 'notStarted', 'inProgress', 'onHold', 'completed'
+        ));
     }
 
-    public function showProjectMonitoring()
+    public function showProjectMonitoring(Project $project)
     {
-        return view('client.projects.project-monitoring');
+        abort_unless($project->quotation->assessment->client_id === auth()->user()->client->id, 403);
+
+        $project->load(
+            'quotation.assessment',
+            'tasks.checklistItems',
+            'tasks.employee.staff.user',
+            'updates.user'
+        );
+
+        return view('client.projects.project-monitoring', compact('project'));
     }
 
     public function showClientProfile()

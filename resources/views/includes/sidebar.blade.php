@@ -1,11 +1,12 @@
 <!-- Sidebar -->
-<aside id="adminSidebar" class="d-flex flex-column">
+<aside id="adminSidebar" class="offcanvas offcanvas-start d-flex flex-column" tabindex="-1"
+    aria-labelledby="adminSidebarLabel">
 
     <!-- Brand -->
     <div class="px-3 pt-3 pb-3 border-bottom light-border d-flex align-items-center justify-content-between">
         <div class="d-flex gap-2 align-items-center">
             <img src="{{ asset('css/images/AWeGreen-Logo.svg') }}" alt="" style="width:40px;">
-            <span class="sb-logo-title d-block">A We Green Enterprise</span>
+            <span class="sb-logo-title d-block" id="adminSidebarLabel">A We Green Enterprise</span>
         </div>
         <button type="button" id="sidebarClose" class="btn-close btn-close-white d-sm-none" aria-label="Close"></button>
     </div>
@@ -42,13 +43,13 @@
         </a>
 
         <a href="{{ route('projects') }}"
-            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('projects') || Request::routeIs('archive-projects')) active @endif">
+            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('projects') || Request::routeIs('archive-projects') || Request::routeIs('projects.*') || Request::routeIs('project-tasks.*') || Request::routeIs('project-updates.*')) active @endif">
             <span class="material-symbols-outlined">folder</span>
             Projects
         </a>
 
         <a href="{{ route('checklists') }}"
-            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('checklists') || Request::routeIs('archive-checklists')) active @endif">
+            class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('checklists') || Request::routeIs('archive-checklists') || Request::routeIs('checklists.*')) active @endif">
             <span class="material-symbols-outlined">checklist</span>
             Checklists
         </a>

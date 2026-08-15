@@ -8,46 +8,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const isDesktop = window.matchMedia('(min-width: 576px)');
 
-  // Create backdrop element once (used only on mobile)
-  const backdrop = document.createElement('div');
-  backdrop.className = 'sb-backdrop';
-  document.body.appendChild(backdrop);
-
-  function openMobile() {
-    sidebarEl.classList.add('show');
-    backdrop.classList.add('show');
-  }
-
-  function closeMobile() {
-    sidebarEl.classList.remove('show');
-    backdrop.classList.remove('show');
-  }
+  // Mobile: a real Bootstrap Offcanvas (slide-in panel + backdrop + focus
+  // trap, all handled by Bootstrap). Desktop keeps the separate .collapsed
+  // toggle below — the two never run at the same time.
+  const mobileOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(sidebarEl);
 
   toggleBtn.addEventListener('click', function () {
     if (isDesktop.matches) {
       sidebarEl.classList.toggle('collapsed');
       body.classList.toggle('sb-collapsed');
     } else {
-      if (sidebarEl.classList.contains('show')) {
-        closeMobile();
-      } else {
-        openMobile();
-      }
+      mobileOffcanvas.toggle();
     }
   });
 
-  // Clicking the backdrop closes the mobile sidebar
-  backdrop.addEventListener('click', closeMobile);
-
   // Clicking the X button inside the sidebar closes it (mobile only)
   if (closeBtn) {
-    closeBtn.addEventListener('click', closeMobile);
+    closeBtn.addEventListener('click', function () {
+      mobileOffcanvas.hide();
+    });
   }
 
   // Keep state clean when crossing the breakpoint
   isDesktop.addEventListener('change', function (e) {
     if (e.matches) {
-      closeMobile();
+      mobileOffcanvas.hide();
     } else {
       sidebarEl.classList.remove('collapsed');
       body.classList.remove('sb-collapsed');
