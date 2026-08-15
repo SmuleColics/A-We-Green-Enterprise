@@ -154,7 +154,7 @@
                                             <span class="material-symbols-outlined icon-action">edit</span>
                                         </button>
                                         <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive"
-                                            onclick="archiveStaff({{ $staff->id }}, '{{ $staff->user->full_name }}')">
+                                            onclick="openArchiveConfirm({{ $staff->id }}, {{ Js::from($staff->user->full_name) }})">
                                             <span class="material-symbols-outlined icon-action">archive</span>
                                         </button>
                                     </td>
@@ -485,6 +485,32 @@
             </div>
         </div>
     </div>
+
+    <!-- ── Archive Confirm Modal ── -->
+    <div class="modal fade" id="archiveConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-semibold">Archive this staff member?</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <p class="small text-muted mb-0">
+                        <strong id="ac-staff-name">—</strong> will be moved out of the active staff list. You can
+                        restore them anytime from <strong>View Archives</strong>.
+                    </p>
+                </div>
+                <div class="modal-footer border-0 pt-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-warning d-flex align-items-center gap-1"
+                        id="ac-confirm-btn">
+                        <span class="material-symbols-outlined fs-15">archive</span>
+                        Archive
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -559,7 +585,10 @@
             document.getElementById('vs-email').textContent = d.email || '—';
             document.getElementById('vs-address').textContent = buildAddress(d) || '—';
 
-            document.getElementById('vs-archive-btn').onclick = () => archiveStaff(d.db_id, d.name);
+            document.getElementById('vs-archive-btn').onclick = () => {
+                bootstrap.Modal.getInstance(document.getElementById('viewStaffModal'))?.hide();
+                openArchiveConfirm(d.db_id, d.name);
+            };
         }
 
         function setEditRoleAndPasswordLayout(isEmployee) {
@@ -725,9 +754,24 @@
             submitJson(routes.update.replace(':id', dbId), 'PATCH', payload, this);
         });
 
-        function archiveStaff(dbId, name) {
-            if (!confirm(`Archive ${name}? They will be moved out of the active staff list.`)) return;
-            fetch(routes.archive.replace(':id', dbId), {
+        /* ─────────────────────────────────────────
+           ARCHIVE CONFIRMATION FLOW
+           ───────────────────────────────────────── */
+        let pendingArchiveId = null;
+
+        const archiveConfirmModalEl = document.getElementById('archiveConfirmModal');
+        const archiveConfirmModal = new bootstrap.Modal(archiveConfirmModalEl);
+
+        function openArchiveConfirm(dbId, name) {
+            pendingArchiveId = dbId;
+            document.getElementById('ac-staff-name').textContent = name;
+            archiveConfirmModal.show();
+        }
+
+        document.getElementById('ac-confirm-btn').addEventListener('click', function() {
+            if (!pendingArchiveId) return;
+
+            fetch(routes.archive.replace(':id', pendingArchiveId), {
                     method: 'PATCH',
                     headers: {
                         'Accept': 'application/json',
@@ -743,7 +787,7 @@
                     window.location.reload();
                 })
                 .catch(() => showToast('Network error — please try again.', 'danger'));
-        }
+        });
 
         // Show any toast queued from before a reload (Add/Edit/Archive success)
         document.addEventListener('DOMContentLoaded', function() {

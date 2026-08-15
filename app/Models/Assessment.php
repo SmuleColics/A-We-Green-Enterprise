@@ -10,13 +10,15 @@ class Assessment extends Model
         'client_id', 'client_type', 'establishment_type', 'establishment_size',
         'preferred_date', 'time_slot', 'services', 'cctv_subtype',
         'notes', 'status', 'cancellation_reason', 'assessment_notes',
-        'assessment_form_completed_at',
+        'assessment_form_completed_at', 'is_archived', 'archived_at',
     ];
 
     protected $casts = [
         'services' => 'array',
         'preferred_date' => 'date',
         'assessment_form_completed_at' => 'datetime',
+        'is_archived' => 'boolean',
+        'archived_at' => 'datetime',
     ];
 
     public function client()

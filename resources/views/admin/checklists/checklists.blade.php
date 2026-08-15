@@ -205,7 +205,11 @@
                 columnDefs: [{
                     orderable: false,
                     targets: 6
-                }]
+                }],
+                language: {
+                    emptyTable: 'No checklists found.',
+                    zeroRecords: 'No matching checklists found.'
+                }
             });
 
             document.getElementById('statusFilterGroup').addEventListener('click', function(event) {

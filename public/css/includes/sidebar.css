@@ -32,12 +32,14 @@ body {
   box-shadow: 2px 0 16px rgba(0, 0, 0, 0.15);
   overflow-y: auto;
   z-index: 1045;
-  transform: translateX(-100%);
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Mobile: hidden by default (above), shown via Bootstrap's own Offcanvas
-   JS/CSS (.show sets transform + visibility) — see sidebar-toggle.js */
+/* Mobile: hidden/shown transform comes entirely from Bootstrap's own
+   .offcanvas / .offcanvas.show CSS — an ID rule here would always beat
+   Bootstrap's class-based .show rule on specificity and block the reveal,
+   so this element intentionally declares no transform of its own outside
+   the desktop override below. See sidebar-toggle.js for the show/hide calls. */
 
 /* Desktop: visible by default, plain static panel (not an offcanvas overlay);
    toggle hides it via .collapsed. visibility is forced because Bootstrap's

@@ -18,6 +18,14 @@
 
 @section('content')
 
+    @php
+        $statusBadgeClass = [
+            'Pending' => 'warning text-dark',
+            'Confirmed' => 'success text-white',
+            'Declined' => 'danger',
+        ];
+    @endphp
+
     <div class="container-fluid px-4 py-4">
 
         <!-- Summary Cards -->
@@ -27,7 +35,7 @@
                     <span class="material-symbols-outlined summary-icon text-secondary">inventory_2</span>
                     <div>
                         <p class="summary-label">Total Archived</p>
-                        <p class="summary-value">12</p>
+                        <p class="summary-value">{{ $total }}</p>
                     </div>
                 </div>
             </div>
@@ -36,7 +44,7 @@
                     <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
                     <div>
                         <p class="summary-label">Confirmed</p>
-                        <p class="summary-value">7</p>
+                        <p class="summary-value">{{ $confirmed }}</p>
                     </div>
                 </div>
             </div>
@@ -45,7 +53,7 @@
                     <span class="material-symbols-outlined summary-icon text-danger">cancel</span>
                     <div>
                         <p class="summary-label">Declined</p>
-                        <p class="summary-value">3</p>
+                        <p class="summary-value">{{ $declined }}</p>
                     </div>
                 </div>
             </div>
@@ -54,7 +62,7 @@
                     <span class="material-symbols-outlined summary-icon text-warning">pending</span>
                     <div>
                         <p class="summary-label">Pending</p>
-                        <p class="summary-value">2</p>
+                        <p class="summary-value">{{ $pending }}</p>
                     </div>
                 </div>
             </div>
@@ -64,9 +72,10 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body">
 
-                <div class="mb-3 btn-group filter-btn-group" role="group">
+                <div class="mb-3 btn-group filter-btn-group" role="group" id="statusFilterGroup">
                     <button type="button" class="btn btn-sm btn-outline-secondary active" data-filter="all">All</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Confirmed">Confirmed</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                        data-filter="Confirmed">Confirmed</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Declined">Declined</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Pending">Pending</button>
                 </div>
@@ -87,146 +96,66 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="fw-semibold">AWG-2026-0001</td>
-                                <td>Maria Santos</td>
-                                <td>0917-111-2222</td>
-                                <td>CCTV Setup</td>
-                                <td>Jan 15, 2026</td>
-                                <td>Morning</td>
-                                <td><span class="badge bg-success rounded-pill">Confirmed</span></td>
-                                <td class="text-muted small">Feb 01, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewRequestModal"
-                                        onclick="loadRequestDetail({
-                                            refNo:'AWG-2026-0001', client:'Maria Santos', contact:'0917-111-2222',
-                                            email:'maria@email.com', clientType:'Residential',
-                                            service:'CCTV Setup', establishment:'Home / Residence',
-                                            date:'Jan 15, 2026', slot:'Morning', status:'Confirmed', statusClass:'success',
-                                            cluster:'Cluster 1', block:'Block 3', lot:'Lot 12',
-                                            brgy:'Brgy. Molino III', city:'Bacoor', province:'Cavite', zip:'4102',
-                                            notes:'Client needs outdoor cameras.'
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">AWG-2026-0002</td>
-                                <td>John Reyes</td>
-                                <td>0918-222-3333</td>
-                                <td>Solar Setup</td>
-                                <td>Jan 20, 2026</td>
-                                <td>Afternoon</td>
-                                <td><span class="badge bg-success rounded-pill">Confirmed</span></td>
-                                <td class="text-muted small">Feb 05, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewRequestModal"
-                                        onclick="loadRequestDetail({
-                                            refNo:'AWG-2026-0002', client:'John Reyes', contact:'0918-222-3333',
-                                            email:'', clientType:'Commercial',
-                                            service:'Solar Setup', establishment:'Office / Commercial',
-                                            date:'Jan 20, 2026', slot:'Afternoon', status:'Confirmed', statusClass:'success',
-                                            cluster:'', block:'Block 5', lot:'Lot 2',
-                                            brgy:'Brgy. Alapan I', city:'Imus', province:'Cavite', zip:'4103',
-                                            notes:''
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">AWG-2026-0003</td>
-                                <td>Anna Garcia</td>
-                                <td>0920-444-5555</td>
-                                <td>Solar Street Light</td>
-                                <td>Jan 22, 2026</td>
-                                <td>Full Day</td>
-                                <td><span class="badge bg-danger rounded-pill">Declined</span></td>
-                                <td class="text-muted small">Feb 05, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewRequestModal"
-                                        onclick="loadRequestDetail({
-                                            refNo:'AWG-2026-0003', client:'Anna Garcia', contact:'0920-444-5555',
-                                            email:'anna@gmail.com', clientType:'Government/LGU',
-                                            service:'Solar Street Light', establishment:'Government Facility',
-                                            date:'Jan 22, 2026', slot:'Full Day', status:'Declined', statusClass:'danger',
-                                            cluster:'', block:'', lot:'',
-                                            brgy:'Brgy. Sampaloc I', city:'Dasmariñas', province:'Cavite', zip:'4114',
-                                            notes:'Schedule not available.'
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">AWG-2026-0004</td>
-                                <td>Pedro Cruz</td>
-                                <td>0955-444-5555</td>
-                                <td>Public Address System</td>
-                                <td>Feb 10, 2026</td>
-                                <td>Morning</td>
-                                <td><span class="badge bg-danger rounded-pill">Declined</span></td>
-                                <td class="text-muted small">Feb 20, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewRequestModal"
-                                        onclick="loadRequestDetail({
-                                            refNo:'AWG-2026-0004', client:'Pedro Cruz', contact:'0955-444-5555',
-                                            email:'ben@email.com', clientType:'Commercial',
-                                            service:'Public Address System', establishment:'Office / Commercial',
-                                            date:'Feb 10, 2026', slot:'Morning', status:'Declined', statusClass:'danger',
-                                            cluster:'', block:'Block 2', lot:'Lot 7',
-                                            brgy:'Brgy. Anabu I-A', city:'Imus', province:'Cavite', zip:'4103',
-                                            notes:'PA system for office lobby.'
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">AWG-2026-0005</td>
-                                <td>Luz Reyes</td>
-                                <td>0944-333-4444</td>
-                                <td>Solar Street Light</td>
-                                <td>Feb 14, 2026</td>
-                                <td>Full Day</td>
-                                <td><span class="badge bg-warning text-dark rounded-pill">Pending</span></td>
-                                <td class="text-muted small">Mar 01, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewRequestModal"
-                                        onclick="loadRequestDetail({
-                                            refNo:'AWG-2026-0005', client:'Luz Reyes', contact:'0944-333-4444',
-                                            email:'luz@email.com', clientType:'Government/LGU',
-                                            service:'Solar Street Light', establishment:'Government Facility',
-                                            date:'Feb 14, 2026', slot:'Full Day', status:'Pending', statusClass:'warning text-dark',
-                                            cluster:'', block:'', lot:'',
-                                            brgy:'Brgy. Malagasang I', city:'Imus', province:'Cavite', zip:'4103',
-                                            notes:'Street lights along the barangay road.'
-                                        })">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
+                            @foreach ($assessments as $assessment)
+                                @php
+                                    $refNo =
+                                        'AWG-' .
+                                        $assessment->created_at->format('Y') .
+                                        '-' .
+                                        str_pad($assessment->id, 4, '0', STR_PAD_LEFT);
+                                    $badgeClass = $statusBadgeClass[$assessment->status] ?? 'secondary';
+                                    $client = $assessment->client;
+                                    $clientUser = $client->user;
+                                @endphp
+                                <tr data-status="{{ $assessment->status }}">
+                                    <td class="fw-semibold">{{ $refNo }}</td>
+                                    <td>{{ $clientUser->full_name }}</td>
+                                    <td>{{ $clientUser->contact_number ?? '—' }}</td>
+                                    <td>{{ implode(', ', $assessment->services ?? []) }}</td>
+                                    <td data-order="{{ $assessment->preferred_date->format('Y-m-d') }}">
+                                        {{ $assessment->preferred_date->format('M j, Y') }}
+                                    </td>
+                                    <td>{{ $assessment->time_slot }}</td>
+                                    <td><span
+                                            class="badge bg-{{ $badgeClass }} rounded-pill">{{ $assessment->status }}</span>
+                                    </td>
+                                    <td class="text-muted small"
+                                        data-order="{{ optional($assessment->archived_at)->format('Y-m-d H:i:s') }}">
+                                        {{ $assessment->archived_at?->format('M d, Y') ?? '—' }}
+                                    </td>
+                                    <td class="text-nowrap actions-col">
+                                        <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
+                                            data-bs-toggle="modal" data-bs-target="#viewRequestModal"
+                                            onclick="loadRequestDetail({
+                                id: {{ $assessment->id }},
+                                refNo: {{ Js::from($refNo) }},
+                                client: {{ Js::from($clientUser->full_name) }},
+                                contact: {{ Js::from($clientUser->contact_number ?? '—') }},
+                                email: {{ Js::from($clientUser->email ?? '—') }},
+                                clientType: {{ Js::from($assessment->client_type) }},
+                                service: {{ Js::from(implode(', ', $assessment->services ?? [])) }},
+                                establishment: {{ Js::from($assessment->establishment_type) }},
+                                date: {{ Js::from($assessment->preferred_date->format('M j, Y')) }},
+                                slot: {{ Js::from($assessment->time_slot) }},
+                                status: {{ Js::from($assessment->status) }},
+                                statusClass: {{ Js::from($badgeClass) }},
+                                block: {{ Js::from($client->block ?? '—') }},
+                                lot: {{ Js::from($client->lot ?? '—') }},
+                                brgy: {{ Js::from($client->barangay ?? '—') }},
+                                city: {{ Js::from($client->city ?? '—') }},
+                                province: {{ Js::from($client->province ?? '—') }},
+                                zip: {{ Js::from($client->zip_code ?? '—') }},
+                                notes: {{ Js::from($assessment->notes ?? '') }}
+                            })">
+                                            <span class="material-symbols-outlined icon-action">visibility</span>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary action-btn" title="Restore"
+                                            onclick="openRestoreConfirm(this, {{ $assessment->id }}, {{ Js::from($refNo) }})">
+                                            <span class="material-symbols-outlined icon-action">unarchive</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -296,19 +225,15 @@
                         </div>
 
                         <div class="col-12"><p class="section-label">Location</p></div>
-                        <div class="col-md-3">
-                            <p class="detail-label small mb-0">Cluster</p>
-                            <p class="detail-value small" id="vr-cluster">—</p>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p class="detail-label small mb-0">Block</p>
                             <p class="detail-value small" id="vr-block">—</p>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p class="detail-label small mb-0">Lot</p>
                             <p class="detail-value small" id="vr-lot">—</p>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <p class="detail-label small mb-0">Barangay</p>
                             <p class="detail-value small" id="vr-brgy">—</p>
                         </div>
@@ -334,8 +259,35 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-1"
+                        id="modal-restore-btn">
                         <span class="material-symbols-outlined fs-17">unarchive</span>Restore
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Restore Confirm Modal ── -->
+    <div class="modal fade" id="restoreConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-semibold">Restore this request?</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <p class="small text-muted mb-0">
+                        Request <strong id="rc-refNo">—</strong> will be moved back to
+                        <strong>Client Requests</strong>.
+                    </p>
+                </div>
+                <div class="modal-footer border-0 pt-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary d-flex align-items-center gap-1"
+                        id="rc-confirm-btn">
+                        <span class="material-symbols-outlined fs-15">unarchive</span>
+                        Restore
                     </button>
                 </div>
             </div>
@@ -345,39 +297,118 @@
 @endsection
 
 @section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
-        function loadRequestDetail(d) {
-            document.getElementById('vr-refNo').textContent         = d.refNo         || '—';
-            document.getElementById('vr-date').textContent          = d.date           || '—';
-            document.getElementById('vr-slot').textContent          = d.slot           || '—';
-            document.getElementById('vr-client').textContent        = d.client         || '—';
-            document.getElementById('vr-contact').textContent       = d.contact        || '—';
-            document.getElementById('vr-email').textContent         = d.email          || '—';
-            document.getElementById('vr-clientType').textContent    = d.clientType     || '—';
-            document.getElementById('vr-service').textContent       = d.service        || '—';
-            document.getElementById('vr-establishment').textContent = d.establishment  || '—';
-            document.getElementById('vr-cluster').textContent       = d.cluster        || '—';
-            document.getElementById('vr-block').textContent         = d.block          || '—';
-            document.getElementById('vr-lot').textContent           = d.lot            || '—';
-            document.getElementById('vr-brgy').textContent          = d.brgy           || '—';
-            document.getElementById('vr-city').textContent          = d.city           || '—';
-            document.getElementById('vr-province').textContent      = d.province       || '—';
-            document.getElementById('vr-zip').textContent           = d.zip            || '—';
-            document.getElementById('vr-notes').textContent         = d.notes          || '—';
-            document.getElementById('vr-status').innerHTML =
-                `<span class="badge bg-${d.statusClass} rounded-pill">${d.status}</span>`;
+        const ROUTES = {
+            unarchive: {{ Js::from(route('requests.unarchive', ['assessment' => '__ID__'])) }},
+        };
+
+        function csrfHeader() {
+            return document.querySelector('meta[name="csrf-token"]').content;
         }
 
+        function loadRequestDetail(d) {
+            document.getElementById('vr-refNo').textContent = d.refNo || '—';
+            document.getElementById('vr-date').textContent = d.date || '—';
+            document.getElementById('vr-slot').textContent = d.slot || '—';
+            document.getElementById('vr-client').textContent = d.client || '—';
+            document.getElementById('vr-contact').textContent = d.contact || '—';
+            document.getElementById('vr-email').textContent = d.email || '—';
+            document.getElementById('vr-clientType').textContent = d.clientType || '—';
+            document.getElementById('vr-service').textContent = d.service || '—';
+            document.getElementById('vr-establishment').textContent = d.establishment || '—';
+            document.getElementById('vr-block').textContent = d.block || '—';
+            document.getElementById('vr-lot').textContent = d.lot || '—';
+            document.getElementById('vr-brgy').textContent = d.brgy || '—';
+            document.getElementById('vr-city').textContent = d.city || '—';
+            document.getElementById('vr-province').textContent = d.province || '—';
+            document.getElementById('vr-zip').textContent = d.zip || '—';
+            document.getElementById('vr-notes').textContent = d.notes || '—';
+            document.getElementById('vr-status').innerHTML =
+                `<span class="badge bg-${d.statusClass} rounded-pill">${d.status}</span>`;
+
+            document.getElementById('modal-restore-btn').onclick = () => {
+                bootstrap.Modal.getInstance(document.getElementById('viewRequestModal')).hide();
+                openRestoreConfirm(null, d.id, d.refNo);
+            };
+        }
+
+        /* ─────────────────────────────────────────
+           RESTORE CONFIRMATION FLOW
+           ───────────────────────────────────────── */
+        let pendingRestoreId = null;
+
+        const restoreConfirmModalEl = document.getElementById('restoreConfirmModal');
+        const restoreConfirmModal = new bootstrap.Modal(restoreConfirmModalEl);
+
+        function openRestoreConfirm(btn, id, refNo) {
+            pendingRestoreId = id;
+            document.getElementById('rc-refNo').textContent = refNo;
+            restoreConfirmModal.show();
+        }
+
+        document.getElementById('rc-confirm-btn').addEventListener('click', function() {
+            if (!pendingRestoreId) return;
+
+            fetch(ROUTES.unarchive.replace('__ID__', pendingRestoreId), {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfHeader(),
+                        'Accept': 'application/json',
+                    },
+                })
+                .then(res => res.json().then(data => ({
+                    status: res.status,
+                    data
+                })))
+                .then(({
+                    status,
+                    data
+                }) => {
+                    if (status !== 200 || !data.success) {
+                        showToast(data.message || 'Unable to restore this request.', 'danger');
+                        return;
+                    }
+                    showToast(data.message, 'success');
+                    restoreConfirmModal.hide();
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => showToast('Network error. Please try again.', 'danger'));
+        });
+
+        /* ─── DataTable + status filter buttons ─── */
         $(document).ready(function() {
-            $('#archiveRequestsTable').DataTable({
+            const table = $('#archiveRequestsTable').DataTable({
                 pageLength: 10,
                 lengthChange: true,
                 info: true,
-                order: [[7, 'desc']],
-                columnDefs: [{ orderable: false, targets: 8 }]
+                order: [
+                    [7, 'desc']
+                ],
+                columnDefs: [{
+                    targets: 8,
+                    orderable: false
+                }],
+                language: {
+                    emptyTable: 'No archived requests yet.',
+                    zeroRecords: 'No matching archived requests found.'
+                }
+            });
+
+            $('#statusFilterGroup button').on('click', function() {
+                $('#statusFilterGroup button').removeClass('active');
+                $(this).addClass('active');
+
+                const filter = $(this).data('filter');
+                if (filter === 'all') {
+                    table.column(6).search('').draw();
+                } else {
+                    table.column(6).search(filter).draw();
+                }
             });
         });
     </script>

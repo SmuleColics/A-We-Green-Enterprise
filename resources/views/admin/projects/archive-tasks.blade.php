@@ -135,6 +135,10 @@
                 pageLength: 10,
                 order: [[5, 'desc']],
                 columnDefs: [{ orderable: false, targets: 6 }],
+                language: {
+                    emptyTable: 'No archived tasks yet.',
+                    zeroRecords: 'No matching archived tasks found.'
+                }
             });
         });
     </script>

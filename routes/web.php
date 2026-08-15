@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\ProjectTaskController;
 use App\Http\Controllers\Admin\ProjectUpdateController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
@@ -35,15 +36,15 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
         ->name('dashboard');
 
     // Archive assessments
-    Route::get('/archive-assessments', [AdminController::class, 'showArchiveAssessments'])
+    Route::get('/archive-assessments', [AssessmentScheduleController::class, 'archivedPage'])
         ->name('archive-assessments');
 
     // Archive assessment requests
-    Route::get('/archive-requests', [AdminController::class, 'showArchiveAssessmentRequests'])
+    Route::get('/archive-requests', [AssessmentRequestController::class, 'archived'])
         ->name('archive-requests');
 
     // Admin assessment requests (secondary view)
-    Route::get('/archiverequest', [AdminController::class, 'showArchiveAssessmentRequests'])
+    Route::get('/archiverequest', [AssessmentRequestController::class, 'archived'])
         ->name('archive-request');
 
     // Quotations
@@ -51,7 +52,7 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
         ->name('quotations');
 
     // Archive quotations
-    Route::get('/archive-quotations', [AdminController::class, 'showArchiveQuotations'])
+    Route::get('/archive-quotations', [QuotationController::class, 'archivedPage'])
         ->name('archive-quotations');
 
     // Quotation proposal
@@ -67,23 +68,24 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
         ->name('archive-checklists');
 
     // Reports
+    Route::get('/reports/checklist', [ReportController::class, 'checklist'])
+        ->name('reports.checklist');
+    Route::get('/reports/tasks', [ReportController::class, 'tasks'])
+        ->name('reports.tasks');
+
     Route::get('/reports', [AdminController::class, 'showReports'])
         ->name('reports');
 
     // Archive employees
-    Route::get('/archive-employees', [AdminController::class, 'showArchiveEmployees'])
+    Route::get('/archive-employees', [EmployeeController::class, 'archivedPage'])
         ->name('archive-employees');
 
     // Archive clients
-    Route::get('/archive-clients', [AdminController::class, 'showArchiveClients'])
+    Route::get('/archive-clients', [AdminClientController::class, 'archivedPage'])
         ->name('archive-clients');
 
-    // Materials
-    Route::get('/materials', [AdminController::class, 'showMaterials'])
-        ->name('materials');
-
     // Archive materials
-    Route::get('/archive-materials', [AdminController::class, 'showArchiveMaterials'])
+    Route::get('/archive-materials', [MaterialController::class, 'archivedPage'])
         ->name('archive-materials');
 
     // Admin settings
@@ -271,6 +273,10 @@ Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
     // Archive assessment request
     Route::patch('/requests/{assessment}/archive', [AssessmentRequestController::class, 'archive'])
         ->name('requests.archive');
+
+    // Restore an archived assessment request
+    Route::patch('/requests/{assessment}/unarchive', [AssessmentRequestController::class, 'unarchive'])
+        ->name('requests.unarchive');
 });
 
 // ==========================================================
@@ -291,6 +297,9 @@ Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
 
     Route::patch('/employees/{staff}/archive', [EmployeeController::class, 'archive'])
         ->name('employees.archive');
+
+    Route::patch('/employees/{staff}/unarchive', [EmployeeController::class, 'unarchive'])
+        ->name('employees.unarchive');
 });
 
 // ==========================================================
@@ -324,10 +333,6 @@ Route::middleware(['auth', 'role:admin,super_admin'])
         Route::post('/tasks/{task}/unarchive', [TaskController::class, 'unarchive'])
             ->name('admin.tasks.unarchive');
 
-        // List archived tasks (for the Archived Tasks modal)
-        Route::get('/tasks/archived', [TaskController::class, 'archived'])
-            ->name('admin.tasks.archived');
-
         // Archived tasks page (admin/super_admin only)
         Route::get('/tasks-archive', [TaskController::class, 'archivedPage'])
             ->name('archive-tasks');
@@ -340,6 +345,7 @@ Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function 
     Route::get('/quotations/{quotation}', [QuotationController::class, 'adminShow'])->name('quotations.show');
     Route::get('/assessments', [AssessmentScheduleController::class, 'index'])->name('assessments');
     Route::patch('/assessments/{assessment}/archive', [AssessmentScheduleController::class, 'archive'])->name('assessments.archive');
+    Route::patch('/assessments/{assessment}/unarchive', [AssessmentScheduleController::class, 'unarchive'])->name('assessments.unarchive');
     Route::get('/assessments/{assessment}/form', [AssessmentFormController::class, 'edit'])
         ->name('assessments.form.edit');
 
@@ -351,6 +357,8 @@ Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function 
         ->name('quotations.print');
     Route::patch('/quotations/{quotation}/archive', [QuotationController::class, 'archive'])
         ->name('quotations.archive');
+    Route::patch('/quotations/{quotation}/unarchive', [QuotationController::class, 'unarchive'])
+        ->name('quotations.unarchive');
     Route::post('/quotations/{quotation}/upload-contract', [QuotationController::class, 'uploadContract'])
         ->name('quotations.upload-contract');
 
@@ -388,7 +396,6 @@ Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function 
         ->name('materials.update');
     Route::patch('/materials/{material}/archive', [MaterialController::class, 'archive'])->name('materials.archive');
     Route::post('/materials/{material}/unarchive', [MaterialController::class, 'unarchive'])->name('materials.unarchive');
-    Route::get('/materials/archived', [MaterialController::class, 'archived'])->name('materials.archived');
 });
 
 // ==========================================================
@@ -403,7 +410,6 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])
         Route::post('/clients/{client}/update', [AdminClientController::class, 'update'])->name('clients.update');
         Route::post('/clients/{client}/archive', [AdminClientController::class, 'archive'])->name('clients.archive');
         Route::post('/clients/{client}/unarchive', [AdminClientController::class, 'unarchive'])->name('clients.unarchive');
-        Route::get('/clients/archived', [AdminClientController::class, 'archived'])->name('clients.archived');
     });
 
 // ==========================================================

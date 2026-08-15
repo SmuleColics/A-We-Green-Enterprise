@@ -14,6 +14,8 @@ class Staff extends Model
 
     protected $casts = [
         'date_joined' => 'date',
+        'is_archived' => 'boolean',
+        'archived_at' => 'datetime',
     ];
 
     // ── Relationships ──

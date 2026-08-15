@@ -122,6 +122,31 @@ class QuotationController extends Controller
         ]);
     }
 
+    public function unarchive(Quotation $quotation)
+    {
+        $quotation->update(['is_archived' => false, 'archived_at' => null]);
+
+        ActivityLogController::log(
+            'Quotation',
+            'Restored',
+            "Quotation {$quotation->reference_number} restored from archive.",
+            Auth::id(),
+            Auth::user()->full_name
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => "Quotation {$quotation->reference_number} restored.",
+        ]);
+    }
+
+    public function archivedPage()
+    {
+        $quotations = Quotation::with('assessment.client.user')->where('is_archived', true)->latest('archived_at')->get();
+
+        return view('admin.quotations.archive-quotations', compact('quotations'));
+    }
+
     public function clientIndex()
     {
         $quotations = Quotation::with('assessment')

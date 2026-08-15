@@ -209,7 +209,11 @@
                 columnDefs: [{
                     orderable: false,
                     targets: [5, 7]
-                }]
+                }],
+                language: {
+                    emptyTable: 'No projects found.',
+                    zeroRecords: 'No matching projects found.'
+                }
             });
 
             document.getElementById('statusFilterGroup').addEventListener('click', function(event) {

@@ -82,8 +82,9 @@
                         <thead class="table-light">
                             <tr>
                                 <th class="border-0 small green-text">Task</th>
+                                <th class="border-0 small green-text">Type</th>
                                 <th class="border-0 small green-text">Assigned To</th>
-                                <th class="border-0 small green-text">Assessment</th>
+                                <th class="border-0 small green-text">Context</th>
                                 <th class="border-0 small green-text">Due Date</th>
                                 <th class="border-0 small green-text">Status</th>
                                 <th class="border-0 small green-text">Archived On</th>
@@ -91,21 +92,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($tasks ?? [] as $task)
-                                <tr data-status="{{ $task->status }}" data-task-id="{{ $task->id }}">
-                                    <td class="fw-semibold">{{ $task->title }}</td>
-                                    <td>{{ $task->employee->staff->user->full_name ?? 'N/A' }}</td>
-                                    <td class="text-muted small">Assessment #{{ $task->assessment->id ?? 'N/A' }}</td>
-                                    <td class="text-muted">{{ $task->due_date->format('M j, Y') }}</td>
-                                    <td>{!! $task->status_badge !!}</td>
-                                    <td class="text-muted small">{{ $task->archived_at?->format('M j, Y') ?? '—' }}</td>
+                            @foreach ($allTasks as $task)
+                                <tr data-status="{{ $task['status'] }}" data-task-id="{{ $task['id'] }}"
+                                    data-task-type="{{ $task['type'] }}">
+                                    <td class="fw-semibold">{{ $task['title'] }}</td>
+                                    <td>
+                                        <span
+                                            class="badge rounded-pill {{ $task['type'] === 'project' ? 'bg-info-subtle text-info' : 'bg-light text-dark border' }}">
+                                            {{ $task['type'] === 'project' ? 'Project' : 'Assessment' }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $task['employee_name'] }}</td>
+                                    <td class="text-muted small">
+                                        <a href="{{ $task['context_url'] }}"
+                                            class="green-text text-decoration-none fw-semibold">{{ $task['context_label'] }}</a>
+                                    </td>
+                                    <td class="text-muted">{{ $task['due_date']->format('M j, Y') }}</td>
+                                    <td>{!! $task['status_badge'] !!}</td>
+                                    <td class="text-muted small"
+                                        data-order="{{ optional($task['archived_at'])->format('Y-m-d H:i:s') }}">
+                                        {{ $task['archived_at']?->format('M j, Y') ?? '—' }}
+                                    </td>
                                     <td class="text-nowrap actions-col">
                                         <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                            onclick="openView({{ $task->id }})">
+                                            onclick="openView({{ $task['id'] }}, '{{ $task['type'] }}')">
                                             <span class="material-symbols-outlined icon-action">visibility</span>
                                         </button>
                                         <button class="btn btn-sm btn-outline-primary action-btn" title="Restore"
-                                            onclick="restoreTaskConfirm({{ $task->id }})">
+                                            onclick="restoreTaskConfirm({{ $task['id'] }}, '{{ $task['type'] }}')">
                                             <span class="material-symbols-outlined icon-action">unarchive</span>
                                         </button>
                                     </td>
@@ -130,12 +144,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="viewTaskContent">
-                    <!-- Loaded via AJAX -->
+                    <!-- Loaded via JS -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-1"
-                        onclick="restoreTaskConfirm(currentTaskId)">
+                        id="viewTaskRestoreBtn">
                         <span class="material-symbols-outlined fs-17">unarchive</span>Restore
                     </button>
                 </div>
@@ -175,7 +189,9 @@
     <script>
         let dtTable = null;
         let currentTaskId = null;
+        let currentTaskType = 'assessment';
         const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content || '';
+        const projectTasksData = @json($projectTasksForJs ?? []);
 
         function toastThenReload(message, type = 'success') {
             sessionStorage.setItem('pendingToast', JSON.stringify({
@@ -191,12 +207,16 @@
                 pageLength: 25,
                 columnDefs: [{
                     orderable: false,
-                    targets: 6
+                    targets: 7
                 }],
                 order: [
-                    [5, 'desc']
+                    [6, 'desc']
                 ],
-                searching: true
+                searching: true,
+                language: {
+                    emptyTable: 'No archived tasks yet.',
+                    zeroRecords: 'No matching archived tasks found.'
+                }
             });
         }
 
@@ -206,11 +226,72 @@
             this.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const filter = btn.dataset.filter;
-            dtTable.column(4).search(filter === 'all' ? '' : filter, false, false).draw();
+            dtTable.column(5).search(filter === 'all' ? '' : filter, false, false).draw();
         });
 
-        function openView(taskId) {
+        function getStatusBadgeClass(status) {
+            const map = {
+                'Completed': 'success',
+                'Pending': 'warning text-dark',
+                'In Progress': 'primary',
+                'On Hold': 'secondary'
+            };
+            return map[status] || 'secondary';
+        }
+
+        function openView(taskId, type = 'assessment') {
             currentTaskId = taskId;
+            currentTaskType = type;
+
+            if (type === 'project') {
+                const task = projectTasksData.find(t => t.id === taskId);
+                if (!task) return;
+                const content = `
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Task Title</p>
+                            <p class="fw-semibold mb-0">${task.title}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Assigned To</p>
+                            <p class="mb-0">${task.employee_name}</p>
+                        </div>
+                        <div class="col-sm-12">
+                            <p class="text-muted small mb-1">Project</p>
+                            <p class="mb-0"><a href="${task.project_url}">${task.project_label}</a></p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Required Role</p>
+                            <p class="mb-0 text-capitalize">${task.required_position.replace('_', '/')}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Dates</p>
+                            <p class="mb-0">${task.start_date} – ${task.due_date}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Status</p>
+                            <span class="badge bg-${getStatusBadgeClass(task.status)}">${task.status}</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Progress</p>
+                            <p class="mb-0">${task.progress}%</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="text-muted small mb-1">Archived On</p>
+                            <p class="mb-0">${task.archived_at || '—'}</p>
+                        </div>
+                    </div>
+                    <hr class="my-3">
+                    <div class="mb-3">
+                        <p class="fw-semibold small text-uppercase section-label">Description</p>
+                        <p class="small">${task.description || 'No description'}</p>
+                    </div>
+                `;
+                document.getElementById('viewTaskContent').innerHTML = content;
+                new bootstrap.Modal(document.getElementById('viewTaskModal')).show();
+                return;
+            }
+
             fetch(`/admin/tasks/${taskId}/details`, {
                     method: 'GET',
                     headers: {
@@ -268,15 +349,25 @@
                 });
         }
 
-        function restoreTaskConfirm(taskId) {
+        document.getElementById('viewTaskRestoreBtn').addEventListener('click', () => {
+            restoreTaskConfirm(currentTaskId, currentTaskType);
+        });
+
+        function restoreTaskConfirm(taskId, type = 'assessment') {
             currentTaskId = taskId;
+            currentTaskType = type;
             bootstrap.Modal.getInstance(document.getElementById('viewTaskModal'))?.hide();
             new bootstrap.Modal(document.getElementById('restoreConfirmModal')).show();
         }
 
         function confirmRestore() {
             if (!currentTaskId) return;
-            fetch(`/admin/tasks/${currentTaskId}/unarchive`, {
+
+            const url = currentTaskType === 'project' ?
+                `/project-tasks/${currentTaskId}/unarchive` :
+                `/admin/tasks/${currentTaskId}/unarchive`;
+
+            fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -296,16 +387,6 @@
                     console.error('Error:', err);
                     showToast('An error occurred', 'danger');
                 });
-        }
-
-        function getStatusBadgeClass(status) {
-            const map = {
-                'Completed': 'success',
-                'Pending': 'warning text-dark',
-                'In Progress': 'primary',
-                'On Hold': 'secondary'
-            };
-            return map[status] || 'secondary';
         }
 
         $(document).ready(() => {

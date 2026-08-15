@@ -236,7 +236,11 @@
                 columnDefs: [
                     { orderable: false, targets: 7 },
                     { type: 'status-priority', targets: 5 }
-                ]
+                ],
+                language: {
+                    emptyTable: 'No archived checklists yet.',
+                    zeroRecords: 'No matching archived checklists found.'
+                }
             });
         });
     </script>

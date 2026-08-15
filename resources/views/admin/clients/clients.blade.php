@@ -731,7 +731,11 @@
                         visible: false,
                         targets: 8
                     }
-                ]
+                ],
+                language: {
+                    emptyTable: 'No clients found.',
+                    zeroRecords: 'No matching clients found.'
+                }
             });
 
             $('#typeFilterGroup button').on('click', function() {

@@ -45,25 +45,25 @@
                     <div class="col-6 col-xl-3">
                         <div class="report-card">
                             <div class="report-icon-wrap bg-success-subtle"><span class="material-symbols-outlined text-success">calendar_month</span></div>
-                            <div><p class="report-label">Assessments</p><p class="report-value">14</p></div>
+                            <div><p class="report-label">Assessments</p><p class="report-value">{{ $weeklyAssessments }}</p></div>
                         </div>
                     </div>
                     <div class="col-6 col-xl-3">
                         <div class="report-card">
                             <div class="report-icon-wrap bg-success-subtle"><span class="material-symbols-outlined text-success">description</span></div>
-                            <div><p class="report-label">Quotations Sent</p><p class="report-value">9</p></div>
+                            <div><p class="report-label">Quotations Sent</p><p class="report-value">{{ $weeklyQuotationsSent }}</p></div>
                         </div>
                     </div>
                     <div class="col-6 col-xl-3">
                         <div class="report-card">
                             <div class="report-icon-wrap bg-success-subtle"><span class="material-symbols-outlined text-success">folder_open</span></div>
-                            <div><p class="report-label">Completed Projects</p><p class="report-value">3</p></div>
+                            <div><p class="report-label">Completed Projects</p><p class="report-value">{{ $weeklyCompletedProjects->count() }}</p></div>
                         </div>
                     </div>
                     <div class="col-6 col-xl-3">
                         <div class="report-card">
                             <div class="report-icon-wrap bg-success-subtle"><span class="material-symbols-outlined text-success">payments</span></div>
-                            <div><p class="report-label">Total Project Cost</p><p class="report-value green-text">₱1.09M</p></div>
+                            <div><p class="report-label">Total Project Cost</p><p class="report-value green-text">₱{{ number_format($weeklyProjectCost, 2) }}</p></div>
                         </div>
                     </div>
                 </div>
@@ -121,11 +121,23 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td>Maria Santos</td><td>CCTV Installation</td><td>₱45,000</td><td>Mar 10, 2026</td><td><span class="badge bg-success rounded-pill">Approved</span></td></tr>
-                                        <tr><td>John Reyes</td><td>Solar Panel Setup</td><td>₱120,000</td><td>Mar 11, 2026</td><td><span class="badge bg-success rounded-pill">Approved</span></td></tr>
-                                        <tr><td>Anna Garcia</td><td>Solar Street Light</td><td>₱850,000</td><td>Mar 12, 2026</td><td><span class="badge bg-primary rounded-pill">Sent</span></td></tr>
-                                        <tr><td>Pedro Cruz</td><td>Public Address</td><td>₱95,000</td><td>Mar 13, 2026</td><td><span class="badge bg-warning text-dark rounded-pill">For Review</span></td></tr>
-                                        <tr><td>Lisa Tan</td><td>CCTV Installation</td><td>₱55,000</td><td>Mar 14, 2026</td><td><span class="badge bg-danger rounded-pill">Rejected</span></td></tr>
+                                        @forelse ($recentQuotations as $quotation)
+                                            <tr>
+                                                <td>{{ $quotation->assessment->client->user->full_name }}</td>
+                                                <td>{{ $quotation->service_type }}</td>
+                                                <td>₱{{ number_format($quotation->grand_total, 2) }}</td>
+                                                <td>{{ $quotation->sent_at->format('M j, Y') }}</td>
+                                                <td>
+                                                    <span class="badge rounded-pill
+                                                        @if ($quotation->status === 'Approved') bg-success
+                                                        @elseif ($quotation->status === 'Rejected') bg-danger
+                                                        @else bg-primary
+                                                        @endif">{{ $quotation->status }}</span>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr><td colspan="5" class="text-center text-muted py-4">No quotations sent yet.</td></tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -144,25 +156,25 @@
                     <div class="col-6 col-xl-3">
                         <div class="report-card">
                             <div class="report-icon-wrap bg-success-subtle"><span class="material-symbols-outlined text-success">calendar_month</span></div>
-                            <div><p class="report-label">Assessments</p><p class="report-value">52</p></div>
+                            <div><p class="report-label">Assessments</p><p class="report-value">{{ $monthlyAssessments }}</p></div>
                         </div>
                     </div>
                     <div class="col-6 col-xl-3">
                         <div class="report-card">
                             <div class="report-icon-wrap bg-primary-subtle"><span class="material-symbols-outlined text-primary">description</span></div>
-                            <div><p class="report-label">Quotations Sent</p><p class="report-value">38</p></div>
+                            <div><p class="report-label">Quotations Sent</p><p class="report-value">{{ $monthlyQuotationsSent }}</p></div>
                         </div>
                     </div>
                     <div class="col-6 col-xl-3">
                         <div class="report-card">
                             <div class="report-icon-wrap bg-success-subtle"><span class="material-symbols-outlined text-success">folder_open</span></div>
-                            <div><p class="report-label">Completed Projects</p><p class="report-value">11</p></div>
+                            <div><p class="report-label">Completed Projects</p><p class="report-value">{{ $monthlyCompletedProjects->count() }}</p></div>
                         </div>
                     </div>
                     <div class="col-6 col-xl-3">
                         <div class="report-card">
                             <div class="report-icon-wrap bg-success-subtle"><span class="material-symbols-outlined text-success">payments</span></div>
-                            <div><p class="report-label">Total Project Cost</p><p class="report-value green-text">₱4.35M</p></div>
+                            <div><p class="report-label">Total Project Cost</p><p class="report-value green-text">₱{{ number_format($monthlyProjectCost, 2) }}</p></div>
                         </div>
                     </div>
                 </div>
@@ -220,11 +232,23 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td>Maria Santos</td><td>CCTV Installation</td><td>₱45,000</td><td>Mar 10, 2026</td><td><span class="badge bg-success rounded-pill">Approved</span></td></tr>
-                                        <tr><td>John Reyes</td><td>Solar Panel Setup</td><td>₱120,000</td><td>Mar 11, 2026</td><td><span class="badge bg-success rounded-pill">Approved</span></td></tr>
-                                        <tr><td>Anna Garcia</td><td>Solar Street Light</td><td>₱850,000</td><td>Mar 12, 2026</td><td><span class="badge bg-primary rounded-pill">Sent</span></td></tr>
-                                        <tr><td>Pedro Cruz</td><td>Public Address</td><td>₱95,000</td><td>Mar 13, 2026</td><td><span class="badge bg-warning text-dark rounded-pill">For Review</span></td></tr>
-                                        <tr><td>Lisa Tan</td><td>CCTV Installation</td><td>₱55,000</td><td>Mar 14, 2026</td><td><span class="badge bg-danger rounded-pill">Rejected</span></td></tr>
+                                        @forelse ($recentQuotations as $quotation)
+                                            <tr>
+                                                <td>{{ $quotation->assessment->client->user->full_name }}</td>
+                                                <td>{{ $quotation->service_type }}</td>
+                                                <td>₱{{ number_format($quotation->grand_total, 2) }}</td>
+                                                <td>{{ $quotation->sent_at->format('M j, Y') }}</td>
+                                                <td>
+                                                    <span class="badge rounded-pill
+                                                        @if ($quotation->status === 'Approved') bg-success
+                                                        @elseif ($quotation->status === 'Rejected') bg-danger
+                                                        @else bg-primary
+                                                        @endif">{{ $quotation->status }}</span>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr><td colspan="5" class="text-center text-muted py-4">No quotations sent yet.</td></tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -270,7 +294,7 @@
                             <input type="date" class="form-control" id="reportDateTo">
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
-                            <button class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-1" onclick="generateReport()">
+                            <button class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-1" id="generateReportBtn" onclick="generateReport()">
                                 <span class="material-symbols-outlined fs-17">search</span>
                                 Generate
                             </button>
@@ -347,4 +371,13 @@
 
 @endsection
 
-<script src="{{ asset('js/admin/reports.js') }}"></script>
+@section('scripts')
+    <script>
+        window.REPORTS_DATA = @json($reportsData);
+        window.REPORTS_ROUTES = {
+            checklist: '{{ route('reports.checklist') }}',
+            tasks: '{{ route('reports.tasks') }}',
+        };
+    </script>
+    <script src="{{ asset('js/admin/reports.js') }}"></script>
+@endsection

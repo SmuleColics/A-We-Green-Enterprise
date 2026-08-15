@@ -628,7 +628,11 @@
                 columnDefs: [{
                     orderable: false,
                     targets: 5
-                }]
+                }],
+                language: {
+                    emptyTable: 'No activity logs found.',
+                    zeroRecords: 'No matching activity logs found.'
+                }
             });
 
             $('#archivedLogsModal').on('shown.bs.modal', function() {
@@ -641,7 +645,11 @@
                         columnDefs: [{
                             orderable: false,
                             targets: 6
-                        }]
+                        }],
+                        language: {
+                            emptyTable: 'No archived activity logs yet.',
+                            zeroRecords: 'No matching archived activity logs found.'
+                        }
                     });
                 }
             });

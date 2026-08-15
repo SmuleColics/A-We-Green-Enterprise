@@ -17,6 +17,13 @@ class Client extends Model
         'city',
         'zip_code',
         'notes',
+        'is_archived',
+        'archived_at',
+    ];
+
+    protected $casts = [
+        'is_archived' => 'boolean',
+        'archived_at' => 'datetime',
     ];
 
     // ── Relationships ──

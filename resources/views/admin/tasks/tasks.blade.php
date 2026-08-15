@@ -397,7 +397,11 @@
                     targets: 6
                 }],
                 order: [],
-                searching: true
+                searching: true,
+                language: {
+                    emptyTable: 'No tasks found.',
+                    zeroRecords: 'No matching tasks found.'
+                }
             });
         }
 

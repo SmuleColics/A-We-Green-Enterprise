@@ -9,11 +9,10 @@
 @section('page-title', 'Materials')
 
 @section('topbar-actions')
-    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-bs-toggle="modal"
-        data-bs-target="#archiveModal">
+    <a href="{{ route('archive-materials') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
-    </button>
+    </a>
     <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text" data-bs-toggle="modal"
         data-bs-target="#addMaterialModal">
         <span class="material-symbols-outlined fs-17">add_box</span>
@@ -160,7 +159,7 @@
                                             <span class="material-symbols-outlined icon-action">edit</span>
                                         </button>
                                         <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive"
-                                            onclick="archiveMaterial({{ $m->id }}, {{ Js::from($m->name) }})">
+                                            onclick="openArchiveConfirm({{ $m->id }}, {{ Js::from($m->name) }})">
                                             <span class="material-symbols-outlined icon-action">archive</span>
                                         </button>
                                     </td>
@@ -460,24 +459,27 @@
     </div>
 
 
-    <!-- ── Archive Modal ── -->
-    <div class="modal fade" id="archiveModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
+    <!-- ── Archive Confirm Modal ── -->
+    <div class="modal fade" id="archiveConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
-                <div class="modal-header">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary fs-22">inventory_2</span>
-                        <h5 class="modal-title mb-0">Archived Materials</h5>
-                    </div>
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-semibold">Archive this material?</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div id="archivedMaterialsBody">
-                        <p class="text-muted text-center py-3 small">Loading...</p>
-                    </div>
+                <div class="modal-body pt-2">
+                    <p class="small text-muted mb-0">
+                        <strong id="ac-mat-name">—</strong> will be moved to the archive. You can restore it anytime
+                        from <strong>View Archives</strong>.
+                    </p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <div class="modal-footer border-0 pt-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-warning d-flex align-items-center gap-1"
+                        id="ac-confirm-btn">
+                        <span class="material-symbols-outlined fs-15">archive</span>
+                        Archive
+                    </button>
                 </div>
             </div>
         </div>
@@ -493,8 +495,6 @@
             store: @json(route('materials.store')),
             update: @json(route('materials.update', ':id')),
             archive: @json(route('materials.archive', ':id')),
-            unarchive: @json(route('materials.unarchive', ':id')),
-            archived: @json(route('materials.archived')),
         };
 
         const catMap = {
@@ -537,7 +537,10 @@
             badge.textContent = d.category || '—';
             badge.className = `cat-badge ${catMap[d.category] || ''}`;
 
-            document.getElementById('vm-archive-btn').onclick = () => archiveMaterial(d.id, d.name);
+            document.getElementById('vm-archive-btn').onclick = () => {
+                bootstrap.Modal.getInstance(document.getElementById('viewMaterialModal'))?.hide();
+                openArchiveConfirm(d.id, d.name);
+            };
         }
 
         function loadEditMaterial(d) {
@@ -645,9 +648,24 @@
             submitMaterialForm(this, routes.update.replace(':id', id));
         });
 
-        function archiveMaterial(id, name) {
-            if (!confirm(`Archive ${name}? You can restore it anytime from View Archives.`)) return;
-            fetch(routes.archive.replace(':id', id), {
+        /* ─────────────────────────────────────────
+           ARCHIVE CONFIRMATION FLOW
+           ───────────────────────────────────────── */
+        let pendingArchiveId = null;
+
+        const archiveConfirmModalEl = document.getElementById('archiveConfirmModal');
+        const archiveConfirmModal = new bootstrap.Modal(archiveConfirmModalEl);
+
+        function openArchiveConfirm(id, name) {
+            pendingArchiveId = id;
+            document.getElementById('ac-mat-name').textContent = name;
+            archiveConfirmModal.show();
+        }
+
+        document.getElementById('ac-confirm-btn').addEventListener('click', function() {
+            if (!pendingArchiveId) return;
+
+            fetch(routes.archive.replace(':id', pendingArchiveId), {
                     method: 'PATCH',
                     headers: {
                         'Accept': 'application/json',
@@ -656,82 +674,12 @@
                 })
                 .then(res => res.json())
                 .then(data => {
+                    archiveConfirmModal.hide();
                     showToast(data.message, 'success');
                     setTimeout(() => location.reload(), 800);
                 })
                 .catch(() => showToast('Network error — please try again.', 'danger'));
-        }
-
-        function restoreMaterial(id) {
-            fetch(routes.unarchive.replace(':id', id), {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                    },
-                })
-                .then(res => res.json())
-                .then(data => {
-                    showToast(data.message, 'success');
-                    setTimeout(() => location.reload(), 800);
-                })
-                .catch(() => showToast('Network error — please try again.', 'danger'));
-        }
-
-        function loadArchivedMaterials() {
-            const body = document.getElementById('archivedMaterialsBody');
-            body.innerHTML = '<p class="text-muted text-center py-3 small">Loading...</p>';
-
-            fetch(routes.archived, {
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (!data.success || !data.materials.length) {
-                        body.innerHTML = '<p class="text-muted text-center py-3 small">No archived materials.</p>';
-                        return;
-                    }
-
-                    const rows = data.materials.map(m => `
-                        <tr>
-                            <td class="fw-semibold small">${m.name}</td>
-                            <td><span class="cat-badge ${catMap[m.category] || ''}">${m.category}</span></td>
-                            <td class="small">${m.unit}</td>
-                            <td class="text-muted small">${m.archived_at ?? '—'}</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-success" title="Restore" onclick="restoreMaterial(${m.id})">
-                                    <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;">unarchive</span>
-                                    Restore
-                                </button>
-                            </td>
-                        </tr>
-                    `).join('');
-
-                    body.innerHTML = `
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover mb-0 small">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Item</th>
-                                        <th>Category</th>
-                                        <th>Unit</th>
-                                        <th>Archived On</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>${rows}</tbody>
-                            </table>
-                        </div>`;
-                })
-                .catch(() => {
-                    body.innerHTML =
-                        '<p class="text-danger text-center py-3 small">Failed to load archived materials.</p>';
-                });
-        }
-
-        document.getElementById('archiveModal').addEventListener('show.bs.modal', loadArchivedMaterials);
+        });
 
         $('#materialsTable').DataTable({
             pageLength: 10,

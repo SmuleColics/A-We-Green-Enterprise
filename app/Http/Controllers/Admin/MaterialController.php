@@ -118,23 +118,16 @@ class MaterialController extends Controller
         ]);
     }
 
-    public function archived()
+    public function archivedPage()
     {
         $materials = Material::where('is_archived', true)
             ->orderByDesc('archived_at')
-            ->get()
-            ->map(fn ($m) => [
-                'id' => $m->id,
-                'name' => $m->name,
-                'category' => $m->category,
-                'unit' => $m->unit,
-                'archived_at' => $m->archived_at?->format('M j, Y'),
-            ]);
+            ->get();
 
-        return response()->json([
-            'success' => true,
-            'materials' => $materials,
-        ]);
+        $total = $materials->count();
+        $byCategory = $materials->groupBy('category')->map->count();
+
+        return view('admin.materials.archive-materials', compact('materials', 'total', 'byCategory'));
     }
 
     private function validateMaterial(Request $request): array

@@ -135,7 +135,11 @@
         $(document).ready(function() {
             $('#projectsTable').DataTable({
                 pageLength: 10,
-                columnDefs: [{ orderable: false, targets: 5 }]
+                columnDefs: [{ orderable: false, targets: 5 }],
+                language: {
+                    emptyTable: 'No projects found.',
+                    zeroRecords: 'No matching projects found.'
+                }
             });
 
             $('#statusFilterGroup .btn').on('click', function() {

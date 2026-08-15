@@ -43,13 +43,16 @@ function buildLegend(id, items) {
 }
 
 function initWeekly() {
+  const wk = (window.REPORTS_DATA && window.REPORTS_DATA.weekly) || {};
+
   new Chart(document.getElementById('weeklyAssessmentsBar'), {
     type: 'bar',
-    data: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], datasets: [{ data: [3, 5, 2, 4], backgroundColor: GREEN, borderRadius: 6, borderSkipped: false }] },
+    data: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], datasets: [{ data: wk.assessmentsPerWeek || [0, 0, 0, 0], backgroundColor: GREEN, borderRadius: 6, borderSkipped: false }] },
     options: baseBarOpts(1)
   });
 
-  const wD = [{ label: 'Approved', value: 5, color: GREEN }, { label: 'For Review', value: 2, color: AMBER }, { label: 'Draft', value: 1, color: GRAY }, { label: 'Rejected', value: 1, color: RED }];
+  const qb = wk.quotationBreakdown || { Approved: 0, Sent: 0, Rejected: 0 };
+  const wD = [{ label: 'Approved', value: qb.Approved, color: GREEN }, { label: 'Sent', value: qb.Sent, color: AMBER }, { label: 'Rejected', value: qb.Rejected, color: RED }];
   new Chart(document.getElementById('weeklyQuotationDoughnut'), {
     type: 'doughnut',
     data: { labels: wD.map(d => d.label), datasets: [{ data: wD.map(d => d.value), backgroundColor: wD.map(d => d.color), borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
@@ -59,13 +62,13 @@ function initWeekly() {
 
   new Chart(document.getElementById('weeklyClientLine'), {
     type: 'line',
-    data: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], datasets: [{ data: [18, 20, 20, 23, 25, 26, 28], borderColor: GREEN, backgroundColor: GREEN_FILL, borderWidth: 2.5, pointBackgroundColor: GREEN, pointRadius: 4, pointHoverRadius: 6, fill: true, tension: 0.4 }] },
+    data: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], datasets: [{ data: wk.clientGrowth || [0, 0, 0, 0, 0, 0, 0], borderColor: GREEN, backgroundColor: GREEN_FILL, borderWidth: 2.5, pointBackgroundColor: GREEN, pointRadius: 4, pointHoverRadius: 6, fill: true, tension: 0.4 }] },
     options: lineOpts(5)
   });
 
   new Chart(document.getElementById('weeklyAcceptRejectBar'), {
     type: 'bar',
-    data: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], datasets: [{ label: 'Accepted', data: [2, 3, 1, 2], backgroundColor: GREEN, borderRadius: 5, borderSkipped: false }, { label: 'Rejected', data: [1, 1, 0, 1], backgroundColor: RED, borderRadius: 5, borderSkipped: false }] },
+    data: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], datasets: [{ label: 'Accepted', data: wk.accepted || [0, 0, 0, 0], backgroundColor: GREEN, borderRadius: 5, borderSkipped: false }, { label: 'Rejected', data: wk.rejected || [0, 0, 0, 0], backgroundColor: RED, borderRadius: 5, borderSkipped: false }] },
     options: groupedOpts(1)
   });
 }
@@ -76,14 +79,16 @@ function initMonthly() {
   if (monthlyDone) return;
   monthlyDone = true;
   const mo = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const mth = (window.REPORTS_DATA && window.REPORTS_DATA.monthly) || {};
 
   new Chart(document.getElementById('monthlyAssessmentsBar'), {
     type: 'bar',
-    data: { labels: mo, datasets: [{ data: [8, 10, 14, 12, 9, 11, 13, 15, 10, 12, 14, 16], backgroundColor: GREEN, borderRadius: 6, borderSkipped: false }] },
+    data: { labels: mo, datasets: [{ data: mth.assessmentsPerMonth || Array(12).fill(0), backgroundColor: GREEN, borderRadius: 6, borderSkipped: false }] },
     options: baseBarOpts(2)
   });
 
-  const mD = [{ label: 'Approved', value: 20, color: GREEN }, { label: 'For Review', value: 8, color: AMBER }, { label: 'Draft', value: 5, color: GRAY }, { label: 'Rejected', value: 5, color: RED }];
+  const qb = mth.quotationBreakdown || { Approved: 0, Sent: 0, Rejected: 0 };
+  const mD = [{ label: 'Approved', value: qb.Approved, color: GREEN }, { label: 'Sent', value: qb.Sent, color: AMBER }, { label: 'Rejected', value: qb.Rejected, color: RED }];
   new Chart(document.getElementById('monthlyQuotationDoughnut'), {
     type: 'doughnut',
     data: { labels: mD.map(d => d.label), datasets: [{ data: mD.map(d => d.value), backgroundColor: mD.map(d => d.color), borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
@@ -93,13 +98,13 @@ function initMonthly() {
 
   new Chart(document.getElementById('monthlyClientLine'), {
     type: 'line',
-    data: { labels: mo, datasets: [{ data: [12, 15, 18, 22, 25, 28, 32, 35, 38, 42, 46, 52], borderColor: GREEN, backgroundColor: GREEN_FILL, borderWidth: 2.5, pointBackgroundColor: GREEN, pointRadius: 4, pointHoverRadius: 6, fill: true, tension: 0.4 }] },
+    data: { labels: mo, datasets: [{ data: mth.clientGrowth || Array(12).fill(0), borderColor: GREEN, backgroundColor: GREEN_FILL, borderWidth: 2.5, pointBackgroundColor: GREEN, pointRadius: 4, pointHoverRadius: 6, fill: true, tension: 0.4 }] },
     options: lineOpts(10)
   });
 
   new Chart(document.getElementById('monthlyAcceptRejectBar'), {
     type: 'bar',
-    data: { labels: mo, datasets: [{ label: 'Accepted', data: [6, 7, 9, 8, 7, 9, 10, 11, 8, 9, 10, 12], backgroundColor: GREEN, borderRadius: 5, borderSkipped: false }, { label: 'Rejected', data: [2, 3, 1, 2, 2, 1, 2, 1, 2, 1, 2, 1], backgroundColor: RED, borderRadius: 5, borderSkipped: false }] },
+    data: { labels: mo, datasets: [{ label: 'Accepted', data: mth.accepted || Array(12).fill(0), backgroundColor: GREEN, borderRadius: 5, borderSkipped: false }, { label: 'Rejected', data: mth.rejected || Array(12).fill(0), backgroundColor: RED, borderRadius: 5, borderSkipped: false }] },
     options: groupedOpts(2)
   });
 }
@@ -108,24 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
   initWeekly();
   document.getElementById('monthly-tab').addEventListener('shown.bs.tab', initMonthly);
 });
-
-const MOCK_DATA = {
-  checklist: [
-    { checklist: 'Santos Residence CCTV', client: 'Maria Santos', service: 'CCTV Setup', date: 'Mar 10, 2026', total: 9, completed: 8, status: 'In Progress', pct: 89 },
-    { checklist: 'Reyes Solar Installation', client: 'John Reyes', service: 'Solar Setup', date: 'Mar 11, 2026', total: 15, completed: 8, status: 'In Progress', pct: 53 },
-    { checklist: 'Garcia Street Lights', client: 'Anna Garcia', service: 'Solar Street Light', date: 'Mar 12, 2026', total: 15, completed: 2, status: 'On Hold', pct: 13 },
-    { checklist: 'Cruz PA System', client: 'Pedro Cruz', service: 'Public Address System', date: 'Mar 13, 2026', total: 6, completed: 6, status: 'Completed', pct: 100 },
-  ],
-  tasks: [
-    { task: 'Install DVR and HDD', project: 'CCTV Installation – Makati Branch', assignee: 'Carlo Mendoza', priority: 'High', start: 'Apr 18, 2026', due: 'Apr 22, 2026', status: 'To Do' },
-    { task: 'Test Alarm Panel', project: 'Fire Alarm System – Pasig', assignee: 'Carlo Mendoza', priority: 'Medium', start: 'Apr 25, 2026', due: 'Apr 30, 2026', status: 'To Do' },
-    { task: 'Run CAT6 Cabling', project: 'Network Setup – BGC Office', assignee: 'Jomar Tan', priority: 'Medium', start: 'Apr 15, 2026', due: 'Apr 28, 2026', status: 'In Progress' },
-    { task: 'Configure NVR Settings', project: 'CCTV Installation – Makati Branch', assignee: 'Marco Rivera', priority: 'Low', start: 'Apr 21, 2026', due: 'Apr 30, 2026', status: 'In Progress' },
-    { task: 'Install Smoke Detectors', project: 'Fire Alarm System – Pasig', assignee: 'Ana', priority: 'High', start: 'Mar 5, 2026', due: 'Mar 8, 2026', status: 'Done' },
-    { task: 'Site Survey & Documentation', project: 'Network Setup – BGC Office', assignee: 'Marco Rivera', priority: 'Low', start: 'Mar 15, 2026', due: 'Mar 18, 2026', status: 'Done' },
-    { task: 'Access Card Programming', project: 'Access Control – Alabang', assignee: 'Jomar Tan', priority: 'High', start: 'Apr 10, 2026', due: 'Apr 12, 2026', status: 'On Hold' },
-  ]
-};
 
 const REPORT_CONFIG = {
   checklist: {
@@ -212,8 +199,31 @@ function generateReport() {
   if (!from || !to) { alert('Please select both a start and end date.'); return; }
   if (from > to) { alert('Start date must be before end date.'); return; }
 
+  const url = window.REPORTS_ROUTES[type];
+  if (!url) { alert('Unknown report type.'); return; }
+
+  const generateBtn = document.getElementById('generateReportBtn');
+  if (generateBtn) generateBtn.disabled = true;
+
+  fetch(`${url}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`, {
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(json => {
+      if (!json.success) throw new Error(json.message || 'Failed to generate report.');
+      renderReport(type, json.data, from, to);
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Failed to generate report. Please try again.');
+    })
+    .finally(() => {
+      if (generateBtn) generateBtn.disabled = false;
+    });
+}
+
+function renderReport(type, data, from, to) {
   const cfg = REPORT_CONFIG[type];
-  const data = MOCK_DATA[type];
   const today = new Date().toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' });
 
   document.getElementById('rpt-date-label').textContent = today;
@@ -226,7 +236,9 @@ function generateReport() {
                     <div class="rpt-summary-label">${s.label}</div>
                 </div>`).join('');
 
-  document.getElementById('rpt-table-wrap').innerHTML = cfg.tableFn(data);
+  document.getElementById('rpt-table-wrap').innerHTML = data.length
+    ? cfg.tableFn(data)
+    : '<p class="text-muted small mb-0">No records found for this date range.</p>';
   document.getElementById('rpt-terms-section').innerHTML = cfg.notesFn();
 
   document.getElementById('reportPlaceholder').style.display = 'none';

@@ -26,7 +26,16 @@
                     <span class="material-symbols-outlined summary-icon text-secondary">inventory_2</span>
                     <div>
                         <p class="summary-label">Total Archived</p>
-                        <p class="summary-value">14</p>
+                        <p class="summary-value">{{ $quotations->count() }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="summary-card">
+                    <span class="material-symbols-outlined summary-icon muted-text">send</span>
+                    <div>
+                        <p class="summary-label">Sent</p>
+                        <p class="summary-value">{{ $quotations->where('status', 'Sent')->count() }}</p>
                     </div>
                 </div>
             </div>
@@ -35,25 +44,16 @@
                     <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
                     <div>
                         <p class="summary-label">Approved</p>
-                        <p class="summary-value">8</p>
+                        <p class="summary-value">{{ $quotations->where('status', 'Approved')->count() }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-danger">cancel</span>
+                    <span class="material-symbols-outlined summary-icon text-danger">rate_review</span>
                     <div>
-                        <p class="summary-label">Rejected</p>
-                        <p class="summary-value">4</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-secondary">draft</span>
-                    <div>
-                        <p class="summary-label">Draft</p>
-                        <p class="summary-value">2</p>
+                        <p class="summary-label">Revision Requested</p>
+                        <p class="summary-value">{{ $quotations->where('status', 'Rejected')->count() }}</p>
                     </div>
                 </div>
             </div>
@@ -63,12 +63,13 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body">
 
-                <div class="mb-3 btn-group filter-btn-group" role="group">
+                <div class="mb-3 btn-group filter-btn-group" role="group" id="statusFilterGroup">
                     <button type="button" class="btn btn-sm btn-outline-secondary active" data-filter="all">All</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Approved">Approved</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Rejected">Rejected</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Draft">Draft</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Sent">Sent</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                        data-filter="Approved">Approved</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                        data-filter="Revision Requested">Revision Requested</button>
                 </div>
 
                 <div class="table-responsive">
@@ -86,132 +87,48 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="fw-semibold">QT-2025-089</td>
-                                <td>Carlo Mendoza</td>
-                                <td>Solar Setup</td>
-                                <td class="fw-semibold text-success">₱210,000.00</td>
-                                <td>Nov 20, 2025</td>
-                                <td><span class="badge bg-success rounded-pill" data-status="1">Approved</span></td>
-                                <td class="text-muted small">Jan 10, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </button>
-                                    <a href="{{ route('proposals', ['ref' => 'QT-2025-089']) }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">QT-2025-074</td>
-                                <td>Grace Villanueva</td>
-                                <td>CCTV Setup</td>
-                                <td class="fw-semibold text-success">₱38,500.00</td>
-                                <td>Oct 05, 2025</td>
-                                <td><span class="badge bg-success rounded-pill" data-status="1">Approved</span></td>
-                                <td class="text-muted small">Jan 10, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </button>
-                                    <a href="{{ route('proposals', ['ref' => 'QT-2025-074']) }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">QT-2025-061</td>
-                                <td>Ramon dela Cruz</td>
-                                <td>Solar Street Light</td>
-                                <td class="fw-semibold text-success">₱750,000.00</td>
-                                <td>Sep 12, 2025</td>
-                                <td><span class="badge bg-danger rounded-pill" data-status="3">Rejected</span></td>
-                                <td class="text-muted small">Dec 01, 2025</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </button>
-                                    <a href="{{ route('proposals', ['ref' => 'QT-2025-061']) }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">QT-2025-055</td>
-                                <td>Elena Cruz</td>
-                                <td>CCTV Setup</td>
-                                <td class="fw-semibold text-success">₱42,000.00</td>
-                                <td>Aug 30, 2025</td>
-                                <td><span class="badge bg-danger rounded-pill" data-status="3">Rejected</span></td>
-                                <td class="text-muted small">Nov 15, 2025</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </button>
-                                    <a href="{{ route('proposals', ['ref' => 'QT-2025-055']) }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">QT-2025-048</td>
-                                <td>Ben Soriano</td>
-                                <td>Public Address System</td>
-                                <td class="fw-semibold text-success">₱95,000.00</td>
-                                <td>Aug 10, 2025</td>
-                                <td><span class="badge bg-secondary rounded-pill" data-status="4">Draft</span></td>
-                                <td class="text-muted small">Oct 01, 2025</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </button>
-                                    <a href="{{ route('proposals', ['ref' => 'QT-2025-048']) }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">QT-2025-040</td>
-                                <td>Lorna Castillo</td>
-                                <td>Solar Setup</td>
-                                <td class="fw-semibold text-success">₱185,000.00</td>
-                                <td>Jul 22, 2025</td>
-                                <td><span class="badge bg-primary text-white rounded-pill" data-status="2">Sent</span></td>
-                                <td class="text-muted small">Sep 15, 2025</td>
-                                <td class="text-nowrap actions-col">
-                                    <button class="btn btn-sm action-btn invisible" disabled aria-hidden="true">
-                                        <span class="material-symbols-outlined icon-action">description</span>
-                                    </button>
-                                    <a href="{{ route('proposals', ['ref' => 'QT-2025-040']) }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
+                            @foreach ($quotations as $quotation)
+                                @php
+                                    $statusLabel = $quotation->status === 'Rejected' ? 'Revision Requested' : $quotation->status;
+                                    $statusClass = $quotation->status === 'Approved'
+                                        ? 'success'
+                                        : ($quotation->status === 'Rejected' ? 'danger' : 'primary text-white');
+                                @endphp
+                                <tr>
+                                    <td class="fw-semibold">{{ $quotation->reference_number }}</td>
+                                    <td>{{ $quotation->assessment->client->user->full_name }}</td>
+                                    <td>{{ $quotation->service_type }}</td>
+                                    <td class="fw-semibold text-success">₱{{ number_format($quotation->grand_total, 2) }}</td>
+                                    <td data-order="{{ $quotation->sent_at?->format('Y-m-d') }}">
+                                        {{ $quotation->sent_at?->format('M d, Y') ?? '—' }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ $statusClass }} rounded-pill"
+                                            @if ($quotation->status === 'Rejected' && $quotation->revision_reason_category)
+                                                title="{{ $quotation->revision_reason_category }}{{ $quotation->revision_reason ? ' — ' . $quotation->revision_reason : '' }}"
+                                            @endif
+                                            >{{ $statusLabel }}</span>
+                                    </td>
+                                    <td class="text-muted small"
+                                        data-order="{{ optional($quotation->archived_at)->format('Y-m-d H:i:s') }}">
+                                        {{ $quotation->archived_at?->format('M d, Y') ?? '—' }}
+                                    </td>
+                                    <td class="text-nowrap actions-col">
+                                        <a href="{{ route('quotations.show', $quotation) }}"
+                                            class="btn btn-sm btn-outline-success action-btn" title="View Quotation">
+                                            <span class="material-symbols-outlined icon-action">visibility</span>
+                                        </a>
+                                        <a target="_blank" href="{{ route('quotations.print', $quotation) }}"
+                                            class="btn btn-sm btn-outline-secondary action-btn" title="Preview PDF">
+                                            <span class="material-symbols-outlined icon-action">print</span>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-primary action-btn" title="Restore"
+                                            onclick="openRestoreConfirm({{ $quotation->id }}, {{ Js::from($quotation->reference_number) }})">
+                                            <span class="material-symbols-outlined icon-action">unarchive</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -221,24 +138,102 @@
 
     </div>
 
+    <!-- ── Restore Confirm Modal ── -->
+    <div class="modal fade" id="restoreConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-semibold">Restore this quotation?</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <p class="small text-muted mb-0">
+                        Quotation <strong id="rc-refNo">—</strong> will be moved back to <strong>Quotations</strong>.
+                    </p>
+                </div>
+                <div class="modal-footer border-0 pt-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary d-flex align-items-center gap-1"
+                        id="rc-confirm-btn">
+                        <span class="material-symbols-outlined fs-15">unarchive</span>
+                        Restore
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('scripts')
     <script>
-        $(document).ready(function() {
-            jQuery.fn.dataTable.ext.type.order['status-priority-pre'] = function(data) {
-                return $(data).data('status') || 0;
-            };
+        const ROUTES = {
+            unarchive: {{ Js::from(route('quotations.unarchive', ['quotation' => '__ID__'])) }},
+        };
 
-            $('#archiveQuotationsTable').DataTable({
+        let pendingRestoreId = null;
+
+        const restoreConfirmModalEl = document.getElementById('restoreConfirmModal');
+        const restoreConfirmModal = new bootstrap.Modal(restoreConfirmModalEl);
+
+        function openRestoreConfirm(id, refNo) {
+            pendingRestoreId = id;
+            document.getElementById('rc-refNo').textContent = refNo;
+            restoreConfirmModal.show();
+        }
+
+        document.getElementById('rc-confirm-btn').addEventListener('click', function() {
+            if (!pendingRestoreId) return;
+
+            fetch(ROUTES.unarchive.replace('__ID__', pendingRestoreId), {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    },
+                })
+                .then(res => res.json().then(data => ({
+                    status: res.status,
+                    data
+                })))
+                .then(({
+                    status,
+                    data
+                }) => {
+                    if (status !== 200 || !data.success) {
+                        showToast(data.message || 'Unable to restore this quotation.', 'danger');
+                        return;
+                    }
+                    showToast(data.message, 'success');
+                    restoreConfirmModal.hide();
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => showToast('Network error. Please try again.', 'danger'));
+        });
+
+        $(document).ready(function() {
+            const table = $('#archiveQuotationsTable').DataTable({
                 pageLength: 10,
                 lengthChange: true,
                 info: true,
-                order: [[6, 'desc']],
-                columnDefs: [
-                    { orderable: false, targets: 7 },
-                    { type: 'status-priority', targets: 5 }
-                ]
+                order: [
+                    [6, 'desc']
+                ],
+                columnDefs: [{
+                    orderable: false,
+                    targets: 7
+                }],
+                language: {
+                    emptyTable: 'No archived quotations yet.',
+                    zeroRecords: 'No matching archived quotations found.'
+                }
+            });
+
+            $('#statusFilterGroup button').on('click', function() {
+                $('#statusFilterGroup button').removeClass('active');
+                $(this).addClass('active');
+                const filter = $(this).data('filter');
+                table.column(5).search(filter === 'all' ? '' : filter, false, false).draw();
             });
         });
     </script>

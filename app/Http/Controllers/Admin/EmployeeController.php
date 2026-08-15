@@ -201,6 +201,60 @@ class EmployeeController extends Controller
         ]);
     }
 
+    public function unarchive(Staff $staff)
+    {
+        $staff->update([
+            'is_archived' => false,
+            'archived_at' => null,
+        ]);
+
+        ActivityLogController::log(
+            'Employee',
+            'Restored',
+            "Staff member restored from archive: {$staff->user->full_name}.",
+            auth()->id(),
+            auth()->user()->full_name
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => "{$staff->user->full_name} restored.",
+        ]);
+    }
+
+    public function archivedPage()
+    {
+        $staffMembers = Staff::with(['user', 'employee'])
+            ->where('is_archived', true)
+            ->whereHas('user', fn ($q) => $q->whereIn('role', [
+                User::ROLE_EMPLOYEE,
+                User::ROLE_ADMIN,
+            ]))
+            ->orderByDesc('archived_at')
+            ->get();
+
+        $total = $staffMembers->count();
+        $admins = $staffMembers->filter(fn ($s) => $s->user->role === User::ROLE_ADMIN)->count();
+
+        $technicians = $staffMembers->filter(
+            fn ($s) => in_array($s->employee?->position, [
+                Employee::POSITION_TECHNICIAN,
+                Employee::POSITION_DRIVER_TECHNICIAN,
+            ])
+        )->count();
+
+        $drivers = $staffMembers->filter(
+            fn ($s) => in_array($s->employee?->position, [
+                Employee::POSITION_DRIVER,
+                Employee::POSITION_DRIVER_TECHNICIAN,
+            ])
+        )->count();
+
+        return view('admin.employees.archive-employees', compact(
+            'staffMembers', 'total', 'admins', 'technicians', 'drivers'
+        ));
+    }
+
     private function validateStaff(Request $request, ?Staff $staff = null): array
     {
         return $request->validate([

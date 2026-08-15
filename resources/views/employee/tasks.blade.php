@@ -245,7 +245,11 @@
                     orderable: false,
                     targets: [5]
                 } // Disable ordering on actions column
-            ]
+            ],
+            language: {
+                emptyTable: 'No tasks found.',
+                zeroRecords: 'No matching tasks found.'
+            }
         });
 
         // Filter by status

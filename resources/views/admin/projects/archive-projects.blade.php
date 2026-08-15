@@ -269,7 +269,11 @@
                 columnDefs: [
                     { orderable: false, targets: 8 },
                     { type: 'status-priority', targets: 6 }
-                ]
+                ],
+                language: {
+                    emptyTable: 'No archived projects yet.',
+                    zeroRecords: 'No matching archived projects found.'
+                }
             });
         });
     </script>

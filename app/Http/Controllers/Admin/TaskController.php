@@ -32,27 +32,7 @@ class TaskController extends Controller
             ->get();
         $projects = Project::where('is_archived', false)->orderBy('project_title')->get();
 
-        $allTasks = $tasks->map(fn ($t) => [
-            'type' => 'assessment',
-            'id' => $t->id,
-            'title' => $t->title,
-            'employee_name' => $t->employee->staff->user->full_name ?? 'N/A',
-            'context_label' => 'Assessment #' . $t->assessment->id,
-            'context_url' => route('assessments.form.edit', $t->assessment),
-            'due_date' => $t->due_date,
-            'status' => $t->status,
-            'status_badge' => $t->status_badge,
-        ])->concat($projectTasks->map(fn ($pt) => [
-            'type' => 'project',
-            'id' => $pt->id,
-            'title' => $pt->title,
-            'employee_name' => $pt->employee->full_name ?? 'Unassigned',
-            'context_label' => $pt->project->reference_number,
-            'context_url' => route('projects.show', $pt->project) . '?tab=tasks',
-            'due_date' => $pt->due_date,
-            'status' => $pt->status,
-            'status_badge' => $pt->status_badge,
-        ]))->sortByDesc('due_date')->values();
+        $allTasks = $this->mergedTaskRows($tasks, $projectTasks)->sortByDesc('due_date')->values();
 
         $projectTasksForJs = $projectTasks->map(fn ($pt) => [
             'id' => $pt->id,
@@ -345,44 +325,78 @@ class TaskController extends Controller
     }
 
     /**
-     * List archived tasks — feeds the "Archived Tasks" modal.
+     * Archived Tasks page — merges archived assessment Tasks and archived
+     * project ProjectTasks into one system-wide list, mirroring how
+     * index() merges the two for the active list.
      */
-    public function archived()
-    {
-        $tasks = Task::with(['employee.staff.user'])
-            ->where('is_archived', true)
-            ->orderByDesc('archived_at')
-            ->get()
-            ->map(fn ($task) => [
-                'id' => $task->id,
-                'title' => $task->title,
-                'employee_name' => $task->employee->staff->user->full_name ?? 'N/A',
-                'status' => $task->status,
-                'status_badge' => $task->status_badge,
-                'due_date' => $task->due_date->format('M j, Y'),
-                'archived_at' => $task->archived_at?->format('M j, Y'),
-            ]);
-
-        return response()->json([
-            'success' => true,
-            'tasks' => $tasks,
-        ]);
-    }
-
     public function archivedPage()
     {
         $tasks = Task::with(['employee.staff.user', 'assessment.client.user'])
             ->where('is_archived', true)
-            ->orderByDesc('archived_at')
             ->get();
 
-        $completed = $tasks->where('status', 'Completed')->count();
-        $inProgress = $tasks->where('status', 'In Progress')->count();
-        $pending = $tasks->where('status', 'Pending')->count();
-        $onHold = $tasks->where('status', 'On Hold')->count();
+        $projectTasks = ProjectTask::with(['employee.staff.user', 'project'])
+            ->where('is_archived', true)
+            ->get();
+
+        $allTasks = $this->mergedTaskRows($tasks, $projectTasks)->sortByDesc('archived_at')->values();
+
+        $projectTasksForJs = $projectTasks->map(fn ($pt) => [
+            'id' => $pt->id,
+            'title' => $pt->title,
+            'description' => $pt->description,
+            'employee_name' => $pt->employee->full_name ?? 'Unassigned',
+            'required_position' => $pt->required_position,
+            'project_label' => $pt->project->reference_number.' — '.$pt->project->project_title,
+            'project_url' => route('projects.show', $pt->project).'?tab=tasks',
+            'start_date' => $pt->start_date->format('Y-m-d'),
+            'due_date' => $pt->due_date->format('Y-m-d'),
+            'status' => $pt->status,
+            'progress' => $pt->progress(),
+            'archived_at' => $pt->archived_at?->format('M j, Y'),
+        ])->values();
+
+        $completed = $allTasks->where('status', 'Completed')->count();
+        $inProgress = $allTasks->where('status', 'In Progress')->count();
+        $pending = $allTasks->where('status', 'Pending')->count();
+        $onHold = $allTasks->where('status', 'On Hold')->count();
 
         return view('admin.tasks.archive-tasks', compact(
-            'tasks', 'completed', 'inProgress', 'pending', 'onHold'
+            'allTasks', 'projectTasksForJs', 'completed', 'inProgress', 'pending', 'onHold'
         ));
+    }
+
+    /**
+     * Combines assessment Tasks and project ProjectTasks into one flat,
+     * displayable shape. Used by both the active and archived Tasks lists
+     * so the merge logic only lives in one place.
+     */
+    private function mergedTaskRows($tasks, $projectTasks): \Illuminate\Support\Collection
+    {
+        return $tasks->map(fn ($t) => [
+            'type' => 'assessment',
+            'id' => $t->id,
+            'title' => $t->title,
+            'description' => $t->description,
+            'employee_name' => $t->employee->staff->user->full_name ?? 'N/A',
+            'context_label' => 'Assessment #' . $t->assessment->id,
+            'context_url' => route('assessments.form.edit', $t->assessment),
+            'due_date' => $t->due_date,
+            'status' => $t->status,
+            'status_badge' => $t->status_badge,
+            'archived_at' => $t->archived_at,
+        ])->concat($projectTasks->map(fn ($pt) => [
+            'type' => 'project',
+            'id' => $pt->id,
+            'title' => $pt->title,
+            'description' => $pt->description,
+            'employee_name' => $pt->employee->full_name ?? 'Unassigned',
+            'context_label' => $pt->project->reference_number,
+            'context_url' => route('projects.show', $pt->project) . '?tab=tasks',
+            'due_date' => $pt->due_date,
+            'status' => $pt->status,
+            'status_badge' => $pt->status_badge,
+            'archived_at' => $pt->archived_at,
+        ]))->values();
     }
 }

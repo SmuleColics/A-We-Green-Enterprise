@@ -219,7 +219,7 @@
                                                 </a>
                                             @endif
                                             <button class="btn btn-sm btn-outline-secondary" title="Archive"
-                                                onclick="archiveAssessmentConfirm({{ $a->id }})">
+                                                onclick="archiveAssessmentConfirm({{ $a->id }}, {{ $a->quotation ? 'true' : 'false' }})">
                                                 <span class="material-symbols-outlined icon-action">archive</span>
                                             </button>
                                         </td>
@@ -390,6 +390,11 @@
                     This assessment will be moved to the archive. You can restore it anytime from
                     <strong>View Archives</strong>.
                 </p>
+                <p class="small text-warning mb-0 mt-2 d-none" id="archiveQuotationWarning">
+                    <span class="material-symbols-outlined fs-15" style="vertical-align:middle;">info</span>
+                    This assessment has a related quotation. Archiving the assessment will
+                    <strong>not</strong> archive the quotation.
+                </p>
             </div>
             <div class="modal-footer border-0 pt-1">
                 <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -417,8 +422,9 @@
 
     let currentArchiveAssessmentId = null;
 
-    function archiveAssessmentConfirm(id) {
+    function archiveAssessmentConfirm(id, hasQuotation) {
         currentArchiveAssessmentId = id;
+        document.getElementById('archiveQuotationWarning').classList.toggle('d-none', !hasQuotation);
         new bootstrap.Modal(document.getElementById('archiveConfirmModal')).show();
     }
 

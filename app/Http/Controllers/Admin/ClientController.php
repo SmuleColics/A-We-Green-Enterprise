@@ -222,21 +222,27 @@ class ClientController extends Controller
         return response()->json(['success' => true, 'message' => "Client {$client->client_id} restored."]);
     }
 
-    public function archived()
+    public function archivedPage()
     {
-        $clients = Client::with('user')
+        $clients = Client::with(['user', 'assessments' => fn ($q) => $q->latest()])
             ->where('is_archived', true)
             ->orderByDesc('archived_at')
             ->get()
-            ->map(fn ($c) => [
-                'id' => $c->id,
-                'client_id' => $c->client_id,
-                'name' => $c->user->full_name ?? 'N/A',
-                'contact' => $c->user->contact_number ?? '—',
-                'email' => $c->user->email ?? '—',
-                'archived_at' => $c->archived_at?->format('M j, Y'),
-            ]);
+            ->map(function ($client) {
+                $latest = $client->assessments->first();
+                $client->derived_type = $latest->client_type ?? null;
+                $client->derived_service = $latest ? implode(', ', $latest->services ?? []) : null;
 
-        return response()->json(['success' => true, 'clients' => $clients]);
+                return $client;
+            });
+
+        $total = $clients->count();
+        $residential = $clients->where('derived_type', 'Residential')->count();
+        $commercial = $clients->where('derived_type', 'Commercial')->count();
+        $government = $clients->where('derived_type', 'Government/LGU')->count();
+
+        return view('admin.clients.archive-clients', compact(
+            'clients', 'total', 'residential', 'commercial', 'government'
+        ));
     }
 }

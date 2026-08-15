@@ -118,7 +118,11 @@
             const table = $('#quotationsTable').DataTable({
                 pageLength: 10,
                 order: [[2, 'desc']],
-                columnDefs: [{ orderable: false, targets: 5 }]
+                columnDefs: [{ orderable: false, targets: 5 }],
+                language: {
+                    emptyTable: 'No quotations found.',
+                    zeroRecords: 'No matching quotations found.'
+                }
             });
 
             $('#statusFilterGroup .btn').on('click', function() {

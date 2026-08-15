@@ -130,10 +130,24 @@ class AssessmentRequestController extends Controller
 
     public function archive(Assessment $assessment)
     {
-        $assessment->update([
-            'is_archived' => true,
-            'archived_at' => now(),
-        ]);
+        $cascadedQuotation = DB::transaction(function () use ($assessment) {
+            $assessment->update([
+                'is_archived' => true,
+                'archived_at' => now(),
+            ]);
+
+            $quotation = $assessment->quotation;
+            if ($quotation && ! $quotation->is_archived) {
+                $quotation->update([
+                    'is_archived' => true,
+                    'archived_at' => now(),
+                ]);
+
+                return $quotation;
+            }
+
+            return null;
+        });
 
         ActivityLogController::log(
             'Assessment',
@@ -143,9 +157,83 @@ class AssessmentRequestController extends Controller
             auth()->user()->full_name
         );
 
+        if ($cascadedQuotation) {
+            ActivityLogController::log(
+                'Quotation',
+                'Archived',
+                "Quotation {$cascadedQuotation->reference_number} auto-archived with assessment #{$assessment->id}.",
+                auth()->id(),
+                auth()->user()->full_name
+            );
+        }
+
         return response()->json([
             'success' => true,
             'message' => "Request #{$assessment->id} moved to archive.",
+        ]);
+    }
+
+    public function archived()
+    {
+        $assessments = Assessment::with(['client.user', 'assessors.staff.user'])
+            ->where('is_archived', true)
+            ->orderByDesc('archived_at')
+            ->get();
+
+        $total = $assessments->count();
+        $confirmed = $assessments->where('status', 'Confirmed')->count();
+        $pending = $assessments->where('status', 'Pending')->count();
+        $declined = $assessments->where('status', 'Declined')->count();
+
+        return view('admin.assessments.archive-requests', compact(
+            'assessments', 'total', 'confirmed', 'pending', 'declined'
+        ));
+    }
+
+    public function unarchive(Assessment $assessment)
+    {
+        $cascadedQuotation = DB::transaction(function () use ($assessment) {
+            $assessment->update([
+                'is_archived' => false,
+                'archived_at' => null,
+            ]);
+
+            $quotation = $assessment->quotation;
+            if ($quotation && $quotation->is_archived) {
+                $quotation->update([
+                    'is_archived' => false,
+                    'archived_at' => null,
+                ]);
+
+                return $quotation;
+            }
+
+            return null;
+        });
+
+        $clientName = $assessment->client->user->full_name;
+
+        ActivityLogController::log(
+            'Assessment',
+            'Restored',
+            "Assessment request #{$assessment->id} for {$clientName} restored from archive.",
+            auth()->id(),
+            auth()->user()->full_name
+        );
+
+        if ($cascadedQuotation) {
+            ActivityLogController::log(
+                'Quotation',
+                'Restored',
+                "Quotation {$cascadedQuotation->reference_number} auto-restored with assessment #{$assessment->id}.",
+                auth()->id(),
+                auth()->user()->full_name
+            );
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Request #{$assessment->id} restored.",
         ]);
     }
 }

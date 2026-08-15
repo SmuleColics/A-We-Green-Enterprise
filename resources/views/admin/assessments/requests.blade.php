@@ -650,7 +650,11 @@
                 columnDefs: [{
                     targets: 7,
                     orderable: false
-                }]
+                }],
+                language: {
+                    emptyTable: 'No client requests found.',
+                    zeroRecords: 'No matching client requests found.'
+                }
             });
 
             $('#statusFilterGroup button').on('click', function() {

@@ -188,7 +188,11 @@
                 }],
                 order: [
                     [4, 'desc']
-                ]
+                ],
+                language: {
+                    emptyTable: 'No quotations found.',
+                    zeroRecords: 'No matching quotations found.'
+                }
             });
 
             document.getElementById('statusFilterGroup').addEventListener('click', function(event) {

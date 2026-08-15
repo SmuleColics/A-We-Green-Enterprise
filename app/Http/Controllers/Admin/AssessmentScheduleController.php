@@ -14,7 +14,7 @@ class AssessmentScheduleController extends Controller
 {
     public function index()
     {
-        $assessments = Assessment::with(['client.user', 'assessors.staff.user', 'tasks'])
+        $assessments = Assessment::with(['client.user', 'assessors.staff.user', 'tasks', 'quotation'])
             ->where('status', 'Confirmed')
             ->where('is_archived', false)
             ->orderBy('preferred_date')
@@ -68,6 +68,50 @@ class AssessmentScheduleController extends Controller
             'success' => true,
             'message' => "Assessment #{$assessment->id} moved to archive.",
         ]);
+    }
+
+    public function unarchive(Assessment $assessment)
+    {
+        $assessment->update([
+            'is_archived' => false,
+            'archived_at' => null,
+        ]);
+
+        ActivityLogController::log(
+            'Assessment',
+            'Restored',
+            "Confirmed assessment #{$assessment->id} restored from the schedule archive.",
+            Auth::id(),
+            Auth::user()->full_name
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => "Assessment #{$assessment->id} restored.",
+        ]);
+    }
+
+    public function archivedPage()
+    {
+        $assessments = Assessment::with(['client.user', 'assessors.staff.user', 'tasks'])
+            ->where('status', 'Confirmed')
+            ->where('is_archived', true)
+            ->orderByDesc('archived_at')
+            ->get()
+            ->map(function ($assessment) {
+                $assessment->derived_status = $assessment->deriveStatus();
+
+                return $assessment;
+            });
+
+        $total = $assessments->count();
+        $doneCount = $assessments->where('derived_status', 'Done Assessment')->count();
+        $submittedFormCount = $assessments->where('derived_status', 'Submitted Form')->count();
+        $pendingCount = $assessments->where('derived_status', 'Pending')->count();
+
+        return view('admin.assessments.archive-assessments', compact(
+            'assessments', 'total', 'doneCount', 'submittedFormCount', 'pendingCount'
+        ));
     }
 
     /**
