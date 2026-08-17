@@ -32,7 +32,13 @@ class ActivityLogController extends Controller
     public function index()
     {
         $logs = ActivityLog::active()
+            ->with('user')
             ->orderByDesc('created_at')
+            ->get();
+
+        $archivedLogs = ActivityLog::archived()
+            ->with('user')
+            ->orderByDesc('archived_at')
             ->get();
 
         $totalToday = ActivityLog::active()->today()->count();
@@ -42,19 +48,19 @@ class ActivityLogController extends Controller
             ->whereNotNull('user_id')
             ->distinct('user_id')
             ->count('user_id');
+        $failedLoginsToday = ActivityLog::active()
+            ->today()
+            ->where('action', 'Failed Login')
+            ->count();
 
-        return view('admin.activity-logs.index', compact(
-            'logs', 'totalToday', 'totalLogs', 'activeUsers'
+        $archivableCounts = collect([30, 60, 90, 180, 365])->mapWithKeys(
+            fn ($days) => [$days => ActivityLog::active()->where('created_at', '<', now()->subDays($days))->count()]
+        );
+
+        return view('admin.admin-activity-logs', compact(
+            'logs', 'archivedLogs', 'totalToday', 'totalLogs', 'activeUsers',
+            'failedLoginsToday', 'archivableCounts'
         ));
-    }
-
-    public function archived()
-    {
-        $logs = ActivityLog::archived()
-            ->orderByDesc('archived_at')
-            ->get();
-
-        return view('admin.activity-logs.archive', compact('logs'));
     }
 
     public function archiveOld(Request $request)

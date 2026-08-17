@@ -40,13 +40,13 @@
             <div class="dropdown-menu dropdown-menu-end topnav-notif-menu">
                 <div class="notif-header">
                     <span>Notifications</span>
-                    <a href="#" id="notif-mark-all-read" class="notif-mark-read"
+                    <a href="#" class="notif-mark-read js-mark-all-read"
                         data-url="{{ route('notifications.read-all') }}">Mark all as read</a>
                 </div>
                 <div class="notif-list">
                     @forelse (($notifications ?? []) as $notif)
                         @php
-                            $notifHref = route('activity-logs');
+                            $notifHref = route('client-notifications');
 
                             if ($notif->module === 'Assessment') {
                                 $sub = 'active';
@@ -97,7 +97,7 @@
                             <div class="text-center text-muted small py-3">No notifications yet.</div>
                         @endforelse
                     </div>
-                    <a href="{{ route('activity-logs') }}" class="notif-view-all">View all activity</a>
+                    <a href="{{ route('client-notifications') }}" class="notif-view-all">View all notifications</a>
                 </div>
             </div>
 

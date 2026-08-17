@@ -23,19 +23,10 @@
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-primary">inbox</span>
+                    <span class="material-symbols-outlined summary-icon muted-text">inbox</span>
                     <div>
                         <p class="summary-label">Total</p>
                         <p class="summary-value">{{ $quotations->count() }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon muted-text">send</span>
-                    <div>
-                        <p class="summary-label">Sent</p>
-                        <p class="summary-value">{{ $quotations->where('status', 'Sent')->count() }}</p>
                     </div>
                 </div>
             </div>
@@ -50,7 +41,16 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-danger">rate_review</span>
+                    <span class="material-symbols-outlined summary-icon text-primary">send</span>
+                    <div>
+                        <p class="summary-label">Sent</p>
+                        <p class="summary-value">{{ $quotations->where('status', 'Sent')->count() }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="summary-card">
+                    <span class="material-symbols-outlined summary-icon text-warning">rate_review</span>
                     <div>
                         <p class="summary-label">Revision Requested</p>
                         <p class="summary-value">{{ $quotations->where('status', 'Rejected')->count() }}</p>
@@ -94,21 +94,23 @@
                                     <td>{{ $quotation->assessment->client->user->full_name }}</td>
                                     <td>{{ $quotation->service_type }}</td>
                                     <td>₱{{ number_format($quotation->grand_total, 2) }}</td>
-                                    <td data-order="{{ $quotation->sent_at?->format('Y-m-d') }}">{{ $quotation->sent_at?->format('M d, Y') }}</td>
+                                    <td data-order="{{ $quotation->sent_at?->format('Y-m-d') }}">
+                                        {{ $quotation->sent_at?->format('M d, Y') }}</td>
                                     <td>
-                                        <span class="badge rounded-pill
+                                        <span
+                                            class="badge rounded-pill
                                             @if ($quotation->status === 'Approved') bg-success
                                             @elseif ($quotation->status === 'Rejected') bg-danger
-                                            @else bg-primary text-white
-                                            @endif"
-                                            @if ($quotation->status === 'Rejected' && $quotation->revision_reason_category)
-                                                title="{{ $quotation->revision_reason_category }}{{ $quotation->revision_reason ? ' — ' . $quotation->revision_reason : '' }}"
-                                            @endif
-                                            >{{ $quotation->status === 'Rejected' ? 'Revision Requested' : $quotation->status }}</span>
+                                            @else bg-primary text-white @endif"
+                                            @if ($quotation->status === 'Rejected' && $quotation->revision_reason_category) title="{{ $quotation->revision_reason_category }}{{ $quotation->revision_reason ? ' — ' . $quotation->revision_reason : '' }}" @endif>{{ $quotation->status === 'Rejected' ? 'Revision Requested' : $quotation->status }}</span>
                                     </td>
                                     <td class="text-nowrap actions-col">
-                                        <a href="{{ route('quotations.show', $quotation) }}" class="btn btn-sm btn-outline-primary action-btn" title="View Quotation"><span class="material-symbols-outlined icon-action">visibility</span></a>
-                                        <a target="_blank" href="{{ route('quotations.print', $quotation) }}" class="btn btn-sm btn-outline-secondary action-btn" title="Preview PDF"><span class="material-symbols-outlined icon-action">print</span></a>
+                                        <a href="{{ route('quotations.show', $quotation) }}"
+                                            class="btn btn-sm btn-outline-primary action-btn" title="View Quotation"><span
+                                                class="material-symbols-outlined icon-action">visibility</span></a>
+                                        <a target="_blank" href="{{ route('quotations.print', $quotation) }}"
+                                            class="btn btn-sm btn-outline-secondary action-btn" title="Preview PDF"><span
+                                                class="material-symbols-outlined icon-action">print</span></a>
                                         <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive"
                                             onclick="archiveQuotationConfirm({{ $quotation->id }})">
                                             <span class="material-symbols-outlined icon-action">archive</span>

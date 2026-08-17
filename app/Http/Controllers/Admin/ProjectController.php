@@ -88,4 +88,40 @@ class ProjectController extends Controller
             'message' => "Project {$project->reference_number} moved to archive.",
         ]);
     }
+
+    public function unarchive(Project $project)
+    {
+        $project->update(['is_archived' => false, 'archived_at' => null]);
+
+        ActivityLogController::log(
+            'Project',
+            'Restored',
+            "Project {$project->reference_number} restored from archive.",
+            Auth::id(),
+            Auth::user()->full_name
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => "Project {$project->reference_number} restored.",
+        ]);
+    }
+
+    public function archivedPage()
+    {
+        $projects = Project::with('quotation.assessment.client.user', 'checklistItems')
+            ->where('is_archived', true)
+            ->orderByDesc('archived_at')
+            ->get();
+
+        $total = $projects->count();
+        $notStarted = $projects->where('status', 'Not Started')->count();
+        $inProgress = $projects->where('status', 'In Progress')->count();
+        $onHold = $projects->where('status', 'On Hold')->count();
+        $completed = $projects->where('status', 'Completed')->count();
+
+        return view('admin.projects.archive-projects', compact(
+            'projects', 'total', 'notStarted', 'inProgress', 'onHold', 'completed'
+        ));
+    }
 }

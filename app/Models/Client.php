@@ -19,11 +19,17 @@ class Client extends Model
         'notes',
         'is_archived',
         'archived_at',
+        'notify_assessment',
+        'notify_quotation',
+        'notify_project',
     ];
 
     protected $casts = [
         'is_archived' => 'boolean',
         'archived_at' => 'datetime',
+        'notify_assessment' => 'boolean',
+        'notify_quotation' => 'boolean',
+        'notify_project' => 'boolean',
     ];
 
     // ── Relationships ──

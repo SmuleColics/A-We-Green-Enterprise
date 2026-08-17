@@ -52,7 +52,7 @@ function initWeekly() {
   });
 
   const qb = wk.quotationBreakdown || { Approved: 0, Sent: 0, Rejected: 0 };
-  const wD = [{ label: 'Approved', value: qb.Approved, color: GREEN }, { label: 'Sent', value: qb.Sent, color: AMBER }, { label: 'Rejected', value: qb.Rejected, color: RED }];
+  const wD = [{ label: 'Approved', value: qb.Approved, color: GREEN }, { label: 'Sent', value: qb.Sent, color: AMBER }, { label: 'Revision Requested', value: qb.Rejected, color: RED }];
   new Chart(document.getElementById('weeklyQuotationDoughnut'), {
     type: 'doughnut',
     data: { labels: wD.map(d => d.label), datasets: [{ data: wD.map(d => d.value), backgroundColor: wD.map(d => d.color), borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
@@ -68,7 +68,7 @@ function initWeekly() {
 
   new Chart(document.getElementById('weeklyAcceptRejectBar'), {
     type: 'bar',
-    data: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], datasets: [{ label: 'Accepted', data: wk.accepted || [0, 0, 0, 0], backgroundColor: GREEN, borderRadius: 5, borderSkipped: false }, { label: 'Rejected', data: wk.rejected || [0, 0, 0, 0], backgroundColor: RED, borderRadius: 5, borderSkipped: false }] },
+    data: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], datasets: [{ label: 'Accepted', data: wk.accepted || [0, 0, 0, 0], backgroundColor: GREEN, borderRadius: 5, borderSkipped: false }, { label: 'Revision Requested', data: wk.rejected || [0, 0, 0, 0], backgroundColor: RED, borderRadius: 5, borderSkipped: false }] },
     options: groupedOpts(1)
   });
 }
@@ -88,7 +88,7 @@ function initMonthly() {
   });
 
   const qb = mth.quotationBreakdown || { Approved: 0, Sent: 0, Rejected: 0 };
-  const mD = [{ label: 'Approved', value: qb.Approved, color: GREEN }, { label: 'Sent', value: qb.Sent, color: AMBER }, { label: 'Rejected', value: qb.Rejected, color: RED }];
+  const mD = [{ label: 'Approved', value: qb.Approved, color: GREEN }, { label: 'Sent', value: qb.Sent, color: AMBER }, { label: 'Revision Requested', value: qb.Rejected, color: RED }];
   new Chart(document.getElementById('monthlyQuotationDoughnut'), {
     type: 'doughnut',
     data: { labels: mD.map(d => d.label), datasets: [{ data: mD.map(d => d.value), backgroundColor: mD.map(d => d.color), borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
@@ -104,7 +104,7 @@ function initMonthly() {
 
   new Chart(document.getElementById('monthlyAcceptRejectBar'), {
     type: 'bar',
-    data: { labels: mo, datasets: [{ label: 'Accepted', data: mth.accepted || Array(12).fill(0), backgroundColor: GREEN, borderRadius: 5, borderSkipped: false }, { label: 'Rejected', data: mth.rejected || Array(12).fill(0), backgroundColor: RED, borderRadius: 5, borderSkipped: false }] },
+    data: { labels: mo, datasets: [{ label: 'Accepted', data: mth.accepted || Array(12).fill(0), backgroundColor: GREEN, borderRadius: 5, borderSkipped: false }, { label: 'Revision Requested', data: mth.rejected || Array(12).fill(0), backgroundColor: RED, borderRadius: 5, borderSkipped: false }] },
     options: groupedOpts(2)
   });
 }

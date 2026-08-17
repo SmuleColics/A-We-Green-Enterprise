@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Controller;
 use App\Models\Assessment;
 use App\Models\Material;
@@ -89,6 +90,14 @@ class AssessmentFormController extends Controller
         });
 
         if ($isNewQuotation) {
+            ActivityLogController::log(
+                'Quotation',
+                'Created',
+                "Quotation {$quotation->reference_number} created for {$assessment->client->user->full_name}.",
+                auth()->id(),
+                auth()->user()->full_name
+            );
+
             NotificationController::notify('Quotation', 'New quotation available', "Your quotation {$quotation->reference_number} is ready for review.", null, $quotation, $assessment->client->user_id);
         } elseif ($wasRevisionRequested) {
             NotificationController::notify('Quotation', 'Revised quotation ready', "Your requested changes were applied. Quotation {$quotation->reference_number} is ready for review.", null, $quotation, $assessment->client->user_id);

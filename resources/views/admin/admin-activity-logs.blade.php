@@ -3,16 +3,12 @@
 @section('title', 'Activity Logs')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/activity-logs/activity-logs.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin-activity-logs.css') }}">
 @endsection
 
 @section('page-title', 'Activity Logs')
 
 @section('topbar-actions')
-    {{-- <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" onclick="window.print()">
-        <span class="material-symbols-outlined fs-17">print</span>
-        Print Logs
-    </button> --}}
     <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" data-bs-toggle="modal"
         data-bs-target="#archivedLogsModal">
         <span class="material-symbols-outlined fs-17">inventory_2</span>
@@ -27,6 +23,34 @@
 
 @section('content')
 
+    @php
+        $rowInitials = function ($name) {
+            if (!$name || $name === 'Unknown') {
+                return '?';
+            }
+            $parts = array_filter(explode(' ', trim($name)));
+            $initials = '';
+            foreach (array_slice($parts, 0, 2) as $p) {
+                $initials .= strtoupper($p[0]);
+            }
+            return $initials ?: '?';
+        };
+
+        $actionBadgeMap = [
+            'Login' => 'action-login',
+            'Logout' => 'action-login',
+            'Failed Login' => 'action-danger',
+            'Created' => 'action-create',
+            'Updated' => 'action-update',
+            'Archived' => 'action-archive',
+            'Restored' => 'action-approve',
+            'Deleted' => 'action-danger',
+            'Requested' => 'action-warning',
+            'Approved' => 'action-approve',
+            'Rejected' => 'action-danger',
+        ];
+    @endphp
+
     <div class="container-fluid px-4 py-4">
 
         <!-- Summary Cards -->
@@ -36,7 +60,7 @@
                     <span class="material-symbols-outlined summary-icon green-text">manage_history</span>
                     <div>
                         <p class="summary-label">Total Logs</p>
-                        <p class="summary-value">284</p>
+                        <p class="summary-value">{{ $totalLogs }}</p>
                     </div>
                 </div>
             </div>
@@ -45,7 +69,7 @@
                     <span class="material-symbols-outlined summary-icon text-primary">today</span>
                     <div>
                         <p class="summary-label">Today</p>
-                        <p class="summary-value">12</p>
+                        <p class="summary-value">{{ $totalToday }}</p>
                     </div>
                 </div>
             </div>
@@ -54,7 +78,7 @@
                     <span class="material-symbols-outlined summary-icon text-warning">person</span>
                     <div>
                         <p class="summary-label">Active Users</p>
-                        <p class="summary-value">3</p>
+                        <p class="summary-value">{{ $activeUsers }}</p>
                     </div>
                 </div>
             </div>
@@ -62,8 +86,8 @@
                 <div class="summary-card">
                     <span class="material-symbols-outlined summary-icon text-danger">warning</span>
                     <div>
-                        <p class="summary-label">Failed Logins</p>
-                        <p class="summary-value">2</p>
+                        <p class="summary-label">Failed Logins Today</p>
+                        <p class="summary-value">{{ $failedLoginsToday }}</p>
                     </div>
                 </div>
             </div>
@@ -73,8 +97,8 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body">
 
-                <!-- Row 1: Module Filters -->
-                <div class="d-flex flex-wrap align-items-center mb-2">
+                <!-- Toolbar: module filters (left) + date range (right) -->
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 activity-toolbar">
                     <div class="btn-group filter-btn-group" role="group" id="moduleFilterGroup">
                         <button type="button" class="btn btn-sm btn-outline-secondary active"
                             data-filter="all">All</button>
@@ -94,16 +118,16 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary"
                             data-filter="Settings">Settings</button>
                     </div>
-                </div>
 
-                <!-- Row 2: Date Range Filter -->
-                <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end mb-3">
-                    <input type="date" class="form-control form-control-sm" id="dateFrom" style="width:120px;">
-                    <span class="text-muted small">to</span>
-                    <input type="date" class="form-control form-control-sm" id="dateTo" style="width:120px;">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="clearDateFilter()">
-                        <span class="material-symbols-outlined fs-17">close</span>
-                    </button>
+                    <div class="date-range-group">
+                        <input type="date" class="date-range-input" id="dateFrom">
+                        <span class="text-muted small px-1">to</span>
+                        <input type="date" class="date-range-input" id="dateTo">
+                        <button type="button" class="date-range-clear" onclick="clearDateFilter()"
+                            title="Clear date filter">
+                            <span class="material-symbols-outlined fs-17">close</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="table-responsive">
@@ -119,247 +143,39 @@
                             </tr>
                         </thead>
                         <tbody>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 15, 2026 · 8:00 AM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar">MG</div>
-                                        <span class="fw-semibold">Michael Garcia</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-auth">Auth</span></td>
-                                <td><span class="action-badge action-login">Login</span></td>
-                                <td>Admin logged in successfully.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 15, 2026 · 8:00 AM',user:'Michael Garcia',module:'Auth',action:'Login',description:'Admin logged in successfully.',ip:'192.168.1.1',browser:'Chrome 122',device:'Windows PC'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 15, 2026 · 9:00 AM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar">MG</div>
-                                        <span class="fw-semibold">Michael Garcia</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-assessment">Assessment</span></td>
-                                <td><span class="action-badge action-create">Created</span></td>
-                                <td>Scheduled assessment for Maria Santos — CCTV Setup.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 15, 2026 · 9:00 AM',user:'Michael Garcia',module:'Assessment',action:'Created',description:'Scheduled assessment for Maria Santos — CCTV Setup.',ip:'192.168.1.1',browser:'Chrome 122',device:'Windows PC'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 15, 2026 · 10:30 AM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar">MG</div>
-                                        <span class="fw-semibold">Michael Garcia</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-quotation">Quotation</span></td>
-                                <td><span class="action-badge action-create">Created</span></td>
-                                <td>Created quotation QT-2026-007 for John Reyes — Solar Setup.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 15, 2026 · 10:30 AM',user:'Michael Garcia',module:'Quotation',action:'Created',description:'Created quotation QT-2026-007 for John Reyes — Solar Setup.',ip:'192.168.1.1',browser:'Chrome 122',device:'Windows PC'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 15, 2026 · 11:00 AM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar">MG</div>
-                                        <span class="fw-semibold">Michael Garcia</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-task">Task</span></td>
-                                <td><span class="action-badge action-create">Assigned</span></td>
-                                <td>Assigned task "Run CAT6 Cabling" to Jomar Tan.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 15, 2026 · 11:00 AM',user:'Michael Garcia',module:'Task',action:'Assigned',description:'Assigned task Run CAT6 Cabling to Jomar Tan.',ip:'192.168.1.1',browser:'Chrome 122',device:'Windows PC'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 14, 2026 · 4:00 PM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar">MG</div>
-                                        <span class="fw-semibold">Michael Garcia</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-project">Project</span></td>
-                                <td><span class="action-badge action-update">Updated</span></td>
-                                <td>Posted update on CCTV Installation — Santos Residence.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 14, 2026 · 4:00 PM',user:'Michael Garcia',module:'Project',action:'Updated',description:'Posted update on CCTV Installation — Santos Residence.',ip:'192.168.1.1',browser:'Chrome 122',device:'Windows PC'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 14, 2026 · 3:00 PM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar">MG</div>
-                                        <span class="fw-semibold">Michael Garcia</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-material">Material</span></td>
-                                <td><span class="action-badge action-warning">Low Stock</span></td>
-                                <td>Low stock alert triggered for Solar Panels (4 remaining).</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 14, 2026 · 3:00 PM',user:'Michael Garcia',module:'Material',action:'Low Stock',description:'Low stock alert triggered for Solar Panels (4 remaining).',ip:'192.168.1.1',browser:'Chrome 122',device:'Windows PC'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 13, 2026 · 9:00 AM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar">MG</div>
-                                        <span class="fw-semibold">Michael Garcia</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-employee">Employee</span></td>
-                                <td><span class="action-badge action-create">Added</span></td>
-                                <td>Added new staff — Patricia Lim (Secretary).</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 13, 2026 · 9:00 AM',user:'Michael Garcia',module:'Employee',action:'Added',description:'Added new staff — Patricia Lim (Secretary).',ip:'192.168.1.1',browser:'Chrome 122',device:'Windows PC'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 13, 2026 · 10:00 AM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar">MG</div>
-                                        <span class="fw-semibold">Michael Garcia</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-client">Client</span></td>
-                                <td><span class="action-badge action-archive">Archived</span></td>
-                                <td>Archived client — Elena Cruz (CLT-2025-018).</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 13, 2026 · 10:00 AM',user:'Michael Garcia',module:'Client',action:'Archived',description:'Archived client — Elena Cruz (CLT-2025-018).',ip:'192.168.1.1',browser:'Chrome 122',device:'Windows PC'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 12, 2026 · 2:00 PM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar">MG</div>
-                                        <span class="fw-semibold">Michael Garcia</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-settings">Settings</span></td>
-                                <td><span class="action-badge action-update">Updated</span></td>
-                                <td>Updated company Terms of Service.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 12, 2026 · 2:00 PM',user:'Michael Garcia',module:'Settings',action:'Updated',description:'Updated company Terms of Service.',ip:'192.168.1.1',browser:'Chrome 122',device:'Windows PC'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 12, 2026 · 7:45 AM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar log-avatar-unknown">?</div>
-                                        <span class="fw-semibold text-muted">Unknown</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-auth">Auth</span></td>
-                                <td><span class="action-badge action-danger">Failed Login</span></td>
-                                <td>Failed login attempt on admin account.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 12, 2026 · 7:45 AM',user:'Unknown',module:'Auth',action:'Failed Login',description:'Failed login attempt on admin account.',ip:'203.177.12.45',browser:'Unknown',device:'Unknown'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 12, 2026 · 11:00 AM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar">MG</div>
-                                        <span class="fw-semibold">Michael Garcia</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-quotation">Quotation</span></td>
-                                <td><span class="action-badge action-approve">Approved</span></td>
-                                <td>Quotation QT-2026-003 approved by Anna Garcia.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 12, 2026 · 11:00 AM',user:'Michael Garcia',module:'Quotation',action:'Approved',description:'Quotation QT-2026-003 approved by Anna Garcia.',ip:'192.168.1.1',browser:'Chrome 122',device:'Windows PC'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td class="text-muted small text-nowrap">Mar 11, 2026 · 3:30 PM</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="log-avatar">MG</div>
-                                        <span class="fw-semibold">Michael Garcia</span>
-                                    </div>
-                                </td>
-                                <td><span class="module-badge module-assessment">Assessment</span></td>
-                                <td><span class="action-badge action-danger">Cancelled</span></td>
-                                <td>Cancelled assessment for Ben Soriano — Public Address System.</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                        data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                        onclick="loadLog({datetime:'Mar 11, 2026 · 3:30 PM',user:'Michael Garcia',module:'Assessment',action:'Cancelled',description:'Cancelled assessment for Ben Soriano — Public Address System.',ip:'192.168.1.1',browser:'Chrome 122',device:'Windows PC'})">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </button>
-                                </td>
-                            </tr>
-
+                            @forelse ($logs as $log)
+                                <tr data-date="{{ $log->created_at->format('Y-m-d') }}">
+                                    <td class="text-muted small text-nowrap">
+                                        {{ $log->created_at->format('M j, Y · g:i A') }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div
+                                                class="log-avatar {{ $log->user_name === 'Unknown' ? 'log-avatar-unknown' : '' }}">
+                                                {{ $rowInitials($log->user_name) }}</div>
+                                            <span
+                                                class="fw-semibold {{ $log->user_name === 'Unknown' ? 'text-muted' : '' }}">{{ $log->user_name }}</span>
+                                        </div>
+                                    </td>
+                                    <td><span
+                                            class="module-badge module-{{ strtolower($log->module) }}">{{ $log->module }}</span>
+                                    </td>
+                                    <td><span
+                                            class="action-badge {{ $actionBadgeMap[$log->action] ?? '' }}">{{ $log->action }}</span>
+                                    </td>
+                                    <td>{{ $log->description }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
+                                            data-bs-toggle="modal" data-bs-target="#viewLogModal"
+                                            onclick="loadLog({datetime: @json($log->created_at->format('M j, Y · g:i A')), user: @json($log->user_name), module: @json($log->module), action: @json($log->action), description: @json($log->description), ip: @json($log->ip_address ?? '—')})">
+                                            <span class="material-symbols-outlined icon-action">visibility</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">No activity logs found.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -402,17 +218,9 @@
 
                     <p class="section-label">Session Info</p>
                     <div class="row g-2">
-                        <div class="col-6">
+                        <div class="col-12">
                             <p class="detail-label small mb-0">IP Address</p>
                             <p class="detail-value small" id="vl-ip">—</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="detail-label small mb-0">Browser</p>
-                            <p class="detail-value small" id="vl-browser">—</p>
-                        </div>
-                        <div class="col-12">
-                            <p class="detail-label small mb-0">Device</p>
-                            <p class="detail-value small" id="vl-device">—</p>
                         </div>
                     </div>
 
@@ -429,44 +237,49 @@
     <div class="modal fade" id="archiveLogsModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <h6 class="modal-title fw-semibold d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined fs-20">archive</span>
-                        Archive Old Logs
-                    </h6>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body pt-2">
-                    <p class="small text-muted mb-3">Move old activity logs to the archive to keep the active log list
-                        clean. Archived logs are never deleted and can be viewed anytime.</p>
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label small">Archive logs older than</label>
-                            <select class="form-select form-select-sm">
-                                <option>30 days</option>
-                                <option>60 days</option>
-                                <option selected>90 days</option>
-                                <option>6 months</option>
-                                <option>1 year</option>
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <div class="policy-info-box">
-                                <span class="material-symbols-outlined text-primary fs-18">info</span>
-                                <p class="small mb-0">This will move <strong>48 logs</strong> older than 90 days to the
-                                    archive. They can still be viewed under <strong>View Archives</strong>.</p>
+                <form method="POST" action="{{ route('admin-activity-logs.archive-old') }}">
+                    @csrf
+                    <div class="modal-header border-0 pb-0">
+                        <h6 class="modal-title fw-semibold d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined fs-20">archive</span>
+                            Archive Old Logs
+                        </h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body pt-2">
+                        <p class="small text-muted mb-3">Move old activity logs to the archive to keep the active log list
+                            clean. Archived logs are never deleted and can be viewed anytime.</p>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label small">Archive logs older than</label>
+                                <select class="form-select form-select-sm" name="older_than" id="archive-older-than">
+                                    <option value="30">30 days</option>
+                                    <option value="60">60 days</option>
+                                    <option value="90" selected>90 days</option>
+                                    <option value="180">6 months</option>
+                                    <option value="365">1 year</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <div class="policy-info-box">
+                                    <span class="material-symbols-outlined text-primary fs-18">info</span>
+                                    <p class="small mb-0">This will move <strong
+                                            id="archive-count-num">{{ $archivableCounts[90] }}</strong> log(s) older than
+                                        <span id="archive-count-days">90</span> days to the archive. They can still be
+                                        viewed under <strong>View Archives</strong>.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-warning d-flex align-items-center gap-1"
-                        data-bs-dismiss="modal">
-                        <span class="material-symbols-outlined fs-16">archive</span>
-                        Archive Logs
-                    </button>
-                </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-warning d-flex align-items-center gap-1">
+                            <span class="material-symbols-outlined fs-16">archive</span>
+                            Archive Logs
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -498,66 +311,42 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-muted small text-nowrap">Jan 10, 2026 · 9:00 AM</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="log-avatar">MG</div>
-                                            <span class="fw-semibold">Michael Garcia</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="module-badge module-assessment">Assessment</span></td>
-                                    <td><span class="action-badge action-create">Created</span></td>
-                                    <td>Scheduled assessment for Roberto Lim — Solar Street Light.</td>
-                                    <td class="text-muted small">Feb 10, 2026</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                            data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                            onclick="loadLog({datetime:'Jan 10, 2026 · 9:00 AM',user:'Michael Garcia',module:'Assessment',action:'Created',description:'Scheduled assessment for Roberto Lim — Solar Street Light.',ip:'192.168.1.1',browser:'Chrome 120',device:'Windows PC'})">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted small text-nowrap">Jan 8, 2026 · 11:30 AM</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="log-avatar">MG</div>
-                                            <span class="fw-semibold">Michael Garcia</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="module-badge module-quotation">Quotation</span></td>
-                                    <td><span class="action-badge action-approve">Approved</span></td>
-                                    <td>Quotation QT-2025-089 approved by Carlo Mendoza.</td>
-                                    <td class="text-muted small">Feb 10, 2026</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                            data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                            onclick="loadLog({datetime:'Jan 8, 2026 · 11:30 AM',user:'Michael Garcia',module:'Quotation',action:'Approved',description:'Quotation QT-2025-089 approved by Carlo Mendoza.',ip:'192.168.1.1',browser:'Chrome 120',device:'Windows PC'})">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted small text-nowrap">Jan 5, 2026 · 2:00 PM</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="log-avatar">MG</div>
-                                            <span class="fw-semibold">Michael Garcia</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="module-badge module-client">Client</span></td>
-                                    <td><span class="action-badge action-create">Added</span></td>
-                                    <td>Added new client — Ramon Dela Cruz (Commercial).</td>
-                                    <td class="text-muted small">Feb 10, 2026</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                            data-bs-toggle="modal" data-bs-target="#viewLogModal"
-                                            onclick="loadLog({datetime:'Jan 5, 2026 · 2:00 PM',user:'Michael Garcia',module:'Client',action:'Added',description:'Added new client — Ramon Dela Cruz (Commercial).',ip:'192.168.1.1',browser:'Chrome 120',device:'Windows PC'})">
-                                            <span class="material-symbols-outlined icon-action">visibility</span>
-                                        </button>
-                                    </td>
-                                </tr>
+                                @forelse ($archivedLogs as $log)
+                                    <tr>
+                                        <td class="text-muted small text-nowrap">
+                                            {{ $log->created_at->format('M j, Y · g:i A') }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div
+                                                    class="log-avatar {{ $log->user_name === 'Unknown' ? 'log-avatar-unknown' : '' }}">
+                                                    {{ $rowInitials($log->user_name) }}</div>
+                                                <span
+                                                    class="fw-semibold {{ $log->user_name === 'Unknown' ? 'text-muted' : '' }}">{{ $log->user_name }}</span>
+                                            </div>
+                                        </td>
+                                        <td><span
+                                                class="module-badge module-{{ strtolower($log->module) }}">{{ $log->module }}</span>
+                                        </td>
+                                        <td><span
+                                                class="action-badge {{ $actionBadgeMap[$log->action] ?? '' }}">{{ $log->action }}</span>
+                                        </td>
+                                        <td>{{ $log->description }}</td>
+                                        <td class="text-muted small">{{ optional($log->archived_at)->format('M j, Y') }}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
+                                                data-bs-toggle="modal" data-bs-target="#viewLogModal"
+                                                onclick="loadLog({datetime: @json($log->created_at->format('M j, Y · g:i A')), user: @json($log->user_name), module: @json($log->module), action: @json($log->action), description: @json($log->description), ip: @json($log->ip_address ?? '—')})">
+                                                <span class="material-symbols-outlined icon-action">visibility</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">No archived activity logs
+                                            yet.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -578,7 +367,9 @@
             'Quotation': 'module-quotation',
             'Project': 'module-project',
             'Task': 'module-task',
+            'Checklist': 'module-checklist',
             'Client': 'module-client',
+            'Staff': 'module-staff',
             'Employee': 'module-employee',
             'Material': 'module-material',
             'Settings': 'module-settings',
@@ -587,16 +378,19 @@
 
         const ACTION_BADGE_MAP = {
             'Login': 'action-login',
+            'Logout': 'action-login',
             'Failed Login': 'action-danger',
             'Created': 'action-create',
-            'Assigned': 'action-create',
-            'Added': 'action-create',
             'Updated': 'action-update',
-            'Approved': 'action-approve',
             'Archived': 'action-archive',
-            'Cancelled': 'action-danger',
-            'Low Stock': 'action-warning',
+            'Restored': 'action-approve',
+            'Deleted': 'action-danger',
+            'Requested': 'action-warning',
+            'Approved': 'action-approve',
+            'Rejected': 'action-danger',
         };
+
+        const ARCHIVABLE_COUNTS = @json($archivableCounts);
 
         function loadLog(d) {
             const initials = (d.user || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
@@ -610,8 +404,6 @@
             document.getElementById('vl-datetime').textContent = d.datetime || '—';
             document.getElementById('vl-description').textContent = d.description || '—';
             document.getElementById('vl-ip').textContent = d.ip || '—';
-            document.getElementById('vl-browser').textContent = d.browser || '—';
-            document.getElementById('vl-device').textContent = d.device || '—';
 
             document.getElementById('vl-module-badge').innerHTML =
                 `<span class="module-badge ${MODULE_BADGE_MAP[d.module] || ''}">${d.module}</span>`;
@@ -619,8 +411,24 @@
                 `<span class="action-badge ${ACTION_BADGE_MAP[d.action] || ''}">${d.action}</span>`;
         }
 
+        let activityTable;
+
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            if (settings.nTable.id !== 'activityLogsTable') return true;
+
+            const min = document.getElementById('dateFrom').value;
+            const max = document.getElementById('dateTo').value;
+            if (!min && !max) return true;
+
+            const rowDate = $(activityTable.row(dataIndex).node()).data('date');
+            if (!rowDate) return true;
+            if (min && rowDate < min) return false;
+            if (max && rowDate > max) return false;
+            return true;
+        });
+
         $(document).ready(function() {
-            $('#activityLogsTable').DataTable({
+            activityTable = $('#activityLogsTable').DataTable({
                 pageLength: 25,
                 order: [
                     [0, 'desc']
@@ -633,6 +441,24 @@
                     emptyTable: 'No activity logs found.',
                     zeroRecords: 'No matching activity logs found.'
                 }
+            });
+
+            document.getElementById('dateFrom').addEventListener('change', () => activityTable.draw());
+            document.getElementById('dateTo').addEventListener('change', () => activityTable.draw());
+
+            document.querySelectorAll('#moduleFilterGroup .btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('#moduleFilterGroup .btn').forEach(b => b.classList
+                        .remove('active'));
+                    this.classList.add('active');
+
+                    const filter = this.dataset.filter;
+                    if (filter === 'all') {
+                        activityTable.column(2).search('').draw();
+                    } else {
+                        activityTable.column(2).search('^' + filter + '$', true, false).draw();
+                    }
+                });
             });
 
             $('#archivedLogsModal').on('shown.bs.modal', function() {
@@ -653,11 +479,19 @@
                     });
                 }
             });
+
+            document.getElementById('archive-older-than').addEventListener('change', function() {
+                const days = this.value;
+                document.getElementById('archive-count-num').textContent = ARCHIVABLE_COUNTS[days] ?? '0';
+                document.getElementById('archive-count-days').textContent =
+                    this.options[this.selectedIndex].text;
+            });
         });
 
         function clearDateFilter() {
             document.getElementById('dateFrom').value = '';
             document.getElementById('dateTo').value = '';
+            activityTable.draw();
         }
     </script>
 @endsection

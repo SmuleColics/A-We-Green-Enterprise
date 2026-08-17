@@ -41,7 +41,7 @@ class User extends Authenticatable
     // ── Accessors ──
     public function getFullNameAttribute(): string
     {
-        return "{$this->first_name} {$this->last_name}";
+        return trim("{$this->first_name} {$this->last_name}");
     }
 
     public function getInitialsAttribute(): string

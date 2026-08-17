@@ -99,9 +99,9 @@ class EmployeeController extends Controller
                 'block' => $validated['block'] ?? null,
                 'lot' => $validated['lot'] ?? null,
                 'street' => $validated['street'] ?? null,
-                'barangay' => $validated['barangay'],
-                'province' => $validated['province'],
-                'city' => $validated['city'],
+                'barangay' => $validated['barangay'] ?? null,
+                'province' => $validated['province'] ?? null,
+                'city' => $validated['city'] ?? null,
                 'zip_code' => $validated['zip_code'] ?? null,
             ]);
 
@@ -149,9 +149,9 @@ class EmployeeController extends Controller
                 'block' => $validated['block'] ?? null,
                 'lot' => $validated['lot'] ?? null,
                 'street' => $validated['street'] ?? null,
-                'barangay' => $validated['barangay'],
-                'province' => $validated['province'],
-                'city' => $validated['city'],
+                'barangay' => $validated['barangay'] ?? null,
+                'province' => $validated['province'] ?? null,
+                'city' => $validated['city'] ?? null,
                 'zip_code' => $validated['zip_code'] ?? null,
             ]);
 
@@ -261,12 +261,12 @@ class EmployeeController extends Controller
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
             'type' => ['required', Rule::in(array_keys(self::ROLE_MAP))],
-            'position' => ['required_if:type,Employee', Rule::in([
+            'position' => ['nullable', 'required_if:type,Employee', Rule::in([
                 Employee::POSITION_DRIVER,
                 Employee::POSITION_TECHNICIAN,
                 Employee::POSITION_DRIVER_TECHNICIAN,
             ])],
-            'contact_number' => 'required|string|max:20',
+            'contact_number' => ['required', 'regex:/^09\d{9}$/'],
             'email' => [
                 'required',
                 'email',
@@ -275,14 +275,16 @@ class EmployeeController extends Controller
                     : Rule::unique('users', 'email'),
             ],
             // Only required on create; leave blank on edit to keep the current password
-            'password' => [$staff ? 'nullable' : 'required', 'string', 'min:8'],
+            'password' => [$staff ? 'nullable' : 'required', 'string', 'min:8', 'confirmed'],
             'block' => 'nullable|string|max:50',
             'lot' => 'nullable|string|max:50',
             'street' => 'nullable|string|max:150',
-            'barangay' => 'required|string|max:150',
-            'province' => 'required|string|max:100',
-            'city' => 'required|string|max:100',
+            'barangay' => 'nullable|string|max:150',
+            'province' => 'nullable|string|max:100',
+            'city' => 'nullable|string|max:100',
             'zip_code' => 'nullable|string|max:10',
+        ], [
+            'contact_number.regex' => 'Contact number must be an 11-digit number starting with 09 (e.g. 09171234567).',
         ]);
     }
 }

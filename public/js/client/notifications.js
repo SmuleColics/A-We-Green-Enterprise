@@ -1,20 +1,19 @@
 $(document).ready(function () {
-    const table = $('#activityTable').DataTable({
+    const table = $('#notificationsTable').DataTable({
         pageLength: 10,
         order: [[3, 'desc']],
         columnDefs: [{ orderable: false, targets: [0, 1] }]
     });
 
-    $('#activityFilterGroup .btn').on('click', function () {
-        $('#activityFilterGroup .btn').removeClass('active');
+    $('#notificationsFilterGroup .btn').on('click', function () {
+        $('#notificationsFilterGroup .btn').removeClass('active');
         $(this).addClass('active');
         const filter = $(this).data('filter');
 
         if (filter === 'all') {
-            table.column(1).search('').draw();
-            $('#activityTable tbody tr').show();
+            $('#notificationsTable tbody tr').show();
         } else {
-            $('#activityTable tbody tr').each(function () {
+            $('#notificationsTable tbody tr').each(function () {
                 $(this).toggle($(this).data('type') === filter);
             });
         }

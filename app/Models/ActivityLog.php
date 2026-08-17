@@ -27,4 +27,20 @@ class ActivityLog extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // ── Scopes ──
+    public function scopeActive($query)
+    {
+        return $query->where('is_archived', false);
+    }
+
+    public function scopeArchived($query)
+    {
+        return $query->where('is_archived', true);
+    }
+
+    public function scopeToday($query)
+    {
+        return $query->whereDate('created_at', today());
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\Notification;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,6 +19,10 @@ class NotificationController extends Controller
     ): void {
         // Targeting a specific user (e.g. notifying one client) — single row, no role needed
         if ($userId !== null) {
+            if (self::isMutedForUser($userId, $module)) {
+                return;
+            }
+
             Notification::create([
                 'user_id' => $userId,
                 'recipient_role' => null,
@@ -48,6 +53,27 @@ class NotificationController extends Controller
                 'is_read' => false,
             ]);
         }
+    }
+
+    // A client can opt out of Assessment/Quotation/Project notifications from
+    // Settings — this is the single point every notify() call passes through,
+    // so no call site needs to know about preferences.
+    private static function isMutedForUser(int $userId, string $module): bool
+    {
+        $column = match ($module) {
+            'Assessment' => 'notify_assessment',
+            'Quotation' => 'notify_quotation',
+            'Project' => 'notify_project',
+            default => null,
+        };
+
+        if ($column === null) {
+            return false;
+        }
+
+        $client = Client::where('user_id', $userId)->first();
+
+        return $client !== null && ! $client->{$column};
     }
 
     public function index()

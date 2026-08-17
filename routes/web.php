@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Admin\AssessmentFormController;
 use App\Http\Controllers\Admin\AssessmentRequestController;
 use App\Http\Controllers\Admin\AssessmentScheduleController;
@@ -60,7 +61,7 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
         ->name('proposals');
 
     // Archive projects
-    Route::get('/archive-projects', [AdminController::class, 'showArchiveProjects'])
+    Route::get('/archive-projects', [AdminProjectController::class, 'archivedPage'])
         ->name('archive-projects');
 
     // Archive checklists
@@ -93,12 +94,18 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
         ->name('admin-settings');
 
     // Admin activity logs
-    Route::get('/admin-activity-logs', [AdminController::class, 'showAdminActivityLogs'])
+    Route::get('/admin-activity-logs', [ActivityLogController::class, 'index'])
         ->name('admin-activity-logs');
+    Route::post('/admin-activity-logs/archive-old', [ActivityLogController::class, 'archiveOld'])
+        ->name('admin-activity-logs.archive-old');
 
     // Admin profile
     Route::get('/admin-profile', [AdminController::class, 'showAdminProfile'])
         ->name('admin-profile');
+    Route::patch('/admin-profile', [AdminController::class, 'updateProfile'])
+        ->name('admin-profile.update');
+    Route::patch('/admin-profile/password', [AdminController::class, 'updatePassword'])
+        ->name('admin-profile.update-password');
 });
 
 // ==========================================================
@@ -160,14 +167,22 @@ Route::middleware(['auth', 'role:client'])->group(function () {
     // View profile
     Route::get('/profile', [ClientController::class, 'showClientProfile'])
         ->name('profile');
+    Route::patch('/profile', [ClientController::class, 'updateProfile'])
+        ->name('profile.update');
 
     // View settings
     Route::get('/settings', [ClientController::class, 'showClientSettings'])
         ->name('settings');
+    Route::patch('/settings/notification-preferences', [ClientController::class, 'updateNotificationPreferences'])
+        ->name('settings.notification-preferences.update');
 
     // View activity logs
     Route::get('/activity-logs', [ClientController::class, 'showActivityLogs'])
         ->name('activity-logs');
+
+    // View notifications
+    Route::get('/client-notifications', [ClientController::class, 'showNotifications'])
+        ->name('client-notifications');
 });
 
 // ==========================================================
@@ -366,6 +381,7 @@ Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function 
     Route::get('/projects/{project}', [AdminProjectController::class, 'show'])->name('projects.show');
     Route::put('/projects/{project}', [AdminProjectController::class, 'update'])->name('projects.update');
     Route::patch('/projects/{project}/archive', [AdminProjectController::class, 'archive'])->name('projects.archive');
+    Route::patch('/projects/{project}/unarchive', [AdminProjectController::class, 'unarchive'])->name('projects.unarchive');
 
     Route::post('/projects/{project}/tasks', [ProjectTaskController::class, 'store'])->name('project-tasks.store');
     Route::put('/project-tasks/{task}', [ProjectTaskController::class, 'update'])->name('project-tasks.update');

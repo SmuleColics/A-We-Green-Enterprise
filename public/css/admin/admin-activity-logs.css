@@ -43,15 +43,60 @@
   white-space: nowrap;
 }
 
-.module-assessment { background: #d1fae5; color: #065f46; }
-.module-quotation  { background: #dbeafe; color: #1e40af; }
-.module-project    { background: #ede9fe; color: #5b21b6; }
-.module-task       { background: #fef3c7; color: #92400e; }
-.module-client     { background: #e0f2fe; color: #0369a1; }
-.module-employee   { background: #f0fdf4; color: #166534; }
-.module-material   { background: #fdf4ff; color: #86198f; }
-.module-settings   { background: #f1f5f9; color: #334155; }
-.module-auth       { background: #fff1f2; color: #9f1239; }
+.module-assessment {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.module-quotation {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.module-project {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.module-task {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.module-checklist {
+  background: #ecfeff;
+  color: #155e75;
+}
+
+.module-client {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.module-staff {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.module-employee {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.module-material {
+  background: #fdf4ff;
+  color: #86198f;
+}
+
+.module-settings {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.module-auth {
+  background: #fff1f2;
+  color: #9f1239;
+}
 
 /* =============================================
    ACTION BADGES
@@ -66,13 +111,40 @@
   white-space: nowrap;
 }
 
-.action-create  { background: #d1fae5; color: #065f46; }
-.action-update  { background: #dbeafe; color: #1e40af; }
-.action-approve { background: #dcfce7; color: #166534; }
-.action-archive { background: #f1f5f9; color: #334155; }
-.action-warning { background: #fef3c7; color: #92400e; }
-.action-danger  { background: #fee2e2; color: #991b1b; }
-.action-login   { background: #f0fdf4; color: #166534; }
+.action-create {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.action-update {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.action-approve {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.action-archive {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.action-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.action-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.action-login {
+  background: #f0fdf4;
+  color: #166534;
+}
 
 /* =============================================
    ARCHIVE INFO BOX
@@ -106,8 +178,65 @@
   border-top: none;
 }
 
-.detail-label { color: var(--muted-text); margin-bottom: 1px; }
-.detail-value { color: var(--body-text);  margin-bottom: 0; }
+.detail-label {
+  color: var(--muted-text);
+  margin-bottom: 1px;
+}
+
+.detail-value {
+  color: var(--body-text);
+  margin-bottom: 0;
+}
+
+/* =============================================
+   DATE RANGE FILTER
+   ============================================= */
+.date-range-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 4px 6px;
+}
+
+.date-range-input {
+  border: none;
+  outline: none;
+  font-size: 12.5px;
+  color: var(--input-text);
+  padding: 2px 0;
+  width: 92px;
+  background: transparent;
+}
+
+.date-range-input::-webkit-calendar-picker-indicator {
+  margin-left: -8px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.date-range-input:focus {
+  box-shadow: none;
+}
+
+.date-range-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--muted-text);
+  padding: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.date-range-clear:hover {
+  background: var(--awg-green-hover);
+  color: var(--awg-primary);
+}
 
 /* =============================================
    PAGINATION

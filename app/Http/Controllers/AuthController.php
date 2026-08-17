@@ -26,7 +26,9 @@ class AuthController extends Controller
             'last_name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
-            'contact_number' => 'nullable|string|max:20',
+            'contact_number' => ['required', 'regex:/^09\d{9}$/'],
+        ], [
+            'contact_number.regex' => 'Please enter a valid Philippine mobile number (e.g. 09171234567).',
         ]);
 
         try {
@@ -99,6 +101,14 @@ class AuthController extends Controller
             return redirect()->intended(route($this->redirectByRole($user->role)))
                 ->with('success', "Welcome back, {$user->first_name}!");
         }
+
+        ActivityLogController::log(
+            'Auth',
+            'Failed Login',
+            "Failed login attempt for {$credentials['email']}.",
+            null,
+            'Unknown'
+        );
 
         return back()->with('error', 'These credentials do not match our records.')->onlyInput('email');
     }

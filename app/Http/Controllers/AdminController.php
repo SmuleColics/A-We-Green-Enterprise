@@ -9,6 +9,7 @@ use App\Models\ProjectTask;
 use App\Models\Quotation;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 class AdminController extends Controller
@@ -175,17 +176,6 @@ class AdminController extends Controller
     //     return view('admin.tasks.tasks');
     // }
 
-    public function showArchiveTasks()
-    {
-        return view('admin.tasks.archive-tasks');
-    }
-
-    // PROJECTS
-    public function showArchiveProjects()
-    {
-        return view('admin.projects.archive-projects');
-    }
-
     // CHECKLISTS
 
     public function showArchiveChecklists()
@@ -329,13 +319,94 @@ class AdminController extends Controller
         return view('admin.admin-settings');
     }
 
-    public function showAdminActivityLogs()
-    {
-        return view('admin.admin-activity-logs');
-    }
-
     public function showAdminProfile()
     {
-        return view('admin.admin-profile');
+        $user = auth()->user();
+        $summary = $this->activitySummaryFor($user);
+        $recentActivity = ActivityLog::where('user_id', $user->id)
+            ->where('module', '!=', 'Auth')
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get();
+
+        return view('admin.admin-profile', compact('user', 'summary', 'recentActivity'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'nullable|string|max:100',
+            'contact_number' => ['nullable', 'regex:/^09\d{9}$/'],
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
+        ], [
+            'contact_number.regex' => 'Contact number must be an 11-digit number starting with 09 (e.g. 09171234567).',
+        ]);
+
+        $user->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated successfully.',
+        ]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = auth()->user();
+
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user->update(['password' => $validated['new_password']]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password updated successfully.',
+        ]);
+    }
+
+    private function activitySummaryFor(User $user): array
+    {
+        return match ($user->role) {
+            User::ROLE_SUPER_ADMIN, User::ROLE_ADMIN => [
+                [
+                    'label' => 'Assessments Handled',
+                    'icon' => 'event_available',
+                    'value' => ActivityLog::where('user_id', $user->id)
+                        ->where('module', 'Assessment')
+                        ->whereIn('action', ['Approved', 'Rejected'])
+                        ->count(),
+                ],
+                [
+                    'label' => 'Quotations Created',
+                    'icon' => 'request_quote',
+                    'value' => ActivityLog::where('user_id', $user->id)
+                        ->where('module', 'Quotation')
+                        ->where('action', 'Created')
+                        ->count(),
+                ],
+                [
+                    'label' => 'Projects Monitored',
+                    'icon' => 'folder',
+                    'value' => ActivityLog::where('user_id', $user->id)
+                        ->where('module', 'Project')
+                        ->count(),
+                ],
+                [
+                    'label' => 'Tasks Assigned',
+                    'icon' => 'task_alt',
+                    'value' => ActivityLog::where('user_id', $user->id)
+                        ->where('module', 'Task')
+                        ->where('action', 'Created')
+                        ->count(),
+                ],
+            ],
+            default => [],
+        };
     }
 }

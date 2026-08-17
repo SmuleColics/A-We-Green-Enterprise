@@ -29,15 +29,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  document.getElementById('notif-mark-all-read')?.addEventListener('click', function (e) {
-    e.preventDefault();
-    fetch(this.dataset.url, {
-      method: 'PATCH',
-      headers: {
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        'Accept': 'application/json',
-      },
-    }).then(() => location.reload());
+  document.querySelectorAll('.js-mark-all-read').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      fetch(this.dataset.url, {
+        method: 'PATCH',
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+          'Accept': 'application/json',
+        },
+      }).then(() => location.reload());
+    });
   });
 
   document.querySelectorAll('.js-notif-item').forEach(item => {

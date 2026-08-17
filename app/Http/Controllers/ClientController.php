@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\Assessment;
+use App\Models\Notification;
 use App\Models\Project;
+use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
@@ -122,16 +124,114 @@ class ClientController extends Controller
 
     public function showClientProfile()
     {
-        return view('client.profile');
+        $user = auth()->user();
+        $client = $user->client;
+        $latestAssessment = $client->assessments()->latest()->first();
+
+        return view('client.profile', compact('user', 'client', 'latestAssessment'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+        $client = $user->client;
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'contact_number' => ['required', 'regex:/^09\d{9}$/'],
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
+            'block' => 'nullable|string|max:50',
+            'lot' => 'nullable|string|max:50',
+            'street' => 'nullable|string|max:150',
+            'barangay' => 'required|string|max:150',
+            'province' => 'required|string|max:100',
+            'city' => 'required|string|max:100',
+            'zip_code' => 'nullable|string|max:10',
+            'current_password' => ['required_with:new_password', 'current_password'],
+            'new_password' => ['nullable', 'string', 'min:8', 'confirmed'],
+        ], [
+            'contact_number.regex' => 'Contact number must be an 11-digit number starting with 09 (e.g. 09171234567).',
+        ]);
+
+        $user->update([
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'contact_number' => $validated['contact_number'],
+            'email' => $validated['email'],
+        ]);
+
+        $client->update([
+            'block' => $validated['block'] ?? null,
+            'lot' => $validated['lot'] ?? null,
+            'street' => $validated['street'] ?? null,
+            'barangay' => $validated['barangay'],
+            'province' => $validated['province'],
+            'city' => $validated['city'],
+            'zip_code' => $validated['zip_code'] ?? null,
+        ]);
+
+        if (! empty($validated['new_password'])) {
+            $user->update(['password' => $validated['new_password']]);
+        }
+
+        ActivityLogController::log(
+            'Client',
+            'Updated',
+            'Updated profile information.',
+            $user->id,
+            $user->full_name
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated successfully.',
+        ]);
     }
 
     public function showClientSettings()
     {
-        return view('client.settings');
+        $user = auth()->user();
+        $client = $user->client;
+
+        return view('client.settings', compact('user', 'client'));
+    }
+
+    public function updateNotificationPreferences(Request $request)
+    {
+        $client = auth()->user()->client;
+
+        $validated = $request->validate([
+            'notify_assessment' => 'required|boolean',
+            'notify_quotation' => 'required|boolean',
+            'notify_project' => 'required|boolean',
+        ]);
+
+        $client->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notification preferences updated.',
+        ]);
     }
 
     public function showActivityLogs()
     {
-        return view('client.activity-logs');
+        $logs = ActivityLog::where('user_id', auth()->id())
+            ->where('module', '!=', 'Auth')
+            ->where('is_archived', false)
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('client.activity-logs', compact('logs'));
+    }
+
+    public function showNotifications()
+    {
+        $notifications = Notification::where('user_id', auth()->id())
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('client.notifications', compact('notifications'));
     }
 }

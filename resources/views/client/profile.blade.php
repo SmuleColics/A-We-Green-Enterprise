@@ -8,6 +8,16 @@
 
 @section('content')
 
+    @php
+        $statusBadges = [
+            'active' => ['label' => 'Active Account', 'class' => 'bg-success'],
+            'inactive' => ['label' => 'Inactive Account', 'class' => 'bg-secondary'],
+            'pending' => ['label' => 'Pending Activation', 'class' => 'bg-warning text-dark'],
+        ];
+        $statusBadge = $statusBadges[$user->status] ?? $statusBadges['pending'];
+        $clientTypeLabel = $latestAssessment->client_type ?? null;
+    @endphp
+
     <div class="page-wrapper">
         <div class="page-hero">
             <h2>My Profile</h2>
@@ -20,16 +30,20 @@
                 <!-- Profile Header -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body d-flex align-items-center gap-3 flex-wrap">
-                        <div class="profile-avatar">MS</div>
+                        <div class="profile-avatar">{{ $user->initials }}</div>
                         <div class="flex-grow-1">
-                            <h5 class="fw-semibold mb-0">Maria Santos</h5>
-                            <p class="text-muted small mb-0">Residential Client · Member since March 2026</p>
+                            <h5 class="fw-semibold mb-0">{{ $user->full_name }}</h5>
+                            <p class="text-muted small mb-0">
+                                {{ $clientTypeLabel ? $clientTypeLabel . ' Client' : 'Client' }} · Member since
+                                {{ $user->created_at->format('F Y') }}
+                            </p>
                         </div>
-                        <span class="badge bg-success rounded-pill">Verified Account</span>
+                        <span class="badge {{ $statusBadge['class'] }} rounded-pill">{{ $statusBadge['label'] }}</span>
                     </div>
                 </div>
 
-                <form>
+                <form id="profileForm">
+                    @csrf
                     <!-- Section 1: Personal Information -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body">
@@ -37,27 +51,35 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label small">First Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" value="Maria">
+                                    <input type="text" class="form-control" id="p-fname"
+                                        value="{{ $user->first_name }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small">Last Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" value="Santos">
+                                    <input type="text" class="form-control" id="p-lname"
+                                        value="{{ $user->last_name }}">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label small">Contact Number <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" value="0917-123-4567">
+                                    <label class="form-label small">Contact Number <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="p-contact"
+                                        placeholder="09171234567" maxlength="11" inputmode="numeric"
+                                        oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11)"
+                                        value="{{ $user->contact_number }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small">Email Address <span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control" value="maria.santos@email.com">
+                                    <input type="email" class="form-control" id="p-email" value="{{ $user->email }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small">Client Type</label>
-                                    <input type="text" class="form-control bg-light" value="Residential" readonly>
+                                    <input type="text" class="form-control bg-light"
+                                        value="{{ $clientTypeLabel ?? '—' }}" readonly>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small">Establishment Type</label>
-                                    <input type="text" class="form-control bg-light" value="Home / Residence" readonly>
+                                    <input type="text" class="form-control bg-light"
+                                        value="{{ $latestAssessment->establishment_type ?? '—' }}" readonly>
                                 </div>
                             </div>
                         </div>
@@ -68,47 +90,52 @@
                         <div class="card-body">
                             <h6 class="fw-semibold mb-3">Address</h6>
                             <div class="row g-3">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label class="form-label small">Block</label>
-                                    <input type="text" class="form-control" value="12">
+                                    <input type="text" class="form-control" id="p-block" value="{{ $client->block }}">
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label class="form-label small">Lot</label>
-                                    <input type="text" class="form-control" value="5">
+                                    <input type="text" class="form-control" id="p-lot" value="{{ $client->lot }}">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label class="form-label small">Street / Purok / Sitio</label>
-                                    <input type="text" class="form-control" value="Sampaguita St.">
+                                    <input type="text" class="form-control" id="p-street"
+                                        value="{{ $client->street }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small">Barangay <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" value="Brgy. Tanzang Luma II">
+                                    <input type="text" class="form-control" id="p-brgy"
+                                        value="{{ $client->barangay }}">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label class="form-label small">Province <span class="text-danger">*</span></label>
                                     <select class="form-select" id="p-province" onchange="updateProfileCities()">
                                         <option value="">— Select Province —</option>
                                         <optgroup label="NCR">
-                                            <option value="Metro Manila">Metro Manila (NCR)</option>
+                                            <option value="Metro Manila" @selected($client->province === 'Metro Manila')>Metro Manila (NCR)
+                                            </option>
                                         </optgroup>
                                         <optgroup label="Region IV-A (CALABARZON)">
-                                            <option value="Batangas">Batangas</option>
-                                            <option value="Cavite" selected>Cavite</option>
-                                            <option value="Laguna">Laguna</option>
-                                            <option value="Quezon">Quezon</option>
-                                            <option value="Rizal">Rizal</option>
+                                            <option value="Batangas" @selected($client->province === 'Batangas')>Batangas</option>
+                                            <option value="Cavite" @selected($client->province === 'Cavite')>Cavite</option>
+                                            <option value="Laguna" @selected($client->province === 'Laguna')>Laguna</option>
+                                            <option value="Quezon" @selected($client->province === 'Quezon')>Quezon</option>
+                                            <option value="Rizal" @selected($client->province === 'Rizal')>Rizal</option>
                                         </optgroup>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label small">City / Municipality <span class="text-danger">*</span></label>
+                                <div class="col-md-6">
+                                    <label class="form-label small">City / Municipality <span
+                                            class="text-danger">*</span></label>
                                     <select class="form-select" id="p-city">
                                         <!-- pre-populated via JS on load -->
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label class="form-label small">Zip Code</label>
-                                    <input type="text" class="form-control" value="4103">
+                                    <input type="text" class="form-control" id="p-zip"
+                                        value="{{ $client->zip_code }}">
                                 </div>
                             </div>
                         </div>
@@ -119,13 +146,20 @@
                         <div class="card-body">
                             <h6 class="fw-semibold mb-3">Security</h6>
                             <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label small">Current Password</label>
+                                    <input type="password" class="form-control" id="p-current-password"
+                                        placeholder="Required to change password" autocomplete="current-password">
+                                </div>
                                 <div class="col-md-6">
                                     <label class="form-label small">New Password</label>
-                                    <input type="password" class="form-control" placeholder="Leave blank to keep current password">
+                                    <input type="password" class="form-control" id="p-new-password"
+                                        placeholder="Leave blank to keep current password" autocomplete="new-password">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small">Confirm New Password</label>
-                                    <input type="password" class="form-control" placeholder="Re-enter new password">
+                                    <input type="password" class="form-control" id="p-new-password-confirmation"
+                                        placeholder="Re-enter new password" autocomplete="new-password">
                                 </div>
                             </div>
                         </div>
@@ -133,7 +167,8 @@
 
                     <!-- Actions -->
                     <div class="d-flex justify-content-end gap-2 pb-5">
-                        <button type="button" class="btn btn-outline-secondary">Cancel</button>
+                        <button type="button" class="btn btn-outline-secondary"
+                            onclick="location.reload()">Cancel</button>
                         <button type="submit" class="btn btn-success d-flex align-items-center gap-1">
                             <span class="material-symbols-outlined fs-18">save</span>
                             Save Changes
@@ -207,8 +242,104 @@
                 ).join('');
         }
 
-        window.addEventListener('DOMContentLoaded', function () {
-            updateProfileCities('Imus');
+        window.addEventListener('DOMContentLoaded', function() {
+            updateProfileCities(@json($client->city));
+        });
+
+        /* ─── Field error helpers (same pattern as client-assessment.js) ─── */
+        function setFieldError(field, message) {
+            if (!field) return;
+            field.classList.add('is-invalid');
+            let feedback = field.nextElementSibling;
+            if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+                feedback = document.createElement('div');
+                feedback.className = 'invalid-feedback';
+                field.insertAdjacentElement('afterend', feedback);
+            }
+            feedback.textContent = message;
+        }
+
+        function clearAllFieldErrors() {
+            document.querySelectorAll('#profileForm .is-invalid').forEach(f => f.classList.remove('is-invalid'));
+            document.querySelectorAll('#profileForm .invalid-feedback').forEach(f => f.remove());
+        }
+
+        const FIELD_MAP = {
+            first_name: 'p-fname',
+            last_name: 'p-lname',
+            contact_number: 'p-contact',
+            email: 'p-email',
+            block: 'p-block',
+            lot: 'p-lot',
+            street: 'p-street',
+            barangay: 'p-brgy',
+            province: 'p-province',
+            city: 'p-city',
+            zip_code: 'p-zip',
+            current_password: 'p-current-password',
+            new_password: 'p-new-password',
+        };
+
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearAllFieldErrors();
+
+            const payload = {
+                first_name: document.getElementById('p-fname').value.trim(),
+                last_name: document.getElementById('p-lname').value.trim(),
+                contact_number: document.getElementById('p-contact').value.trim(),
+                email: document.getElementById('p-email').value.trim(),
+                block: document.getElementById('p-block').value.trim() || null,
+                lot: document.getElementById('p-lot').value.trim() || null,
+                street: document.getElementById('p-street').value.trim() || null,
+                barangay: document.getElementById('p-brgy').value.trim(),
+                province: document.getElementById('p-province').value,
+                city: document.getElementById('p-city').value,
+                zip_code: document.getElementById('p-zip').value.trim() || null,
+                current_password: document.getElementById('p-current-password').value || null,
+                new_password: document.getElementById('p-new-password').value || null,
+                new_password_confirmation: document.getElementById('p-new-password-confirmation').value || null,
+            };
+
+            fetch('{{ route('profile.update') }}', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                })
+                .then(res => res.json().then(data => ({
+                    status: res.status,
+                    data
+                })))
+                .then(({
+                    status,
+                    data
+                }) => {
+                    if (status === 422 && data.errors) {
+                        let firstField = null;
+                        Object.keys(data.errors).forEach(key => {
+                            const fieldId = FIELD_MAP[key];
+                            const field = fieldId ? document.getElementById(fieldId) : null;
+                            setFieldError(field, data.errors[key][0]);
+                            if (field && !firstField) firstField = field;
+                        });
+                        firstField?.focus();
+                        showToast('Please review the highlighted fields.', 'danger');
+                        return;
+                    }
+
+                    if (status !== 200 || !data.success) {
+                        showToast(data.message || 'Something went wrong. Please try again.', 'danger');
+                        return;
+                    }
+
+                    showToast(data.message, 'success');
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => showToast('Network error. Please try again.', 'danger'));
         });
     </script>
 @endsection

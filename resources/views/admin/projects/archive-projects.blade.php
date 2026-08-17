@@ -20,40 +20,49 @@
     <div class="container-fluid px-4 py-4">
 
         <!-- Summary Cards -->
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
-                <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-primary">autorenew</span>
+        <div class="row row-cols-2 row-cols-md-3 row-cols-xl-5 g-3 mb-4 project-summary-row">
+            <div class="col">
+                <div class="summary-card h-100">
+                    <span class="material-symbols-outlined summary-icon text-secondary">inventory_2</span>
                     <div>
-                        <p class="summary-label">Active</p>
-                        <p class="summary-value">0</p>
+                        <p class="summary-label">Total Archived</p>
+                        <p class="summary-value">{{ $total }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
+            <div class="col">
+                <div class="summary-card h-100">
+                    <span class="material-symbols-outlined summary-icon green-text">check_circle</span>
                     <div>
                         <p class="summary-label">Completed</p>
-                        <p class="summary-value">5</p>
+                        <p class="summary-value">{{ $completed }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-danger">cancel</span>
+            <div class="col">
+                <div class="summary-card h-100">
+                    <span class="material-symbols-outlined summary-icon text-primary">play_circle</span>
                     <div>
-                        <p class="summary-label">Cancelled</p>
-                        <p class="summary-value">2</p>
+                        <p class="summary-label">In Progress</p>
+                        <p class="summary-value">{{ $inProgress }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="summary-card">
+            <div class="col">
+                <div class="summary-card h-100">
                     <span class="material-symbols-outlined summary-icon text-warning">pause_circle</span>
                     <div>
                         <p class="summary-label">On Hold</p>
-                        <p class="summary-value">1</p>
+                        <p class="summary-value">{{ $onHold }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="summary-card h-100">
+                    <span class="material-symbols-outlined summary-icon muted-text">pending</span>
+                    <div>
+                        <p class="summary-label">Not Started</p>
+                        <p class="summary-value">{{ $notStarted }}</p>
                     </div>
                 </div>
             </div>
@@ -63,23 +72,27 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body">
 
-                <div class="mb-3 btn-group filter-btn-group" role="group">
+                <div class="mb-3 btn-group filter-btn-group" role="group" id="statusFilterGroup">
                     <button type="button" class="btn btn-sm btn-outline-secondary active" data-filter="all">All</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Active">Active</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Completed">Completed</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Cancelled">Cancelled</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="On Hold">On Hold</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Not Started">Not
+                        Started</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="In Progress">In
+                        Progress</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="On Hold">On
+                        Hold</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                        data-filter="Completed">Completed</button>
                 </div>
 
                 <div class="table-responsive">
                     <table id="archiveProjectsTable" class="table table-hover mb-0 small w-100 align-middle">
                         <thead class="table-light">
                             <tr>
+                                <th class="border-0 small green-text">Project ID</th>
                                 <th class="border-0 small green-text">Project</th>
                                 <th class="border-0 small green-text">Client</th>
                                 <th class="border-0 small green-text">Service</th>
                                 <th class="border-0 small green-text">Amount</th>
-                                <th class="border-0 small green-text">Due Date</th>
                                 <th class="border-0 small green-text">Progress</th>
                                 <th class="border-0 small green-text">Status</th>
                                 <th class="border-0 small green-text">Archived On</th>
@@ -87,162 +100,46 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="fw-semibold">PA System – Quezon City</td>
-                                <td>Lisa Tan</td>
-                                <td>Public Address System</td>
-                                <td class="fw-semibold text-success">₱55,000.00</td>
-                                <td>Jan 15, 2026</td>
-                                <td>
-                                    <div class="progress-container">
-                                        <div class="progress" style="height:6px;">
-                                            <div class="progress-bar bg-success" style="width:100%;"></div>
+                            @foreach ($projects as $project)
+                                <tr data-status="{{ $project->status }}">
+                                    <td class="fw-semibold small">{{ $project->reference_number }}</td>
+                                    <td class="fw-semibold">{{ $project->project_title }}</td>
+                                    <td>{{ $project->quotation->assessment->client->user->full_name }}</td>
+                                    <td>{{ $project->service_type }}</td>
+                                    <td class="fw-semibold text-success">₱{{ number_format($project->total_budget, 2) }}</td>
+                                    <td>
+                                        <div class="progress-container">
+                                            <div class="progress hpx-6">
+                                                <div class="progress-bar bg-success"
+                                                    style="width:{{ $project->taskProgress() }}%"></div>
+                                            </div>
+                                            <small class="text-muted">{{ $project->taskProgress() }}%</small>
                                         </div>
-                                        <small class="text-muted">100%</small>
-                                    </div>
-                                </td>
-                                <td><span class="badge rounded-pill bg-success" data-status="1">Completed</span></td>
-                                <td class="text-muted small">Feb 01, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <a href="{{ route('projects') }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Solar Setup – Cavite</td>
-                                <td>Ramon Dela Cruz</td>
-                                <td>Solar Setup</td>
-                                <td class="fw-semibold text-success">₱210,000.00</td>
-                                <td>Dec 30, 2025</td>
-                                <td>
-                                    <div class="progress-container">
-                                        <div class="progress" style="height:6px;">
-                                            <div class="progress-bar bg-danger" style="width:40%;"></div>
-                                        </div>
-                                        <small class="text-muted">40%</small>
-                                    </div>
-                                </td>
-                                <td><span class="badge rounded-pill bg-danger" data-status="2">Cancelled</span></td>
-                                <td class="text-muted small">Jan 05, 2026</td>
-                                <td class="text-nowrap actions-col">
-                                    <a href="{{ route('projects') }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">CCTV System – Dasmariñas</td>
-                                <td>Elena Cruz</td>
-                                <td>CCTV Setup</td>
-                                <td class="fw-semibold text-success">₱38,500.00</td>
-                                <td>Nov 20, 2025</td>
-                                <td>
-                                    <div class="progress-container">
-                                        <div class="progress" style="height:6px;">
-                                            <div class="progress-bar bg-success" style="width:100%;"></div>
-                                        </div>
-                                        <small class="text-muted">100%</small>
-                                    </div>
-                                </td>
-                                <td><span class="badge rounded-pill bg-success" data-status="1">Completed</span></td>
-                                <td class="text-muted small">Dec 10, 2025</td>
-                                <td class="text-nowrap actions-col">
-                                    <a href="{{ route('projects') }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Street Lights – Imus</td>
-                                <td>Ben Soriano</td>
-                                <td>Solar Street Light</td>
-                                <td class="fw-semibold text-success">₱480,000.00</td>
-                                <td>Oct 15, 2025</td>
-                                <td>
-                                    <div class="progress-container">
-                                        <div class="progress" style="height:6px;">
-                                            <div class="progress-bar bg-warning" style="width:60%;"></div>
-                                        </div>
-                                        <small class="text-muted">60%</small>
-                                    </div>
-                                </td>
-                                <td><span class="badge rounded-pill bg-warning text-dark" data-status="3">On Hold</span></td>
-                                <td class="text-muted small">Nov 01, 2025</td>
-                                <td class="text-nowrap actions-col">
-                                    <a href="{{ route('projects') }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">PA System – Bacoor</td>
-                                <td>Grace Villanueva</td>
-                                <td>Public Address System</td>
-                                <td class="fw-semibold text-success">₱72,000.00</td>
-                                <td>Sep 30, 2025</td>
-                                <td>
-                                    <div class="progress-container">
-                                        <div class="progress" style="height:6px;">
-                                            <div class="progress-bar bg-success" style="width:100%;"></div>
-                                        </div>
-                                        <small class="text-muted">100%</small>
-                                    </div>
-                                </td>
-                                <td><span class="badge rounded-pill bg-success" data-status="1">Completed</span></td>
-                                <td class="text-muted small">Oct 10, 2025</td>
-                                <td class="text-nowrap actions-col">
-                                    <a href="{{ route('projects') }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-semibold">Solar Panel – Silang</td>
-                                <td>Carla Bautista</td>
-                                <td>Solar Setup</td>
-                                <td class="fw-semibold text-success">₱320,000.00</td>
-                                <td>Aug 20, 2025</td>
-                                <td>
-                                    <div class="progress-container">
-                                        <div class="progress" style="height:6px;">
-                                            <div class="progress-bar bg-danger" style="width:25%;"></div>
-                                        </div>
-                                        <small class="text-muted">25%</small>
-                                    </div>
-                                </td>
-                                <td><span class="badge rounded-pill bg-danger" data-status="2">Cancelled</span></td>
-                                <td class="text-muted small">Sep 01, 2025</td>
-                                <td class="text-nowrap actions-col">
-                                    <a href="{{ route('projects') }}"
-                                        class="btn btn-sm btn-outline-success action-btn" title="View">
-                                        <span class="material-symbols-outlined icon-action">visibility</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-outline-primary action-btn" title="Restore">
-                                        <span class="material-symbols-outlined icon-action">unarchive</span>
-                                    </button>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill
+                                            @if ($project->status === 'Completed') bg-success
+                                            @elseif ($project->status === 'On Hold') bg-warning text-dark
+                                            @elseif ($project->status === 'In Progress') bg-primary
+                                            @else bg-secondary
+                                            @endif">{{ $project->status }}</span>
+                                    </td>
+                                    <td class="text-muted small"
+                                        data-order="{{ optional($project->archived_at)->format('Y-m-d H:i:s') }}">
+                                        {{ $project->archived_at?->format('M j, Y') ?? '—' }}
+                                    </td>
+                                    <td class="text-nowrap actions-col">
+                                        <a href="{{ route('projects.show', $project) }}"
+                                            class="btn btn-sm btn-outline-success action-btn" title="View">
+                                            <span class="material-symbols-outlined icon-action">visibility</span>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-primary action-btn" title="Restore"
+                                            onclick="openRestoreConfirm({{ $project->id }}, {{ Js::from($project->reference_number) }})">
+                                            <span class="material-symbols-outlined icon-action">unarchive</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -252,28 +149,102 @@
 
     </div>
 
+    <!-- ── Restore Confirm Modal ── -->
+    <div class="modal fade" id="restoreConfirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title fw-semibold">Restore this project?</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-2">
+                    <p class="small text-muted mb-0">
+                        Project <strong id="rc-refNo">—</strong> will be moved back to <strong>Projects</strong>.
+                    </p>
+                </div>
+                <div class="modal-footer border-0 pt-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary d-flex align-items-center gap-1"
+                        id="rc-confirm-btn">
+                        <span class="material-symbols-outlined fs-15">unarchive</span>
+                        Restore
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('scripts')
     <script>
-        $(document).ready(function() {
-            jQuery.fn.dataTable.ext.type.order['status-priority-pre'] = function(data) {
-                return $(data).data('status') || 0;
-            };
+        const ROUTES = {
+            unarchive: {{ Js::from(route('projects.unarchive', ['project' => '__ID__'])) }},
+        };
 
-            $('#archiveProjectsTable').DataTable({
+        let pendingRestoreId = null;
+
+        const restoreConfirmModalEl = document.getElementById('restoreConfirmModal');
+        const restoreConfirmModal = new bootstrap.Modal(restoreConfirmModalEl);
+
+        function openRestoreConfirm(id, refNo) {
+            pendingRestoreId = id;
+            document.getElementById('rc-refNo').textContent = refNo;
+            restoreConfirmModal.show();
+        }
+
+        document.getElementById('rc-confirm-btn').addEventListener('click', function() {
+            if (!pendingRestoreId) return;
+
+            fetch(ROUTES.unarchive.replace('__ID__', pendingRestoreId), {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    },
+                })
+                .then(res => res.json().then(data => ({
+                    status: res.status,
+                    data
+                })))
+                .then(({
+                    status,
+                    data
+                }) => {
+                    if (status !== 200 || !data.success) {
+                        showToast(data.message || 'Unable to restore this project.', 'danger');
+                        return;
+                    }
+                    showToast(data.message, 'success');
+                    restoreConfirmModal.hide();
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => showToast('Network error. Please try again.', 'danger'));
+        });
+
+        $(document).ready(function() {
+            const table = $('#archiveProjectsTable').DataTable({
                 pageLength: 10,
                 lengthChange: true,
                 info: true,
-                order: [[7, 'desc']],
-                columnDefs: [
-                    { orderable: false, targets: 8 },
-                    { type: 'status-priority', targets: 6 }
+                order: [
+                    [7, 'desc']
                 ],
+                columnDefs: [{
+                    orderable: false,
+                    targets: 8
+                }],
                 language: {
                     emptyTable: 'No archived projects yet.',
                     zeroRecords: 'No matching archived projects found.'
                 }
+            });
+
+            $('#statusFilterGroup button').on('click', function() {
+                $('#statusFilterGroup button').removeClass('active');
+                $(this).addClass('active');
+                const filter = $(this).data('filter');
+                table.column(6).search(filter === 'all' ? '' : filter, false, false).draw();
             });
         });
     </script>

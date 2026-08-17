@@ -39,7 +39,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($tasks as $task)
+                            @foreach ($tasks as $task)
                                 <tr>
                                     <td class="fw-semibold">{{ $task->title }}</td>
                                     <td>{{ $task->employee ? $task->employee->full_name : 'Unassigned' }}</td>
@@ -61,12 +61,7 @@
                                         </button>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="text-center text-muted py-4">No archived tasks for this
-                                        project.</td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

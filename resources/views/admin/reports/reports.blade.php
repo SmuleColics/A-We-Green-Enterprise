@@ -79,8 +79,10 @@
                     <div class="col-12 col-lg-6">
                         <div class="chart-card">
                             <p class="chart-card-title">Quotation Status Breakdown</p>
-                            <div class="position-relative hpx-200 wp-100"><canvas id="weeklyQuotationDoughnut"></canvas></div>
-                            <div class="d-flex justify-content-center flex-wrap gap-3 mt-3 w-100" id="weeklyDoughnutLegend"></div>
+                            <div class="flex-grow-1 d-flex flex-column justify-content-center">
+                                <div class="position-relative hpx-200 wp-100"><canvas id="weeklyQuotationDoughnut"></canvas></div>
+                                <div class="d-flex justify-content-center flex-wrap gap-3 mt-3 w-100" id="weeklyDoughnutLegend"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -95,7 +97,7 @@
                     </div>
                     <div class="col-12 col-lg-6">
                         <div class="chart-card">
-                            <p class="chart-card-title">Accepted vs Rejected Quotations</p>
+                            <p class="chart-card-title">Accepted vs Revision Requested Quotations</p>
                             <div class="position-relative hpx-260 wp-100"><canvas id="weeklyAcceptRejectBar"></canvas></div>
                         </div>
                     </div>
@@ -132,7 +134,7 @@
                                                         @if ($quotation->status === 'Approved') bg-success
                                                         @elseif ($quotation->status === 'Rejected') bg-danger
                                                         @else bg-primary
-                                                        @endif">{{ $quotation->status }}</span>
+                                                        @endif">{{ $quotation->status === 'Rejected' ? 'Revision Requested' : $quotation->status }}</span>
                                                 </td>
                                             </tr>
                                         @empty
@@ -190,8 +192,10 @@
                     <div class="col-12 col-lg-6">
                         <div class="chart-card">
                             <p class="chart-card-title">Quotation Status Breakdown</p>
-                            <div style="position:relative;width:100%;height:200px;"><canvas id="monthlyQuotationDoughnut"></canvas></div>
-                            <div class="d-flex justify-content-center flex-wrap gap-3 mt-3 w-100" id="monthlyDoughnutLegend"></div>
+                            <div class="flex-grow-1 d-flex flex-column justify-content-center">
+                                <div style="position:relative;width:100%;height:200px;"><canvas id="monthlyQuotationDoughnut"></canvas></div>
+                                <div class="d-flex justify-content-center flex-wrap gap-3 mt-3 w-100" id="monthlyDoughnutLegend"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -206,7 +210,7 @@
                     </div>
                     <div class="col-12 col-lg-6">
                         <div class="chart-card">
-                            <p class="chart-card-title">Accepted vs Rejected Quotations</p>
+                            <p class="chart-card-title">Accepted vs Revision Requested Quotations</p>
                             <div style="position:relative;width:100%;height:260px;"><canvas id="monthlyAcceptRejectBar"></canvas></div>
                         </div>
                     </div>
@@ -243,7 +247,7 @@
                                                         @if ($quotation->status === 'Approved') bg-success
                                                         @elseif ($quotation->status === 'Rejected') bg-danger
                                                         @else bg-primary
-                                                        @endif">{{ $quotation->status }}</span>
+                                                        @endif">{{ $quotation->status === 'Rejected' ? 'Revision Requested' : $quotation->status }}</span>
                                                 </td>
                                             </tr>
                                         @empty

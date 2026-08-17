@@ -267,10 +267,12 @@
                             <div class="col-md-6">
                                 <label class="form-label small">First Name <span class="text-danger">*</span></label>
                                 <input type="text" id="edit-firstname" class="form-control form-control-sm" required>
+                                <div class="invalid-feedback">First name is required.</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">Last Name <span class="text-danger">*</span></label>
                                 <input type="text" id="edit-lastname" class="form-control form-control-sm" required>
+                                <div class="invalid-feedback">Last name is required.</div>
                             </div>
 
                             <div class="col-md-6">
@@ -284,7 +286,10 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">Contact Number <span class="text-danger">*</span></label>
-                                <input type="text" id="edit-contact" class="form-control form-control-sm" required>
+                                <input type="text" id="edit-contact" class="form-control form-control-sm"
+                                    placeholder="0917-xxx-xxxx" pattern="09[0-9]{9}" maxlength="11"
+                                    oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11)" required>
+                                <div class="invalid-feedback">Contact number must be 11 digits starting with 09 (e.g. 09171234567).</div>
                             </div>
 
                             <div class="col-md-6" id="editRoleFieldWrap">
@@ -298,23 +303,41 @@
                             <div class="col-md-6">
                                 <label class="form-label small">Email Address <span class="text-danger">*</span></label>
                                 <input type="email" id="edit-email" class="form-control form-control-sm" required>
+                                <div class="invalid-feedback">Please enter a valid email address.</div>
                             </div>
                             <div class="col-md-6" id="editPasswordFieldWrap">
                                 <label class="form-label small">New Password</label>
                                 <div class="input-icon-wrap">
                                     <input type="password" id="edit-password"
-                                        class="form-control form-control-sm pe-input"
+                                        class="form-control form-control-sm pe-input" minlength="8"
                                         placeholder="Leave blank to keep current">
                                     <button type="button" class="password-toggle" id="toggleEditPassword"
                                         aria-label="Show password">
                                         <span class="material-symbols-outlined fs-16"
                                             id="toggleEditPasswordIcon">visibility</span>
                                     </button>
+                                    <div class="invalid-feedback">Password must be at least 8 characters.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6" id="editConfirmPasswordFieldWrap">
+                                <label class="form-label small">Confirm New Password</label>
+                                <div class="input-icon-wrap">
+                                    <input type="password" id="edit-password-confirmation"
+                                        class="form-control form-control-sm pe-input" placeholder="Re-enter new password">
+                                    <button type="button" class="password-toggle" id="toggleEditConfirmPassword"
+                                        aria-label="Show password">
+                                        <span class="material-symbols-outlined fs-16"
+                                            id="toggleEditConfirmPasswordIcon">visibility</span>
+                                    </button>
+                                    <div class="invalid-feedback" id="edit-password-confirmation-feedback">Passwords do
+                                        not match.</div>
                                 </div>
                             </div>
 
                             <div class="col-12">
                                 <hr class="my-1">
+                                <p class="small fw-semibold mb-0">Address <span
+                                        class="text-muted fw-normal">(optional)</span></p>
                             </div>
 
                             <div class="col-md-4">
@@ -333,19 +356,19 @@
                                     placeholder="Green St.">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small">Barangay <span class="text-danger">*</span></label>
+                                <label class="form-label small">Barangay</label>
                                 <input type="text" id="edit-barangay" class="form-control form-control-sm"
-                                    placeholder="Olaes" required>
+                                    placeholder="Olaes">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small">City <span class="text-danger">*</span></label>
+                                <label class="form-label small">City</label>
                                 <input type="text" id="edit-city" class="form-control form-control-sm"
-                                    placeholder="GMA" required>
+                                    placeholder="GMA">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small">Province <span class="text-danger">*</span></label>
+                                <label class="form-label small">Province</label>
                                 <input type="text" id="edit-province" class="form-control form-control-sm"
-                                    placeholder="Cavite" required>
+                                    placeholder="Cavite">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">Zip Code</label>
@@ -384,11 +407,13 @@
                                 <label class="form-label small">First Name <span class="text-danger">*</span></label>
                                 <input type="text" id="add-firstname" class="form-control form-control-sm"
                                     placeholder="First name" required>
+                                <div class="invalid-feedback">First name is required.</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">Last Name <span class="text-danger">*</span></label>
                                 <input type="text" id="add-lastname" class="form-control form-control-sm"
                                     placeholder="Last name" required>
+                                <div class="invalid-feedback">Last name is required.</div>
                             </div>
 
                             <div class="col-md-6">
@@ -399,11 +424,14 @@
                                     <option value="Employee">Employee</option>
                                     <option value="Admin">Admin</option>
                                 </select>
+                                <div class="invalid-feedback">Please select a staff type.</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">Contact Number <span class="text-danger">*</span></label>
                                 <input type="text" id="add-contact" class="form-control form-control-sm"
-                                    placeholder="0917-xxx-xxxx" required>
+                                    placeholder="0917-xxx-xxxx" pattern="09[0-9]{9}" maxlength="11"
+                                    oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11)" required>
+                                <div class="invalid-feedback">Contact number must be 11 digits starting with 09 (e.g. 09171234567).</div>
                             </div>
 
                             <div class="col-md-6" id="addRoleFieldWrap" style="display:none;">
@@ -414,11 +442,13 @@
                                     <option value="technician">Technician</option>
                                     <option value="driver_technician">Driver / Technician</option>
                                 </select>
+                                <div class="invalid-feedback">Please select an employee role.</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">Email Address <span class="text-danger">*</span></label>
                                 <input type="email" id="add-email" class="form-control form-control-sm"
                                     placeholder="staff@email.com" required>
+                                <div class="invalid-feedback">Please enter a valid email address.</div>
                             </div>
                             <div class="col-md-6" id="addPasswordFieldWrap">
                                 <label class="form-label small">Password <span class="text-danger">*</span></label>
@@ -431,11 +461,31 @@
                                         <span class="material-symbols-outlined fs-16"
                                             id="toggleAddPasswordIcon">visibility</span>
                                     </button>
+                                    <div class="invalid-feedback">Password must be at least 8 characters.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-12" id="addConfirmPasswordFieldWrap">
+                                <label class="form-label small">Confirm Password <span
+                                        class="text-danger">*</span></label>
+                                <div class="input-icon-wrap">
+                                    <input type="password" id="add-password-confirmation"
+                                        class="form-control form-control-sm pe-input" placeholder="Re-enter password"
+                                        required minlength="8">
+                                    <button type="button" class="password-toggle" id="toggleAddConfirmPassword"
+                                        aria-label="Show password">
+                                        <span class="material-symbols-outlined fs-16"
+                                            id="toggleAddConfirmPasswordIcon">visibility</span>
+                                    </button>
+                                    <div class="invalid-feedback" id="add-password-confirmation-feedback">Please confirm
+                                        the password.</div>
                                 </div>
                             </div>
 
                             <div class="col-12">
                                 <hr class="my-1">
+                                <p class="small fw-semibold mb-0 fs-16">Address <span
+                                        class="text-muted fw-normal">(optional)</span>
+                                </p>
                             </div>
 
                             <div class="col-md-4">
@@ -454,19 +504,19 @@
                                     placeholder="Green St.">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small">Barangay <span class="text-danger">*</span></label>
+                                <label class="form-label small">Barangay</label>
                                 <input type="text" id="add-barangay" class="form-control form-control-sm"
-                                    placeholder="Olaes" required>
+                                    placeholder="Olaes">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small">City <span class="text-danger">*</span></label>
+                                <label class="form-label small">City</label>
                                 <input type="text" id="add-city" class="form-control form-control-sm"
-                                    placeholder="GMA" required>
+                                    placeholder="GMA">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small">Province <span class="text-danger">*</span></label>
+                                <label class="form-label small">Province</label>
                                 <input type="text" id="add-province" class="form-control form-control-sm"
-                                    placeholder="Cavite" required>
+                                    placeholder="Cavite">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">Zip Code</label>
@@ -546,6 +596,35 @@
 
         wirePasswordToggle('toggleAddPassword', 'toggleAddPasswordIcon', 'add-password');
         wirePasswordToggle('toggleEditPassword', 'toggleEditPasswordIcon', 'edit-password');
+        wirePasswordToggle('toggleAddConfirmPassword', 'toggleAddConfirmPasswordIcon', 'add-password-confirmation');
+        wirePasswordToggle('toggleEditConfirmPassword', 'toggleEditConfirmPasswordIcon', 'edit-password-confirmation');
+
+        function validatePasswordMatch(passwordId, confirmId, requireMatchOnlyIfFilled = false) {
+            const password = document.getElementById(passwordId);
+            const confirm = document.getElementById(confirmId);
+            const feedback = document.getElementById(confirmId + '-feedback');
+
+            if (requireMatchOnlyIfFilled && !password.value && !confirm.value) {
+                confirm.setCustomValidity('');
+            } else {
+                confirm.setCustomValidity(password.value !== confirm.value ? 'Passwords do not match.' : '');
+            }
+
+            // Sync the feedback text with whichever validity issue is actually active
+            // (native "required"/minlength messages, or the custom mismatch message above).
+            if (feedback) {
+                feedback.textContent = confirm.validationMessage || 'Passwords do not match.';
+            }
+        }
+
+        ['add-password', 'add-password-confirmation'].forEach(id => {
+            document.getElementById(id)?.addEventListener('input', () => validatePasswordMatch('add-password',
+                'add-password-confirmation'));
+        });
+        ['edit-password', 'edit-password-confirmation'].forEach(id => {
+            document.getElementById(id)?.addEventListener('input', () => validatePasswordMatch('edit-password',
+                'edit-password-confirmation', true));
+        });
 
         function buildAddress(d) {
             const line1 = [
@@ -593,6 +672,7 @@
 
         function setEditRoleAndPasswordLayout(isEmployee) {
             document.getElementById('editRoleFieldWrap').style.display = isEmployee ? '' : 'none';
+            document.getElementById('edit-role').required = isEmployee;
             const pwWrap = document.getElementById('editPasswordFieldWrap');
             pwWrap.classList.toggle('col-md-6', !isEmployee);
             pwWrap.classList.toggle('col-12', isEmployee);
@@ -607,6 +687,9 @@
             document.getElementById('edit-contact').value = d.contact || '';
             document.getElementById('edit-email').value = d.email || '';
             document.getElementById('edit-password').value = '';
+            document.getElementById('edit-password-confirmation').value = '';
+            document.getElementById('edit-password').setCustomValidity('');
+            document.getElementById('edit-password-confirmation').setCustomValidity('');
             document.getElementById('edit-block').value = d.block || '';
             document.getElementById('edit-lot').value = d.lot || '';
             document.getElementById('edit-street').value = d.street || '';
@@ -631,6 +714,7 @@
             const type = document.getElementById('add-type').value;
             const isEmployee = type === 'Employee';
             document.getElementById('addRoleFieldWrap').style.display = isEmployee ? '' : 'none';
+            document.getElementById('add-role').required = isEmployee;
 
             const pwWrap = document.getElementById('addPasswordFieldWrap');
             pwWrap.classList.toggle('col-md-6', !isEmployee);
@@ -640,6 +724,7 @@
         document.getElementById('addStaffModal').addEventListener('show.bs.modal', () => {
             document.getElementById('addStaffForm').reset();
             document.getElementById('addRoleFieldWrap').style.display = 'none';
+            document.getElementById('add-role').required = false;
             document.getElementById('addPasswordFieldWrap').classList.add('col-md-6');
             document.getElementById('addPasswordFieldWrap').classList.remove('col-12');
         });
@@ -680,19 +765,30 @@
         }
 
         function clearFieldErrors(form) {
+            // Only remove feedback nodes that showFieldErrors created for a server-side
+            // (422) error. The static .invalid-feedback nodes in the modal markup are
+            // permanent — Bootstrap shows/hides them on its own via the :invalid CSS
+            // selector, so they must never be deleted from the DOM.
             form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-            form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+            form.querySelectorAll('.js-server-feedback').forEach(el => el.remove());
         }
 
+        // Server field names that don't line up 1:1 with an input id.
+        const SERVER_FIELD_TO_ID_SUFFIX = {
+            position: 'role',
+            password_confirmation: 'password-confirmation',
+        };
+
         function showFieldErrors(form, errors) {
+            const prefix = form.id === 'addStaffForm' ? 'add-' : 'edit-';
             Object.entries(errors).forEach(([field, messages]) => {
-                const prefix = form.id === 'addStaffForm' ? 'add-' : 'edit-';
-                const el = document.getElementById(prefix + field.replace('_', '')) ||
-                    document.getElementById(prefix + field);
+                const suffix = SERVER_FIELD_TO_ID_SUFFIX[field] || field;
+                const el = document.getElementById(prefix + suffix) ||
+                    document.getElementById(prefix + suffix.replace('_', ''));
                 if (el) {
                     el.classList.add('is-invalid');
                     const feedback = document.createElement('div');
-                    feedback.className = 'invalid-feedback';
+                    feedback.className = 'invalid-feedback js-server-feedback';
                     feedback.textContent = messages[0];
                     el.insertAdjacentElement('afterend', feedback);
                 }
@@ -701,6 +797,8 @@
 
         document.getElementById('addStaffForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            validatePasswordMatch('add-password', 'add-password-confirmation');
 
             if (!this.checkValidity()) {
                 this.classList.add('was-validated');
@@ -715,6 +813,7 @@
                 contact_number: document.getElementById('add-contact').value,
                 email: document.getElementById('add-email').value,
                 password: document.getElementById('add-password').value,
+                password_confirmation: document.getElementById('add-password-confirmation').value,
                 block: document.getElementById('add-block').value,
                 lot: document.getElementById('add-lot').value,
                 street: document.getElementById('add-street').value,
@@ -728,6 +827,8 @@
 
         document.getElementById('editStaffForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            validatePasswordMatch('edit-password', 'edit-password-confirmation', true);
 
             if (!this.checkValidity()) {
                 this.classList.add('was-validated');
@@ -743,6 +844,7 @@
                 contact_number: document.getElementById('edit-contact').value,
                 email: document.getElementById('edit-email').value,
                 password: document.getElementById('edit-password').value || null,
+                password_confirmation: document.getElementById('edit-password-confirmation').value || null,
                 block: document.getElementById('edit-block').value,
                 lot: document.getElementById('edit-lot').value,
                 street: document.getElementById('edit-street').value,
