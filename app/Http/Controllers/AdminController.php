@@ -312,13 +312,6 @@ class AdminController extends Controller
         return view('admin.clients.clients');
     }
 
-    // SYSTEM SETTINGS
-
-    public function showAdminSettings()
-    {
-        return view('admin.admin-settings');
-    }
-
     public function showAdminProfile()
     {
         $user = auth()->user();
@@ -367,6 +360,37 @@ class AdminController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Password updated successfully.',
+        ]);
+    }
+
+    // SETTINGS (admin only — super_admin uses the full System Settings page)
+
+    public function showAdminSettings()
+    {
+        $staff = auth()->user()->staff;
+        abort_unless($staff, 404);
+
+        return view('admin.settings', compact('staff'));
+    }
+
+    public function updateNotificationPreferences(Request $request)
+    {
+        $staff = auth()->user()->staff;
+        abort_unless($staff, 404);
+
+        $validated = $request->validate([
+            'notify_assessment' => 'required|boolean',
+            'notify_quotation' => 'required|boolean',
+            'notify_task' => 'required|boolean',
+            'notify_project' => 'required|boolean',
+            'notify_checklist' => 'required|boolean',
+        ]);
+
+        $staff->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notification preferences updated.',
         ]);
     }
 

@@ -91,6 +91,25 @@ class Task extends Model
         return $this->status === 'Completed';
     }
 
+    // ──────────────────────────────────────────
+    // STATUS CHECKS
+    // ──────────────────────────────────────────
+
+    public function isPending(): bool
+    {
+        return $this->status === 'Pending';
+    }
+
+    public function isInProgress(): bool
+    {
+        return $this->status === 'In Progress';
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->status === 'Completed';
+    }
+
     public function getIsOverdueAttribute()
     {
         return $this->status !== 'Completed' && $this->due_date->isPast();
@@ -98,7 +117,7 @@ class Task extends Model
 
     public function getDaysUntilDueAttribute()
     {
-        return now()->diffInDays($this->due_date, false);
+        return (int) round(now()->diffInDays($this->due_date, false));
     }
 
     public function getIsAutoCompletedAttribute()

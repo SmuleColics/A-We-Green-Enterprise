@@ -8,6 +8,7 @@ use App\Models\Assessment;
 use App\Models\Material;
 use App\Models\Quotation;
 use App\Http\Controllers\NotificationController;
+use App\Services\QuotationConfigService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -69,7 +70,7 @@ class AssessmentFormController extends Controller
             $assessment->load('items.material');
             $subtotal = $assessment->items->sum(fn ($item) => (float) $item->quantity * (float) $item->unit_price);
             $service = $assessment->services[0] ?? 'General';
-            $rate = $this->laborRate($service, $assessment->client_type);
+            $rate = QuotationConfigService::resolveLaborRate($service, $assessment->client_type);
             $quotation = Quotation::updateOrCreate(['assessment_id' => $assessment->id], [
                 'reference_number' => 'QT-' . now()->format('Y') . '-' . str_pad((string) $assessment->id, 4, '0', STR_PAD_LEFT),
                 'service_type' => $service, 'project_title' => $service . ' - ' . $assessment->client->user->full_name,
@@ -112,14 +113,5 @@ class AssessmentFormController extends Controller
     {
         $assessment->load(['client.user', 'items.material']);
         return view('print.assessment', compact('assessment'));
-    }
-
-    private function laborRate(string $service, ?string $clientType): float
-    {
-        $service = strtolower($service); $clientType = strtolower((string) $clientType);
-        if (str_contains($service, 'cctv')) return str_contains($clientType, 'home') || str_contains($clientType, 'residential') ? 15 : 20;
-        if (str_contains($service, 'solar')) return 25;
-        if (str_contains($service, 'public')) return 20;
-        return 20;
     }
 }

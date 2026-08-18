@@ -33,7 +33,7 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
+                    <span class="material-symbols-outlined summary-icon text-primary">check_circle</span>
                     <div>
                         <p class="summary-label">Done Assessment</p>
                         <p class="summary-value">{{ $doneCount }}</p>
@@ -42,7 +42,7 @@
             </div>
             <div class="col-6 col-md-3">
                 <div class="summary-card">
-                    <span class="material-symbols-outlined summary-icon text-primary">description</span>
+                    <span class="material-symbols-outlined summary-icon text-success">description</span>
                     <div>
                         <p class="summary-label">Submitted Form</p>
                         <p class="summary-value">{{ $submittedFormCount }}</p>
@@ -94,8 +94,8 @@
                                     $clientUser = $client->user;
                                     $assessorNames = $a->assessors->pluck('full_name')->implode(', ') ?: '—';
                                     $statusClass = $a->derived_status === 'Done Assessment'
-                                        ? 'success'
-                                        : ($a->derived_status === 'Submitted Form' ? 'primary text-white' : 'warning text-dark');
+                                        ? 'primary text-white'
+                                        : ($a->derived_status === 'Submitted Form' ? 'success' : 'warning text-dark');
                                 @endphp
                                 <tr data-status="{{ $a->derived_status }}">
                                     <td data-order="{{ $a->preferred_date->format('Y-m-d') }}">

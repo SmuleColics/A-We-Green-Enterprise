@@ -10,12 +10,18 @@ class Staff extends Model
         'user_id', 'staff_id', 'date_joined',
         'block', 'lot', 'street', 'barangay', 'province', 'city', 'zip_code',
         'is_archived', 'archived_at',
+        'notify_assessment', 'notify_quotation', 'notify_task', 'notify_project', 'notify_checklist',
     ];
 
     protected $casts = [
         'date_joined' => 'date',
         'is_archived' => 'boolean',
         'archived_at' => 'datetime',
+        'notify_assessment' => 'boolean',
+        'notify_quotation' => 'boolean',
+        'notify_task' => 'boolean',
+        'notify_project' => 'boolean',
+        'notify_checklist' => 'boolean',
     ];
 
     // ── Relationships ──

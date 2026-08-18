@@ -6,6 +6,7 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\NotificationController;
 use App\Models\Assessment;
+use App\Services\AssessmentConfigService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -14,17 +15,17 @@ class AssessmentController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'client_type' => 'required|in:Residential,Subdivision,Commercial,Government,Agricultural,Institutional',
+            'client_type' => 'required|string|max:100',
             'establishment_type' => 'required|string|max:150',
             'establishment_size' => 'required|in:small,large',
             'preferred_date' => 'required|date|after_or_equal:today',
             'time_slot' => 'required|in:Morning,Afternoon,Full Day',
             'services' => 'required|array|min:1',
-            'services.*' => 'in:CCTV Setup,Solar Setup,Street Light,Public Address',
+            'services.*' => 'required|string|max:100',
             'cctv_subtype' => 'nullable|string|max:50',
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
-            'contact_number' => 'required|string|max:20',
+            'contact_number' => ['required', 'regex:/^09\d{9}$/'],
             'email' => 'required|email',
 'block' => 'required|string|max:50',
             'lot' => 'required|string|max:50',
@@ -34,12 +35,65 @@ class AssessmentController extends Controller
             'city' => 'required|string|max:100',
             'zip_code' => 'required|string|max:10',
             'notes' => 'nullable|string|max:1000',
+        ], [
+            'contact_number.regex' => 'Contact number must be an 11-digit number starting with 09 (e.g. 09171234567).',
         ]);
+
+        foreach ($validated['services'] as $service) {
+            if (! AssessmentConfigService::isValidService($service)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please select a valid service.',
+                ], 422);
+            }
+        }
 
         if (in_array('CCTV Setup', $validated['services']) && empty($validated['cctv_subtype'])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Please select a CCTV service type.',
+            ], 422);
+        }
+
+        if (! empty($validated['cctv_subtype']) && ! AssessmentConfigService::isValidSubtype('CCTV Setup', $validated['cctv_subtype'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please select a valid CCTV service type.',
+            ], 422);
+        }
+
+        if (! AssessmentConfigService::isWorkingDay(Carbon::parse($validated['preferred_date']))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'We\'re closed on the selected date. Please choose another day.',
+            ], 422);
+        }
+
+        if (! AssessmentConfigService::isSlotAvailable($validated['preferred_date'], $validated['time_slot'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'That date and time slot just got booked. Please choose another.',
+            ], 422);
+        }
+
+        if (! AssessmentConfigService::isValidClientType($validated['client_type'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please select a valid client type.',
+            ], 422);
+        }
+
+        if (! AssessmentConfigService::isValidEstablishment($validated['client_type'], $validated['establishment_type'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please select a valid establishment type for the chosen client type.',
+            ], 422);
+        }
+
+        if (! AssessmentConfigService::isValidProvince($validated['province'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'We don\'t currently serve the selected province.',
             ], 422);
         }
 
@@ -138,21 +192,36 @@ class AssessmentController extends Controller
             ->whereIn('status', ['Pending', 'Confirmed'])
             ->get(['preferred_date', 'time_slot']);
 
-        $availability = [];
+        $counts = [];
         foreach ($assessments as $a) {
             $date = $a->preferred_date->format('Y-m-d');
-            $availability[$date] ??= ['morning' => false, 'afternoon' => false];
+            $counts[$date] ??= ['morning' => 0, 'afternoon' => 0];
 
             if ($a->time_slot === 'Full Day') {
-                $availability[$date]['morning'] = true;
-                $availability[$date]['afternoon'] = true;
+                $counts[$date]['morning']++;
+                $counts[$date]['afternoon']++;
             } elseif ($a->time_slot === 'Morning') {
-                $availability[$date]['morning'] = true;
+                $counts[$date]['morning']++;
             } elseif ($a->time_slot === 'Afternoon') {
-                $availability[$date]['afternoon'] = true;
+                $counts[$date]['afternoon']++;
             }
         }
 
-        return response()->json($availability);
+        $max = AssessmentConfigService::maxBookingsPerSlot();
+        $availability = collect($counts)->map(fn ($c) => [
+            'morning' => $c['morning'] >= $max,
+            'afternoon' => $c['afternoon'] >= $max,
+        ])->all();
+
+        $blockedDates = array_values(array_filter(
+            AssessmentConfigService::blockedDateStrings(),
+            fn ($d) => $d >= $start->format('Y-m-d') && $d <= $end->format('Y-m-d')
+        ));
+
+        return response()->json([
+            'dates' => $availability,
+            'workingDays' => AssessmentConfigService::workingDays(),
+            'blockedDates' => $blockedDates,
+        ]);
     }
 }

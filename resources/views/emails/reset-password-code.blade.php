@@ -13,7 +13,7 @@
                     <tr>
                         <td style="background-color:#16A249; padding:24px 32px;">
                             <span style="color:#ffffff; font-size:18px; font-weight:600; letter-spacing:0.5px;">
-                                A We Green Enterprise
+                                {{ setting('company_name', 'A We Green Enterprise') }}
                             </span>
                         </td>
                     </tr>
@@ -40,7 +40,7 @@
                     <tr>
                         <td style="padding:20px 32px; background-color:#f8f9fa; border-top:1px solid #dee2e6;">
                             <p style="margin:0; color:#6c757d; font-size:12px;">
-                                © {{ date('Y') }} A We Green Enterprise. All rights reserved.
+                                © {{ date('Y') }} {{ setting('company_name', 'A We Green Enterprise') }}. All rights reserved.
                             </p>
                         </td>
                     </tr>

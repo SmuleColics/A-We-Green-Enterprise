@@ -329,14 +329,14 @@
                             <div class="rpt-letterhead">
                                 <div class="d-flex align-items-start justify-content-between">
                                     <div class="flex-grow-1">
-                                        <h2 class="rpt-company-name">A WE GREEN ENTERPRISE</h2>
-                                        <p class="rpt-company-address mb-0">Alta Tierra Homes Phase 4 Blk 51 Lot 30 Brgy. A. Olaes, Gen. Mariano Alvarez, Cavite 4117</p>
-                                        <p class="rpt-company-contact mb-0">Smart: 0998 884 5671 &bull; 0998 884 5670 &nbsp; Globe: 0917 752 3343 &nbsp; Landline: 046 443 6374</p>
-                                        <p class="rpt-company-contact mb-0">E-mail: awegreenenterprise@gmail.com</p>
+                                        <h2 class="rpt-company-name">{{ strtoupper(setting('company_name', 'A We Green Enterprise')) }}</h2>
+                                        <p class="rpt-company-address mb-0">{{ str_replace("\n", ' ', setting('company_address_main', '')) }}</p>
+                                        <p class="rpt-company-contact mb-0">Smart: {{ setting('company_phone_primary', '') }} &nbsp; Globe: {{ setting('company_phone_secondary', '') }} &nbsp; Landline: {{ setting('company_phone_landline', '') }}</p>
+                                        <p class="rpt-company-contact mb-0">E-mail: {{ setting('company_email_primary', '') }}</p>
                                         <p class="rpt-company-contact mb-0">DTI Reg. No: 1748459 &nbsp; BIR Reg. No: 5AARC20240000002223</p>
                                     </div>
                                     <div class="rpt-logo-box">
-                                        <img src="{{ asset('css/images/AWeGreen-Logo.svg') }}" alt="A We Green" style="height:64px;width:auto;">
+                                        <img src="{{ asset(setting('company_logo_path', 'css/images/AWeGreen-Logo.svg')) }}" alt="{{ setting('company_name', 'A We Green Enterprise') }}" style="height:64px;width:auto;">
                                     </div>
                                 </div>
                                 <div class="rpt-divider"></div>

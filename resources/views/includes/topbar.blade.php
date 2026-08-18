@@ -41,7 +41,8 @@
                                     'Assessment' => route('requests'),
                                     'Quotation' => route('quotations'),
                                     'Project' => route('projects'),
-                                    'Task' => route('tasks'),
+                                    'Task' => auth()->user()->isEmployee() ? route('employee.tasks') : route('tasks'),
+                                    'Checklist' => route('checklists'),
                                 ];
                             @endphp
                             @forelse (($notifications ?? []) as $notif)
@@ -66,6 +67,10 @@
 
                                                 @case('Task')
                                                     task_alt
+                                                @break
+
+                                                @case('Checklist')
+                                                    checklist
                                                 @break
 
                                                 @default

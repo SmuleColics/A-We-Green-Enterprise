@@ -11,49 +11,10 @@ const state = {
 };
 let currentStep = 1;
 
-/* ─── Establishment options ─── */
-const estabOptions = {
-  Residential: [
-    { icon: 'home', label: 'Home / Residence', size: 'small' },
-    { icon: 'apartment', label: 'Apartment / Condominium', size: 'small' },
-    { icon: 'villa', label: 'Townhouse', size: 'small' },
-    { icon: 'bed', label: 'Boarding House / Dormitory', size: 'large' },
-  ],
-  Subdivision: [
-    { icon: 'holiday_village', label: 'Subdivision / HOA', size: 'large' },
-    { icon: 'location_city', label: 'Condominium Complex', size: 'large' },
-  ],
-  Commercial: [
-    { icon: 'storefront', label: 'Office / Commercial Space', size: 'small' },
-    { icon: 'warehouse', label: 'Warehouse / Industrial', size: 'large' },
-    { icon: 'local_mall', label: 'Mall / Shopping Center', size: 'large' },
-    { icon: 'restaurant', label: 'Restaurant / Café', size: 'small' },
-    { icon: 'hotel', label: 'Hotel / Resort', size: 'large' },
-    { icon: 'factory', label: 'Factory / Plant', size: 'large' },
-    { icon: 'account_balance_wallet', label: 'Bank / Financial Institution', size: 'small' },
-    { icon: 'local_gas_station', label: 'Gas Station', size: 'small' },
-  ],
-  Government: [
-    { icon: 'account_balance', label: 'Barangay Hall', size: 'small' },
-    { icon: 'school', label: 'School / University', size: 'large' },
-    { icon: 'local_hospital', label: 'Hospital / Health Center', size: 'large' },
-    { icon: 'sports_soccer', label: 'Sports Facility / Gym', size: 'large' },
-    { icon: 'park', label: 'Park / Public Space', size: 'large' },
-    { icon: 'directions_bus', label: 'Terminal / Transport Hub', size: 'large' },
-    { icon: 'local_police', label: 'Police Station / Fire', size: 'small' },
-    { icon: 'museum', label: 'Museum / Cultural Center', size: 'large' },
-  ],
-  Agricultural: [
-    { icon: 'agriculture', label: 'Farm / Plantation', size: 'large' },
-    { icon: 'pets', label: 'Poultry / Livestock Facility', size: 'large' },
-    { icon: 'water', label: 'Fishpond / Aquaculture', size: 'large' },
-  ],
-  Institutional: [
-    { icon: 'church', label: 'Church / Chapel', size: 'small' },
-    { icon: 'volunteer_activism', label: 'NGO / Foundation Office', size: 'small' },
-    { icon: 'handshake', label: 'Cooperative', size: 'small' },
-  ],
-};
+/* ─── Establishment options ───
+   Rendered server-side from the client_types / establishment_types tables
+   (Super Admin Settings → Assessment & Scheduling), not hardcoded here. */
+const estabOptions = window.estabOptionsFromServer || {};
 
 /* ─── Cities per province ─── */
 const cityData = {
@@ -197,7 +158,9 @@ function renderCalendar() {
   fetch(url, { headers: { 'Accept': 'application/json' } })
     .then(res => res.json())
     .then(data => {
-      window.currentAvailability = data || {};
+      window.currentAvailability = (data && data.dates) || {};
+      window.workingDays = (data && data.workingDays) || [1, 2, 3, 4, 5, 6];
+      window.blockedDatesSet = new Set((data && data.blockedDates) || []);
       buildCalendarGrid(window.currentAvailability);
     })
     .catch(() => {
@@ -234,7 +197,9 @@ function buildCalendarGrid(availability) {
   for (let day = 1; day <= daysInMonth; day++) {
     const dateObj = new Date(calendarYear, calendarMonth, day);
     const iso = toISODate(dateObj);
-    const isSunday = dateObj.getDay() === 0;
+    const workingDays = window.workingDays || [1, 2, 3, 4, 5, 6];
+    const isNonWorkingDay = !workingDays.includes(dateObj.getDay());
+    const isBlocked = (window.blockedDatesSet || new Set()).has(iso);
     const isPast = iso < todayISO;
     const isToday = iso === todayISO;
     const slots = availability[iso];
@@ -243,7 +208,7 @@ function buildCalendarGrid(availability) {
     let badges = '';
     let clickable = true;
 
-    if (isSunday || isPast) {
+    if (isNonWorkingDay || isBlocked || isPast) {
       classes += ' no-work';
       clickable = false;
     } else if (slots && slots.morning && slots.afternoon) {
@@ -535,6 +500,24 @@ function validateRequiredField(id, message) {
   return true;
 }
 
+function validateContactField(id) {
+  const field = document.getElementById(id);
+  const value = field.value.trim();
+
+  if (!value) {
+    setFieldError(field, 'Contact number is required.');
+    return false;
+  }
+
+  if (!/^09\d{9}$/.test(value)) {
+    setFieldError(field, 'Contact number must be 11 digits starting with 09 (e.g. 09171234567).');
+    return false;
+  }
+
+  clearFieldError(field);
+  return true;
+}
+
 function validateEmailField(id) {
   const field = document.getElementById(id);
   const value = field.value.trim();
@@ -619,7 +602,7 @@ function validateStep(s) {
     const validations = [
       validateRequiredField('d-fname', 'First name is required.'),
       validateRequiredField('d-lname', 'Last name is required.'),
-      validateRequiredField('d-contact', 'Contact number is required.'),
+      validateContactField('d-contact'),
       validateEmailField('d-email'),
       validateRequiredField('d-block', 'Block is required.'),
       validateRequiredField('d-lot', 'Lot is required.'),

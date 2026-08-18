@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\NotificationController;
 use App\Models\Employee;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -52,6 +53,7 @@ class ProjectController extends Controller
         ]);
 
         $wasCompleted = $project->status === 'Completed';
+        $oldStatus = $project->status;
         $validated['completed_at'] = $validated['status'] === 'Completed'
             ? ($wasCompleted ? $project->completed_at : now())
             : null;
@@ -65,6 +67,16 @@ class ProjectController extends Controller
             Auth::id(),
             Auth::user()->full_name
         );
+
+        if ($oldStatus !== $project->status) {
+            NotificationController::notify(
+                module: 'Project',
+                title: 'Project status changed',
+                message: "Project {$project->reference_number} status changed from {$oldStatus} to {$project->status}.",
+                recipientRole: ['admin', 'secretary', 'super_admin'],
+                notifiable: $project
+            );
+        }
 
         return redirect()
             ->route('projects.show', $project)

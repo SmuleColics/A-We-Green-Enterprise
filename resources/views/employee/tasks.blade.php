@@ -7,16 +7,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 @endsection
 
-@section('content')
+@section('page-title', 'Tasks')
 
-@section('topbar-actions')
-    <div class="btn-group filter-btn-group" role="group">
-        <button type="button" class="btn btn-sm btn-outline-light active" data-filter="all">All Tasks</button>
-        <button type="button" class="btn btn-sm btn-outline-light" data-filter="Pending">Pending</button>
-        <button type="button" class="btn btn-sm btn-outline-light" data-filter="In Progress">In Progress</button>
-        <button type="button" class="btn btn-sm btn-outline-light" data-filter="Completed">Completed</button>
-    </div>
-@endsection
+@section('content')
 
 <div class="container-fluid px-4 py-4">
 
@@ -24,25 +17,25 @@
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
             <div class="summary-card">
-                <span class="material-symbols-outlined summary-icon green-text">task_alt</span>
+                <span class="material-symbols-outlined text-success summary-icon">check_circle</span>
                 <div>
-                    <p class="summary-label">Total Tasks</p>
-                    <p class="summary-value">{{ $total ?? 0 }}</p>
+                    <p class="summary-label">Done</p>
+                    <p class="summary-value">{{ $completed ?? 0 }}</p>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="summary-card">
-                <span class="material-symbols-outlined summary-icon" style="color:#f59e0b;">pending_actions</span>
+                <span class="material-symbols-outlined text-warning summary-icon muted-text">schedule</span>
                 <div>
-                    <p class="summary-label">Pending</p>
+                    <p class="summary-label">To Do</p>
                     <p class="summary-value">{{ $pending ?? 0 }}</p>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="summary-card">
-                <span class="material-symbols-outlined summary-icon" style="color:#3b82f6;">schedule</span>
+                <span class="material-symbols-outlined text-primary summary-icon">autorenew</span>
                 <div>
                     <p class="summary-label">In Progress</p>
                     <p class="summary-value">{{ $inProgress ?? 0 }}</p>
@@ -51,10 +44,10 @@
         </div>
         <div class="col-6 col-md-3">
             <div class="summary-card">
-                <span class="material-symbols-outlined summary-icon" style="color:#10b981;">check_circle</span>
+                <span class="material-symbols-outlined text-secondary summary-icon text-warning">pause_circle</span>
                 <div>
-                    <p class="summary-label">Completed</p>
-                    <p class="summary-value">{{ $completed ?? 0 }}</p>
+                    <p class="summary-label">On Hold</p>
+                    <p class="summary-value">{{ $onHold ?? 0 }}</p>
                 </div>
             </div>
         </div>
@@ -64,17 +57,31 @@
     <div class="card border-0 shadow-sm">
         <div class="card-body">
 
+            <div class="mb-3">
+                <div class="btn-group filter-btn-group" role="group" id="statusFilterGroup">
+                    <button type="button" class="btn btn-sm btn-outline-secondary active"
+                        data-filter="all">All</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                        data-filter="Completed">Done</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Pending">To Do</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="In Progress">In
+                        Progress</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="On Hold">On
+                        Hold</button>
+                </div>
+            </div>
+
             @if (($tasks ?? []) && count($tasks) > 0)
                 <div class="table-responsive">
                     <table id="tasksTable" class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="border-0">Task ID</th>
-                                <th class="border-0">Client / Assessment</th>
-                                <th class="border-0">Description</th>
-                                <th class="border-0">Due Date</th>
-                                <th class="border-0">Status</th>
-                                <th class="border-0">Actions</th>
+                                <th class="border-0 small green-text">Task ID</th>
+                                <th class="border-0 small green-text">Client / Assessment</th>
+                                <th class="border-0 small green-text">Description</th>
+                                <th class="border-0 small green-text">Due Date</th>
+                                <th class="border-0 small green-text">Status</th>
+                                <th class="border-0 small green-text">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -101,7 +108,7 @@
                                                 <p class="mb-0">{{ $task->due_date->format('M j, Y') }}</p>
                                                 @if ($task->is_overdue && !$task->isCompleted())
                                                     <p class="mb-0 small text-danger fw-semibold">
-                                                        {{ $task->days_until_due }} days overdue</p>
+                                                        {{ abs($task->days_until_due) }} days overdue</p>
                                                 @elseif (!$task->isCompleted())
                                                     <p class="mb-0 small text-muted">{{ $task->days_until_due }} days
                                                         remaining</p>
@@ -109,42 +116,36 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
-                                        <span class="badge {{ $task->status_badge }}">
-                                            <span class="material-symbols-outlined"
-                                                style="font-size: 14px;">{{ $task->status_icon }}</span>
-                                            {{ $task->status }}
-                                        </span>
-                                    </td>
+                                    <td>{!! $task->status_badge !!}</td>
                                     <td>
                                         <div class="btn-group btn-group-sm" role="group">
-                                            <button type="button" class="btn btn-outline-primary btn-view-task"
+                                            <button type="button" class="btn btn-outline-success btn-view-task"
                                                 data-task-id="{{ $task->id }}" title="View Details">
-                                                <span class="material-symbols-outlined">visibility</span>
+                                                <span class="material-symbols-outlined icon-action">visibility</span>
                                             </button>
 
                                             @if ($task->isPending())
                                                 <button type="button" class="btn btn-outline-info btn-start-task"
                                                     data-task-id="{{ $task->id }}" title="Start Task">
-                                                    <span class="material-symbols-outlined">play_arrow</span>
+                                                    <span class="material-symbols-outlined icon-action">play_arrow</span>
                                                 </button>
                                             @endif
 
                                             @if ($task->isInProgress())
                                                 <button type="button" class="btn btn-outline-success btn-complete-task"
                                                     data-task-id="{{ $task->id }}" title="Mark as Complete">
-                                                    <span class="material-symbols-outlined">check</span>
+                                                    <span class="material-symbols-outlined icon-action">check</span>
                                                 </button>
                                                 <button type="button" class="btn btn-outline-warning btn-pause-task"
                                                     data-task-id="{{ $task->id }}" title="Pause Task">
-                                                    <span class="material-symbols-outlined">pause</span>
+                                                    <span class="material-symbols-outlined icon-action">pause</span>
                                                 </button>
                                             @endif
 
                                             @if ($task->isPending() || $task->isInProgress())
                                                 <button type="button" class="btn btn-outline-secondary btn-hold-task"
                                                     data-task-id="{{ $task->id }}" title="Put Task On Hold">
-                                                    <span class="material-symbols-outlined">pause_circle</span>
+                                                    <span class="material-symbols-outlined icon-action">pause_circle</span>
                                                 </button>
                                             @endif
                                         </div>
@@ -234,6 +235,9 @@
 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
+    const taskDetailsUrlTemplate = "{{ route('employee.tasks.show', ['task' => '__ID__']) }}";
+    const taskUpdateUrlTemplate = "{{ route('employee.tasks.update', ['task' => '__ID__']) }}";
+
     $(document).ready(function() {
         // Initialize DataTable
         const table = $('#tasksTable').DataTable({
@@ -320,13 +324,15 @@
             const status = this.value;
             document.getElementById('completionNoteContainer').style.display =
                 status === 'Completed' ? 'block' : 'none';
-            document.getElementById('holdReasonContainer').style.display =
-                status === 'On Hold' ? 'block' : 'none';
+
+            const isOnHold = status === 'On Hold';
+            document.getElementById('holdReasonContainer').style.display = isOnHold ? 'block' : 'none';
+            document.getElementById('holdReason').required = isOnHold;
         });
     });
 
     function loadTaskDetails(taskId) {
-        fetch(`/tasks/${taskId}/details`)
+        fetch(taskDetailsUrlTemplate.replace('__ID__', taskId))
             .then(response => response.json())
             .then(data => {
                 const content = `
@@ -349,10 +355,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <p class="text-muted small mb-1">Status</p>
-                                    <span class="badge ${data.task.status_badge}">
-                                        <span class="material-symbols-outlined" style="font-size: 14px;">${data.task.status_icon}</span>
-                                        ${data.task.status}
-                                    </span>
+                                    ${data.task.status_badge}
                                 </div>
                             </div>
 
@@ -410,7 +413,7 @@
             hold_reason: holdReason
         };
 
-        fetch(`/tasks/${taskId}/update`, {
+        fetch(taskUpdateUrlTemplate.replace('__ID__', taskId), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

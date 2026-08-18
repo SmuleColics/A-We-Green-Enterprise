@@ -6,6 +6,7 @@ use App\Models\ActivityLog;
 use App\Models\Assessment;
 use App\Models\Notification;
 use App\Models\Project;
+use App\Services\AssessmentConfigService;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -51,8 +52,22 @@ class ClientController extends Controller
     $pending = $assessments->where('status', 'Pending')->count();
     $declined = $assessments->where('status', 'Declined')->count();
 
+    $clientTypes = AssessmentConfigService::activeClientTypes();
+    $services = AssessmentConfigService::activeServices();
+    $cctvService = $services->firstWhere('name', 'CCTV Setup');
+    $coverageProvincesByRegion = AssessmentConfigService::activeProvinces()->groupBy('region');
+
+    $estabOptionsForWizard = $clientTypes->mapWithKeys(fn ($type) => [
+        $type->name => $type->establishmentTypes->map(fn ($estab) => [
+            'icon' => $estab->icon,
+            'label' => $estab->name,
+            'size' => $estab->size,
+        ])->values(),
+    ]);
+
     return view('client.assessments.client-assessment', compact(
-        'activeAssessments', 'historyAssessments', 'total', 'confirmed', 'pending', 'declined'
+        'activeAssessments', 'historyAssessments', 'total', 'confirmed', 'pending', 'declined',
+        'clientTypes', 'estabOptionsForWizard', 'services', 'cctvService', 'coverageProvincesByRegion'
     ));
 }
 

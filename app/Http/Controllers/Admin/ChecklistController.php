@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\NotificationController;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,6 +53,9 @@ class ChecklistController extends Controller
 
         $items = $project->checklistItems()->get()->keyBy('id');
 
+        $newlyCompleted = 0;
+        $newlyUnavailable = 0;
+
         foreach ($validated['items'] as $row) {
             $item = $items->get($row['id']);
             if (! $item) continue;
@@ -60,6 +64,9 @@ class ChecklistController extends Controller
             $isCompleted = (bool) ($row['is_completed'] ?? false);
             $outgoingQuantity = $row['outgoing_quantity'] ?? null;
             $returnedQuantity = $row['returned_quantity'] ?? null;
+
+            if ($isCompleted && ! $item->is_completed) $newlyCompleted++;
+            if ($isNotApplicable && ! $item->is_not_applicable) $newlyUnavailable++;
 
             $item->update([
                 'outgoing_quantity' => $outgoingQuantity,
@@ -79,6 +86,22 @@ class ChecklistController extends Controller
             Auth::id(),
             Auth::user()->full_name
         );
+
+        // Only notify on meaningful progress (items completed / marked unavailable) —
+        // not on every save, e.g. a quantity tweak with no completion change.
+        if ($newlyCompleted > 0 || $newlyUnavailable > 0) {
+            $parts = [];
+            if ($newlyCompleted > 0) $parts[] = "{$newlyCompleted} item(s) completed";
+            if ($newlyUnavailable > 0) $parts[] = "{$newlyUnavailable} item(s) marked unavailable";
+
+            NotificationController::notify(
+                module: 'Checklist',
+                title: 'Checklist updated',
+                message: "Materials checklist for project {$project->reference_number} updated — ".implode(', ', $parts).'.',
+                recipientRole: ['admin', 'secretary', 'super_admin'],
+                notifiable: $project
+            );
+        }
 
         return redirect()
             ->route('checklists.edit', $project)

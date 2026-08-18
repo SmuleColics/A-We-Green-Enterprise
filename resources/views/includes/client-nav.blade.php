@@ -3,9 +3,9 @@
      ============================================================ -->
 <nav class="client-topnav">
     <a class="topnav-brand" href="#">
-        <div><img class="w-40" src="{{ asset('css/images/AWeGreen-Logo.svg') }}" alt=""></div>
+        <div><img class="w-40" src="{{ asset(setting('company_logo_path', 'css/images/AWeGreen-Logo.svg')) }}" alt=""></div>
         <div class="topnav-brand-text">
-            <span>A We Green Enterprise</span>
+            <span>{{ setting('company_name', 'A We Green Enterprise') }}</span>
             <small>Client Portal</small>
         </div>
     </a>

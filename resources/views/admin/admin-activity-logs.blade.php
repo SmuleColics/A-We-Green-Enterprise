@@ -14,11 +14,13 @@
         <span class="material-symbols-outlined fs-17">inventory_2</span>
         View Archives
     </button>
-    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text" data-bs-toggle="modal"
-        data-bs-target="#archiveLogsModal">
-        <span class="material-symbols-outlined fs-17">archive</span>
-        Archive Old Logs
-    </button>
+    @if (auth()->user()->isSuperAdmin())
+        <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text" data-bs-toggle="modal"
+            data-bs-target="#archiveLogsModal">
+            <span class="material-symbols-outlined fs-17">archive</span>
+            Archive Old Logs
+        </button>
+    @endif
 @endsection
 
 @section('content')
@@ -307,6 +309,7 @@
                                     <th class="border-0 small green-text">Action</th>
                                     <th class="border-0 small green-text">Description</th>
                                     <th class="border-0 small green-text">Archived On</th>
+                                    <th class="border-0 small green-text">Archived By</th>
                                     <th class="border-0 small green-text">Details</th>
                                 </tr>
                             </thead>
@@ -333,6 +336,7 @@
                                         <td>{{ $log->description }}</td>
                                         <td class="text-muted small">{{ optional($log->archived_at)->format('M j, Y') }}
                                         </td>
+                                        <td class="text-muted small">{{ $log->archivedBy->full_name ?? '—' }}</td>
                                         <td>
                                             <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
                                                 data-bs-toggle="modal" data-bs-target="#viewLogModal"
@@ -343,7 +347,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">No archived activity logs
+                                        <td colspan="8" class="text-center text-muted py-4">No archived activity logs
                                             yet.</td>
                                     </tr>
                                 @endforelse
@@ -470,7 +474,7 @@
                         ],
                         columnDefs: [{
                             orderable: false,
-                            targets: 6
+                            targets: 7
                         }],
                         language: {
                             emptyTable: 'No archived activity logs yet.',

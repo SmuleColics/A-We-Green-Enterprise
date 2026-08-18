@@ -13,6 +13,14 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             SuperAdminSeeder::class,
+            CompanySettingsSeeder::class,
+            AssessmentConfigSeeder::class,
+            AssessmentServicesSeeder::class,
+            ScheduleSettingsSeeder::class,
+            CoverageProvincesSeeder::class,
+            LaborRatesSeeder::class,
+            LegalContentSeeder::class,
+            LandingContentSeeder::class,
         ]);
     }
 }

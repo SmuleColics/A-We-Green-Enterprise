@@ -31,30 +31,41 @@ class ActivityLogController extends Controller
     // ── Admin Views ──
     public function index()
     {
+        // Employees only ever see their own activity — everyone else (secretary,
+        // admin, super_admin) sees the full system-wide log, same as before.
+        $ownOnly = auth()->user()->isEmployee();
+
         $logs = ActivityLog::active()
             ->with('user')
+            ->when($ownOnly, fn ($q) => $q->where('user_id', auth()->id()))
             ->orderByDesc('created_at')
             ->get();
 
         $archivedLogs = ActivityLog::archived()
-            ->with('user')
+            ->with('user', 'archivedBy')
+            ->when($ownOnly, fn ($q) => $q->where('user_id', auth()->id()))
             ->orderByDesc('archived_at')
             ->get();
 
-        $totalToday = ActivityLog::active()->today()->count();
-        $totalLogs = ActivityLog::active()->count();
+        $totalToday = ActivityLog::active()->today()->when($ownOnly, fn ($q) => $q->where('user_id', auth()->id()))->count();
+        $totalLogs = ActivityLog::active()->when($ownOnly, fn ($q) => $q->where('user_id', auth()->id()))->count();
         $activeUsers = ActivityLog::active()
             ->today()
             ->whereNotNull('user_id')
+            ->when($ownOnly, fn ($q) => $q->where('user_id', auth()->id()))
             ->distinct('user_id')
             ->count('user_id');
         $failedLoginsToday = ActivityLog::active()
             ->today()
             ->where('action', 'Failed Login')
+            ->when($ownOnly, fn ($q) => $q->where('user_id', auth()->id()))
             ->count();
 
         $archivableCounts = collect([30, 60, 90, 180, 365])->mapWithKeys(
-            fn ($days) => [$days => ActivityLog::active()->where('created_at', '<', now()->subDays($days))->count()]
+            fn ($days) => [$days => ActivityLog::active()
+                ->where('created_at', '<', now()->subDays($days))
+                ->when($ownOnly, fn ($q) => $q->where('user_id', auth()->id()))
+                ->count()]
         );
 
         return view('admin.admin-activity-logs', compact(
@@ -77,6 +88,7 @@ class ActivityLogController extends Controller
             ->update([
                 'is_archived' => true,
                 'archived_at' => now(),
+                'archived_by' => auth()->id(),
             ]);
 
         self::log(

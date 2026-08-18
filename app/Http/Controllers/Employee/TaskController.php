@@ -21,15 +21,16 @@ class TaskController extends Controller
         $pending = $tasks->where('status', 'Pending')->count();
         $inProgress = $tasks->where('status', 'In Progress')->count();
         $completed = $tasks->where('status', 'Completed')->count();
+        $onHold = $tasks->where('status', 'On Hold')->count();
 
         return view('employee.tasks', compact(
-            'tasks', 'total', 'pending', 'inProgress', 'completed'
+            'tasks', 'total', 'pending', 'inProgress', 'completed', 'onHold'
         ));
     }
 
     public function show(Task $task)
     {
-        $this->authorize('view', $task);
+        abort_unless($task->employee_id === auth()->user()->staff->employee->id, 403);
 
         return response()->json([
             'success' => true,
@@ -60,7 +61,7 @@ class TaskController extends Controller
 
     public function update(Request $request, Task $task)
     {
-        $this->authorize('update', $task);
+        abort_unless($task->employee_id === auth()->user()->staff->employee->id, 403);
 
         $validated = $request->validate([
             'status' => 'required|in:Pending,In Progress,Completed,On Hold',

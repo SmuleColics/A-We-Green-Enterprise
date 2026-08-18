@@ -12,11 +12,18 @@ use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\ProjectTaskController;
 use App\Http\Controllers\Admin\ProjectUpdateController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TaskController;
+use App\Http\Controllers\Admin\WebsiteContentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Client\AssessmentController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\Employee\AssessmentController as EmployeeAssessmentController;
+use App\Http\Controllers\Employee\AssessmentFormController as EmployeeAssessmentFormController;
+use App\Http\Controllers\Employee\DashboardController as EmployeeDashboardController;
+use App\Http\Controllers\Employee\QuotationController as EmployeeQuotationController;
+use App\Http\Controllers\Employee\RequestController as EmployeeRequestController;
 use App\Http\Controllers\Employee\TaskController as EmployeeTaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
@@ -88,24 +95,114 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
     // Archive materials
     Route::get('/archive-materials', [MaterialController::class, 'archivedPage'])
         ->name('archive-materials');
+});
 
-    // Admin settings
-    Route::get('/admin-settings', [AdminController::class, 'showAdminSettings'])
-        ->name('admin-settings');
-
-    // Admin activity logs
-    Route::get('/admin-activity-logs', [ActivityLogController::class, 'index'])
-        ->name('admin-activity-logs');
+// Archive old activity logs — audit-trail maintenance, super_admin only
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
     Route::post('/admin-activity-logs/archive-old', [ActivityLogController::class, 'archiveOld'])
         ->name('admin-activity-logs.archive-old');
+});
 
-    // Admin profile
+// ==========================================================
+// ADMIN SIDE — shared with employee
+// Own profile and own activity log — same pages/design as
+// secretary/admin/super_admin, scoped to the viewer's own data.
+// ==========================================================
+Route::middleware(['auth', 'role:secretary,admin,super_admin,employee'])->group(function () {
+
+    // Activity logs (scoped to the viewer for employees — see ActivityLogController::index)
+    Route::get('/admin-activity-logs', [ActivityLogController::class, 'index'])
+        ->name('admin-activity-logs');
+
+    // Profile
     Route::get('/admin-profile', [AdminController::class, 'showAdminProfile'])
         ->name('admin-profile');
     Route::patch('/admin-profile', [AdminController::class, 'updateProfile'])
         ->name('admin-profile.update');
     Route::patch('/admin-profile/password', [AdminController::class, 'updatePassword'])
         ->name('admin-profile.update-password');
+});
+
+// ==========================================================
+// ADMIN ONLY
+// Personal settings — not the super_admin System Settings page
+// ==========================================================
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/settings', [AdminController::class, 'showAdminSettings'])
+        ->name('admin.settings');
+    Route::patch('/admin/settings/notification-preferences', [AdminController::class, 'updateNotificationPreferences'])
+        ->name('admin.settings.notification-preferences.update');
+});
+
+// ==========================================================
+// SUPER ADMIN ONLY
+// System configuration — not accessible to admin/secretary/employee
+// ==========================================================
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
+    Route::get('/admin-settings', [SettingsController::class, 'index'])
+        ->name('admin-settings');
+    Route::post('/admin-settings/company-information', [SettingsController::class, 'updateCompanyInformation'])
+        ->name('admin-settings.company.update');
+
+    Route::post('/admin-settings/client-types', [SettingsController::class, 'storeClientType'])
+        ->name('admin-settings.client-types.store');
+    Route::patch('/admin-settings/client-types/{clientType}', [SettingsController::class, 'updateClientType'])
+        ->name('admin-settings.client-types.update');
+    Route::post('/admin-settings/establishment-types', [SettingsController::class, 'storeEstablishmentType'])
+        ->name('admin-settings.establishment-types.store');
+    Route::patch('/admin-settings/establishment-types/{establishmentType}', [SettingsController::class, 'updateEstablishmentType'])
+        ->name('admin-settings.establishment-types.update');
+
+    Route::post('/admin-settings/services', [SettingsController::class, 'storeService'])
+        ->name('admin-settings.services.store');
+    Route::patch('/admin-settings/services/{assessmentService}', [SettingsController::class, 'updateService'])
+        ->name('admin-settings.services.update');
+    Route::post('/admin-settings/service-subtypes', [SettingsController::class, 'storeSubtype'])
+        ->name('admin-settings.subtypes.store');
+    Route::patch('/admin-settings/service-subtypes/{subtype}', [SettingsController::class, 'updateSubtype'])
+        ->name('admin-settings.subtypes.update');
+
+    Route::post('/admin-settings/scheduling', [SettingsController::class, 'updateScheduling'])
+        ->name('admin-settings.scheduling.update');
+    Route::post('/admin-settings/blocked-dates', [SettingsController::class, 'storeBlockedDate'])
+        ->name('admin-settings.blocked-dates.store');
+    Route::delete('/admin-settings/blocked-dates/{blockedDate}', [SettingsController::class, 'destroyBlockedDate'])
+        ->name('admin-settings.blocked-dates.destroy');
+
+    Route::post('/admin-settings/labor-rates', [SettingsController::class, 'storeLaborRate'])
+        ->name('admin-settings.labor-rates.store');
+    Route::patch('/admin-settings/labor-rates/{laborRate}', [SettingsController::class, 'updateLaborRate'])
+        ->name('admin-settings.labor-rates.update');
+
+    Route::post('/admin-settings/legal/terms', [SettingsController::class, 'updateTerms'])
+        ->name('admin-settings.legal.terms.update');
+    Route::post('/admin-settings/legal/privacy', [SettingsController::class, 'updatePrivacy'])
+        ->name('admin-settings.legal.privacy.update');
+
+    Route::post('/admin-settings/coverage-provinces', [SettingsController::class, 'storeCoverageProvince'])
+        ->name('admin-settings.coverage-provinces.store');
+    Route::patch('/admin-settings/coverage-provinces/{coverageProvince}', [SettingsController::class, 'updateCoverageProvince'])
+        ->name('admin-settings.coverage-provinces.update');
+
+    // Website Content — a tab within System Settings (per objective g: "modifies system contents")
+    Route::post('/admin-settings/website-content/hero', [WebsiteContentController::class, 'updateHero'])
+        ->name('admin-settings.website-content.hero.update');
+    Route::post('/admin-settings/website-content/services-section', [WebsiteContentController::class, 'updateServicesSection'])
+        ->name('admin-settings.website-content.services-section.update');
+    Route::post('/admin-settings/website-content/cta-banner', [WebsiteContentController::class, 'updateCtaBanner'])
+        ->name('admin-settings.website-content.cta-banner.update');
+    Route::post('/admin-settings/website-content/stats', [WebsiteContentController::class, 'storeStat'])
+        ->name('admin-settings.website-content.stats.store');
+    Route::patch('/admin-settings/website-content/stats/{landingStat}', [WebsiteContentController::class, 'updateStat'])
+        ->name('admin-settings.website-content.stats.update');
+    Route::post('/admin-settings/website-content/services', [WebsiteContentController::class, 'storeService'])
+        ->name('admin-settings.website-content.services.store');
+    Route::patch('/admin-settings/website-content/services/{landingService}', [WebsiteContentController::class, 'updateService'])
+        ->name('admin-settings.website-content.services.update');
+    Route::post('/admin-settings/website-content/testimonials', [WebsiteContentController::class, 'storeTestimonial'])
+        ->name('admin-settings.website-content.testimonials.store');
+    Route::patch('/admin-settings/website-content/testimonials/{landingTestimonial}', [WebsiteContentController::class, 'updateTestimonial'])
+        ->name('admin-settings.website-content.testimonials.update');
 });
 
 // ==========================================================
@@ -431,10 +528,39 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])
 // ==========================================================
 // EMPLOYEE ROUTES
 // ==========================================================
-Route::middleware(['auth', 'employee'])
+Route::middleware(['auth', 'role:employee'])
     ->prefix('employee')
     ->name('employee.')
     ->group(function () {
+
+        // Employee dashboard
+        Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])
+            ->name('dashboard');
+
+        // Employee assessment schedule (read-only)
+        Route::get('/assessments', [EmployeeAssessmentController::class, 'index'])
+            ->name('assessments');
+
+        // Employee assessment requests (read-only)
+        Route::get('/requests', [EmployeeRequestController::class, 'index'])
+            ->name('requests');
+
+        // Employee assessment form — view-only for any employee, editable
+        // (and submittable) only for the assessor(s) assigned to it
+        Route::get('/assessments/{assessment}/form', [EmployeeAssessmentFormController::class, 'edit'])
+            ->name('assessments.form.show');
+        Route::put('/assessments/{assessment}/form', [EmployeeAssessmentFormController::class, 'update'])
+            ->name('assessments.form.update');
+        Route::get('/assessments/{assessment}/form/print', [EmployeeAssessmentFormController::class, 'print'])
+            ->name('assessments.form.print');
+
+        // Employee quotations (read-only)
+        Route::get('/quotations', [EmployeeQuotationController::class, 'index'])
+            ->name('quotations');
+        Route::get('/quotations/{quotation}', [EmployeeQuotationController::class, 'show'])
+            ->name('quotations.show');
+        Route::get('/quotations/{quotation}/print', [EmployeeQuotationController::class, 'print'])
+            ->name('quotations.print');
 
         // Employee task list
         Route::get('/tasks', [EmployeeTaskController::class, 'index'])

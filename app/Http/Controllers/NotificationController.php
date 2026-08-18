@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
 use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class NotificationController extends Controller
@@ -55,31 +55,61 @@ class NotificationController extends Controller
         }
     }
 
-    // A client can opt out of Assessment/Quotation/Project notifications from
-    // Settings — this is the single point every notify() call passes through,
-    // so no call site needs to know about preferences.
+    // A client or staff member can opt out of certain notification modules
+    // from Settings. Personal (per-user) notifications are filtered out here,
+    // at write time. Role-broadcast notifications are a single shared row per
+    // role, so they can't be muted at write time — mutedModules() is used
+    // again at read time (index/markAllRead/topbar) to filter those per viewer.
     private static function isMutedForUser(int $userId, string $module): bool
     {
-        $column = match ($module) {
-            'Assessment' => 'notify_assessment',
-            'Quotation' => 'notify_quotation',
-            'Project' => 'notify_project',
-            default => null,
-        };
+        $user = User::find($userId);
 
-        if ($column === null) {
-            return false;
+        return $user !== null && in_array($module, self::mutedModules($user), true);
+    }
+
+    public static function mutedModules(User $user): array
+    {
+        if ($user->isClient()) {
+            $client = $user->client;
+            if ($client === null) {
+                return [];
+            }
+
+            return collect([
+                'Assessment' => 'notify_assessment',
+                'Quotation' => 'notify_quotation',
+                'Project' => 'notify_project',
+            ])->reject(fn ($column) => $client->{$column})->keys()->all();
         }
 
-        $client = Client::where('user_id', $userId)->first();
+        if ($user->isStaff()) {
+            $staff = $user->staff;
+            if ($staff === null) {
+                return [];
+            }
 
-        return $client !== null && ! $client->{$column};
+            return collect([
+                'Assessment' => 'notify_assessment',
+                'Quotation' => 'notify_quotation',
+                'Task' => 'notify_task',
+                'Project' => 'notify_project',
+                'Checklist' => 'notify_checklist',
+            ])->reject(fn ($column) => $staff->{$column})->keys()->all();
+        }
+
+        return [];
     }
 
     public function index()
     {
-        $notifications = Notification::where('recipient_role', auth()->user()->role)
-            ->orWhere('user_id', auth()->id())
+        $user = auth()->user();
+        $muted = self::mutedModules($user);
+
+        $notifications = Notification::where(function ($q) use ($user) {
+            $q->where('recipient_role', $user->role)
+                ->orWhere('user_id', $user->id);
+        })
+            ->when($muted !== [], fn ($q) => $q->whereNotIn('module', $muted))
             ->orderByDesc('created_at')
             ->limit(20)
             ->get();
@@ -90,11 +120,13 @@ class NotificationController extends Controller
     public function markAllRead()
     {
         $user = auth()->user();
+        $muted = self::mutedModules($user);
 
         Notification::where(function ($q) use ($user) {
             $q->where('recipient_role', $user->role)
                 ->orWhere('user_id', $user->id);
         })
+            ->when($muted !== [], fn ($q) => $q->whereNotIn('module', $muted))
             ->where('is_read', false)
             ->update(['is_read' => true]);
 

@@ -93,6 +93,14 @@ class QuotationController extends Controller
             userId: $quotation->assessment->client->user_id
         );
 
+        NotificationController::notify(
+            module: 'Project',
+            title: 'Project created',
+            message: "Project {$project->reference_number} was created from quotation {$quotation->reference_number}.",
+            recipientRole: ['admin', 'secretary', 'super_admin'],
+            notifiable: $project
+        );
+
         return redirect()
             ->route('projects.show', $project)
             ->with('success', "Contract confirmed. Project {$project->reference_number} was created.");

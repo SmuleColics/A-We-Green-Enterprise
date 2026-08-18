@@ -99,7 +99,7 @@
 
                 <div class="col-6 col-md-3">
                     <div class="summary-card">
-                        <span class="material-symbols-outlined summary-icon text-success">check_circle</span>
+                        <span class="material-symbols-outlined summary-icon text-primary">check_circle</span>
                         <div>
                             <p class="summary-label">Done Assessment</p>
                             <p class="summary-value">{{ $doneCount }}</p>
@@ -109,7 +109,7 @@
 
                 <div class="col-6 col-md-3">
                     <div class="summary-card">
-                        <span class="material-symbols-outlined summary-icon text-primary">description</span>
+                        <span class="material-symbols-outlined summary-icon text-success">description</span>
                         <div>
                             <p class="summary-label">Submitted Form</p>
                             <p class="summary-value">{{ $submittedFormCount }}</p>
@@ -174,7 +174,7 @@
                                         <td>{{ $assessorNames }}</td>
                                         <td>
                                             <span
-                                                class="badge rounded-pill {{ $a->derived_status === 'Done Assessment' ? 'bg-success' : ($a->derived_status === 'Submitted Form' ? 'bg-primary text-white' : 'bg-warning text-dark') }}">
+                                                class="badge rounded-pill {{ $a->derived_status === 'Done Assessment' ? 'bg-primary text-white' : ($a->derived_status === 'Submitted Form' ? 'bg-success' : 'bg-warning text-dark') }}">
                                                 {{ $a->derived_status }}
                                             </span>
                                         </td>
@@ -192,7 +192,7 @@
                                     establishment: {{ Js::from($a->establishment_type) }},
                                     assessor: {{ Js::from($assessorNames) }},
                                     status: {{ Js::from($a->derived_status) }},
-                                    statusClass: {{ Js::from($a->derived_status === 'Done Assessment' ? 'success' : 'warning text-dark') }},
+                                    statusClass: {{ Js::from($a->derived_status === 'Done Assessment' ? 'primary text-white' : ($a->derived_status === 'Submitted Form' ? 'success' : 'warning text-dark')) }},
                                     notes: {{ Js::from($a->notes ?? '') }},
                                     block: {{ Js::from($client->block ?? '—') }},
                                     lot: {{ Js::from($client->lot ?? '—') }},

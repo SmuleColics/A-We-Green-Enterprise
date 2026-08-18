@@ -7,14 +7,7 @@
 @endsection
 
 @section('page-title', 'Settings')
-@section('page-subtitle', 'Manage system configuration')
-
-@section('topbar-actions')
-    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" onclick="saveAllSettings()">
-        <span class="material-symbols-outlined fs-16">save</span>
-        Save All Changes
-    </button>
-@endsection
+@section('page-subtitle', 'The single source of truth for how SchedQuote operates')
 
 @section('content')
 
@@ -26,29 +19,25 @@
             <div class="col-lg-3">
                 <div class="settings-nav-card">
                     <p class="settings-nav-title">Configuration</p>
-                    <a href="#landing-page" class="settings-nav-link active" onclick="switchTab(this,'landing-page')">
-                        <span class="material-symbols-outlined">web</span>
-                        Landing Page
-                    </a>
-                    <a href="#assessment" class="settings-nav-link" onclick="switchTab(this,'assessment')">
-                        <span class="material-symbols-outlined">calendar_month</span>
-                        Assessment Settings
-                    </a>
-                    <a href="#coverage" class="settings-nav-link" onclick="switchTab(this,'coverage')">
-                        <span class="material-symbols-outlined">map</span>
-                        Coverage Areas
-                    </a>
-                    <a href="#company" class="settings-nav-link" onclick="switchTab(this,'company')">
+                    <a href="#company-information" class="settings-nav-link active" onclick="switchTab(this,'company-information')">
                         <span class="material-symbols-outlined">business</span>
-                        Company Info
+                        Company Information
                     </a>
-                    <a href="#contact" class="settings-nav-link" onclick="switchTab(this,'contact')">
-                        <span class="material-symbols-outlined">contact_phone</span>
-                        Contact Details
+                    <a href="#assessment-scheduling" class="settings-nav-link" onclick="switchTab(this,'assessment-scheduling')">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                        Assessment &amp; Scheduling
                     </a>
-                    <a href="#legal" class="settings-nav-link" onclick="switchTab(this,'legal')">
+                    <a href="#quotation-configuration" class="settings-nav-link" onclick="switchTab(this,'quotation-configuration')">
+                        <span class="material-symbols-outlined">request_quote</span>
+                        Quotation Configuration
+                    </a>
+                    <a href="#legal-policies" class="settings-nav-link" onclick="switchTab(this,'legal-policies')">
                         <span class="material-symbols-outlined">gavel</span>
                         Legal &amp; Policies
+                    </a>
+                    <a href="#website-content" class="settings-nav-link" onclick="switchTab(this,'website-content')">
+                        <span class="material-symbols-outlined">web</span>
+                        Website Content
                     </a>
                 </div>
             </div>
@@ -57,9 +46,623 @@
             <div class="col-lg-9">
 
                 <!-- ════════════════════════════════
-                     PANEL 1: LANDING PAGE
+                     PANEL: COMPANY INFORMATION (live)
                      ════════════════════════════════ -->
-                <div class="settings-panel active" id="panel-landing-page">
+                <div class="settings-panel active" id="panel-company-information">
+
+                    <form method="POST" action="{{ route('admin-settings.company.update') }}" enctype="multipart/form-data">
+                        @csrf
+
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul class="mb-0 ps-3">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <!-- Company Details -->
+                        <div class="settings-card mb-4">
+                            <div class="settings-card-header">
+                                <span class="material-symbols-outlined">apartment</span>
+                                Company Details
+                            </div>
+                            <div class="settings-card-body">
+                                <div class="row g-3">
+                                    <div class="col-12 mb-2">
+                                        <label class="settings-label">Company Logo</label>
+                                        <div class="image-upload-row">
+                                            <div class="image-preview-box image-preview-box--logo" id="preview-logo">
+                                                <img src="{{ asset($company['company_logo_path'] ?? 'css/images/AWeGreen-Logo.svg') }}"
+                                                    alt="Logo preview" class="image-preview-thumb" style="object-fit:contain; padding:8px;">
+                                                <div class="image-preview-overlay">
+                                                    <span class="material-symbols-outlined">edit</span>
+                                                    Change
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <input type="file" name="logo" class="form-control form-control-sm" accept="image/*,image/svg+xml"
+                                                    onchange="previewImage(this,'preview-logo')">
+                                                <p class="settings-hint">SVG preferred. PNG/WebP also accepted. Max 3MB. Shown in navbar, footer, and PDFs.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="settings-label">Company Name</label>
+                                        <input type="text" name="company_name" class="form-control" value="{{ old('company_name', $company['company_name'] ?? '') }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="settings-label">Tagline</label>
+                                        <input type="text" name="company_tagline" class="form-control" value="{{ old('company_tagline', $company['company_tagline'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="settings-label">Year Founded</label>
+                                        <input type="number" name="company_founded_year" class="form-control" value="{{ old('company_founded_year', $company['company_founded_year'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label class="settings-label">Short Description (Footer)</label>
+                                        <input type="text" name="company_description" class="form-control" value="{{ old('company_description', $company['company_description'] ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="settings-card mb-4">
+                            <div class="settings-card-header">
+                                <span class="material-symbols-outlined">location_on</span>
+                                Address
+                            </div>
+                            <div class="settings-card-body">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="settings-label">Main Office Address</label>
+                                        <textarea name="company_address_main" class="form-control" rows="2">{{ old('company_address_main', $company['company_address_main'] ?? '') }}</textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="settings-label">Satellite / Branch Address (optional)</label>
+                                        <textarea name="company_address_satellite" class="form-control" rows="2">{{ old('company_address_satellite', $company['company_address_satellite'] ?? '') }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="settings-card mb-4">
+                            <div class="settings-card-header">
+                                <span class="material-symbols-outlined">contact_phone</span>
+                                Contact Information
+                            </div>
+                            <div class="settings-card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="settings-label">Primary Phone (e.g. Smart)</label>
+                                        <input type="text" name="company_phone_primary" class="form-control" value="{{ old('company_phone_primary', $company['company_phone_primary'] ?? '') }}" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="settings-label">Secondary Phone (e.g. Globe)</label>
+                                        <input type="text" name="company_phone_secondary" class="form-control" value="{{ old('company_phone_secondary', $company['company_phone_secondary'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="settings-label">Landline (optional)</label>
+                                        <input type="text" name="company_phone_landline" class="form-control" value="{{ old('company_phone_landline', $company['company_phone_landline'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="settings-label">Primary Email</label>
+                                        <input type="email" name="company_email_primary" class="form-control" value="{{ old('company_email_primary', $company['company_email_primary'] ?? '') }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="settings-label">Secondary Email (optional)</label>
+                                        <input type="email" name="company_email_secondary" class="form-control" value="{{ old('company_email_secondary', $company['company_email_secondary'] ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Business Hours -->
+                        <div class="settings-card mb-4">
+                            <div class="settings-card-header">
+                                <span class="material-symbols-outlined">schedule</span>
+                                Business Hours
+                            </div>
+                            <div class="settings-card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="settings-label">Working Days</label>
+                                        <input type="text" name="company_hours_days" class="form-control" value="{{ old('company_hours_days', $company['company_hours_days'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="settings-label">Opening Time</label>
+                                        <input type="time" name="company_hours_open" class="form-control" value="{{ old('company_hours_open', $company['company_hours_open'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="settings-label">Closing Time</label>
+                                        <input type="time" name="company_hours_close" class="form-control" value="{{ old('company_hours_close', $company['company_hours_close'] ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success d-flex align-items-center gap-1">
+                            <span class="material-symbols-outlined fs-16">save</span>
+                            Save Company Information
+                        </button>
+                    </form>
+
+                </div><!-- /panel-company-information -->
+
+
+                <!-- ════════════════════════════════
+                     PANEL: ASSESSMENT & SCHEDULING
+                     ════════════════════════════════ -->
+                <div class="settings-panel" id="panel-assessment-scheduling">
+
+                    <div class="alert alert-secondary d-flex align-items-start gap-2 mb-4">
+                        <span class="material-symbols-outlined">construction</span>
+                        <div>
+                            Changes here apply immediately to the assessment request form clients use. If you turn
+                            something off, clients will no longer be able to select it.
+                        </div>
+                    </div>
+
+                    <!-- Client Types (live) -->
+                    <div class="settings-card mb-4">
+                        <div class="settings-card-header">
+                            <span class="material-symbols-outlined">groups</span>
+                            Client Types
+                        </div>
+                        <div class="settings-card-body">
+                            <p class="settings-hint mb-3">
+                                These are the options clients choose from when requesting an assessment. Turning one
+                                off removes it from the request form — clients won't be able to select it.
+                            </p>
+                            <div class="d-flex flex-column gap-2">
+                                @foreach ($clientTypes as $type)
+                                    <form method="POST" action="{{ route('admin-settings.client-types.update', $type) }}"
+                                        class="tag-edit-row">
+                                        @csrf
+                                        @method('PATCH')
+                                        <span class="material-symbols-outlined tag-drag">{{ $type->icon ?? 'category' }}</span>
+                                        <input type="text" name="name" class="form-control form-control-sm" value="{{ $type->name }}" required>
+                                        <input type="text" name="description" class="form-control form-control-sm" placeholder="Description" value="{{ $type->description }}">
+                                        <input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon" value="{{ $type->icon }}" style="max-width:110px;">
+                                        <select name="default_size" class="form-select form-select-sm tag-size-select">
+                                            <option value="small" @selected($type->default_size === 'small')>Small (half-day)</option>
+                                            <option value="large" @selected($type->default_size === 'large')>Large (full-day)</option>
+                                        </select>
+                                        <div class="form-check form-switch mb-0" title="Active">
+                                            <input class="form-check-input" type="checkbox" name="active" value="1" @checked($type->active)>
+                                        </div>
+                                        <button type="submit" class="btn-icon-remove" title="Save">
+                                            <span class="material-symbols-outlined">save</span>
+                                        </button>
+                                    </form>
+                                @endforeach
+                            </div>
+
+                            <form method="POST" action="{{ route('admin-settings.client-types.store') }}" class="tag-edit-row mt-3">
+                                @csrf
+                                <span class="material-symbols-outlined tag-drag">add</span>
+                                <input type="text" name="name" class="form-control form-control-sm" placeholder="New client type name" required>
+                                <input type="text" name="description" class="form-control form-control-sm" placeholder="Description">
+                                <input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon (optional)" style="max-width:110px;">
+                                <select name="default_size" class="form-select form-select-sm tag-size-select">
+                                    <option value="small">Small (half-day)</option>
+                                    <option value="large">Large (full-day)</option>
+                                </select>
+                                <button type="submit" class="btn-add-row">
+                                    <span class="material-symbols-outlined">add</span> Add
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Establishment Types (live) -->
+                    <div class="settings-card mb-4">
+                        <div class="settings-card-header">
+                            <span class="material-symbols-outlined">domain</span>
+                            Establishment Types
+                            <span class="settings-badge ms-2">Per client type</span>
+                        </div>
+                        <div class="settings-card-body">
+                            <p class="settings-hint mb-3">Establishment types shown once a client type is selected.</p>
+
+                            <ul class="nav nav-tabs mb-3">
+                                @foreach ($clientTypes as $i => $type)
+                                    <li class="nav-item">
+                                        <button type="button" class="nav-link @if ($i === 0) active @endif" onclick="switchEstabTab(this,'{{ $type->id }}')">{{ $type->name }}</button>
+                                    </li>
+                                @endforeach
+                            </ul>
+
+                            @foreach ($clientTypes as $i => $type)
+                                <div id="estab-panel-{{ $type->id }}" style="@if ($i !== 0) display:none; @endif">
+                                    <div class="d-flex flex-column gap-2">
+                                        @foreach ($type->establishmentTypes as $estab)
+                                            <form method="POST" action="{{ route('admin-settings.establishment-types.update', $estab) }}" class="tag-edit-row">
+                                                @csrf
+                                                @method('PATCH')
+                                                <span class="material-symbols-outlined tag-drag">{{ $estab->icon ?? 'category' }}</span>
+                                                <input type="text" name="name" class="form-control form-control-sm" value="{{ $estab->name }}" required>
+                                                <input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon" value="{{ $estab->icon }}" style="max-width:110px;">
+                                                <select name="size" class="form-select form-select-sm tag-size-select">
+                                                    <option value="small" @selected($estab->size === 'small')>Small</option>
+                                                    <option value="large" @selected($estab->size === 'large')>Large</option>
+                                                </select>
+                                                <div class="form-check form-switch mb-0" title="Active">
+                                                    <input class="form-check-input" type="checkbox" name="active" value="1" @checked($estab->active)>
+                                                </div>
+                                                <button type="submit" class="btn-icon-remove" title="Save">
+                                                    <span class="material-symbols-outlined">save</span>
+                                                </button>
+                                            </form>
+                                        @endforeach
+                                    </div>
+                                    <form method="POST" action="{{ route('admin-settings.establishment-types.store') }}" class="tag-edit-row mt-2">
+                                        @csrf
+                                        <input type="hidden" name="client_type_id" value="{{ $type->id }}">
+                                        <input type="text" name="name" class="form-control form-control-sm" placeholder="New establishment name" required>
+                                        <input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon (optional)" style="max-width:110px;">
+                                        <select name="size" class="form-select form-select-sm tag-size-select">
+                                            <option value="small">Small</option>
+                                            <option value="large">Large</option>
+                                        </select>
+                                        <button type="submit" class="btn-add-row"><span class="material-symbols-outlined">add</span> Add</button>
+                                    </form>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Assessment Services (live) -->
+                    <div class="settings-card mb-4">
+                        <div class="settings-card-header">
+                            <span class="material-symbols-outlined">handyman</span>
+                            Assessment Services
+                        </div>
+                        <div class="settings-card-body">
+                            <p class="settings-hint mb-3">
+                                These are the services clients can request. Turning one off removes it from the
+                                request form — clients won't be able to select it.
+                            </p>
+                            <div class="d-flex flex-column gap-2">
+                                @foreach ($services as $service)
+                                    <form method="POST" action="{{ route('admin-settings.services.update', $service) }}" class="tag-edit-row">
+                                        @csrf
+                                        @method('PATCH')
+                                        <span class="material-symbols-outlined tag-drag">{{ $service->icon ?? 'build' }}</span>
+                                        <input type="text" name="name" class="form-control form-control-sm" value="{{ $service->name }}" required>
+                                        <input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon" value="{{ $service->icon }}" style="max-width:110px;">
+                                        <div class="form-check form-switch mb-0" title="Has sub-types">
+                                            <input class="form-check-input" type="checkbox" name="has_subtypes" value="1" @checked($service->has_subtypes)>
+                                            <label class="form-check-label small">Sub-types</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-0" title="Active">
+                                            <input class="form-check-input" type="checkbox" name="active" value="1" @checked($service->active)>
+                                        </div>
+                                        <button type="submit" class="btn-icon-remove" title="Save">
+                                            <span class="material-symbols-outlined">save</span>
+                                        </button>
+                                    </form>
+                                    @if ($service->has_subtypes)
+                                        <div class="ms-4 ps-3 border-start d-flex flex-column gap-2 mb-2">
+                                            @foreach ($service->subtypes as $subtype)
+                                                <form method="POST" action="{{ route('admin-settings.subtypes.update', $subtype) }}" class="tag-edit-row">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="text" name="name" class="form-control form-control-sm" value="{{ $subtype->name }}" required>
+                                                    <div class="form-check form-switch mb-0" title="Active">
+                                                        <input class="form-check-input" type="checkbox" name="active" value="1" @checked($subtype->active)>
+                                                    </div>
+                                                    <button type="submit" class="btn-icon-remove" title="Save">
+                                                        <span class="material-symbols-outlined">save</span>
+                                                    </button>
+                                                </form>
+                                            @endforeach
+                                            <form method="POST" action="{{ route('admin-settings.subtypes.store') }}" class="tag-edit-row">
+                                                @csrf
+                                                <input type="hidden" name="assessment_service_id" value="{{ $service->id }}">
+                                                <input type="text" name="name" class="form-control form-control-sm" placeholder="New sub-type for {{ $service->name }}" required>
+                                                <button type="submit" class="btn-add-row"><span class="material-symbols-outlined">add</span> Add</button>
+                                            </form>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+
+                            <form method="POST" action="{{ route('admin-settings.services.store') }}" class="tag-edit-row mt-3">
+                                @csrf
+                                <span class="material-symbols-outlined tag-drag">add</span>
+                                <input type="text" name="name" class="form-control form-control-sm" placeholder="New service name" required>
+                                <input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon (optional)" style="max-width:110px;">
+                                <div class="form-check form-switch mb-0" title="Has sub-types">
+                                    <input class="form-check-input" type="checkbox" name="has_subtypes" value="1">
+                                    <label class="form-check-label small">Sub-types</label>
+                                </div>
+                                <button type="submit" class="btn-add-row">
+                                    <span class="material-symbols-outlined">add</span> Add
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Working Days & Slot Capacity (live) -->
+                    <div class="settings-card mb-4">
+                        <div class="settings-card-header">
+                            <span class="material-symbols-outlined">schedule</span>
+                            Working Days &amp; Slot Capacity
+                        </div>
+                        <div class="settings-card-body">
+                            <p class="settings-hint mb-3">
+                                Choose which days you're open for assessments and how many can be booked per
+                                half-day. Clients can't submit a request for a day you're closed or a slot that's
+                                already full.
+                            </p>
+                            <form method="POST" action="{{ route('admin-settings.scheduling.update') }}">
+                                @csrf
+                                <span class="settings-sub-header">Working Days</span>
+                                <div class="d-flex flex-wrap gap-3 mt-2 mb-3">
+                                    @foreach (['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] as $i => $label)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="working_days[]" value="{{ $i }}"
+                                                id="wd-{{ $i }}" @checked(in_array($i, $workingDays))>
+                                            <label class="form-check-label" for="wd-{{ $i }}">{{ $label }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="settings-label">Max Bookings per Half-Day Slot</label>
+                                        <input type="number" name="max_bookings_per_slot" class="form-control" min="1" max="20"
+                                            value="{{ $maxBookingsPerSlot }}" required>
+                                        <p class="settings-hint">A Full Day request uses up both the morning and afternoon slot for that day.</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-success">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <hr class="my-4">
+
+                            <span class="settings-sub-header">Blocked Dates (Holidays / One-off Closures)</span>
+                            <div class="d-flex flex-column gap-2 mt-2">
+                                @forelse ($blockedDates as $blocked)
+                                    <div class="tag-edit-row">
+                                        <span class="material-symbols-outlined tag-drag">event_busy</span>
+                                        <input type="text" class="form-control form-control-sm" value="{{ $blocked->date->format('M j, Y') }}" disabled>
+                                        <input type="text" class="form-control form-control-sm" value="{{ $blocked->label }}" disabled>
+                                        <form method="POST" action="{{ route('admin-settings.blocked-dates.destroy', $blocked) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-icon-remove" title="Remove">
+                                                <span class="material-symbols-outlined">close</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                @empty
+                                    <p class="settings-hint mb-0">No blocked dates configured.</p>
+                                @endforelse
+                            </div>
+                            <form method="POST" action="{{ route('admin-settings.blocked-dates.store') }}" class="tag-edit-row mt-3">
+                                @csrf
+                                <span class="material-symbols-outlined tag-drag">add</span>
+                                <input type="date" name="date" class="form-control form-control-sm" required>
+                                <input type="text" name="label" class="form-control form-control-sm" placeholder="Label (e.g. Christmas Day)">
+                                <button type="submit" class="btn-add-row"><span class="material-symbols-outlined">add</span> Add</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <span class="material-symbols-outlined">public</span>
+                            Coverage Areas
+                        </div>
+                        <div class="settings-card-body">
+                            <p class="settings-hint mb-3">
+                                These are the provinces clients can request an assessment from. Turning a province
+                                off removes it from the request form — clients won't be able to select it.
+                            </p>
+                            @foreach ($coverageProvinces->groupBy('region') as $region => $provinces)
+                                <p class="settings-sub-header">{{ $region }}</p>
+                                <div class="d-flex flex-column gap-2 mb-3">
+                                    @foreach ($provinces as $province)
+                                        <form method="POST" action="{{ route('admin-settings.coverage-provinces.update', $province) }}" class="tag-edit-row">
+                                            @csrf @method('PATCH')
+                                            <span class="material-symbols-outlined tag-drag">location_on</span>
+                                            <input type="text" name="region" class="form-control form-control-sm" value="{{ $province->region }}" placeholder="Region" style="max-width:220px;">
+                                            <input type="text" name="province" class="form-control form-control-sm" value="{{ $province->province }}" required>
+                                            <div class="form-check form-switch mb-0" title="Active">
+                                                <input class="form-check-input" type="checkbox" name="active" value="1" @checked($province->active)>
+                                            </div>
+                                            <button type="submit" class="btn-icon-remove" title="Save"><span class="material-symbols-outlined">save</span></button>
+                                        </form>
+                                    @endforeach
+                                </div>
+                            @endforeach
+
+                            <form method="POST" action="{{ route('admin-settings.coverage-provinces.store') }}" class="tag-edit-row mt-2">
+                                @csrf
+                                <span class="material-symbols-outlined tag-drag">add</span>
+                                <input type="text" name="region" class="form-control form-control-sm" placeholder="Region (e.g. Region IV-A)" style="max-width:220px;" required>
+                                <input type="text" name="province" class="form-control form-control-sm" placeholder="New province name" required>
+                                <button type="submit" class="btn-add-row"><span class="material-symbols-outlined">add</span> Add</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div><!-- /panel-assessment-scheduling -->
+
+
+                <!-- ════════════════════════════════
+                     PANEL: QUOTATION CONFIGURATION
+                     ════════════════════════════════ -->
+                <div class="settings-panel" id="panel-quotation-configuration">
+
+                    <div class="alert alert-secondary d-flex align-items-start gap-2 mb-4">
+                        <span class="material-symbols-outlined">percent</span>
+                        <div>
+                            These rates are used to calculate new quotations. Changing a rate only affects
+                            quotations created from now on — quotations already sent to a client keep the rate they
+                            were originally given.
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <span class="material-symbols-outlined">percent</span>
+                            Labor Rates
+                        </div>
+                        <div class="settings-card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table mb-0 align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Service</th>
+                                            <th>Client Type</th>
+                                            <th style="width:140px;">Rate</th>
+                                            <th style="width:90px;">Active</th>
+                                            <th style="width:70px;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($laborRates as $rate)
+                                            <tr>
+                                                <form method="POST" action="{{ route('admin-settings.labor-rates.update', $rate) }}" id="rate-form-{{ $rate->id }}">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                </form>
+                                                <td>{{ $rate->service_type }}</td>
+                                                <td>{{ $rate->client_type_condition ?? 'Any / Other' }}</td>
+                                                <td>
+                                                    <div class="input-group input-group-sm">
+                                                        <input type="number" step="0.01" min="0" max="100" name="rate_percent"
+                                                            class="form-control" value="{{ $rate->rate_percent }}" form="rate-form-{{ $rate->id }}" required>
+                                                        <span class="input-group-text">%</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-check form-switch mb-0">
+                                                        <input class="form-check-input" type="checkbox" name="active" value="1"
+                                                            form="rate-form-{{ $rate->id }}" @checked($rate->active)>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button type="submit" class="btn-icon-remove" form="rate-form-{{ $rate->id }}" title="Save">
+                                                        <span class="material-symbols-outlined">save</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <form method="POST" action="{{ route('admin-settings.labor-rates.store') }}" class="tag-edit-row m-3">
+                                @csrf
+                                <span class="material-symbols-outlined tag-drag">add</span>
+                                <select name="service_type" class="form-select form-select-sm" required>
+                                    @foreach ($services as $service)
+                                        <option value="{{ $service->name }}">{{ $service->name }}</option>
+                                    @endforeach
+                                </select>
+                                <select name="client_type_condition" class="form-select form-select-sm">
+                                    <option value="">Any / Other (default)</option>
+                                    @foreach ($clientTypes as $type)
+                                        <option value="{{ $type->name }}">{{ $type->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="input-group input-group-sm" style="max-width:130px;">
+                                    <input type="number" step="0.01" min="0" max="100" name="rate_percent" class="form-control" placeholder="Rate" required>
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <button type="submit" class="btn-add-row">
+                                    <span class="material-symbols-outlined">add</span> Add Override
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div><!-- /panel-quotation-configuration -->
+
+
+                <!-- ════════════════════════════════
+                     PANEL: LEGAL & POLICIES
+                     ════════════════════════════════ -->
+                <div class="settings-panel" id="panel-legal-policies">
+
+                    <div class="alert alert-secondary d-flex align-items-start gap-2 mb-4">
+                        <span class="material-symbols-outlined">gavel</span>
+                        <div>
+                            Whatever you save here is exactly what clients see when they read your Terms of Service
+                            or Privacy Policy while creating an account.
+                        </div>
+                    </div>
+
+                    <div class="settings-card mb-4">
+                        <div class="settings-card-header">
+                            <span class="material-symbols-outlined">description</span>
+                            Terms of Service
+                        </div>
+                        <div class="settings-card-body">
+                            <p class="settings-hint mb-2">
+                                Last updated {{ \Carbon\Carbon::parse($legal['legal_terms_updated_at'] ?? now())->format('F j, Y') }}
+                                @if (($legalMeta['legal_terms_content'] ?? null)?->updatedBy)
+                                    by {{ $legalMeta['legal_terms_content']->updatedBy->full_name }}
+                                @endif
+                                &mdash; updates automatically when you save.
+                            </p>
+                            <p class="settings-hint mb-2">
+                                Start a line with <code>##</code> to make it a heading (for example: <code>## 1. Acceptance of Terms</code>).
+                                Start a line with <code>-</code> to make it a bullet point. Leave a blank line between paragraphs.
+                            </p>
+                            <form method="POST" action="{{ route('admin-settings.legal.terms.update') }}">
+                                @csrf
+                                <textarea name="content" class="form-control" rows="16">{{ old('content', $legal['legal_terms_content'] ?? '') }}</textarea>
+                                <button type="submit" class="btn btn-success mt-3">Save Terms of Service</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <span class="material-symbols-outlined">privacy_tip</span>
+                            Privacy Policy
+                        </div>
+                        <div class="settings-card-body">
+                            <p class="settings-hint mb-2">
+                                Last updated {{ \Carbon\Carbon::parse($legal['legal_privacy_updated_at'] ?? now())->format('F j, Y') }}
+                                @if (($legalMeta['legal_privacy_content'] ?? null)?->updatedBy)
+                                    by {{ $legalMeta['legal_privacy_content']->updatedBy->full_name }}
+                                @endif
+                                &mdash; updates automatically when you save.
+                            </p>
+                            <p class="settings-hint mb-2">Same formatting as Terms of Service above.</p>
+                            <form method="POST" action="{{ route('admin-settings.legal.privacy.update') }}">
+                                @csrf
+                                <textarea name="content" class="form-control" rows="18">{{ old('content', $legal['legal_privacy_content'] ?? '') }}</textarea>
+                                <button type="submit" class="btn btn-success mt-3">Save Privacy Policy</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div><!-- /panel-legal-policies -->
+
+
+                <!-- ════════════════════════════════
+                     PANEL: WEBSITE CONTENT (live)
+                     ════════════════════════════════ -->
+                <div class="settings-panel" id="panel-website-content">
+
+                    <div class="alert alert-secondary d-flex align-items-start gap-2 mb-4">
+                        <span class="material-symbols-outlined">web</span>
+                        <div>
+                            This is exactly what visitors see on your public website.
+                        </div>
+                    </div>
 
                     <!-- Hero Section -->
                     <div class="settings-card mb-4">
@@ -68,87 +671,84 @@
                             Hero Section
                         </div>
                         <div class="settings-card-body">
-
-                            <div class="row g-3">
-                                <!-- Hero Background -->
-                                <p class="settings-sub-header">Hero Background Image</p>
-                                <div class="image-upload-row mb-4">
-                                    <div class="image-preview-box" id="preview-hero">
-                                        <img src="{{ asset('css/images/hero-img.jpg') }}" alt="Hero preview" class="image-preview-thumb">
-                                        <div class="image-preview-overlay">
-                                            <span class="material-symbols-outlined">edit</span>
-                                            Change
+                            <form method="POST" action="{{ route('admin-settings.website-content.hero.update') }}" enctype="multipart/form-data">
+                                @csrf
+                                <div class="row g-3">
+                                    <p class="settings-sub-header">Hero Background Image</p>
+                                    <div class="image-upload-row mb-4">
+                                        <div class="image-preview-box" id="preview-hero">
+                                            <img src="{{ asset($landing['landing_hero_image_path'] ?? 'css/images/hero-img.jpg') }}" alt="Hero preview" class="image-preview-thumb">
+                                            <div class="image-preview-overlay">
+                                                <span class="material-symbols-outlined">edit</span>
+                                                Change
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <label class="settings-label">Hero Background</label>
+                                            <input type="file" name="hero_image" class="form-control form-control-sm" accept="image/*"
+                                                onchange="previewImage(this,'preview-hero')">
+                                            <p class="settings-hint">Recommended: 1920×1080px, JPG or WebP. Max 3MB.</p>
                                         </div>
                                     </div>
-                                    <div class="flex-grow-1">
-                                        <label class="settings-label">Hero Background</label>
-                                        <input type="file" class="form-control form-control-sm" accept="image/*"
-                                            onchange="previewImage(this,'preview-hero')">
-                                        <p class="settings-hint">Recommended: 1920×1080px, JPG or WebP. Max 3MB.</p>
+
+                                    <hr class="my-2">
+                                    <div class="col-12">
+                                        <label class="settings-label">Main Headline</label>
+                                        <input type="text" name="landing_hero_headline" class="form-control" value="{{ old('landing_hero_headline', $landing['landing_hero_headline'] ?? '') }}">
+                                        <p class="settings-hint">The large bold text on the hero. Keep it short and impactful.</p>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="settings-label">Hero Subtitle</label>
+                                        <textarea name="landing_hero_subtitle" class="form-control" rows="2">{{ old('landing_hero_subtitle', $landing['landing_hero_subtitle'] ?? '') }}</textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="settings-label">Primary CTA Button Text</label>
+                                        <input type="text" name="landing_hero_cta_primary" class="form-control" value="{{ old('landing_hero_cta_primary', $landing['landing_hero_cta_primary'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="settings-label">Secondary CTA Button Text</label>
+                                        <input type="text" name="landing_hero_cta_secondary" class="form-control" value="{{ old('landing_hero_cta_secondary', $landing['landing_hero_cta_secondary'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="settings-label">Eyebrow Badge Text</label>
+                                        <input type="text" name="landing_hero_badge" class="form-control" value="{{ old('landing_hero_badge', $landing['landing_hero_badge'] ?? '') }}">
                                     </div>
                                 </div>
+                                <button type="submit" class="btn btn-success mt-3">Save Hero Section</button>
+                            </form>
+                        </div>
+                    </div>
 
-                                <hr class="my-2">
-                                <div class="col-12">
-                                    <label class="settings-label">Main Headline</label>
-                                    <input type="text" class="form-control" id="hero-headline"
-                                        value="We Bring The Right Technology">
-                                    <p class="settings-hint">The large bold text on the hero. Keep it short and impactful.</p>
-                                </div>
-                                <div class="col-12">
-                                    <label class="settings-label">Hero Subtitle</label>
-                                    <textarea class="form-control" id="hero-subtitle" rows="2">Your trusted partner for CCTV, Solar Energy, Solar Street Lighting, and Public Address Systems since 2015.</textarea>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="settings-label">Primary CTA Button Text</label>
-                                    <input type="text" class="form-control" id="hero-cta-primary" value="Schedule Free Assessment">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="settings-label">Secondary CTA Button Text</label>
-                                    <input type="text" class="form-control" id="hero-cta-secondary" value="View Our Projects">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="settings-label">Eyebrow Badge Text</label>
-                                    <input type="text" class="form-control" id="hero-badge" value="Trusted Since 2015">
-                                </div>
+                    <!-- Hero Stat Cards -->
+                    <div class="settings-card mb-4">
+                        <div class="settings-card-header">
+                            <span class="material-symbols-outlined">bar_chart</span>
+                            Hero Stat Cards
+                        </div>
+                        <div class="settings-card-body">
+                            <p class="settings-hint mb-3">The 4 mini stat cards under the hero CTAs.</p>
+                            <div class="d-flex flex-column gap-2">
+                                @foreach ($landingHeroStats as $stat)
+                                    <form method="POST" action="{{ route('admin-settings.website-content.stats.update', $stat) }}" class="tag-edit-row">
+                                        @csrf @method('PATCH')
+                                        <input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon" value="{{ $stat->icon }}" style="max-width:130px;">
+                                        <input type="text" name="value" class="form-control form-control-sm" placeholder="Value" value="{{ $stat->value }}">
+                                        <input type="text" name="label" class="form-control form-control-sm" placeholder="Label" value="{{ $stat->label }}">
+                                        <div class="form-check form-switch mb-0" title="Active">
+                                            <input class="form-check-input" type="checkbox" name="active" value="1" @checked($stat->active)>
+                                        </div>
+                                        <button type="submit" class="btn-icon-remove" title="Save"><span class="material-symbols-outlined">save</span></button>
+                                    </form>
+                                @endforeach
                             </div>
-
-                            <hr class="my-4">
-                            <p class="settings-sub-header">Hero Stat Cards</p>
-                            <div class="row g-3" id="hero-stats-list">
-                                <div class="col-md-6">
-                                    <div class="stat-edit-row">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Value" value="5,000+">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Label" value="Cameras Installed">
-                                        <button class="btn-icon-remove" onclick="removeStatRow(this)" title="Remove"><span class="material-symbols-outlined">close</span></button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="stat-edit-row">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Value" value="800+">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Label" value="Solar Street Lights">
-                                        <button class="btn-icon-remove" onclick="removeStatRow(this)" title="Remove"><span class="material-symbols-outlined">close</span></button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="stat-edit-row">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Value" value="12 Years">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Label" value="of Excellence">
-                                        <button class="btn-icon-remove" onclick="removeStatRow(this)" title="Remove"><span class="material-symbols-outlined">close</span></button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="stat-edit-row">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Value" value="Gov't &amp; Private">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Label" value="Trusted">
-                                        <button class="btn-icon-remove" onclick="removeStatRow(this)" title="Remove"><span class="material-symbols-outlined">close</span></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="btn-add-row mt-3" onclick="addStatRow()">
-                                <span class="material-symbols-outlined">add</span> Add Stat Card
-                            </button>
-
+                            <form method="POST" action="{{ route('admin-settings.website-content.stats.store') }}" class="tag-edit-row mt-3">
+                                @csrf
+                                <input type="hidden" name="placement" value="hero">
+                                <input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon (bi-*)" style="max-width:130px;">
+                                <input type="text" name="value" class="form-control form-control-sm" placeholder="Value" required>
+                                <input type="text" name="label" class="form-control form-control-sm" placeholder="Label" required>
+                                <button type="submit" class="btn-add-row"><span class="material-symbols-outlined">add</span> Add</button>
+                            </form>
                         </div>
                     </div>
 
@@ -160,124 +760,98 @@
                         </div>
                         <div class="settings-card-body">
                             <p class="settings-hint mb-3">The 4-column stats bar below the hero.</p>
-                            <div class="row g-3" id="stats-bar-list">
-                                <div class="col-md-6">
-                                    <div class="stat-edit-row">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Value" value="Since 2015">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Label" value="Years of Service">
-                                        <button class="btn-icon-remove" onclick="removeStatRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="stat-edit-row">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Value" value="5,800+">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Label" value="Installations Completed">
-                                        <button class="btn-icon-remove" onclick="removeStatRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="stat-edit-row">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Value" value="500+">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Label" value="Satisfied Customers">
-                                        <button class="btn-icon-remove" onclick="removeStatRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="stat-edit-row">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Value" value="Region IV-A &amp; NCR">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Label" value="Coverage Areas">
-                                        <button class="btn-icon-remove" onclick="removeStatRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                    </div>
-                                </div>
+                            <div class="d-flex flex-column gap-2">
+                                @foreach ($landingBarStats as $stat)
+                                    <form method="POST" action="{{ route('admin-settings.website-content.stats.update', $stat) }}" class="tag-edit-row">
+                                        @csrf @method('PATCH')
+                                        <input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon" value="{{ $stat->icon }}" style="max-width:130px;">
+                                        <input type="text" name="value" class="form-control form-control-sm" placeholder="Value" value="{{ $stat->value }}">
+                                        <input type="text" name="label" class="form-control form-control-sm" placeholder="Label" value="{{ $stat->label }}">
+                                        <div class="form-check form-switch mb-0" title="Active">
+                                            <input class="form-check-input" type="checkbox" name="active" value="1" @checked($stat->active)>
+                                        </div>
+                                        <button type="submit" class="btn-icon-remove" title="Save"><span class="material-symbols-outlined">save</span></button>
+                                    </form>
+                                @endforeach
                             </div>
-                            <button class="btn-add-row mt-3" onclick="addStatsBarRow()">
-                                <span class="material-symbols-outlined">add</span> Add Stat
-                            </button>
+                            <form method="POST" action="{{ route('admin-settings.website-content.stats.store') }}" class="tag-edit-row mt-3">
+                                @csrf
+                                <input type="hidden" name="placement" value="bar">
+                                <input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon (bi-*)" style="max-width:130px;">
+                                <input type="text" name="value" class="form-control form-control-sm" placeholder="Value" required>
+                                <input type="text" name="label" class="form-control form-control-sm" placeholder="Label" required>
+                                <button type="submit" class="btn-add-row"><span class="material-symbols-outlined">add</span> Add</button>
+                            </form>
                         </div>
                     </div>
 
                     <!-- Services Section -->
                     <div class="settings-card mb-4">
                         <div class="settings-card-header">
-                            <span class="material-symbols-outlined">home_repair_service</span>
-                            Services Section
+                            <span class="material-symbols-outlined">title</span>
+                            Services Section Heading
                         </div>
                         <div class="settings-card-body">
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <label class="settings-label">Section Heading</label>
-                                    <input type="text" class="form-control" value="Comprehensive Solutions for Your Security and Energy Needs">
+                            <form method="POST" action="{{ route('admin-settings.website-content.services-section.update') }}">
+                                @csrf
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="settings-label">Section Heading</label>
+                                        <input type="text" name="landing_services_heading" class="form-control" value="{{ old('landing_services_heading', $landing['landing_services_heading'] ?? '') }}">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="settings-label">Section Subtitle</label>
+                                        <input type="text" name="landing_services_subtitle" class="form-control" value="{{ old('landing_services_subtitle', $landing['landing_services_subtitle'] ?? '') }}">
+                                    </div>
                                 </div>
-                                <div class="col-12">
-                                    <label class="settings-label">Section Subtitle</label>
-                                    <input type="text" class="form-control" value="We specialize in four core services designed to protect your property and reduce your energy costs.">
-                                </div>
+                                <button type="submit" class="btn btn-success mt-3">Save Heading</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="settings-card mb-4">
+                        <div class="settings-card-header">
+                            <span class="material-symbols-outlined">home_repair_service</span>
+                            Service Cards
+                        </div>
+                        <div class="settings-card-body">
+                            <div class="d-flex flex-column gap-3">
+                                @foreach ($landingServices as $service)
+                                    <form method="POST" action="{{ route('admin-settings.website-content.services.update', $service) }}" class="service-edit-row">
+                                        @csrf @method('PATCH')
+                                        <div class="service-edit-handle"><span class="material-symbols-outlined">drag_indicator</span></div>
+                                        <div class="flex-grow-1 row g-2">
+                                            <div class="col-md-3"><input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon" value="{{ $service->icon }}"></div>
+                                            <div class="col-md-3"><input type="text" name="title" class="form-control form-control-sm" placeholder="Title" value="{{ $service->title }}"></div>
+                                            <div class="col-md-6"><input type="text" name="description" class="form-control form-control-sm" placeholder="Short description" value="{{ $service->description }}"></div>
+                                            <div class="col-8">
+                                                <label class="settings-label fs-11">Features (one per line)</label>
+                                                <textarea name="features" class="form-control form-control-sm" rows="2">{{ $service->features }}</textarea>
+                                            </div>
+                                            <div class="col-4 d-flex align-items-end">
+                                                <div class="form-check form-switch mb-2" title="Active">
+                                                    <input class="form-check-input" type="checkbox" name="active" value="1" @checked($service->active)>
+                                                    <label class="form-check-label small">Active</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn-icon-remove" title="Save"><span class="material-symbols-outlined">save</span></button>
+                                    </form>
+                                @endforeach
                             </div>
-                            <hr class="my-4">
-                            <p class="settings-sub-header">Service Cards</p>
-                            <div class="d-flex flex-column gap-3" id="services-list">
-
-                                <div class="service-edit-row">
-                                    <div class="service-edit-handle"><span class="material-symbols-outlined">drag_indicator</span></div>
-                                    <div class="flex-grow-1 row g-2">
-                                        <div class="col-md-4"><input type="text" class="form-control form-control-sm" placeholder="Title" value="CCTV Surveillance"></div>
-                                        <div class="col-md-8"><input type="text" class="form-control form-control-sm" placeholder="Short description" value="HD & IP camera systems with 24/7 monitoring, remote access, and intelligent analytics."></div>
-                                        <div class="col-12">
-                                            <label class="settings-label fs-11">Features (one per line)</label>
-                                            <textarea class="form-control form-control-sm" rows="2">IP & Analog HD
-Mobile App Access
-Cloud Recording</textarea>
-                                        </div>
+                            <form method="POST" action="{{ route('admin-settings.website-content.services.store') }}" class="service-edit-row mt-3">
+                                @csrf
+                                <div class="service-edit-handle"><span class="material-symbols-outlined">add</span></div>
+                                <div class="flex-grow-1 row g-2">
+                                    <div class="col-md-3"><input type="text" name="icon" class="form-control form-control-sm" placeholder="Icon (bi-*)"></div>
+                                    <div class="col-md-3"><input type="text" name="title" class="form-control form-control-sm" placeholder="Title" required></div>
+                                    <div class="col-md-6"><input type="text" name="description" class="form-control form-control-sm" placeholder="Short description" required></div>
+                                    <div class="col-12">
+                                        <textarea name="features" class="form-control form-control-sm" rows="2" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea>
                                     </div>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
                                 </div>
-
-                                <div class="service-edit-row">
-                                    <div class="service-edit-handle"><span class="material-symbols-outlined">drag_indicator</span></div>
-                                    <div class="flex-grow-1 row g-2">
-                                        <div class="col-md-4"><input type="text" class="form-control form-control-sm" placeholder="Title" value="Solar Energy Systems"></div>
-                                        <div class="col-md-8"><input type="text" class="form-control form-control-sm" placeholder="Short description" value="On-grid, off-grid, and hybrid solar power solutions that cut electric bills."></div>
-                                        <div class="col-12">
-                                            <textarea class="form-control form-control-sm" rows="2">Residential & Commercial
-Battery Backup
-Net Metering</textarea>
-                                        </div>
-                                    </div>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-
-                                <div class="service-edit-row">
-                                    <div class="service-edit-handle"><span class="material-symbols-outlined">drag_indicator</span></div>
-                                    <div class="flex-grow-1 row g-2">
-                                        <div class="col-md-4"><input type="text" class="form-control form-control-sm" placeholder="Title" value="Street Lights"></div>
-                                        <div class="col-md-8"><input type="text" class="form-control form-control-sm" placeholder="Short description" value="Strong and bright street lights for roads, subdivisions, and barangays."></div>
-                                        <div class="col-12">
-                                            <textarea class="form-control form-control-sm" rows="2">Bright LED Light
-Auto On at Night
-Rainproof Design</textarea>
-                                        </div>
-                                    </div>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-
-                                <div class="service-edit-row">
-                                    <div class="service-edit-handle"><span class="material-symbols-outlined">drag_indicator</span></div>
-                                    <div class="flex-grow-1 row g-2">
-                                        <div class="col-md-4"><input type="text" class="form-control form-control-sm" placeholder="Title" value="Public Address Systems"></div>
-                                        <div class="col-md-8"><input type="text" class="form-control form-control-sm" placeholder="Short description" value="Outdoor & indoor PA systems for plazas, schools, and LGUs."></div>
-                                        <div class="col-12">
-                                            <textarea class="form-control form-control-sm" rows="2">Wireless Mics
-Weatherproof
-Long-Range Coverage</textarea>
-                                        </div>
-                                    </div>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-
-                            </div>
-                            <button class="btn-add-row mt-3" onclick="addServiceRow()">
-                                <span class="material-symbols-outlined">add</span> Add Service
-                            </button>
+                                <button type="submit" class="btn-icon-remove" title="Add"><span class="material-symbols-outlined">add</span></button>
+                            </form>
                         </div>
                     </div>
 
@@ -288,20 +862,25 @@ Long-Range Coverage</textarea>
                             CTA Banner (Bottom)
                         </div>
                         <div class="settings-card-body">
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <label class="settings-label">CTA Headline</label>
-                                    <input type="text" class="form-control" value="Ready to Secure and Power Your Property?">
+                            <form method="POST" action="{{ route('admin-settings.website-content.cta-banner.update') }}">
+                                @csrf
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="settings-label">CTA Headline</label>
+                                        <input type="text" name="landing_cta_headline" class="form-control" value="{{ old('landing_cta_headline', $landing['landing_cta_headline'] ?? '') }}">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="settings-label">CTA Subtext</label>
+                                        <textarea name="landing_cta_subtext" class="form-control" rows="2">{{ old('landing_cta_subtext', $landing['landing_cta_subtext'] ?? '') }}</textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="settings-label">CTA Footnote</label>
+                                        <input type="text" name="landing_cta_footnote" class="form-control" value="{{ old('landing_cta_footnote', $landing['landing_cta_footnote'] ?? '') }}">
+                                    </div>
                                 </div>
-                                <div class="col-12">
-                                    <label class="settings-label">CTA Subtext</label>
-                                    <textarea class="form-control" rows="2">Schedule your free site assessment today. Our team will check your location and recommend the best solution for your needs.</textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="settings-label">CTA Footnote</label>
-                                    <input type="text" class="form-control" value="Free consultation • Transparent pricing • No hidden fees">
-                                </div>
-                            </div>
+                                <p class="settings-hint mt-2">The "Call us now" button always shows the Primary Phone from Company Information — edit it there.</p>
+                                <button type="submit" class="btn btn-success mt-2">Save CTA Banner</button>
+                            </form>
                         </div>
                     </div>
 
@@ -312,781 +891,41 @@ Long-Range Coverage</textarea>
                             Testimonials
                         </div>
                         <div class="settings-card-body">
-                            <div class="d-flex flex-column gap-3" id="testimonials-list">
-
-                                <div class="testimonial-edit-row">
-                                    <div class="flex-grow-1 row g-2">
-                                        <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Reviewer name" value="Engr. Roberto Cruz"></div>
-                                        <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Role / Company" value="Operations Manager, Manufacturing Plant"></div>
-                                        <div class="col-12"><textarea class="form-control form-control-sm" rows="2" placeholder="Quote text">A We Green installed CCTV across our entire facility. Quality of work is excellent and after-sales support is top-notch.</textarea></div>
-                                    </div>
-                                    <button class="btn-icon-remove align-self-start mt-1" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-
-                                <div class="testimonial-edit-row">
-                                    <div class="flex-grow-1 row g-2">
-                                        <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Reviewer name" value="Hon. Maria Santos"></div>
-                                        <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Role / Company" value="Barangay Captain, Bulacan"></div>
-                                        <div class="col-12"><textarea class="form-control form-control-sm" rows="2" placeholder="Quote text">Our solar street lights have been running flawlessly for 3 years. Best decision our barangay ever made.</textarea></div>
-                                    </div>
-                                    <button class="btn-icon-remove align-self-start mt-1" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-
-                                <div class="testimonial-edit-row">
-                                    <div class="flex-grow-1 row g-2">
-                                        <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Reviewer name" value="Anna Reyes"></div>
-                                        <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Role / Company" value="Homeowner, Quezon City"></div>
-                                        <div class="col-12"><textarea class="form-control form-control-sm" rows="2" placeholder="Quote text">Professional team, fair pricing, and they actually deliver on time. Highly recommend their solar systems.</textarea></div>
-                                    </div>
-                                    <button class="btn-icon-remove align-self-start mt-1" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-
-                            </div>
-                            <button class="btn-add-row mt-3" onclick="addTestimonialRow()">
-                                <span class="material-symbols-outlined">add</span> Add Testimonial
-                            </button>
-                        </div>
-                    </div>
-
-                </div><!-- /panel-landing-page -->
-
-
-                <!-- ════════════════════════════════
-                     PANEL 2: ASSESSMENT SETTINGS
-                     ════════════════════════════════ -->
-                <div class="settings-panel" id="panel-assessment">
-
-                    <!-- Client Types -->
-                    <div class="settings-card mb-4">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">groups</span>
-                            Client Types
-                        </div>
-                        <div class="settings-card-body">
-                            <p class="settings-hint mb-3">These appear as the selection cards in Step 1 of the assessment booking wizard.</p>
-                            <div class="d-flex flex-column gap-2" id="client-types-list">
-                                <div class="tag-edit-row">
-                                    <span class="material-symbols-outlined tag-drag">drag_indicator</span>
-                                    <input type="text" class="form-control form-control-sm" value="Residential">
-                                    <input type="text" class="form-control form-control-sm" placeholder="Description" value="Individual homeowner">
-                                    <select class="form-select form-select-sm tag-size-select">
-                                        <option value="small" selected>Small (half-day)</option>
-                                        <option value="large">Large (full-day)</option>
-                                    </select>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-                                <div class="tag-edit-row">
-                                    <span class="material-symbols-outlined tag-drag">drag_indicator</span>
-                                    <input type="text" class="form-control form-control-sm" value="Subdivision">
-                                    <input type="text" class="form-control form-control-sm" placeholder="Description" value="Gated community or HOA">
-                                    <select class="form-select form-select-sm tag-size-select">
-                                        <option value="small">Small (half-day)</option>
-                                        <option value="large" selected>Large (full-day)</option>
-                                    </select>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-                                <div class="tag-edit-row">
-                                    <span class="material-symbols-outlined tag-drag">drag_indicator</span>
-                                    <input type="text" class="form-control form-control-sm" value="Commercial">
-                                    <input type="text" class="form-control form-control-sm" placeholder="Description" value="Business or company">
-                                    <select class="form-select form-select-sm tag-size-select">
-                                        <option value="small">Small (half-day)</option>
-                                        <option value="large" selected>Large (full-day)</option>
-                                    </select>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-                                <div class="tag-edit-row">
-                                    <span class="material-symbols-outlined tag-drag">drag_indicator</span>
-                                    <input type="text" class="form-control form-control-sm" value="Government">
-                                    <input type="text" class="form-control form-control-sm" placeholder="Description" value="Barangay, school, government office">
-                                    <select class="form-select form-select-sm tag-size-select">
-                                        <option value="small">Small (half-day)</option>
-                                        <option value="large" selected>Large (full-day)</option>
-                                    </select>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-                            </div>
-                            <button class="btn-add-row mt-3" onclick="addClientTypeRow()">
-                                <span class="material-symbols-outlined">add</span> Add Client Type
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Establishment Types -->
-                    <div class="settings-card mb-4">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">domain</span>
-                            Establishment Types
-                            <span class="settings-badge ms-2">Per client type</span>
-                        </div>
-                        <div class="settings-card-body">
-                            <p class="settings-hint mb-3">Establishment types shown when a client type is selected. Each row belongs to a client type.</p>
-
-                            <ul class="nav nav-tabs mb-3" id="estabTabs">
-                                <li class="nav-item"><button class="nav-link active" onclick="switchEstabTab(this,'Residential')">Residential</button></li>
-                                <li class="nav-item"><button class="nav-link" onclick="switchEstabTab(this,'Subdivision')">Subdivision</button></li>
-                                <li class="nav-item"><button class="nav-link" onclick="switchEstabTab(this,'Commercial')">Commercial</button></li>
-                                <li class="nav-item"><button class="nav-link" onclick="switchEstabTab(this,'Government')">Government</button></li>
-                            </ul>
-
-                            <div id="estab-panel-Residential">
-                                <div class="d-flex flex-column gap-2">
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Home / Residence"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small" selected>Small</option>
-                                            <option value="large">Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Apartment / Condominium"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small" selected>Small</option>
-                                            <option value="large">Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Townhouse"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small" selected>Small</option>
-                                            <option value="large">Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                </div>
-                                <button class="btn-add-row mt-2" onclick="addEstabRow('Residential')"><span class="material-symbols-outlined">add</span> Add</button>
-                            </div>
-
-                            <div id="estab-panel-Subdivision" style="display:none;">
-                                <div class="d-flex flex-column gap-2">
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Subdivision / HOA"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small">Small</option>
-                                            <option value="large" selected>Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Condominium Complex"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small">Small</option>
-                                            <option value="large" selected>Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                </div>
-                                <button class="btn-add-row mt-2" onclick="addEstabRow('Subdivision')"><span class="material-symbols-outlined">add</span> Add</button>
-                            </div>
-
-                            <div id="estab-panel-Commercial" style="display:none;">
-                                <div class="d-flex flex-column gap-2">
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Office / Commercial Space"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small" selected>Small</option>
-                                            <option value="large">Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Warehouse / Industrial"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small">Small</option>
-                                            <option value="large" selected>Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Mall / Shopping Center"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small">Small</option>
-                                            <option value="large" selected>Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Restaurant / Café"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small" selected>Small</option>
-                                            <option value="large">Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Hotel / Resort"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small">Small</option>
-                                            <option value="large" selected>Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Factory / Plant"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small">Small</option>
-                                            <option value="large" selected>Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                </div>
-                                <button class="btn-add-row mt-2" onclick="addEstabRow('Commercial')"><span class="material-symbols-outlined">add</span> Add</button>
-                            </div>
-
-                            <div id="estab-panel-Government" style="display:none;">
-                                <div class="d-flex flex-column gap-2">
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Barangay Hall"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small" selected>Small</option>
-                                            <option value="large">Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="School / University"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small">Small</option>
-                                            <option value="large" selected>Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Hospital / Health Center"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small">Small</option>
-                                            <option value="large" selected>Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Sports Facility / Gym"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small">Small</option>
-                                            <option value="large" selected>Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Park / Public Space"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small">Small</option>
-                                            <option value="large" selected>Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                    <div class="tag-edit-row"><span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" value="Police Station / Fire"><select class="form-select form-select-sm tag-size-select">
-                                            <option value="small" selected>Small</option>
-                                            <option value="large">Large</option>
-                                        </select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button></div>
-                                </div>
-                                <button class="btn-add-row mt-2" onclick="addEstabRow('Government')"><span class="material-symbols-outlined">add</span> Add</button>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Assessment Services -->
-                    <div class="settings-card mb-4">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">handyman</span>
-                            Assessment Services
-                        </div>
-                        <div class="settings-card-body">
-                            <p class="settings-hint mb-3">These are the service checkboxes in Step 3 of the booking wizard. Each service can optionally have sub-types.</p>
-                            <div class="d-flex flex-column gap-3" id="assessment-services-list">
-
-                                <div class="service-edit-row">
-                                    <div class="service-edit-handle"><span class="material-symbols-outlined">drag_indicator</span></div>
-                                    <div class="flex-grow-1 row g-2">
-                                        <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Service name" value="CCTV Setup"></div>
-                                        <div class="col-md-6">
-                                            <div class="form-check form-switch mt-1">
-                                                <input class="form-check-input" type="checkbox" checked id="cctv-has-subtypes">
-                                                <label class="form-check-label small" for="cctv-has-subtypes">Has sub-types</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="settings-label fs-11">Sub-types (one per line)</label>
-                                            <textarea class="form-control form-control-sm" rows="2">Installation
-Relocation
-Rehabilitation
-Restoration</textarea>
-                                        </div>
-                                    </div>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-
-                                <div class="service-edit-row">
-                                    <div class="service-edit-handle"><span class="material-symbols-outlined">drag_indicator</span></div>
-                                    <div class="flex-grow-1 row g-2">
-                                        <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Service name" value="Solar Setup"></div>
-                                        <div class="col-md-6">
-                                            <div class="form-check form-switch mt-1"><input class="form-check-input" type="checkbox" id="solar-has-subtypes"><label class="form-check-label small" for="solar-has-subtypes">Has sub-types</label></div>
-                                        </div>
-                                    </div>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-
-                                <div class="service-edit-row">
-                                    <div class="service-edit-handle"><span class="material-symbols-outlined">drag_indicator</span></div>
-                                    <div class="flex-grow-1 row g-2">
-                                        <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Service name" value="Street Light"></div>
-                                        <div class="col-md-6">
-                                            <div class="form-check form-switch mt-1"><input class="form-check-input" type="checkbox" id="streetlight-has-subtypes"><label class="form-check-label small" for="streetlight-has-subtypes">Has sub-types</label></div>
-                                        </div>
-                                    </div>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-
-                                <div class="service-edit-row">
-                                    <div class="service-edit-handle"><span class="material-symbols-outlined">drag_indicator</span></div>
-                                    <div class="flex-grow-1 row g-2">
-                                        <div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Service name" value="Public Address"></div>
-                                        <div class="col-md-6">
-                                            <div class="form-check form-switch mt-1"><input class="form-check-input" type="checkbox" id="pa-has-subtypes"><label class="form-check-label small" for="pa-has-subtypes">Has sub-types</label></div>
-                                        </div>
-                                    </div>
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-
-                            </div>
-                            <button class="btn-add-row mt-3" onclick="addAssessmentServiceRow()">
-                                <span class="material-symbols-outlined">add</span> Add Service
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Time Slot Settings -->
-                    <div class="settings-card">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">schedule</span>
-                            Time Slot Settings
-                        </div>
-                        <div class="settings-card-body">
-                            <div class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="settings-label">Morning Start</label>
-                                    <input type="time" class="form-control" value="08:00">
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="settings-label">Morning End</label>
-                                    <input type="time" class="form-control" value="12:00">
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="settings-label">Afternoon Start</label>
-                                    <input type="time" class="form-control" value="13:00">
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="settings-label">Afternoon End</label>
-                                    <input type="time" class="form-control" value="17:00">
-                                </div>
-                                <div class="col-12">
-                                    <p class="settings-hint">Full Day is automatically applied when multiple services are selected or when a large establishment type is chosen.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div><!-- /panel-assessment -->
-
-
-                <!-- ════════════════════════════════
-                     PANEL 3: COVERAGE AREAS
-                     ════════════════════════════════ -->
-                <div class="settings-panel" id="panel-coverage">
-
-                    <div class="settings-card mb-4">
-                        <div class="settings-card-header d-flex justify-content-between">
-                            <div>
-                                <span class="material-symbols-outlined">public</span>
-                                Allowed Regions &amp; Provinces
-                            </div>
-                            <button class="btn btn-sm btn-success">Add coverage</button>
-                        </div>
-                        <div class="settings-card-body">
-                            <p class="settings-hint mb-3">These provinces appear in the dropdown on Step 4 (Your Details) of the assessment booking form. Only checked provinces will be available to clients.</p>
-
-                            <div class="row g-4">
-
-                                <!-- NCR -->
-                                <div class="col-md-6">
-                                    <div class="region-block">
-                                        <div class="region-header">
-                                            <div class="d-flex justify-content-between align-items-center w-100">
-                                                <div class="d-flex align-items-center">
-                                                    <input type="checkbox" class="form-check-input me-2" id="region-ncr" checked onchange="toggleRegion('ncr',this)">
-                                                    <label for="region-ncr" class="fw-semibold small mb-0">NCR (Metro Manila)</label>
+                            <div class="d-flex flex-column gap-3">
+                                @foreach ($landingTestimonials as $t)
+                                    <form method="POST" action="{{ route('admin-settings.website-content.testimonials.update', $t) }}" class="testimonial-edit-row">
+                                        @csrf @method('PATCH')
+                                        <div class="flex-grow-1 row g-2">
+                                            <div class="col-md-5"><input type="text" name="name" class="form-control form-control-sm" placeholder="Reviewer name" value="{{ $t->name }}"></div>
+                                            <div class="col-md-5"><input type="text" name="role" class="form-control form-control-sm" placeholder="Role / Company" value="{{ $t->role }}"></div>
+                                            <div class="col-md-2 d-flex align-items-center">
+                                                <div class="form-check form-switch mb-0" title="Active">
+                                                    <input class="form-check-input" type="checkbox" name="active" value="1" @checked($t->active)>
+                                                    <label class="form-check-label small">Active</label>
                                                 </div>
-                                                <button type="button" class="btn-icon-remove ms-3" onclick="removeRow(this)">
-                                                    <span class="material-symbols-outlined">close</span>
-                                                </button>
                                             </div>
+                                            <div class="col-12"><textarea name="quote" class="form-control form-control-sm" rows="2" placeholder="Quote text">{{ $t->quote }}</textarea></div>
                                         </div>
-                                        <div class="region-body" id="region-ncr-body">
-                                            <div class="form-check d-flex justify-content-between align-items-center">
-                                                <div class="d-flex align-items-center">
-                                                    <input class="form-check-input me-2" type="checkbox" checked id="prov-metro-manila">
-                                                    <label class="form-check-label small mb-0" for="prov-metro-manila">Pasig</label>
-                                                </div>
-                                                <button type="button" class="btn-icon-remove" onclick="removeRow(this)">
-                                                    <span class="material-symbols-outlined">close</span>
-                                                </button>
-                                            </div>
-                                            <div class="form-check d-flex justify-content-between align-items-center">
-                                                <div class="d-flex align-items-center">
-                                                    <input class="form-check-input me-2" type="checkbox" checked id="prov-metro-manila-2">
-                                                    <label class="form-check-label small mb-0" for="prov-metro-manila-2">Pasay</label>
-                                                </div>
-                                                <button type="button" class="btn-icon-remove" onclick="removeRow(this)">
-                                                    <span class="material-symbols-outlined">close</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- CALABARZON -->
-                                <div class="col-md-6">
-                                    <div class="region-block">
-                                        <div class="region-header d-flex justify-content-between align-items-center">
-                                            <div class="d-flex align-items-center">
-                                                <input type="checkbox" class="form-check-input me-2" id="region-4a" checked onchange="toggleRegion('4a',this)">
-                                                <label for="region-4a" class="fw-semibold small mb-0">Region IV-A (CALABARZON)</label>
-                                            </div>
-                                            <button type="button" class="btn-icon-remove" onclick="removeRow(this)">
-                                                <span class="material-symbols-outlined">close</span>
-                                            </button>
-                                        </div>
-                                        <div class="region-body" id="region-4a-body">
-                                            <div class="form-check d-flex justify-content-between align-items-center">
-                                                <div class="d-flex align-items-center">
-                                                    <input class="form-check-input me-2" type="checkbox" checked id="prov-batangas">
-                                                    <label class="form-check-label small mb-0" for="prov-batangas">Batangas</label>
-                                                </div>
-                                                <button type="button" class="btn-icon-remove" onclick="removeRow(this)">
-                                                    <span class="material-symbols-outlined">close</span>
-                                                </button>
-                                            </div>
-                                            <div class="form-check d-flex justify-content-between align-items-center">
-                                                <div class="d-flex align-items-center">
-                                                    <input class="form-check-input me-2" type="checkbox" checked id="prov-cavite">
-                                                    <label class="form-check-label small mb-0" for="prov-cavite">Cavite</label>
-                                                </div>
-                                                <button type="button" class="btn-icon-remove" onclick="removeRow(this)">
-                                                    <span class="material-symbols-outlined">close</span>
-                                                </button>
-                                            </div>
-                                            <div class="form-check d-flex justify-content-between align-items-center">
-                                                <div class="d-flex align-items-center">
-                                                    <input class="form-check-input me-2" type="checkbox" checked id="prov-laguna">
-                                                    <label class="form-check-label small mb-0" for="prov-laguna">Laguna</label>
-                                                </div>
-                                                <button type="button" class="btn-icon-remove" onclick="removeRow(this)">
-                                                    <span class="material-symbols-outlined">close</span>
-                                                </button>
-                                            </div>
-                                            <div class="form-check d-flex justify-content-between align-items-center">
-                                                <div class="d-flex align-items-center">
-                                                    <input class="form-check-input me-2" type="checkbox" checked id="prov-quezon">
-                                                    <label class="form-check-label small mb-0" for="prov-quezon">Quezon</label>
-                                                </div>
-                                                <button type="button" class="btn-icon-remove" onclick="removeRow(this)">
-                                                    <span class="material-symbols-outlined">close</span>
-                                                </button>
-                                            </div>
-                                            <div class="form-check d-flex justify-content-between align-items-center">
-                                                <div class="d-flex align-items-center">
-                                                    <input class="form-check-input me-2" type="checkbox" checked id="prov-rizal">
-                                                    <label class="form-check-label small mb-0" for="prov-rizal">Rizal</label>
-                                                </div>
-                                                <button type="button" class="btn-icon-remove" onclick="removeRow(this)">
-                                                    <span class="material-symbols-outlined">close</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                                        <button type="submit" class="btn-icon-remove align-self-start mt-1" title="Save"><span class="material-symbols-outlined">save</span></button>
+                                    </form>
+                                @endforeach
                             </div>
+                            <form method="POST" action="{{ route('admin-settings.website-content.testimonials.store') }}" class="testimonial-edit-row mt-3">
+                                @csrf
+                                <div class="flex-grow-1 row g-2">
+                                    <div class="col-md-6"><input type="text" name="name" class="form-control form-control-sm" placeholder="Reviewer name" required></div>
+                                    <div class="col-md-6"><input type="text" name="role" class="form-control form-control-sm" placeholder="Role / Company" required></div>
+                                    <div class="col-12"><textarea name="quote" class="form-control form-control-sm" rows="2" placeholder="Quote text" required></textarea></div>
+                                </div>
+                                <button type="submit" class="btn-icon-remove align-self-start mt-1" title="Add"><span class="material-symbols-outlined">add</span></button>
+                            </form>
                         </div>
                     </div>
 
-                    <!-- Coverage Display Text -->
-                    <div class="settings-card">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">edit_location</span>
-                            Coverage Display Text
-                        </div>
-                        <div class="settings-card-body">
-                            <p class="settings-hint mb-3">These labels appear on the landing page and footer.</p>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="settings-label">Stats Bar Coverage Label</label>
-                                    <input type="text" class="form-control" value="Region IV-A & NCR">
-                                    <p class="settings-hint">Shown in the stats bar under "Coverage Areas"</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="settings-label">Footer Coverage Text</label>
-                                    <input type="text" class="form-control" value="Serving Region IV-A & NCR">
-                                    <p class="settings-hint">Shown in the footer contact section</p>
-                                </div>
-                                <div class="col-12">
-                                    <label class="settings-label">Office Location Description</label>
-                                    <textarea class="form-control" rows="2">Strategically based in Gen. Mariano Alvarez, Cavite — well-positioned to serve communities and projects across Region IV-A and Metro Manila.</textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div><!-- /panel-coverage -->
-
-
-                <!-- ════════════════════════════════
-                     PANEL 4: COMPANY INFO
-                     ════════════════════════════════ -->
-                <div class="settings-panel" id="panel-company">
-
-                    <div class="settings-card mb-4">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">apartment</span>
-                            Company Information
-                        </div>
-                        <div class="settings-card-body">
-                            <div class="row g-3">
-                                <div class="col-12 mb-2">
-                                    <label class="settings-label">Company Logo</label>
-                                    <div class="image-upload-row">
-                                        <div class="image-preview-box image-preview-box--logo" id="preview-logo">
-                                            <img src="{{ asset('css/images/AWeGreen-Logo.svg') }}" alt="Logo preview" class="image-preview-thumb"
-                                                style="object-fit:contain; padding:8px;">
-                                            <div class="image-preview-overlay">
-                                                <span class="material-symbols-outlined">edit</span>
-                                                Change
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <input type="file" class="form-control form-control-sm" accept="image/*,image/svg+xml"
-                                                onchange="previewImage(this,'preview-logo')">
-                                            <p class="settings-hint">SVG preferred. PNG/WebP also accepted. Shown in navbar and footer.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="settings-label">Company Name</label>
-                                    <input type="text" class="form-control" value="A We Green Enterprise">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="settings-label">Tagline</label>
-                                    <input type="text" class="form-control" value="We Bring The Right Technology">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="settings-label">Year Founded</label>
-                                    <input type="number" class="form-control" value="2015">
-                                </div>
-                                <div class="col-md-8">
-                                    <label class="settings-label">Short Description (Footer)</label>
-                                    <input type="text" class="form-control" value="We bring the right technology to communities — through CCTV, solar, and public address solutions since 2015.">
-                                </div>
-                                <div class="col-12">
-                                    <label class="settings-label">Main Office Address</label>
-                                    <textarea class="form-control" rows="2">Alta Tierra Homes Phase 4, Blk 51 Lot 30
-Brgy. A. Olaes, Gen. Mariano Alvarez, Cavite 4117</textarea>
-                                </div>
-                                <div class="col-12">
-                                    <label class="settings-label">Satellite Office Address (optional)</label>
-                                    <textarea class="form-control" rows="2">Alta Tierra Homes Phase 5, Blk 14 Lot 5
-Brgy. A. Olaes, Gen. Mariano Alvarez, Cavite 4117</textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Operating Hours -->
-                    <div class="settings-card mb-4">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">schedule</span>
-                            Operating Hours
-                        </div>
-                        <div class="settings-card-body">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="settings-label">Open Days</label>
-                                    <input type="text" class="form-control" value="Mon – Sat">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="settings-label">Opening Time</label>
-                                    <input type="time" class="form-control" value="08:00">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="settings-label">Closing Time</label>
-                                    <input type="time" class="form-control" value="17:00">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Social Links -->
-                    <div class="settings-card">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">share</span>
-                            Social Media Links
-                        </div>
-                        <div class="settings-card-body">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="settings-label"><i class="bi bi-facebook me-1"></i> Facebook URL</label>
-                                    <input type="url" class="form-control" placeholder="https://facebook.com/...">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="settings-label"><i class="bi bi-instagram me-1"></i> Instagram URL</label>
-                                    <input type="url" class="form-control" placeholder="https://instagram.com/...">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="settings-label"><i class="bi bi-twitter-x me-1"></i> X (Twitter) URL</label>
-                                    <input type="url" class="form-control" placeholder="https://x.com/...">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div><!-- /panel-company -->
-
-
-                <!-- ════════════════════════════════
-                     PANEL 5: CONTACT DETAILS
-                     ════════════════════════════════ -->
-                <div class="settings-panel" id="panel-contact">
-
-                    <div class="settings-card mb-4">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">phone_in_talk</span>
-                            Phone Numbers
-                        </div>
-                        <div class="settings-card-body">
-                            <div class="d-flex flex-column gap-2" id="phone-list">
-                                <div class="tag-edit-row">
-                                    <input type="text" class="form-control form-control-sm" placeholder="Label" value="Smart">
-                                    <input type="text" class="form-control form-control-sm" placeholder="Number" value="0998 884 5671">
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-                                <div class="tag-edit-row">
-                                    <input type="text" class="form-control form-control-sm" placeholder="Label" value="Globe">
-                                    <input type="text" class="form-control form-control-sm" placeholder="Number" value="0917 752 3343">
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-                                <div class="tag-edit-row">
-                                    <input type="text" class="form-control form-control-sm" placeholder="Label" value="Landline">
-                                    <input type="text" class="form-control form-control-sm" placeholder="Number" value="046 443 6374">
-                                    <button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>
-                                </div>
-                            </div>
-                            <button class="btn-add-row mt-3" onclick="addPhoneRow()">
-                                <span class="material-symbols-outlined">add</span> Add Phone Number
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="settings-card mb-4">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">mail</span>
-                            Email Address
-                        </div>
-                        <div class="settings-card-body">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="settings-label">Primary Email</label>
-                                    <input type="email" class="form-control" value="awegreenenterprise@gmail.com">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="settings-label">Secondary Email (optional)</label>
-                                    <input type="email" class="form-control" placeholder="e.g. support@awegreen.ph">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings-card">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">map</span>
-                            Google Maps Embed
-                        </div>
-                        <div class="settings-card-body">
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <label class="settings-label">Map Embed URL</label>
-                                    <input type="url" class="form-control" value="https://www.google.com/maps?q=Alta+Tierra+Homes+Phase+4+Blk+51+Lot+30+Brgy+A+Olaes+Gen+Mariano+Alvarez+Cavite+4117&output=embed">
-                                    <p class="settings-hint">Paste the embed URL from Google Maps. Go to Google Maps → Share → Embed a map → copy the src URL.</p>
-                                </div>
-                                <div class="col-12">
-                                    <label class="settings-label">Google Maps Link (Open in Maps button)</label>
-                                    <input type="url" class="form-control" value="https://www.google.com/maps/search/?api=1&query=Alta+Tierra+Homes+Phase+4+Blk+51+Lot+30+Brgy+A+Olaes+Gen+Mariano+Alvarez+Cavite+4117">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div><!-- /panel-contact -->
-
-
-                <!-- ════════════════════════════════
-                     PANEL 6: LEGAL & POLICIES
-                     ════════════════════════════════ -->
-                <div class="settings-panel" id="panel-legal">
-
-                    <div class="settings-card mb-4">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">description</span>
-                            Terms of Service
-                        </div>
-                        <div class="settings-card-body">
-                            <p class="settings-hint mb-3">This content appears in the "Terms of Service" modal on the client registration page.</p>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="settings-label">Last Updated Date</label>
-                                    <input type="date" class="form-control" value="2025-01-01">
-                                </div>
-                            </div>
-                            <hr class="my-3">
-                            <label class="settings-label">Full Terms of Service Text</label>
-                            <p class="settings-hint mb-2">Use <code>##</code> at the start of a line to mark it as a section heading (e.g. <code>## 1. Acceptance of Terms</code>).</p>
-                            <textarea class="form-control" rows="18" id="terms-content">## 1. Acceptance of Terms
-By creating an account and using the A We Green Enterprise platform ("Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.
-
-## 2. Use of the Service
-The Service is intended for clients and partners of A We Green Enterprise to monitor and manage their CCTV, security, and solar installation projects. You agree to use the Service only for lawful purposes and in accordance with these Terms.
-- You must have the legal capacity to agree to these Terms. If you are using the Service on behalf of another person or organization, you confirm that you are authorized to do so.
-- You are responsible for maintaining the confidentiality of your login credentials.
-- You agree not to share your account with any third party.
-
-## 3. Account Registration
-You agree to provide accurate, current, and complete information during registration and to update such information to keep it accurate. A We Green Enterprise reserves the right to suspend or terminate accounts with inaccurate information.
-
-## 4. Intellectual Property
-All content, trademarks, logos, and data on this platform are the property of A We Green Enterprise or its licensors. You may not reproduce, distribute, or create derivative works without our express written permission.
-
-## 5. Limitation of Liability
-A We Green Enterprise shall not be liable for any indirect, incidental, or consequential damages arising from your use of the Service. Our total liability shall not exceed the amount paid by you, if any, for access to the Service.
-
-## 6. Termination
-We reserve the right to suspend or terminate your access to the Service at our sole discretion, without notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties.
-
-## 7. Changes to Terms
-We may update these Terms from time to time. Continued use of the Service after changes are posted constitutes your acceptance of the revised Terms.
-
-## 8. Contact Us
-For questions about these Terms, contact us at support@awegreenenterprise.com.</textarea>
-                        </div>
-                    </div>
-
-                    <div class="settings-card">
-                        <div class="settings-card-header">
-                            <span class="material-symbols-outlined">privacy_tip</span>
-                            Privacy Policy
-                        </div>
-                        <div class="settings-card-body">
-                            <p class="settings-hint mb-3">This content appears in the "Privacy Policy" modal on the client registration page.</p>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="settings-label">Last Updated Date</label>
-                                    <input type="date" class="form-control" value="2025-01-01">
-                                </div>
-                            </div>
-                            <hr class="my-3">
-                            <label class="settings-label">Full Privacy Policy Text</label>
-                            <p class="settings-hint mb-2">Use <code>##</code> at the start of a line to mark it as a section heading.</p>
-                            <textarea class="form-control" rows="20" id="privacy-content">A We Green Enterprise ("we", "us", or "our") is committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our platform.
-
-## 1. Information We Collect
-We collect information you provide directly to us when registering or using the Service, including:
-- Full name, email address, and phone number
-- Account credentials (stored securely, passwords are hashed)
-- Project-related communications and support requests
-- Usage data and device/browser information for analytics
-
-## 2. How We Use Your Information
-We use the information collected to:
-- Create and manage your account
-- Provide project tracking and monitoring features
-- Send service-related notifications and updates
-- Respond to support inquiries
-- Improve and secure the platform
-
-## 3. Sharing of Information
-We do not sell or rent your personal information to third parties. We may share data with trusted service providers who assist in operating our platform, subject to confidentiality agreements. We may also disclose information if required by law.
-
-## 4. Data Security
-We implement industry-standard security measures including encryption, access controls, and regular audits to protect your information. However, no method of transmission over the internet is 100% secure.
-
-## 5. Data Retention
-We retain your personal data for as long as your account is active or as needed to provide services. You may request deletion of your account and associated data by contacting us.
-
-## 6. Your Rights
-Under applicable Philippine data privacy laws (Republic Act No. 10173), you have the right to access, correct, or request deletion of your personal data. To exercise these rights, contact our Data Protection Officer.
-
-## 7. Cookies
-We use cookies and similar technologies to maintain sessions and improve user experience. You may disable cookies in your browser settings, though some features may not function properly as a result.
-
-## 8. Contact Us
-For privacy-related concerns, reach us at privacy@awegreenenterprise.com.</textarea>
-                        </div>
-                    </div>
-
-                </div><!-- /panel-legal -->
+                </div><!-- /panel-website-content -->
 
             </div><!-- /col-lg-9 -->
         </div><!-- /row -->
-
-        <!-- Save toast -->
-        <div class="position-fixed bottom-0 end-0 p-3 z-1090">
-            <div id="saveToast" class="toast align-items-center text-white bg-success border-0" role="alert">
-                <div class="d-flex">
-                    <div class="toast-body d-flex align-items-center gap-2">
-                        <span class="material-symbols-outlined fs-18">check_circle</span>
-                        Settings saved successfully!
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        </div>
 
     </div>
 
@@ -1103,112 +942,29 @@ For privacy-related concerns, reach us at privacy@awegreenenterprise.com.</texta
             return false;
         }
 
-        /* ── ESTAB TAB SWITCHING ── */
-        function switchEstabTab(btn, type) {
-            document.querySelectorAll('#estabTabs .nav-link').forEach(b => b.classList.remove('active'));
+        /* ── LOGO PREVIEW (client-side only, real upload happens on submit) ── */
+        function previewImage(input, previewId) {
+            if (!input.files || !input.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.querySelector('#' + previewId + ' .image-preview-thumb').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        /* ── ESTABLISHMENT TYPE TABS (per client type) ── */
+        function switchEstabTab(btn, clientTypeId) {
+            btn.closest('.nav-tabs').querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            ['Residential', 'Subdivision', 'Commercial', 'Government'].forEach(t => {
-                const el = document.getElementById('estab-panel-' + t);
-                if (el) el.style.display = (t === type) ? 'block' : 'none';
+            btn.closest('.settings-card-body').querySelectorAll('[id^="estab-panel-"]').forEach(el => {
+                el.style.display = (el.id === 'estab-panel-' + clientTypeId) ? 'block' : 'none';
             });
         }
 
-        /* ── REGION TOGGLE ── */
-        function toggleRegion(id, checkbox) {
-            const body = document.getElementById('region-' + id + '-body');
-            if (!body) return;
-            const checkboxes = body.querySelectorAll('input[type="checkbox"]');
-            if (checkbox.checked) {
-                body.classList.remove('disabled');
-                checkboxes.forEach(c => c.disabled = false);
-            } else {
-                body.classList.add('disabled');
-                checkboxes.forEach(c => {
-                    c.disabled = true;
-                    c.checked = false;
-                });
-            }
-        }
-
-        /* ── ADD/REMOVE ROW HELPERS ── */
-        function removeRow(btn) {
-            btn.closest('.tag-edit-row, .service-edit-row, .testimonial-edit-row, .stat-edit-row, .col-md-6')?.remove();
-        }
-
-        function removeStatRow(btn) {
-            btn.closest('.stat-edit-row')?.closest('.col-md-6')?.remove();
-        }
-
-        function addStatRow() {
-            const list = document.getElementById('hero-stats-list');
-            const col = document.createElement('div');
-            col.className = 'col-md-6';
-            col.innerHTML = `<div class="stat-edit-row"><input type="text" class="form-control form-control-sm" placeholder="Value"><input type="text" class="form-control form-control-sm" placeholder="Label"><button class="btn-icon-remove" onclick="removeStatRow(this)"><span class="material-symbols-outlined">close</span></button></div>`;
-            list.appendChild(col);
-        }
-
-        function addStatsBarRow() {
-            const list = document.getElementById('stats-bar-list');
-            const col = document.createElement('div');
-            col.className = 'col-md-6';
-            col.innerHTML = `<div class="stat-edit-row"><input type="text" class="form-control form-control-sm" placeholder="Value"><input type="text" class="form-control form-control-sm" placeholder="Label"><button class="btn-icon-remove" onclick="removeStatRow(this)"><span class="material-symbols-outlined">close</span></button></div>`;
-            list.appendChild(col);
-        }
-
-        function addServiceRow() {
-            const list = document.getElementById('services-list');
-            const row = document.createElement('div');
-            row.className = 'service-edit-row';
-            row.innerHTML = `<div class="service-edit-handle"><span class="material-symbols-outlined">drag_indicator</span></div><div class="flex-grow-1 row g-2"><div class="col-md-4"><input type="text" class="form-control form-control-sm" placeholder="Service title"></div><div class="col-md-8"><input type="text" class="form-control form-control-sm" placeholder="Short description"></div><div class="col-12"><label class="settings-label fs-11">Features (one per line)</label><textarea class="form-control form-control-sm" rows="2" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea></div></div><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>`;
-            list.appendChild(row);
-        }
-
-        function addTestimonialRow() {
-            const list = document.getElementById('testimonials-list');
-            const row = document.createElement('div');
-            row.className = 'testimonial-edit-row';
-            row.innerHTML = `<div class="flex-grow-1 row g-2"><div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Reviewer name"></div><div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Role / Company"></div><div class="col-12"><textarea class="form-control form-control-sm" rows="2" placeholder="Quote text"></textarea></div></div><button class="btn-icon-remove align-self-start mt-1" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>`;
-            list.appendChild(row);
-        }
-
-        function addClientTypeRow() {
-            const list = document.getElementById('client-types-list');
-            const row = document.createElement('div');
-            row.className = 'tag-edit-row';
-            row.innerHTML = `<span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" placeholder="Type name"><input type="text" class="form-control form-control-sm" placeholder="Description"><select class="form-select form-select-sm tag-size-select"><option value="small">Small (half-day)</option><option value="large">Large (full-day)</option></select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>`;
-            list.appendChild(row);
-        }
-
-        function addEstabRow(type) {
-            const panel = document.getElementById('estab-panel-' + type);
-            const list = panel.querySelector('.d-flex.flex-column');
-            const row = document.createElement('div');
-            row.className = 'tag-edit-row';
-            row.innerHTML = `<span class="material-symbols-outlined tag-drag">drag_indicator</span><input type="text" class="form-control form-control-sm" placeholder="Establishment name"><select class="form-select form-select-sm tag-size-select"><option value="small">Small</option><option value="large">Large</option></select><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>`;
-            list.appendChild(row);
-        }
-
-        function addAssessmentServiceRow() {
-            const list = document.getElementById('assessment-services-list');
-            const uid = Date.now();
-            const row = document.createElement('div');
-            row.className = 'service-edit-row';
-            row.innerHTML = `<div class="service-edit-handle"><span class="material-symbols-outlined">drag_indicator</span></div><div class="flex-grow-1 row g-2"><div class="col-md-6"><input type="text" class="form-control form-control-sm" placeholder="Service name"></div><div class="col-md-6"><div class="form-check form-switch mt-1"><input class="form-check-input" type="checkbox" id="svc-${uid}"><label class="form-check-label small" for="svc-${uid}">Has sub-types</label></div></div></div><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>`;
-            list.appendChild(row);
-        }
-
-        function addPhoneRow() {
-            const list = document.getElementById('phone-list');
-            const row = document.createElement('div');
-            row.className = 'tag-edit-row';
-            row.innerHTML = `<input type="text" class="form-control form-control-sm" placeholder="Label (e.g. Smart)"><input type="text" class="form-control form-control-sm" placeholder="Number"><button class="btn-icon-remove" onclick="removeRow(this)"><span class="material-symbols-outlined">close</span></button>`;
-            list.appendChild(row);
-        }
-
-        /* ── SAVE ── */
-        function saveAllSettings() {
-            const toast = new bootstrap.Toast(document.getElementById('saveToast'));
-            toast.show();
+        /* ── RESTORE TAB FROM URL HASH (after a save redirects back here) ── */
+        if (window.location.hash) {
+            const targetLink = document.querySelector('.settings-nav-link[href="' + window.location.hash + '"]');
+            if (targetLink) switchTab(targetLink, window.location.hash.slice(1));
         }
     </script>
 @endsection

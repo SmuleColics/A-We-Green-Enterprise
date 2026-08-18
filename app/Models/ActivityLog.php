@@ -15,6 +15,7 @@ class ActivityLog extends Model
         'ip_address',
         'is_archived',
         'archived_at',
+        'archived_by',
     ];
 
     protected $casts = [
@@ -26,6 +27,11 @@ class ActivityLog extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function archivedBy()
+    {
+        return $this->belongsTo(User::class, 'archived_by');
     }
 
     // ── Scopes ──

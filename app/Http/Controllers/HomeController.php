@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\LandingContentService;
+
 class HomeController extends Controller
 {
     public function showLandingPage()
     {
-        return view('home-page.landing-page');
+        $heroStats = LandingContentService::heroStats();
+        $statsBar = LandingContentService::statsBar();
+        $landingServices = LandingContentService::services();
+        $testimonials = LandingContentService::testimonials();
+
+        return view('home-page.landing-page', compact('heroStats', 'statsBar', 'landingServices', 'testimonials'));
     }
 
     public function showSignIn()

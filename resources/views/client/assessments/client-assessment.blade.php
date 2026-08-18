@@ -78,48 +78,15 @@
 
                                 <span class="section-label">Client Type</span>
                                 <div class="row g-3 mb-4">
-                                    <div class="col-6 col-md-4">
-                                        <div class="type-card" onclick="selectClientType(this,'Residential')">
-                                            <span class="material-symbols-outlined">home</span>
-                                            <h6>Residential</h6>
-                                            <p>Individual homeowner</p>
+                                    @foreach ($clientTypes as $type)
+                                        <div class="col-6 col-md-4">
+                                            <div class="type-card" onclick="selectClientType(this,'{{ $type->name }}')">
+                                                <span class="material-symbols-outlined">{{ $type->icon ?? 'category' }}</span>
+                                                <h6>{{ $type->name }}</h6>
+                                                <p>{{ $type->description }}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-6 col-md-4">
-                                        <div class="type-card" onclick="selectClientType(this,'Subdivision')">
-                                            <span class="material-symbols-outlined">holiday_village</span>
-                                            <h6>Subdivision / HOA</h6>
-                                            <p>Gated community or homeowners association</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-4">
-                                        <div class="type-card" onclick="selectClientType(this,'Commercial')">
-                                            <span class="material-symbols-outlined">business</span>
-                                            <h6>Commercial</h6>
-                                            <p>Business or company</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-4">
-                                        <div class="type-card" onclick="selectClientType(this,'Government')">
-                                            <span class="material-symbols-outlined">account_balance</span>
-                                            <h6>Government / LGU</h6>
-                                            <p>Barangay, school, government office</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-4">
-                                        <div class="type-card" onclick="selectClientType(this,'Agricultural')">
-                                            <span class="material-symbols-outlined">agriculture</span>
-                                            <h6>Agricultural</h6>
-                                            <p>Farm, poultry, or aquaculture site</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-4">
-                                        <div class="type-card" onclick="selectClientType(this,'Institutional')">
-                                            <span class="material-symbols-outlined">diversity_3</span>
-                                            <h6>Institutional</h6>
-                                            <p>Church, NGO, or cooperative</p>
-                                        </div>
-                                    </div>
+                                    @endforeach
                                 </div>
 
                                 <span class="section-label">Establishment Type</span>
@@ -200,50 +167,29 @@
                                         style="text-transform:none;letter-spacing:0;font-size:.7rem;">(you may select
                                         multiple)</span></span>
                                 <div class="row g-3 mb-3">
-                                    <div class="col-6 col-md-3">
-                                        <div class="service-card" onclick="toggleService(this,'CCTV Setup')">
-                                            <div class="service-check">✓</div>
-                                            <span class="material-symbols-outlined">videocam</span>
-                                            <h6>CCTV Setup</h6>
+                                    @foreach ($services as $service)
+                                        <div class="col-6 col-md-3">
+                                            <div class="service-card" onclick="toggleService(this,'{{ $service->name }}')">
+                                                <div class="service-check">✓</div>
+                                                <span class="material-symbols-outlined">{{ $service->icon ?? 'build' }}</span>
+                                                <h6>{{ $service->name }}</h6>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-6 col-md-3">
-                                        <div class="service-card" onclick="toggleService(this,'Solar Setup')">
-                                            <div class="service-check">✓</div>
-                                            <span class="material-symbols-outlined">wb_sunny</span>
-                                            <h6>Solar Setup</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-3">
-                                        <div class="service-card" onclick="toggleService(this,'Street Light')">
-                                            <div class="service-check">✓</div>
-                                            <span class="material-symbols-outlined">light</span>
-                                            <h6>Street Light</h6>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-3">
-                                        <div class="service-card" onclick="toggleService(this,'Public Address')">
-                                            <div class="service-check">✓</div>
-                                            <span class="material-symbols-outlined">speaker</span>
-                                            <h6>Public Address</h6>
-                                        </div>
-                                    </div>
+                                    @endforeach
                                 </div>
 
                                 <!-- CCTV Sub-type -->
-                                <div id="cctv-subtype-section" style="display:none;" class="mb-4">
-                                    <span class="section-label">CCTV Service Type</span>
-                                    <div class="d-flex flex-wrap gap-2 mt-1">
-                                        <div class="subtype-pill" onclick="selectSubtype(this,'Installation')">
-                                            Installation</div>
-                                        <div class="subtype-pill" onclick="selectSubtype(this,'Relocation')">Relocation
-                                        </div>
-                                        <div class="subtype-pill" onclick="selectSubtype(this,'Rehabilitation')">
-                                            Rehabilitation</div>
-                                        <div class="subtype-pill" onclick="selectSubtype(this,'Restoration')">Restoration
+                                @if ($cctvService)
+                                    <div id="cctv-subtype-section" style="display:none;" class="mb-4">
+                                        <span class="section-label">CCTV Service Type</span>
+                                        <div class="d-flex flex-wrap gap-2 mt-1">
+                                            @foreach ($cctvService->subtypes as $subtype)
+                                                <div class="subtype-pill" onclick="selectSubtype(this,'{{ $subtype->name }}')">
+                                                    {{ $subtype->name }}</div>
+                                            @endforeach
                                         </div>
                                     </div>
-                                </div>
+                                @endif
 
                                 <!-- Slot info banner -->
                                 <div class="slot-info-banner" id="slot-info-banner" style="display:none;">
@@ -318,7 +264,8 @@
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control form-control-sm" id="d-contact"
                                             value="{{ auth()->user()->contact_number }}"
-                                            placeholder="Mobile or telephone number" required>
+                                            placeholder="09171234567" maxlength="11" inputmode="numeric"
+                                            oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11)" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Email Address <span class="text-danger">*</span></label>
@@ -357,28 +304,15 @@
                                         <select class="form-select form-select-sm" id="d-province"
                                             onchange="updateCities()" required>
                                             <option value="">— Select Province —</option>
-                                            <optgroup label="NCR">
-                                                <option value="Metro Manila"
-                                                    {{ auth()->user()->client->province === 'Metro Manila' ? 'selected' : '' }}>
-                                                    Metro Manila (NCR)</option>
-                                            </optgroup>
-                                            <optgroup label="Region IV-A (CALABARZON)">
-                                                <option value="Batangas"
-                                                    {{ auth()->user()->client->province === 'Batangas' ? 'selected' : '' }}>
-                                                    Batangas</option>
-                                                <option value="Cavite"
-                                                    {{ auth()->user()->client->province === 'Cavite' ? 'selected' : '' }}>
-                                                    Cavite</option>
-                                                <option value="Laguna"
-                                                    {{ auth()->user()->client->province === 'Laguna' ? 'selected' : '' }}>
-                                                    Laguna</option>
-                                                <option value="Quezon"
-                                                    {{ auth()->user()->client->province === 'Quezon' ? 'selected' : '' }}>
-                                                    Quezon</option>
-                                                <option value="Rizal"
-                                                    {{ auth()->user()->client->province === 'Rizal' ? 'selected' : '' }}>
-                                                    Rizal</option>
-                                            </optgroup>
+                                            @foreach ($coverageProvincesByRegion as $region => $provinces)
+                                                <optgroup label="{{ $region }}">
+                                                    @foreach ($provinces as $p)
+                                                        <option value="{{ $p->province }}"
+                                                            {{ auth()->user()->client->province === $p->province ? 'selected' : '' }}>
+                                                            {{ $p->province }}{{ $region === 'NCR' ? ' (NCR)' : '' }}</option>
+                                                    @endforeach
+                                                </optgroup>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-4">
@@ -919,6 +853,7 @@
         };
         window.assessmentStoreUrl = @json(route('assessment.store'));
         window.assessmentAvailabilityUrl = @json(route('assessment.availability'));
+        window.estabOptionsFromServer = @json($estabOptionsForWizard);
     </script>
 
     <script src="{{ asset('js/client/client-assessment.js') }}"></script>

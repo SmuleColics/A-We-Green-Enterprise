@@ -208,36 +208,9 @@
         </div>
         <div class="modal-body dblue-text fs-15 lh-17">
 
-          <p class="text-muted fs-13">Last updated: January 1, 2025</p>
+          <p class="text-muted fs-13">Last updated: {{ \Carbon\Carbon::parse(setting('legal_terms_updated_at', '2025-01-01'))->format('F j, Y') }}</p>
 
-          <h6 class="fw-semibold amt-4 mb-2">1. Acceptance of Terms</h6>
-          <p>By creating an account and using the A We Green Enterprise platform ("Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">2. Use of the Service</h6>
-          <p>The Service is intended for clients and partners of A We Green Enterprise to monitor and manage their CCTV, security, and solar installation projects. You agree to use the Service only for lawful purposes and in accordance with these Terms.</p>
-          <ul>
-            <li>You must have the legal capacity to agree to these Terms. If you are using the Service on behalf of another person or organization, you confirm that you are authorized to do so.</li>
-            <li>You are responsible for maintaining the confidentiality of your login credentials.</li>
-            <li>You agree not to share your account with any third party.</li>
-          </ul>
-
-          <h6 class="fw-semibold mt-4 mb-2">3. Account Registration</h6>
-          <p>You agree to provide accurate, current, and complete information during registration and to update such information to keep it accurate. A We Green Enterprise reserves the right to suspend or terminate accounts with inaccurate information.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">4. Intellectual Property</h6>
-          <p>All content, trademarks, logos, and data on this platform are the property of A We Green Enterprise or its licensors. You may not reproduce, distribute, or create derivative works without our express written permission.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">5. Limitation of Liability</h6>
-          <p>A We Green Enterprise shall not be liable for any indirect, incidental, or consequential damages arising from your use of the Service. Our total liability shall not exceed the amount paid by you, if any, for access to the Service.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">6. Termination</h6>
-          <p>We reserve the right to suspend or terminate your access to the Service at our sole discretion, without notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">7. Changes to Terms</h6>
-          <p>We may update these Terms from time to time. Continued use of the Service after changes are posted constitutes your acceptance of the revised Terms.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">8. Contact Us</h6>
-          <p class="mb-0">For questions about these Terms, contact us at <a href="mailto:support@awegreenenterprise.com" class="auth-link">support@awegreenenterprise.com</a>.</p>
+          {!! simple_markdown_to_html(setting('legal_terms_content', '')) !!}
 
         </div>
         <div class="modal-footer">
@@ -257,46 +230,9 @@
         </div>
         <div class="modal-body dblue-text fs-15 lh-17">
 
-          <p class="text-muted fs-13">Last updated: January 1, 2025</p>
+          <p class="text-muted fs-13">Last updated: {{ \Carbon\Carbon::parse(setting('legal_privacy_updated_at', '2025-01-01'))->format('F j, Y') }}</p>
 
-          <p>A We Green Enterprise ("we", "us", or "our") is committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our platform.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">1. Information We Collect</h6>
-          <p>We collect information you provide directly to us when registering or using the Service, including:</p>
-          <ul>
-            <li>Full name, email address, and phone number</li>
-            <li>Account credentials (stored securely, passwords are hashed)</li>
-            <li>Project-related communications and support requests</li>
-            <li>Usage data and device/browser information for analytics</li>
-          </ul>
-
-          <h6 class="fw-semibold mt-4 mb-2">2. How We Use Your Information</h6>
-          <p>We use the information collected to:</p>
-          <ul>
-            <li>Create and manage your account</li>
-            <li>Provide project tracking and monitoring features</li>
-            <li>Send service-related notifications and updates</li>
-            <li>Respond to support inquiries</li>
-            <li>Improve and secure the platform</li>
-          </ul>
-
-          <h6 class="fw-semibold mt-4 mb-2">3. Sharing of Information</h6>
-          <p>We do not sell or rent your personal information to third parties. We may share data with trusted service providers who assist in operating our platform, subject to confidentiality agreements. We may also disclose information if required by law.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">4. Data Security</h6>
-          <p>We implement industry-standard security measures including encryption, access controls, and regular audits to protect your information. However, no method of transmission over the internet is 100% secure.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">5. Data Retention</h6>
-          <p>We retain your personal data for as long as your account is active or as needed to provide services. You may request deletion of your account and associated data by contacting us.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">6. Your Rights</h6>
-          <p>Under applicable Philippine data privacy laws (Republic Act No. 10173), you have the right to access, correct, or request deletion of your personal data. To exercise these rights, contact our Data Protection Officer.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">7. Cookies</h6>
-          <p>We use cookies and similar technologies to maintain sessions and improve user experience. You may disable cookies in your browser settings, though some features may not function properly as a result.</p>
-
-          <h6 class="fw-semibold mt-4 mb-2">8. Contact Us</h6>
-          <p class="mb-0">For privacy-related concerns, reach us at <a href="mailto:privacy@awegreenenterprise.com" class="auth-link">privacy@awegreenenterprise.com</a>.</p>
+          {!! simple_markdown_to_html(setting('legal_privacy_content', '')) !!}
 
         </div>
         <div class="modal-footer">

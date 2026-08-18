@@ -263,14 +263,14 @@
                                 Our team is happy to walk you through your assessment, quotation, or project status.
                             </p>
                             <div class="d-flex flex-column gap-2 mt-4">
-                                <a href="tel:+639998845671" class="portal-help-contact">
+                                <a href="tel:+63{{ ltrim(str_replace(' ', '', setting('company_phone_primary', '')), '0') }}" class="portal-help-contact">
                                     <span class="material-symbols-outlined portal-help-contact-icon">call</span>
                                     <div>
                                         <div class="portal-help-contact-label">CALL US</div>
                                         <div class="portal-help-contact-value">
-                                            Smart: 0998 884 5671 <br>
-                                            Globe: 0917 752 3343 <br>
-                                            Landline: (046) 443 6374
+                                            Smart: {{ setting('company_phone_primary', '') }} <br>
+                                            Globe: {{ setting('company_phone_secondary', '') }} <br>
+                                            Landline: {{ setting('company_phone_landline', '') }}
                                         </div>
                                     </div>
                                 </a>

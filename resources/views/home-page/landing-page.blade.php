@@ -57,7 +57,7 @@
      HERO
      ============================================================ -->
     <section id="home">
-        <img src="{{ asset('css/images/hero-img.jpg') }}"
+        <img src="{{ asset(setting('landing_hero_image_path', 'css/images/hero-img.jpg')) }}"
             alt="Solar panel installation with CCTV security camera at golden hour" class="hero-bg" />
         <div class="hero-overlay"></div>
         <div class="hero-overlay-2"></div>
@@ -68,59 +68,40 @@
                 <!-- Eyebrow badge -->
                 <span class="hero-badge mb-4 d-inline-flex">
                     <i class="bi bi-sun text-warning fs-14"></i>
-                    Trusted Since 2014
+                    {{ setting('landing_hero_badge', 'Trusted Since 2014') }}
                 </span>
 
                 <!-- Headline -->
                 <h1 class="font-display fw-bolder mt-3 mb-4 headline-title lh-105"
                 >
-                    We Bring<br>
-                    The <span class="text-accent-c">Right</span><br>
-                    Technology
+                    {{ setting('landing_hero_headline', 'We Bring The Right Technology') }}
                 </h1>
 
                 <!-- Subtitle -->
                 <p class="mb-4 fs-18 label-text mw-640 lh-17">
-                    Your trusted partner for CCTV, Solar Energy, Solar Street Lighting,
-                    and Public Address Systems since 2014.
+                    {{ setting('landing_hero_subtitle') }}
                 </p>
 
                 <!-- CTAs -->
                 <div class="d-flex flex-wrap gap-3 mb-5">
                     <a href="{{ route('register') }}" class="btn btn-cta btn-cta-reg px-4 py-2 fs-6">
-                        Schedule Free Assessment
+                        {{ setting('landing_hero_cta_primary', 'Schedule Free Assessment') }}
                     </a>
                     <a href="#projects" class="btn btn-hero-outline px-4 py-2 fs-6">
-                        View Our Projects
+                        {{ setting('landing_hero_cta_secondary', 'View Our Projects') }}
                     </a>
                 </div>
 
                 <!-- Mini stat cards -->
                 <div class="row g-3">
-                    <div class="col-6 col-sm-3 w-180">
-                        <div class="hero-stat-card">
-                            <i class="bi bi-shield-check text-accent-c flex-shrink-0 mt-1 fs-20"></i>
-                            <span class="stat-label">5,000+ Cameras Installed</span>
+                    @foreach ($heroStats as $stat)
+                        <div class="col-6 col-sm-3 w-180">
+                            <div class="hero-stat-card">
+                                <i class="bi {{ $stat->icon ?? 'bi-check-circle' }} text-accent-c flex-shrink-0 mt-1 fs-20"></i>
+                                <span class="stat-label">{{ $stat->value }} {{ $stat->label }}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-6 col-sm-3 w-180">
-                        <div class="hero-stat-card">
-                            <i class="bi bi-lightbulb text-accent-c flex-shrink-0 mt-1 fs-20"></i>
-                            <span class="stat-label">800+ Solar Street Lights</span>
-                        </div>
-                    </div>
-                    <div class="col-6 col-sm-3 w-180">
-                        <div class="hero-stat-card">
-                            <i class="bi bi-award text-accent-c flex-shrink-0 mt-1 fs-20"></i>
-                            <span class="stat-label">12 Years of Excellence</span>
-                        </div>
-                    </div>
-                    <div class="col-6 col-sm-3 w-180">
-                        <div class="hero-stat-card">
-                            <i class="bi bi-building text-accent-c flex-shrink-0 mt-1 fs-20"></i>
-                            <span class="stat-label">Government &amp; Private Trusted</span>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
 
             </div>
@@ -135,53 +116,19 @@
         <div class="container py-3">
             <div class="row g-4">
 
-                <div class="col-6 col-md-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon-box">
-                            <i class="bi bi-calendar-check fs-5 fw-bold"></i>
-                        </div>
-                        <div>
-                            <div class="stat-value">Since 2014</div>
-                            <div class="stat-label-text">Years of Service</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon-box">
-                            <i class="bi bi-check-circle fs-5 fw-bold"></i>
-                        </div>
-                        <div>
-                            <div class="stat-value">5,800+</div>
-                            <div class="stat-label-text">Installations Completed</div>
+                @foreach ($statsBar as $stat)
+                    <div class="col-6 col-md-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="stat-icon-box">
+                                <i class="bi {{ $stat->icon ?? 'bi-check-circle' }} fs-5 fw-bold"></i>
+                            </div>
+                            <div>
+                                <div class="stat-value">{{ $stat->value }}</div>
+                                <div class="stat-label-text">{{ $stat->label }}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon-box">
-                            <i class="bi bi-emoji-smile fs-5"></i>
-                        </div>
-                        <div>
-                            <div class="stat-value">500+</div>
-                            <div class="stat-label-text">Satisfied Customers</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon-box">
-                            <i class="bi bi-geo-alt fs-5"></i>
-                        </div>
-                        <div>
-                            <div class="stat-value">Region IV-A &amp; NCR</div>
-                            <div class="stat-label-text">Coverage Areas</div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
 
             </div>
         </div>
@@ -197,101 +144,36 @@
             <div class="text-center mb-5 mx-auto mw-720">
                 <span class="section-eyebrow">Our Services</span>
                 <h2 class="section-title fs-1 mb-3">
-                    Comprehensive Solutions for Your Security and Energy Needs
+                    {{ setting('landing_services_heading') }}
                 </h2>
                 <p class="section-subtitle">
-                    We specialize in four core services designed to protect your property and reduce your energy costs.
+                    {{ setting('landing_services_subtitle') }}
                 </p>
             </div>
 
             <div class="row g-4 align-items-stretch">
 
-                <!-- CCTV -->
-                <div class="col-sm-6 col-lg-3 d-flex">
-                    <div class="service-card w-100">
-                        <div class="service-icon-box">
-                            <i class="bi bi-camera-video fs-4"></i>
+                @foreach ($landingServices as $service)
+                    <div class="col-sm-6 col-lg-3 d-flex">
+                        <div class="service-card w-100">
+                            <div class="service-icon-box">
+                                <i class="bi {{ $service->icon ?? 'bi-gear' }} fs-4"></i>
+                            </div>
+                            <h3 class="card-title">{{ $service->title }}</h3>
+                            <p class="card-text">
+                                {{ $service->description }}
+                            </p>
+                            <ul class="feature-list list-unstyled mb-4">
+                                @foreach ($service->featureList() as $feature)
+                                    <li><span class="feature-dot"></span> {{ $feature }}</li>
+                                @endforeach
+                            </ul>
+                            <a href="#contact-location" class="learn-more-link">
+                                Learn more <i class="bi bi-arrow-right"></i>
+                            </a>
                         </div>
-                        <h3 class="card-title">CCTV Surveillance</h3>
-                        <p class="card-text">
-                            HD &amp; IP camera systems with 24/7 monitoring, remote access, and intelligent video
-                            analytics for total protection.
-                        </p>
-                        <ul class="feature-list list-unstyled mb-4">
-                            <li><span class="feature-dot"></span> IP &amp; Analog HD</li>
-                            <li><span class="feature-dot"></span> Mobile App Access</li>
-                            <li><span class="feature-dot"></span> Cloud Recording</li>
-                        </ul>
-                        <a href="#contact-location" class="learn-more-link">
-                            Learn more <i class="bi bi-arrow-right fw-bold"></i>
-                        </a>
                     </div>
-                </div>
-
-                <!-- Solar Energy -->
-                <div class="col-sm-6 col-lg-3 d-flex">
-                    <div class="service-card w-100">
-                        <div class="service-icon-box">
-                            <i class="bi bi-sun fs-4"></i>
-                        </div>
-                        <h3 class="card-title">Solar Energy Systems</h3>
-                        <p class="card-text">
-                            On-grid, off-grid, and hybrid solar power solutions that cut electric bills and provide
-                            reliable clean energy.
-                        </p>
-                        <ul class="feature-list list-unstyled mb-4">
-                            <li><span class="feature-dot"></span> Residential &amp; Commercial</li>
-                            <li><span class="feature-dot"></span> Battery Backup</li>
-                            <li><span class="feature-dot"></span> Net Metering</li>
-                        </ul>
-                        <a href="#contact-location" class="learn-more-link">
-                            Learn more <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Street Lighting -->
-                <div class="col-sm-6 col-lg-3 d-flex">
-                    <div class="service-card w-100">
-                        <div class="service-icon-box">
-                            <i class="bi bi-lightbulb fs-4"></i>
-                        </div>
-                        <h3 class="card-title">Street Lights</h3>
-                        <p class="card-text">
-                            Strong and bright street lights for roads, subdivisions, parking areas, and barangays.
-                        </p>
-                        <ul class="feature-list list-unstyled mb-4">
-                            <li><span class="feature-dot"></span> Bright LED Light</li>
-                            <li><span class="feature-dot"></span> Auto On at Night</li>
-                            <li><span class="feature-dot"></span> Rainproof Design</li>
-                        </ul>
-                        <a href="#contact-location" class="learn-more-link">
-                            Learn more <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Public Address -->
-                <div class="col-sm-6 col-lg-3 d-flex">
-                    <div class="service-card w-100">
-                        <div class="service-icon-box">
-                            <i class="bi bi-megaphone fs-4"></i>
-                        </div>
-                        <h3 class="card-title">Public Address Systems</h3>
-                        <p class="card-text">
-                            Outdoor &amp; indoor PA systems for plazas, schools, and LGUs. Wireless and weatherproof
-                            options available.
-                        </p>
-                        <ul class="feature-list list-unstyled mb-4">
-                            <li><span class="feature-dot"></span> Wireless Mics</li>
-                            <li><span class="feature-dot"></span> Weatherproof</li>
-                            <li><span class="feature-dot"></span> Long-Range Coverage</li>
-                        </ul>
-                        <a href="#contact-location" class="learn-more-link">
-                            Learn more <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
+                @endforeach
 
             </div>
         </div>
@@ -603,62 +485,25 @@
 
             <div class="row g-4">
 
-                <div class="col-md-4 d-flex">
-                    <div class="testimonial-card w-100">
-                        <i class="bi bi-quote quote-icon fs-40"></i>
-                        <div class="star-row">
-                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                        </div>
-                        <blockquote>
-                            "A We Green installed CCTV across our entire facility. Quality of work is excellent and
-                            after-sales support is top-notch."
-                        </blockquote>
-                        <div class="border-top pt-3">
-                            <div class="reviewer-name">Engr. Roberto Cruz</div>
-                            <div class="reviewer-role">Operations Manager, Manufacturing Plant</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 d-flex">
-                    <div class="testimonial-card w-100">
-                        <i class="bi bi-quote quote-icon fs-40"></i>
-                        <div class="star-row">
-                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                        </div>
-                        <blockquote>
-                            "Our solar street lights have been running flawlessly for 3 years. Best decision our
-                            barangay ever made."
-                        </blockquote>
-                        <div class="border-top pt-3">
-                            <div class="reviewer-name">Hon. Maria Santos</div>
-                            <div class="reviewer-role">Barangay Captain, Bulacan</div>
+                @foreach ($testimonials as $t)
+                    <div class="col-md-4 d-flex">
+                        <div class="testimonial-card w-100">
+                            <i class="bi bi-quote quote-icon fs-40"></i>
+                            <div class="star-row">
+                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <blockquote>
+                                "{{ $t->quote }}"
+                            </blockquote>
+                            <div class="border-top pt-3">
+                                <div class="reviewer-name">{{ $t->name }}</div>
+                                <div class="reviewer-role">{{ $t->role }}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-4 d-flex">
-                    <div class="testimonial-card w-100">
-                        <i class="bi bi-quote quote-icon fs-40"></i>
-                        <div class="star-row">
-                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                        </div>
-                        <blockquote>
-                            "Professional team, fair pricing, and they actually deliver on time. Highly recommend their
-                            solar systems."
-                        </blockquote>
-                        <div class="border-top pt-3">
-                            <div class="reviewer-name">Anna Reyes</div>
-                            <div class="reviewer-role">Homeowner, Quezon City</div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
 
             </div>
         </div>
@@ -782,19 +627,18 @@
         <div class="container cta-inner text-center text-white">
 
             <h2 class="fw-bolder mx-auto mb-4 mw-720 lh-12 section-title">
-                Ready to Secure and Power Your Property?
+                {{ setting('landing_cta_headline') }}
             </h2>
             <p class="mb-4 mx-auto mw-600 fs-17 label-text">
-                Schedule your free site assessment today. Our team will check your location and recommend the best
-                solution for your needs.
+                {{ setting('landing_cta_subtext') }}
             </p>
 
             <div class="d-flex flex-wrap justify-content-center gap-3">
-                <a href="tel:+639998845671" class="btn btn-gold-lg btn-light">
+                <a href="tel:+63{{ ltrim(str_replace(' ', '', setting('company_phone_primary', '')), '0') }}" class="btn btn-gold-lg btn-light">
                     <span class="btn-main">
                         <i class="bi bi-telephone-fill"></i> Call us now
                     </span>
-                    <span class="btn-sub">0998 884 5671</span>
+                    <span class="btn-sub">{{ setting('company_phone_primary') }}</span>
                 </a>
                 <a href="{{ route('sign-in') }}" class="btn-outline-lg">
                     <span class="btn-main">
@@ -805,7 +649,7 @@
             </div>
 
             <p class="cta-footnote">
-                Free consultation &bull; Transparent pricing &bull; No hidden fees
+                {{ setting('landing_cta_footnote') }}
             </p>
 
         </div>
