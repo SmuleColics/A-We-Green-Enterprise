@@ -21,8 +21,9 @@ class MaterialController extends Controller
 
         $total = $materials->count();
         $byCategory = $materials->groupBy('category')->map->count();
+        $canManage = Auth::user()->isSuperAdmin();
 
-        return view('admin.materials.materials', compact('materials', 'total', 'byCategory'));
+        return view('admin.materials.materials', compact('materials', 'total', 'byCategory', 'canManage'));
     }
 
     public function store(Request $request)

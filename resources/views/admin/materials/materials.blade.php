@@ -9,15 +9,17 @@
 @section('page-title', 'Materials')
 
 @section('topbar-actions')
-    <a href="{{ route('archive-materials') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
-        <span class="material-symbols-outlined fs-17">inventory_2</span>
-        View Archives
-    </a>
-    <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text" data-bs-toggle="modal"
-        data-bs-target="#addMaterialModal">
-        <span class="material-symbols-outlined fs-17">add_box</span>
-        Add Material
-    </button>
+    @if ($canManage)
+        <a href="{{ route('archive-materials') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
+            <span class="material-symbols-outlined fs-17">inventory_2</span>
+            View Archives
+        </a>
+        <button class="btn btn-sm btn-light fw-semibold d-flex align-items-center gap-1 green-text" data-bs-toggle="modal"
+            data-bs-target="#addMaterialModal">
+            <span class="material-symbols-outlined fs-17">add_box</span>
+            Add Material
+        </button>
+    @endif
 @endsection
 
 @section('content')
@@ -84,8 +86,10 @@
                                 <th class="border-0 small green-text">Item</th>
                                 <th class="border-0 small green-text">Category</th>
                                 <th class="border-0 small green-text">Unit</th>
-                                <th class="border-0 small green-text">Unit Cost (₱)</th>
-                                <th class="border-0 small green-text">Selling Price (₱)</th>
+                                @if ($canManage)
+                                    <th class="border-0 small green-text">Unit Cost (₱)</th>
+                                    <th class="border-0 small green-text">Selling Price (₱)</th>
+                                @endif
                                 <th class="border-0 small green-text">Supplier</th>
                                 <th class="border-0 small green-text">Actions</th>
                             </tr>
@@ -107,15 +111,17 @@
                                         'image' => $m->image_url,
                                         'category' => $m->category,
                                         'unit' => $m->unit,
-                                        'cost' => number_format($m->unit_cost, 2),
-                                        'costRaw' => $m->unit_cost,
-                                        'price' => $m->selling_price ? number_format($m->selling_price, 2) : null,
-                                        'priceRaw' => $m->selling_price,
-                                        'markup' => $m->markup_percent,
                                         'description' => $m->description,
                                         'supplier' => $m->supplier,
                                         'location' => $m->location,
                                     ];
+                                    if ($canManage) {
+                                        $payload['cost'] = number_format($m->unit_cost, 2);
+                                        $payload['costRaw'] = $m->unit_cost;
+                                        $payload['price'] = $m->selling_price ? number_format($m->selling_price, 2) : null;
+                                        $payload['priceRaw'] = $m->selling_price;
+                                        $payload['markup'] = $m->markup_percent;
+                                    }
                                 @endphp
                                 <tr data-category="{{ $m->category }}">
                                     <td>
@@ -136,14 +142,16 @@
                                             class="cat-badge {{ $catClass[$m->category] ?? '' }}">{{ $m->category }}</span>
                                     </td>
                                     <td>{{ $m->unit }}</td>
-                                    <td>₱{{ number_format($m->unit_cost, 2) }}</td>
-                                    <td>
-                                        @if ($m->selling_price)
-                                            ₱{{ number_format($m->selling_price, 2) }}
-                                        @else
-                                            <span class="text-muted small">—</span>
-                                        @endif
-                                    </td>
+                                    @if ($canManage)
+                                        <td>₱{{ number_format($m->unit_cost, 2) }}</td>
+                                        <td>
+                                            @if ($m->selling_price)
+                                                ₱{{ number_format($m->selling_price, 2) }}
+                                            @else
+                                                <span class="text-muted small">—</span>
+                                            @endif
+                                        </td>
+                                    @endif
                                     <td>{{ $m->supplier ?? '—' }}</td>
                                     <td class="text-nowrap actions-col">
                                         <button class="btn btn-sm btn-outline-success action-btn" title="View"
@@ -152,16 +160,18 @@
                                             onclick="loadMaterial(JSON.parse(this.dataset.material))">
                                             <span class="material-symbols-outlined icon-action">visibility</span>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
-                                            data-bs-toggle="modal" data-bs-target="#editMaterialModal"
-                                            data-material='@json($payload)'
-                                            onclick="loadEditMaterial(JSON.parse(this.dataset.material))">
-                                            <span class="material-symbols-outlined icon-action">edit</span>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive"
-                                            onclick="openArchiveConfirm({{ $m->id }}, {{ Js::from($m->name) }})">
-                                            <span class="material-symbols-outlined icon-action">archive</span>
-                                        </button>
+                                        @if ($canManage)
+                                            <button class="btn btn-sm btn-outline-primary action-btn" title="Edit"
+                                                data-bs-toggle="modal" data-bs-target="#editMaterialModal"
+                                                data-material='@json($payload)'
+                                                onclick="loadEditMaterial(JSON.parse(this.dataset.material))">
+                                                <span class="material-symbols-outlined icon-action">edit</span>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary action-btn" title="Archive"
+                                                onclick="openArchiveConfirm({{ $m->id }}, {{ Js::from($m->name) }})">
+                                                <span class="material-symbols-outlined icon-action">archive</span>
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -208,26 +218,37 @@
                             <p class="detail-label small mb-0">Unit</p>
                             <p class="detail-value small fw-semibold" id="vm-unit">—</p>
                         </div>
-                        <div class="col-4">
-                            <p class="detail-label small mb-0">Unit Cost</p>
-                            <p class="detail-value small fw-semibold" id="vm-cost">—</p>
-                        </div>
-                        <div class="col-4">
-                            <p class="detail-label small mb-0">Selling Price</p>
-                            <p class="detail-value small fw-semibold green-text" id="vm-price">—</p>
-                        </div>
-                        <div class="col-12" id="vm-markup-wrap" style="display:none;">
-                            <p class="detail-label small mb-0">Markup</p>
-                            <p class="detail-value small" id="vm-markup">—</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="detail-label small mb-0">Supplier</p>
-                            <p class="detail-value small" id="vm-supplier">—</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="detail-label small mb-0">Location</p>
-                            <p class="detail-value small" id="vm-location">—</p>
-                        </div>
+                        @if ($canManage)
+                            <div class="col-4">
+                                <p class="detail-label small mb-0">Unit Cost</p>
+                                <p class="detail-value small fw-semibold" id="vm-cost">—</p>
+                            </div>
+                            <div class="col-4">
+                                <p class="detail-label small mb-0">Selling Price</p>
+                                <p class="detail-value small fw-semibold green-text" id="vm-price">—</p>
+                            </div>
+                            <div class="col-12" id="vm-markup-wrap" style="display:none;">
+                                <p class="detail-label small mb-0">Markup</p>
+                                <p class="detail-value small" id="vm-markup">—</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="detail-label small mb-0">Supplier</p>
+                                <p class="detail-value small" id="vm-supplier">—</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="detail-label small mb-0">Location</p>
+                                <p class="detail-value small" id="vm-location">—</p>
+                            </div>
+                        @else
+                            <div class="col-4">
+                                <p class="detail-label small mb-0">Supplier</p>
+                                <p class="detail-value small" id="vm-supplier">—</p>
+                            </div>
+                            <div class="col-4">
+                                <p class="detail-label small mb-0">Location</p>
+                                <p class="detail-value small" id="vm-location">—</p>
+                            </div>
+                        @endif
                     </div>
 
                     <p class="section-label">Description</p>
@@ -239,16 +260,19 @@
                         data-bs-dismiss="modal">
                         <span class="material-symbols-outlined fs-16">close</span>Close
                     </button>
-                    <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1"
-                        id="vm-archive-btn">
-                        <span class="material-symbols-outlined fs-16">archive</span>Archive
-                    </button>
+                    @if ($canManage)
+                        <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-1"
+                            id="vm-archive-btn">
+                            <span class="material-symbols-outlined fs-16">archive</span>Archive
+                        </button>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 
 
+    @if ($canManage)
     <!-- ── Edit Material Modal ── -->
     <div class="modal fade" id="editMaterialModal" tabindex="-1">
         <div class="modal-dialog modal-md modal-dialog-centered">
@@ -484,18 +508,13 @@
             </div>
         </div>
     </div>
+    @endif
 
 @endsection
 
 @section('scripts')
     <script>
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-        const routes = {
-            store: @json(route('materials.store')),
-            update: @json(route('materials.update', ':id')),
-            archive: @json(route('materials.archive', ':id')),
-        };
 
         const catMap = {
             CCTV: 'cat-cctv',
@@ -519,29 +538,47 @@
 
             document.getElementById('vm-name').textContent = d.name || '—';
             document.getElementById('vm-unit').textContent = d.unit || '—';
-            document.getElementById('vm-cost').textContent = '₱' + (d.cost || '0.00');
-            document.getElementById('vm-price').textContent = d.price ? ('₱' + d.price) : '—';
             document.getElementById('vm-supplier').textContent = d.supplier || '—';
             document.getElementById('vm-location').textContent = d.location || '—';
             document.getElementById('vm-description').textContent = d.description || '—';
 
+            // Cost/price/markup/archive are only rendered in the DOM for
+            // roles that can manage materials — guard every lookup.
+            const costEl = document.getElementById('vm-cost');
+            if (costEl) costEl.textContent = '₱' + (d.cost || '0.00');
+
+            const priceEl = document.getElementById('vm-price');
+            if (priceEl) priceEl.textContent = d.price ? ('₱' + d.price) : '—';
+
             const markupWrap = document.getElementById('vm-markup-wrap');
-            if (d.markup !== null && d.markup !== undefined) {
-                document.getElementById('vm-markup').textContent = `${d.markup}% above cost`;
-                markupWrap.style.display = '';
-            } else {
-                markupWrap.style.display = 'none';
+            if (markupWrap) {
+                if (d.markup !== null && d.markup !== undefined) {
+                    document.getElementById('vm-markup').textContent = `${d.markup}% above cost`;
+                    markupWrap.style.display = '';
+                } else {
+                    markupWrap.style.display = 'none';
+                }
             }
 
             const badge = document.getElementById('vm-category-badge');
             badge.textContent = d.category || '—';
             badge.className = `cat-badge ${catMap[d.category] || ''}`;
 
-            document.getElementById('vm-archive-btn').onclick = () => {
-                bootstrap.Modal.getInstance(document.getElementById('viewMaterialModal'))?.hide();
-                openArchiveConfirm(d.id, d.name);
-            };
+            const archiveBtn = document.getElementById('vm-archive-btn');
+            if (archiveBtn) {
+                archiveBtn.onclick = () => {
+                    bootstrap.Modal.getInstance(document.getElementById('viewMaterialModal'))?.hide();
+                    openArchiveConfirm(d.id, d.name);
+                };
+            }
         }
+
+        @if ($canManage)
+        const routes = {
+            store: @json(route('materials.store')),
+            update: @json(route('materials.update', ':id')),
+            archive: @json(route('materials.archive', ':id')),
+        };
 
         function loadEditMaterial(d) {
             document.getElementById('editMaterialForm').dataset.materialId = d.id;
@@ -680,6 +717,7 @@
                 })
                 .catch(() => showToast('Network error — please try again.', 'danger'));
         });
+        @endif
 
         $('#materialsTable').DataTable({
             pageLength: 10,
@@ -691,7 +729,7 @@
             ],
             columnDefs: [{
                 orderable: false,
-                targets: 5
+                targets: {{ $canManage ? 6 : 4 }}
             }],
             language: {
                 emptyTable: 'No materials found.',

@@ -22,8 +22,14 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Employee\AssessmentController as EmployeeAssessmentController;
 use App\Http\Controllers\Employee\AssessmentFormController as EmployeeAssessmentFormController;
 use App\Http\Controllers\Employee\DashboardController as EmployeeDashboardController;
+use App\Http\Controllers\Employee\ChecklistController as EmployeeChecklistController;
+use App\Http\Controllers\Employee\ClientController as EmployeeClientController;
+use App\Http\Controllers\Employee\MaterialController as EmployeeMaterialController;
+use App\Http\Controllers\Employee\ProjectController as EmployeeProjectController;
 use App\Http\Controllers\Employee\QuotationController as EmployeeQuotationController;
 use App\Http\Controllers\Employee\RequestController as EmployeeRequestController;
+use App\Http\Controllers\Employee\SettingsController as EmployeeSettingsController;
+use App\Http\Controllers\Employee\StaffController as EmployeeStaffController;
 use App\Http\Controllers\Employee\TaskController as EmployeeTaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
@@ -91,10 +97,6 @@ Route::middleware(['auth', 'role:secretary,admin,super_admin'])->group(function 
     // Archive clients
     Route::get('/archive-clients', [AdminClientController::class, 'archivedPage'])
         ->name('archive-clients');
-
-    // Archive materials
-    Route::get('/archive-materials', [MaterialController::class, 'archivedPage'])
-        ->name('archive-materials');
 });
 
 // Archive old activity logs — audit-trail maintenance, super_admin only
@@ -501,9 +503,16 @@ Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function 
 
 // ==========================================================
 // ADMIN MATERIALS ROUTES
+// View is shared (admin/secretary/super_admin) — pricing and all
+// manage actions are super_admin only (see MaterialController::index).
 // ==========================================================
 Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function () {
     Route::get('/materials', [MaterialController::class, 'index'])->name('materials');
+});
+
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
+    Route::get('/archive-materials', [MaterialController::class, 'archivedPage'])
+        ->name('archive-materials');
     Route::post('/materials', [MaterialController::class, 'store'])->name('materials.store');
     Route::put('/materials/{material}', [MaterialController::class, 'update'])
         ->name('materials.update');
@@ -561,6 +570,44 @@ Route::middleware(['auth', 'role:employee'])
             ->name('quotations.show');
         Route::get('/quotations/{quotation}/print', [EmployeeQuotationController::class, 'print'])
             ->name('quotations.print');
+
+        // Employee projects (read-only)
+        Route::get('/projects', [EmployeeProjectController::class, 'index'])
+            ->name('projects');
+        Route::get('/projects/{project}', [EmployeeProjectController::class, 'show'])
+            ->name('projects.show');
+
+        // Employee materials checklists — viewable by any employee,
+        // editable only by an employee assigned to the project
+        Route::get('/checklists', [EmployeeChecklistController::class, 'index'])
+            ->name('checklists');
+        Route::get('/checklists/{project}', [EmployeeChecklistController::class, 'show'])
+            ->name('checklists.show');
+        Route::put('/checklists/{project}', [EmployeeChecklistController::class, 'update'])
+            ->name('checklists.update');
+        Route::get('/checklists/{project}/print', [EmployeeChecklistController::class, 'print'])
+            ->name('checklists.print');
+
+        // Employee staff directory (read-only, list only — no contact/address details)
+        Route::get('/employees', [EmployeeStaffController::class, 'index'])
+            ->name('employees');
+
+        // Employee client directory (read-only, full details — same data
+        // already visible via the Assessments module; no manage actions)
+        Route::get('/clients', [EmployeeClientController::class, 'index'])
+            ->name('clients');
+        Route::get('/clients/{client}/details', [EmployeeClientController::class, 'show'])
+            ->name('clients.show');
+
+        // Employee material catalog — read-only, no pricing data at all
+        Route::get('/materials', [EmployeeMaterialController::class, 'index'])
+            ->name('materials');
+
+        // Employee personal settings — notification preferences only
+        Route::get('/settings', [EmployeeSettingsController::class, 'index'])
+            ->name('settings');
+        Route::patch('/settings/notification-preferences', [EmployeeSettingsController::class, 'updateNotificationPreferences'])
+            ->name('settings.notification-preferences.update');
 
         // Employee task list
         Route::get('/tasks', [EmployeeTaskController::class, 'index'])

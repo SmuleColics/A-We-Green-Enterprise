@@ -40,6 +40,36 @@
                 Tasks
             </a>
 
+            <a href="{{ route('employee.projects') }}"
+                class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('employee.projects*')) active @endif">
+                <span class="material-symbols-outlined">folder</span>
+                Projects
+            </a>
+
+            <a href="{{ route('employee.checklists') }}"
+                class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('employee.checklists*')) active @endif">
+                <span class="material-symbols-outlined">checklist</span>
+                Checklists
+            </a>
+
+            <a href="{{ route('employee.employees') }}"
+                class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('employee.employees*')) active @endif">
+                <span class="material-symbols-outlined">badge</span>
+                Employees
+            </a>
+
+            <a href="{{ route('employee.clients') }}"
+                class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('employee.clients*')) active @endif">
+                <span class="material-symbols-outlined">groups</span>
+                Clients
+            </a>
+
+            <a href="{{ route('employee.materials') }}"
+                class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('employee.materials*')) active @endif">
+                <span class="material-symbols-outlined">inventory_2</span>
+                Materials
+            </a>
+
         </nav>
 
     @else
@@ -115,8 +145,7 @@
 
     @endif
 
-    <!-- Bottom Actions — same design for every role; Settings only shows for
-         super_admin/admin since employee-side settings don't exist yet. -->
+    <!-- Bottom Actions — same design for every role. -->
     <div class="px-2 py-2 border-top light-border">
 
         @if (auth()->user()->isSuperAdmin())
@@ -128,6 +157,12 @@
         @elseif (auth()->user()->isAdmin())
             <a href="{{ route('admin.settings') }}"
                 class="sb-profile btn d-flex align-items-center gap-2 px-3 py-1 w-100 border-0 bg-transparent text-start mb-1 @if (Request::routeIs('admin.settings')) active @endif">
+                <span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+        @elseif (auth()->user()->isEmployee())
+            <a href="{{ route('employee.settings') }}"
+                class="sb-profile btn d-flex align-items-center gap-2 px-3 py-1 w-100 border-0 bg-transparent text-start mb-1 @if (Request::routeIs('employee.settings')) active @endif">
                 <span class="material-symbols-outlined">settings</span>
                 Settings
             </a>
