@@ -15,6 +15,21 @@ if (! function_exists('setting')) {
     }
 }
 
+if (! function_exists('company_years_active')) {
+    /**
+     * Years the company has been operating, derived from the Super
+     * Admin-configured company_founded_year setting — so "X years of
+     * excellence" text across the site advances on its own every January
+     * instead of needing a manual edit each year.
+     */
+    function company_years_active(): int
+    {
+        $foundedYear = (int) setting('company_founded_year', now()->year);
+
+        return max(0, now()->year - $foundedYear);
+    }
+}
+
 if (! function_exists('simple_markdown_to_html')) {
     /**
      * Renders the ## heading / - bullet / blank-line-paragraph convention

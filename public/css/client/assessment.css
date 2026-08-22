@@ -379,6 +379,12 @@ body {
   background: var(--green-light);
 }
 
+.service-card.disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .service-card .material-symbols-outlined {
   font-size: 30px;
   color: var(--awg-primary);

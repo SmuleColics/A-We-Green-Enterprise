@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Models\Assessment;
+use App\Services\AssessmentConfigService;
 
 class AssessmentController extends Controller
 {
@@ -31,8 +32,12 @@ class AssessmentController extends Controller
             ->groupBy(fn ($a) => $a->preferred_date->format('Y-m-d'))
             ->map(fn ($dayAssessments) => $dayAssessments->map(fn ($a) => $this->toCardArray($a))->values());
 
+        $workingDays = AssessmentConfigService::workingDays();
+        $blockedDates = AssessmentConfigService::blockedDateStrings();
+
         return view('employee.assessments', compact(
-            'assessments', 'byDate', 'total', 'doneCount', 'submittedFormCount', 'pendingCount'
+            'assessments', 'byDate', 'total', 'doneCount', 'submittedFormCount', 'pendingCount',
+            'workingDays', 'blockedDates'
         ));
     }
 

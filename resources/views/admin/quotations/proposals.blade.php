@@ -25,7 +25,7 @@
                 @if ($quotation->revision_reason)
                     <p class="mb-1"><strong>Details:</strong> {{ $quotation->revision_reason }}</p>
                 @endif
-                <p class="mb-0">Adjust the linked assessment form to update the materials/quantities — saving it will
+                <p class="mb-0">Adjust the linked assessment form to update the items/quantities — saving it will
                     regenerate and resend this quotation to the client.</p>
             </div>
         </div>

@@ -115,7 +115,7 @@
                         <button type="button" class="btn btn-sm btn-outline-secondary"
                             data-filter="Employee">Employee</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary"
-                            data-filter="Material">Material</button>
+                            data-filter="Item">Item</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Auth">Auth</button>
                         <button type="button" class="btn btn-sm btn-outline-secondary"
                             data-filter="Settings">Settings</button>
@@ -375,7 +375,7 @@
             'Client': 'module-client',
             'Staff': 'module-staff',
             'Employee': 'module-employee',
-            'Material': 'module-material',
+            'Item': 'module-item',
             'Settings': 'module-settings',
             'Auth': 'module-auth',
         };

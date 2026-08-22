@@ -32,7 +32,7 @@ class ChecklistController extends Controller
     // this project (i.e. has a task on it) — everyone else gets a read-only view.
     public function show(Project $project)
     {
-        $project->load('checklistItems.material', 'quotation.assessment.client.user');
+        $project->load('checklistItems.item', 'quotation.assessment.client.user');
 
         $canEdit = $project->tasks()
             ->where('employee_id', Auth::user()->staff->employee->id)
@@ -91,7 +91,7 @@ class ChecklistController extends Controller
         ActivityLogController::log(
             'Checklist',
             'Updated',
-            "Materials checklist for project {$project->reference_number} was updated.",
+            "Items checklist for project {$project->reference_number} was updated.",
             Auth::id(),
             Auth::user()->full_name
         );
@@ -104,7 +104,7 @@ class ChecklistController extends Controller
             NotificationController::notify(
                 module: 'Checklist',
                 title: 'Checklist updated',
-                message: "Materials checklist for project {$project->reference_number} updated — ".implode(', ', $parts).'.',
+                message: "Items checklist for project {$project->reference_number} updated — ".implode(', ', $parts).'.',
                 recipientRole: ['admin', 'secretary', 'super_admin'],
                 notifiable: $project
             );

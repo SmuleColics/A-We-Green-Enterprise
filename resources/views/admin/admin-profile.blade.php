@@ -26,7 +26,7 @@
             'Task' => 'task_alt',
             'Employee' => 'badge',
             'Client' => 'person',
-            'Material' => 'inventory_2',
+            'Item' => 'inventory_2',
             'Checklist' => 'checklist',
             'Settings' => 'settings',
         ];
@@ -37,7 +37,7 @@
             'Task' => 'bg-warning-subtle text-warning',
             'Employee' => 'bg-primary-subtle text-primary',
             'Client' => 'bg-primary-subtle text-primary',
-            'Material' => 'bg-danger-subtle text-danger',
+            'Item' => 'bg-danger-subtle text-danger',
             'Checklist' => 'bg-success-subtle text-success',
             'Settings' => 'bg-secondary-subtle text-secondary',
         ];

@@ -15,7 +15,7 @@ class QuotationController extends Controller
 {
     public function adminShow(Quotation $quotation)
     {
-        $quotation->load('assessment.client.user', 'items.material', 'project');
+        $quotation->load('assessment.client.user', 'items.item', 'project');
         return view('admin.quotations.proposals', compact('quotation'));
     }
 
@@ -58,7 +58,7 @@ class QuotationController extends Controller
             foreach ($quotation->items as $item) {
                 $project->checklistItems()->create([
                     'quotation_item_id' => $item->id,
-                    'material_id' => $item->material_id,
+                    'item_id' => $item->item_id,
                     'item_name' => $item->description,
                     'quantity' => $item->quantity,
                     'unit' => $item->unit,
@@ -168,7 +168,7 @@ class QuotationController extends Controller
     public function clientShow(Quotation $quotation)
     {
         abort_unless($quotation->assessment->client_id === auth()->user()->client->id, 403);
-        $quotation->load('assessment.client.user', 'items.material');
+        $quotation->load('assessment.client.user', 'items.item');
         return view('client.quotations.quotation-view', compact('quotation'));
     }
 
@@ -244,7 +244,7 @@ class QuotationController extends Controller
 
     public function print(Quotation $quotation)
     {
-        $quotation->load('assessment.client.user', 'items.material');
+        $quotation->load('assessment.client.user', 'items.item');
         return view('print.quotation', compact('quotation'));
     }
 

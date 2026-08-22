@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Assessment extends Model
 {
     protected $fillable = [
-        'client_id', 'client_type', 'establishment_type', 'establishment_size',
+        'client_id', 'booking_group_id', 'client_type', 'establishment_type', 'establishment_size',
         'preferred_date', 'time_slot', 'services', 'cctv_subtype',
         'notes', 'status', 'cancellation_reason', 'assessment_notes',
         'assessment_form_completed_at', 'is_archived', 'archived_at',
@@ -15,6 +15,7 @@ class Assessment extends Model
 
     protected $casts = [
         'services' => 'array',
+        'cctv_subtype' => 'array',
         'preferred_date' => 'date',
         'assessment_form_completed_at' => 'datetime',
         'is_archived' => 'boolean',

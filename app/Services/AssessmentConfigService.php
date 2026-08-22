@@ -83,7 +83,7 @@ class AssessmentConfigService
     {
         $raw = SettingsService::get('scheduling_working_days');
 
-        return $raw ? json_decode($raw, true) : [1, 2, 3, 4, 5, 6];
+        return $raw ? array_map('intval', json_decode($raw, true)) : [1, 2, 3, 4, 5, 6];
     }
 
     public static function maxBookingsPerSlot(): int
@@ -118,8 +118,15 @@ class AssessmentConfigService
     {
         $max = self::maxBookingsPerSlot();
 
+        // A multi-service booking creates one Assessment row per service but
+        // is still a single physical visit, so sibling rows sharing a
+        // booking_group_id must count as one unit of slot capacity, not one
+        // each. Rows without a group (legacy data) are each their own group.
         $existing = Assessment::whereDate('preferred_date', $isoDate)
             ->whereIn('status', ['Pending', 'Confirmed'])
+            ->get(['id', 'booking_group_id', 'time_slot'])
+            ->groupBy(fn ($a) => $a->booking_group_id ?? 'row-'.$a->id)
+            ->map->first()
             ->pluck('time_slot');
 
         $morningCount = $existing->filter(fn ($slot) => in_array($slot, ['Morning', 'Full Day']))->count();

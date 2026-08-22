@@ -2,7 +2,7 @@
 
 @section('title', 'We Bring The Right Technology')
 
-@section('meta-description', 'Your trusted partner for CCTV, Solar Energy, Solar Street Lighting, and Public Address Systems since 2014.')
+@section('meta-description', 'Your trusted partner for CCTV, Solar Energy, Solar Street Lighting, and Public Address Systems since ' . setting('company_founded_year') . '.')
 
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/home-page/landing-page.css') }}" />
@@ -205,9 +205,9 @@
                                 <i class="bi bi-award fs-5"></i>
                             </div>
                             <div>
-                                <h3>12 Years Experience</h3>
-                                <p>Established 2014 with thousands of successful installations across the Calabarzon and
-                                    NCR.</p>
+                                <h3>{{ company_years_active() }} Years Experience</h3>
+                                <p>Established {{ setting('company_founded_year') }} with thousands of successful
+                                    installations across the Calabarzon and NCR.</p>
                             </div>
                         </div>
                     </div>
@@ -376,17 +376,17 @@
                 <div class="col-sm-6 col-lg-3 d-flex">
                     <article class="project-card w-100">
                         <div class="img-wrap">
-                            <img src="{{ asset('css/images/cctv.jpg') }}"
-                                alt="Citywide CCTV Network — Metro Manila LGU" loading="lazy" />
+                            <img src="{{ asset('css/images/cctv-gma-command-center.jpg') }}"
+                                alt="CCTV Command Center — GMA, Cavite" loading="lazy" />
                         </div>
                         <div class="card-body">
                             <span class="project-tag">Security</span>
-                            <h3>Citywide CCTV Network</h3>
-                            <p class="project-loc"><i class="bi bi-geo-alt-fill me-1"></i>Metro Manila LGU</p>
-                            <p class="project-desc">Installed a full HD IP camera network across barangay roads and
-                                public areas for 24/7 surveillance coverage.</p>
+                            <h3>CCTV Command Center</h3>
+                            <p class="project-loc"><i class="bi bi-geo-alt-fill me-1"></i>GMA, Cavite</p>
+                            <p class="project-desc">Built a centralized monitoring command center with a multi-screen
+                                video wall for real-time surveillance across the property.</p>
                             <div class="project-meta">
-                                <span><i class="bi bi-camera-video me-1"></i>32 Cameras</span>
+                                <span><i class="bi bi-camera-video me-1"></i>92 Cameras</span>
                                 <span><i class="bi bi-check-circle me-1"></i>Completed</span>
                             </div>
                         </div>
@@ -398,15 +398,14 @@
                     <article class="project-card w-100">
                         <div class="img-wrap">
                             <img src="{{ asset('css/images/solar-setup.jpg') }}"
-                                alt="Commercial Solar Array — Manufacturing Facility, Cavite" loading="lazy" />
+                                alt="Commercial Hybrid Solar Array — Dasmariñas, Cavite" loading="lazy" />
                         </div>
                         <div class="card-body">
                             <span class="project-tag">Solar Energy</span>
                             <h3>Commercial Solar Array</h3>
-                            <p class="project-loc"><i class="bi bi-geo-alt-fill me-1"></i>Manufacturing Facility,
-                                Cavite</p>
-                            <p class="project-desc">Rooftop grid-tied solar system reducing facility energy costs by up
-                                to 60% with net metering integration.</p>
+                            <p class="project-loc"><i class="bi bi-geo-alt-fill me-1"></i>Dasmariñas, Cavite</p>
+                            <p class="project-desc">Rooftop hybrid solar system combining grid-tied power with battery
+                                backup, reducing facility energy costs by up to 60%.</p>
                             <div class="project-meta">
                                 <span><i class="bi bi-sun me-1"></i>20 Panels</span>
                                 <span><i class="bi bi-check-circle me-1"></i>Completed</span>
@@ -420,18 +419,18 @@
                     <article class="project-card w-100">
                         <div class="img-wrap">
                             <img class="img-wrap-src" src="{{ asset('css/images/street-light.jpg') }}"
-                                alt="Solar Street Lighting — Provincial Highway, Luzon" loading="lazy"
+                                alt="Solar Street Lighting — Carmona, Cavite" loading="lazy"
                                 />
                         </div>
                         <div class="card-body">
                             <span class="project-tag">Public Works</span>
                             <h3>Solar Street Lighting</h3>
-                            <p class="project-loc"><i class="bi bi-geo-alt-fill me-1"></i>Provincial Highway, Luzon
+                            <p class="project-loc"><i class="bi bi-geo-alt-fill me-1"></i>Carmona, Cavite
                             </p>
-                            <p class="project-desc">Deployed all-in-one solar street lights along a 2km provincial
-                                road, improving safety for residents at night.</p>
+                            <p class="project-desc">Installed 128 all-in-one solar street light units along barangay
+                                roads in Carmona, improving nighttime safety for residents and motorists.</p>
                             <div class="project-meta">
-                                <span><i class="bi bi-lightbulb me-1"></i>40 Units</span>
+                                <span><i class="bi bi-lightbulb me-1"></i>128 Units</span>
                                 <span><i class="bi bi-check-circle me-1"></i>Completed</span>
                             </div>
                         </div>
@@ -443,12 +442,12 @@
                     <article class="project-card w-100">
                         <div class="img-wrap">
                             <img src="{{ asset('css/images/public-address.jpg') }}"
-                                alt="Public Address System — Municipal Plaza, Batangas" loading="lazy" />
+                                alt="Public Address System — Biñan, Laguna" loading="lazy" />
                         </div>
                         <div class="card-body">
                             <span class="project-tag">Public Address</span>
                             <h3>Public Address System</h3>
-                            <p class="project-loc"><i class="bi bi-geo-alt-fill me-1"></i>Municipal Plaza, Batangas
+                            <p class="project-loc"><i class="bi bi-geo-alt-fill me-1"></i>Biñan, Laguna
                             </p>
                             <p class="project-desc">Weatherproof PA system with wireless microphone capability
                                 installed for announcements and emergency alerts.</p>
@@ -543,7 +542,7 @@
                     <div class="map-wrapper">
                         <iframe class="d-block border-0" title="A We Green Enterprise office location"
                             src="https://www.google.com/maps?q=Alta+Tierra+Homes+Phase+4+Blk+51+Lot+30+Brgy+A+Olaes+Gen+Mariano+Alvarez+Cavite+4117&output=embed"
-                            width="100%" height="480" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                            loading="lazy" referrerpolicy="no-referrer-when-downgrade"
                             >
                         </iframe>
                     </div>
@@ -675,7 +674,7 @@
                     </div>
                     <p class="footer-desc">
                         We bring the right technology to communities — through CCTV, solar, and public address solutions
-                        since 2014.
+                        since {{ setting('company_founded_year') }}.
                     </p>
                     <div class="d-flex gap-2 mt-4">
                         <a href="#" aria-label="Facebook" class="footer-social-link">
@@ -739,7 +738,7 @@
             <div
                 class="container py-3 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
                 <p class="mb-0">© <span id="footer-year"></span> A We Green Enterprise. All rights reserved.</p>
-                <p class="mb-0">We bring the right technology to communities since 2014.</p>
+                <p class="mb-0">We bring the right technology to communities since {{ setting('company_founded_year') }}.</p>
             </div>
         </div>
     </footer>

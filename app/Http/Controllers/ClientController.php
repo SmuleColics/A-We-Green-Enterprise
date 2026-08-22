@@ -39,13 +39,27 @@ class ClientController extends Controller
         ->orderByDesc('preferred_date')
         ->get();
 
+    // Sibling assessments (same booking_group_id) came from one wizard
+    // submission for multiple services in the same visit — flag them so
+    // the table can show a "part of the same visit" hint.
+    $groupCounts = $assessments->whereNotNull('booking_group_id')->groupBy('booking_group_id')->map->count();
+    $annotateGroup = function ($a) use ($assessments, $groupCounts) {
+        $a->is_grouped = $a->booking_group_id && ($groupCounts[$a->booking_group_id] ?? 0) > 1;
+        $a->sibling_ids = $a->is_grouped
+            ? $assessments->where('booking_group_id', $a->booking_group_id)->where('id', '!=', $a->id)->pluck('id')
+            : collect();
+
+        return $a;
+    };
+
     $activeAssessments = $assessments->whereIn('status', ['Pending', 'Confirmed'])->values()
-        ->map(function ($a) {
+        ->map(function ($a) use ($annotateGroup) {
             $a->derived_status = $a->status === 'Confirmed' ? $a->deriveStatus() : $a->status;
 
-            return $a;
+            return $annotateGroup($a);
         });
-    $historyAssessments = $assessments->whereIn('status', ['Declined', 'Cancelled'])->values();
+    $historyAssessments = $assessments->whereIn('status', ['Declined', 'Cancelled'])->values()
+        ->map($annotateGroup);
 
     $total = $assessments->count();
     $confirmed = $assessments->where('status', 'Confirmed')->count();
@@ -79,7 +93,7 @@ class ClientController extends Controller
     public function showAssessmentDetails(Assessment $assessment)
     {
         abort_unless($assessment->client_id === auth()->user()->client->id, 403);
-        $assessment->load(['client.user', 'items.material', 'assessors.staff.user', 'quotation']);
+        $assessment->load(['client.user', 'items.item', 'assessors.staff.user', 'quotation']);
 
         return view('client.assessments.assessment-view', compact('assessment'));
     }
@@ -87,7 +101,7 @@ class ClientController extends Controller
     public function printAssessment(Assessment $assessment)
     {
         abort_unless($assessment->client_id === auth()->user()->client->id, 403);
-        $assessment->load(['client.user', 'items.material']);
+        $assessment->load(['client.user', 'items.item']);
 
         return view('print.assessment', compact('assessment'));
     }

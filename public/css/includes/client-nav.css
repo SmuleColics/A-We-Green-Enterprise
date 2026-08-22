@@ -153,13 +153,27 @@
 
 .mobile-nav-drawer {
   display: none;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  z-index: 1029;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
   background: var(--awg-primary-dark);
   padding: .5rem 1rem 1rem;
   border-top: 1px solid rgba(255, 255, 255, .15);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, .18);
 }
 
 .mobile-nav-drawer.open {
   display: block;
+}
+
+@media (min-width: 992px) {
+  .mobile-nav-drawer {
+    display: none !important;
+  }
 }
 
 .mobile-nav-drawer a,
@@ -368,5 +382,21 @@
 @media (max-width: 991.98px) {
   .topnav-links {
     display: none;
+  }
+
+  /* Popper's collision handling clamps these inconsistently on narrow
+     screens (one ends up flush-left, the other flush-right) instead of
+     reliably honoring dropdown-menu-end. Pin both to the viewport's right
+     edge directly so they always open on the right, below the navbar. */
+  .topnav-notif-menu,
+  .topnav-avatar-menu {
+    position: fixed !important;
+    inset: auto .75rem auto auto !important;
+    top: 72px !important;
+    left: auto !important;
+    right: .75rem !important;
+    margin: 0 !important;
+    transform: none !important;
+    max-width: calc(100vw - 1.5rem);
   }
 }

@@ -413,6 +413,8 @@
 @section('scripts')
 <script>
     window.assessmentsByDate = @json($byDate);
+    window.workingDays = @json($workingDays);
+    window.blockedDatesSet = new Set(@json($blockedDates));
 </script>
 
 <script>
@@ -599,14 +601,15 @@
         for (let day = 1; day <= daysInMonth; day++) {
             const dateObj = new Date(calendarYear, calendarMonth, day);
             const iso = toISODate(dateObj);
-            const isSunday = dateObj.getDay() === 0;
+            const workingDays = window.workingDays || [1, 2, 3, 4, 5, 6];
+            const isNonWorkingDay = !workingDays.includes(dateObj.getDay()) || (window.blockedDatesSet || new Set()).has(iso);
             const isToday = iso === todayISO;
             const dayAssessments = window.assessmentsByDate[iso] || [];
 
             let classes = 'calendar-cell';
             let booking = '';
 
-            if (isSunday) {
+            if (isNonWorkingDay) {
                 classes += ' no-work';
             } else if (dayAssessments.length > 0) {
                 classes += ' calendar-clickable half-booked';
@@ -622,7 +625,7 @@
             const dateStyle = isToday ? ' style="color:#fff;"' : '';
             const dateLabel = `<div class="calendar-date"${dateStyle}>${day}</div>`;
             const dateDisplay = `${MONTH_NAMES[calendarMonth].slice(0, 3)} ${day}, ${calendarYear}`;
-            const onclickAttr = isSunday ? '' :
+            const onclickAttr = isNonWorkingDay ? '' :
                 `onclick='openDayModal(${JSON.stringify(dateDisplay)}, ${JSON.stringify(dayAssessments)})'`;
 
             html += `<div class="${classes}" ${onclickAttr}>${dateLabel}${booking}</div>`;

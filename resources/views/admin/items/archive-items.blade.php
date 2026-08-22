@@ -1,18 +1,18 @@
 @extends('layouts.admin')
 
-@section('title', 'Archived Materials')
+@section('title', 'Archived Items')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/materials/materials.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/items/items.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 @endsection
 
-@section('page-title', 'Archived Materials')
+@section('page-title', 'Archived Items')
 
 @section('topbar-actions')
-    <a href="{{ route('materials') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
+    <a href="{{ route('items') }}" class="btn btn-sm btn-outline-light d-flex align-items-center gap-1">
         <span class="material-symbols-outlined fs-17">arrow_back</span>
-        Back to Materials
+        Back to Items
     </a>
 @endsection
 
@@ -24,6 +24,7 @@
             'Solar' => 'cat-solar',
             'PA System' => 'cat-pa',
             'General' => 'cat-general',
+            'Labor' => 'cat-labor',
         ];
     @endphp
 
@@ -67,9 +68,18 @@
                     </div>
                 </div>
             </div>
+            <div class="col-6 col-md-3">
+                <div class="summary-card">
+                    <span class="material-symbols-outlined summary-icon text-secondary">engineering</span>
+                    <div>
+                        <p class="summary-label">Labor</p>
+                        <p class="summary-value">{{ $byCategory['Labor'] ?? 0 }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Archived Materials Table -->
+        <!-- Archived Items Table -->
         <div class="card border-0 shadow-sm">
             <div class="card-body">
 
@@ -80,10 +90,11 @@
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="PA System">PA
                         System</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="General">General</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Labor">Labor</button>
                 </div>
 
                 <div class="table-responsive">
-                    <table id="archiveMaterialsTable" class="table table-hover mb-0 small w-100 align-middle">
+                    <table id="archiveItemsTable" class="table table-hover mb-0 small w-100 align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th class="border-0 small green-text">Item</th>
@@ -96,62 +107,62 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($materials as $m)
+                            @foreach ($items as $it)
                                 @php
                                     $payload = [
-                                        'id' => $m->id,
-                                        'name' => $m->name,
-                                        'image' => $m->image_url,
-                                        'category' => $m->category,
-                                        'unit' => $m->unit,
-                                        'cost' => number_format($m->unit_cost, 2),
-                                        'price' => $m->selling_price ? number_format($m->selling_price, 2) : null,
-                                        'description' => $m->description,
-                                        'supplier' => $m->supplier,
-                                        'location' => $m->location,
-                                        'archivedOn' => $m->archived_at?->format('M j, Y'),
+                                        'id' => $it->id,
+                                        'name' => $it->name,
+                                        'image' => $it->image_url,
+                                        'category' => $it->category,
+                                        'unit' => $it->unit,
+                                        'cost' => $it->unit_cost ? number_format($it->unit_cost, 2) : null,
+                                        'price' => $it->selling_price ? number_format($it->selling_price, 2) : null,
+                                        'description' => $it->description,
+                                        'supplier' => $it->supplier,
+                                        'location' => $it->location,
+                                        'archivedOn' => $it->archived_at?->format('M j, Y'),
                                     ];
                                 @endphp
-                                <tr data-category="{{ $m->category }}">
+                                <tr data-category="{{ $it->category }}">
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
                                             <div class="mat-thumb-wrap">
-                                                <img src="{{ $m->image_url ?? '' }}" alt="{{ $m->name }}"
+                                                <img src="{{ $it->image_url ?? '' }}" alt="{{ $it->name }}"
                                                     class="mat-thumb"
                                                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <div class="mat-thumb-fallback"
-                                                    style="{{ $m->image_url ? 'display:none;' : 'display:flex;' }}">
+                                                    style="{{ $it->image_url ? 'display:none;' : 'display:flex;' }}">
                                                     <span class="material-symbols-outlined">image_not_supported</span>
                                                 </div>
                                             </div>
-                                            <span class="fw-semibold">{{ $m->name }}</span>
+                                            <span class="fw-semibold">{{ $it->name }}</span>
                                         </div>
                                     </td>
                                     <td><span
-                                            class="cat-badge {{ $catClass[$m->category] ?? '' }}">{{ $m->category }}</span>
+                                            class="cat-badge {{ $catClass[$it->category] ?? '' }}">{{ $it->category }}</span>
                                     </td>
-                                    <td>{{ $m->unit }}</td>
-                                    <td>₱{{ number_format($m->unit_cost, 2) }}</td>
+                                    <td>{{ $it->unit }}</td>
+                                    <td>{{ $it->unit_cost ? '₱'.number_format($it->unit_cost, 2) : '—' }}</td>
                                     <td>
-                                        @if ($m->selling_price)
-                                            ₱{{ number_format($m->selling_price, 2) }}
+                                        @if ($it->selling_price)
+                                            ₱{{ number_format($it->selling_price, 2) }}
                                         @else
                                             <span class="text-muted small">—</span>
                                         @endif
                                     </td>
                                     <td class="text-muted small"
-                                        data-order="{{ optional($m->archived_at)->format('Y-m-d H:i:s') }}">
-                                        {{ $m->archived_at?->format('M j, Y') ?? '—' }}
+                                        data-order="{{ optional($it->archived_at)->format('Y-m-d H:i:s') }}">
+                                        {{ $it->archived_at?->format('M j, Y') ?? '—' }}
                                     </td>
                                     <td class="text-nowrap actions-col">
                                         <button class="btn btn-sm btn-outline-success action-btn" title="View Details"
-                                            data-bs-toggle="modal" data-bs-target="#viewArchivedMaterialModal"
-                                            data-material='@json($payload)'
-                                            onclick="loadArchivedMaterial(JSON.parse(this.dataset.material))">
+                                            data-bs-toggle="modal" data-bs-target="#viewArchivedItemModal"
+                                            data-item='@json($payload)'
+                                            onclick="loadArchivedItem(JSON.parse(this.dataset.item))">
                                             <span class="material-symbols-outlined icon-action">visibility</span>
                                         </button>
                                         <button class="btn btn-sm btn-outline-primary action-btn" title="Restore"
-                                            onclick="openRestoreConfirm({{ $m->id }}, {{ Js::from($m->name) }})">
+                                            onclick="openRestoreConfirm({{ $it->id }}, {{ Js::from($it->name) }})">
                                             <span class="material-symbols-outlined icon-action">unarchive</span>
                                         </button>
                                     </td>
@@ -167,14 +178,14 @@
     </div>
 
 
-    <!-- ── View Archived Material Modal ── -->
-    <div class="modal fade" id="viewArchivedMaterialModal" tabindex="-1">
+    <!-- ── View Archived Item Modal ── -->
+    <div class="modal fade" id="viewArchivedItemModal" tabindex="-1">
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title d-flex align-items-center gap-2">
                         <span class="material-symbols-outlined fs-20">inventory_2</span>
-                        Archived Material Details
+                        Archived Item Details
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -247,12 +258,12 @@
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content">
                 <div class="modal-header border-0 pb-0">
-                    <h6 class="modal-title fw-semibold">Restore this material?</h6>
+                    <h6 class="modal-title fw-semibold">Restore this item?</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body pt-2">
                     <p class="small text-muted mb-0">
-                        <strong id="rc-mat-name">—</strong> will be moved back to <strong>Materials</strong>.
+                        <strong id="rc-mat-name">—</strong> will be moved back to <strong>Items</strong>.
                     </p>
                 </div>
                 <div class="modal-footer border-0 pt-1">
@@ -278,7 +289,7 @@
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
         const ROUTES = {
-            unarchive: {{ Js::from(route('materials.unarchive', ['material' => '__ID__'])) }},
+            unarchive: {{ Js::from(route('items.unarchive', ['item' => '__ID__'])) }},
         };
 
         const catMap = {
@@ -286,11 +297,12 @@
             Solar: 'cat-solar',
             'PA System': 'cat-pa',
             General: 'cat-general',
+            Labor: 'cat-labor',
         };
 
         let pendingRestoreId = null;
 
-        function loadArchivedMaterial(d) {
+        function loadArchivedItem(d) {
             const img = document.getElementById('vam-image');
             const fallback = document.getElementById('vam-image-fallback');
 
@@ -317,7 +329,7 @@
             badge.className = `cat-badge ${catMap[d.category] || ''}`;
 
             document.getElementById('vam-restore-btn').onclick = () => {
-                bootstrap.Modal.getInstance(document.getElementById('viewArchivedMaterialModal'))?.hide();
+                bootstrap.Modal.getInstance(document.getElementById('viewArchivedItemModal'))?.hide();
                 openRestoreConfirm(d.id, d.name);
             };
         }
@@ -353,7 +365,7 @@
                     data
                 }) => {
                     if (status !== 200 || !data.success) {
-                        showToast(data.message || 'Unable to restore this material.', 'danger');
+                        showToast(data.message || 'Unable to restore this item.', 'danger');
                         return;
                     }
                     showToast(data.message, 'success');
@@ -365,7 +377,7 @@
 
         /* ─── DataTable + category filter buttons ─── */
         $(document).ready(function() {
-            const table = $('#archiveMaterialsTable').DataTable({
+            const table = $('#archiveItemsTable').DataTable({
                 pageLength: 10,
                 lengthChange: true,
                 info: true,
@@ -377,8 +389,8 @@
                     orderable: false
                 }],
                 language: {
-                    emptyTable: 'No archived materials yet.',
-                    zeroRecords: 'No matching archived materials found.'
+                    emptyTable: 'No archived items yet.',
+                    zeroRecords: 'No matching archived items found.'
                 }
             });
 

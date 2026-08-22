@@ -116,7 +116,12 @@
                                     <td>{{ $refNo }}</td>
                                     <td>{{ $clientUser->full_name }}</td>
                                     <td>{{ $clientUser->contact_number ?? '—' }}</td>
-                                    <td>{{ implode(', ', $assessment->services ?? []) }}</td>
+                                    <td>{{ implode(', ', $assessment->services ?? []) }}
+                                        @if ($assessment->is_grouped)
+                                            <span class="material-symbols-outlined fs-14 align-middle text-muted"
+                                                title="Part of the same visit as request #{{ $assessment->sibling_ids->implode(', #') }}">link</span>
+                                        @endif
+                                    </td>
                                     <td data-order="{{ $assessment->preferred_date->format('Y-m-d') }}">
                                         {{ $assessment->preferred_date->format('M j, Y') }}
                                     </td>

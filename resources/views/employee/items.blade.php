@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 
-@section('title', 'Materials')
+@section('title', 'Items')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/materials/materials.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/items/items.css') }}">
 @endsection
 
-@section('page-title', 'Materials')
+@section('page-title', 'Items')
 
 @section('content')
 
@@ -50,9 +50,18 @@
                     </div>
                 </div>
             </div>
+            <div class="col-6 col-md-3">
+                <div class="summary-card">
+                    <span class="material-symbols-outlined summary-icon text-secondary">engineering</span>
+                    <div>
+                        <p class="summary-label">Labor</p>
+                        <p class="summary-value">{{ $byCategory['Labor'] ?? 0 }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Materials Table -->
+        <!-- Items Table -->
         <div class="card border-0 shadow-sm">
             <div class="card-body">
 
@@ -63,10 +72,11 @@
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="PA System">PA
                         System</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="General">General</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-filter="Labor">Labor</button>
                 </div>
 
                 <div class="table-responsive">
-                    <table id="materialsTable" class="table table-hover mb-0 small w-100 align-middle">
+                    <table id="itemsTable" class="table table-hover mb-0 small w-100 align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th class="border-0 small green-text">Item</th>
@@ -83,53 +93,54 @@
                                     'Solar' => 'cat-solar',
                                     'PA System' => 'cat-pa',
                                     'General' => 'cat-general',
+                                    'Labor' => 'cat-labor',
                                 ];
                             @endphp
-                            @forelse ($materials as $m)
+                            @forelse ($items as $it)
                                 @php
                                     $payload = [
-                                        'id' => $m->id,
-                                        'name' => $m->name,
-                                        'image' => $m->image_url,
-                                        'category' => $m->category,
-                                        'unit' => $m->unit,
-                                        'description' => $m->description,
-                                        'supplier' => $m->supplier,
-                                        'location' => $m->location,
+                                        'id' => $it->id,
+                                        'name' => $it->name,
+                                        'image' => $it->image_url,
+                                        'category' => $it->category,
+                                        'unit' => $it->unit,
+                                        'description' => $it->description,
+                                        'supplier' => $it->supplier,
+                                        'location' => $it->location,
                                     ];
                                 @endphp
-                                <tr data-category="{{ $m->category }}">
+                                <tr data-category="{{ $it->category }}">
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
                                             <div class="mat-thumb-wrap">
-                                                <img src="{{ $m->image_url ?? '' }}" alt="{{ $m->name }}"
+                                                <img src="{{ $it->image_url ?? '' }}" alt="{{ $it->name }}"
                                                     class="mat-thumb"
                                                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <div class="mat-thumb-fallback"
-                                                    style="{{ $m->image_url ? 'display:none;' : 'display:flex;' }}">
+                                                    style="{{ $it->image_url ? 'display:none;' : 'display:flex;' }}">
                                                     <span class="material-symbols-outlined">image_not_supported</span>
                                                 </div>
                                             </div>
-                                            <span class="fw-semibold">{{ $m->name }}</span>
+                                            <span class="fw-semibold">{{ $it->name }}</span>
                                         </div>
                                     </td>
                                     <td><span
-                                            class="cat-badge {{ $catClass[$m->category] ?? '' }}">{{ $m->category }}</span>
+                                            class="cat-badge {{ $catClass[$it->category] ?? '' }}">{{ $it->category }}</span>
                                     </td>
-                                    <td>{{ $m->unit }}</td>
-                                    <td>{{ $m->supplier ?? '—' }}</td>
+                                    <td>{{ $it->unit }}</td>
+                                    <td>{{ $it->supplier ?? '—' }}</td>
                                     <td class="text-nowrap actions-col">
                                         <button class="btn btn-sm btn-outline-success action-btn" title="View"
-                                            data-bs-toggle="modal" data-bs-target="#viewMaterialModal"
-                                            data-material='@json($payload)'
-                                            onclick="loadMaterial(JSON.parse(this.dataset.material))">
+                                            data-bs-toggle="modal" data-bs-target="#viewItemModal"
+                                            data-item='@json($payload)'
+                                            onclick="loadItem(JSON.parse(this.dataset.item))">
                                             <span class="material-symbols-outlined icon-action">visibility</span>
                                         </button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">No materials found.</td>
+                                    <td colspan="5" class="text-center text-muted py-4">No items found.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -141,14 +152,14 @@
 
     </div>
 
-    <!-- ── View Material Modal ── -->
-    <div class="modal fade" id="viewMaterialModal" tabindex="-1">
+    <!-- ── View Item Modal ── -->
+    <div class="modal fade" id="viewItemModal" tabindex="-1">
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title d-flex align-items-center gap-2">
                         <span class="material-symbols-outlined fs-20">inventory_2</span>
-                        Material Details
+                        Item Details
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -175,18 +186,20 @@
                             <p class="detail-label small mb-0">Unit</p>
                             <p class="detail-value small fw-semibold" id="vm-unit">—</p>
                         </div>
-                        <div class="col-4">
+                        <div class="col-4" id="vm-supplier-wrap">
                             <p class="detail-label small mb-0">Supplier</p>
                             <p class="detail-value small" id="vm-supplier">—</p>
                         </div>
-                        <div class="col-4">
+                        <div class="col-4" id="vm-location-wrap">
                             <p class="detail-label small mb-0">Location</p>
                             <p class="detail-value small" id="vm-location">—</p>
                         </div>
                     </div>
 
-                    <p class="section-label">Description</p>
-                    <p class="detail-value small" id="vm-description">—</p>
+                    <div id="vm-description-wrap">
+                        <p class="section-label">Description</p>
+                        <p class="detail-value small" id="vm-description">—</p>
+                    </div>
 
                 </div>
                 <div class="modal-footer">
@@ -208,9 +221,10 @@
             Solar: 'cat-solar',
             'PA System': 'cat-pa',
             General: 'cat-general',
+            Labor: 'cat-labor',
         };
 
-        function loadMaterial(d) {
+        function loadItem(d) {
             const img = document.getElementById('vm-image');
             const fallback = document.getElementById('vm-image-fallback');
 
@@ -229,12 +243,17 @@
             document.getElementById('vm-location').textContent = d.location || '—';
             document.getElementById('vm-description').textContent = d.description || '—';
 
+            const isLabor = d.category === 'Labor';
+            document.getElementById('vm-supplier-wrap').style.display = isLabor ? 'none' : '';
+            document.getElementById('vm-location-wrap').style.display = isLabor ? 'none' : '';
+            document.getElementById('vm-description-wrap').style.display = isLabor ? 'none' : '';
+
             const badge = document.getElementById('vm-category-badge');
             badge.textContent = d.category || '—';
             badge.className = `cat-badge ${catMap[d.category] || ''}`;
         }
 
-        $('#materialsTable').DataTable({
+        $('#itemsTable').DataTable({
             pageLength: 10,
             lengthMenu: [10, 25, 50, 100],
             lengthChange: true,
@@ -247,8 +266,8 @@
                 targets: 4
             }],
             language: {
-                emptyTable: 'No materials found.',
-                zeroRecords: 'No matching materials found.'
+                emptyTable: 'No items found.',
+                zeroRecords: 'No matching items found.'
             },
         });
 
@@ -256,7 +275,7 @@
             $('#categoryFilterGroup button').removeClass('active');
             $(this).addClass('active');
             const filter = $(this).data('filter');
-            $('#materialsTable').DataTable().column(1).search(filter === 'all' ? '' : filter, true, false).draw();
+            $('#itemsTable').DataTable().column(1).search(filter === 'all' ? '' : filter, true, false).draw();
         });
     </script>
 @endsection

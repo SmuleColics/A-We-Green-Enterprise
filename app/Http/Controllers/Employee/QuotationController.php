@@ -18,14 +18,14 @@ class QuotationController extends Controller
 
     public function show(Quotation $quotation)
     {
-        $quotation->load('assessment.client.user', 'items.material', 'project');
+        $quotation->load('assessment.client.user', 'items.item', 'project');
 
         return view('employee.quotation-view', compact('quotation'));
     }
 
     public function print(Quotation $quotation)
     {
-        $quotation->load('assessment.client.user', 'items.material');
+        $quotation->load('assessment.client.user', 'items.item');
 
         return view('print.quotation', compact('quotation'));
     }

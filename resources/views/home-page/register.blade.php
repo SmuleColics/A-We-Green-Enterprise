@@ -162,7 +162,7 @@
           </h2>
           <p class="visual-subtext mt-3">
             From CCTV surveillance to solar energy — A We Green has been the trusted
-            partner of LGUs and businesses since 2014.
+            partner of LGUs and businesses since {{ setting('company_founded_year') }}.
           </p>
 
           <ul class="list-unstyled mt-4 d-flex flex-column gap-3">

@@ -29,6 +29,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // Close drawer when the viewport is resized up to the desktop nav
+  // (992px), so it doesn't stay open/stale if the window shrinks back down.
+  // The CSS already force-hides the drawer at that width regardless of the
+  // 'open' class — this just keeps the class/aria state in sync with it.
+  function closeDrawerIfDesktop() {
+    if (window.innerWidth >= 992) {
+      drawer.classList.remove('open');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+  }
+  window.addEventListener('resize', closeDrawerIfDesktop);
+
   document.querySelectorAll('.js-mark-all-read').forEach(btn => {
     btn.addEventListener('click', function (e) {
       e.preventDefault();

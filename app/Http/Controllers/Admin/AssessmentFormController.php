@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Controller;
 use App\Models\Assessment;
-use App\Models\Material;
+use App\Models\Item;
 use App\Models\Quotation;
 use App\Http\Controllers\NotificationController;
 use App\Services\QuotationConfigService;
@@ -26,10 +26,10 @@ class AssessmentFormController extends Controller
         );
 
         $assessment->load(['client.user', 'items', 'tasks', 'quotation']);
-        $materials = Material::where('is_archived', false)->orderBy('category')->orderBy('name')->get();
+        $items = Item::where('is_archived', false)->orderBy('category')->orderBy('name')->get();
         $quotation = $assessment->quotation;
 
-        return view('admin.assessments.forms', compact('assessment', 'materials', 'quotation'));
+        return view('admin.assessments.forms', compact('assessment', 'items', 'quotation'));
     }
 
     public function update(Request $request, Assessment $assessment)
@@ -46,7 +46,7 @@ class AssessmentFormController extends Controller
             'assessment_notes' => 'nullable|string|max:5000',
 
             'items' => 'required|array|min:1',
-            'items.*.material_id' => 'required|exists:materials,id',
+            'items.*.item_id' => 'required|exists:items,id',
             'items.*.quantity' => 'required|numeric|min:0.01',
             'items.*.location' => 'nullable|string|max:255',
         ]);
@@ -59,32 +59,41 @@ class AssessmentFormController extends Controller
                 'assessment_form_completed_at' => now(),
             ]);
 
-            $materials = Material::whereIn('id', collect($validated['items'])->pluck('material_id'))->where('is_archived', false)->get()->keyBy('id');
-            abort_unless($materials->count() === collect($validated['items'])->pluck('material_id')->unique()->count(), 422, 'One or more selected materials are unavailable.');
+            $items = Item::whereIn('id', collect($validated['items'])->pluck('item_id'))->where('is_archived', false)->get()->keyBy('id');
+            abort_unless($items->count() === collect($validated['items'])->pluck('item_id')->unique()->count(), 422, 'One or more selected items are unavailable.');
             $assessment->items()->delete();
-            foreach ($validated['items'] as $item) {
-                $material = $materials[$item['material_id']];
-                $assessment->items()->create(['material_id' => $material->id, 'item_name' => $material->name, 'quantity' => $item['quantity'], 'unit' => $material->unit, 'unit_price' => $material->selling_price ?? $material->unit_cost, 'location' => $item['location'] ?? null]);
+            foreach ($validated['items'] as $lineItem) {
+                $item = $items[$lineItem['item_id']];
+                $assessment->items()->create(['item_id' => $item->id, 'item_name' => $item->name, 'quantity' => $lineItem['quantity'], 'unit' => $item->unit, 'unit_price' => $item->selling_price ?? $item->unit_cost, 'location' => $lineItem['location'] ?? null]);
             }
 
-            $assessment->load('items.material');
-            $subtotal = $assessment->items->sum(fn ($item) => (float) $item->quantity * (float) $item->unit_price);
+            $assessment->load('items.item');
+            // "Labor" category items (e.g. fiber termination, per-camera rehab
+            // labor) are flat-priced service charges, not materials — the flat
+            // price already IS the labor, so they're excluded from the base
+            // the percentage labor rate is applied to (otherwise labor would
+            // be charged on top of labor).
+            $laborItems = $assessment->items->filter(fn ($lineItem) => $lineItem->item?->category === 'Labor');
+            $materialItems = $assessment->items->diff($laborItems);
+            $subtotal = $materialItems->sum(fn ($lineItem) => (float) $lineItem->quantity * (float) $lineItem->unit_price);
+            $laborItemsTotal = $laborItems->sum(fn ($lineItem) => (float) $lineItem->quantity * (float) $lineItem->unit_price);
             $service = $assessment->services[0] ?? 'General';
             $rate = QuotationConfigService::resolveLaborRate($service, $assessment->client_type);
+            $laborTotal = $subtotal * ($rate / 100);
             $quotation = Quotation::updateOrCreate(['assessment_id' => $assessment->id], [
                 'reference_number' => 'QT-' . now()->format('Y') . '-' . str_pad((string) $assessment->id, 4, '0', STR_PAD_LEFT),
                 'service_type' => $service, 'project_title' => $service . ' - ' . $assessment->client->user->full_name,
-                'labor_rate' => $rate, 'materials_subtotal' => $subtotal, 'labor_total' => $subtotal * ($rate / 100),
-                'grand_total' => $subtotal * (1 + $rate / 100), 'status' => 'Sent', 'sent_at' => now(),
+                'labor_rate' => $rate, 'items_subtotal' => $subtotal, 'labor_total' => $laborTotal,
+                'grand_total' => $subtotal + $laborItemsTotal + $laborTotal, 'status' => 'Sent', 'sent_at' => now(),
                 'revision_reason_category' => null, 'revision_reason' => null, 'revision_requested_at' => null,
             ]);
             $quotation->items()->delete();
-            $grouped = $assessment->items->groupBy(fn ($item) => $item->material?->category === 'General' ? 'accessories' : 'item');
-            foreach ($grouped as $key => $items) {
+            $grouped = $assessment->items->groupBy(fn ($lineItem) => $lineItem->item?->category === 'General' ? 'accessories' : 'item');
+            foreach ($grouped as $key => $lineItems) {
                 if ($key === 'accessories') {
-                    $quotation->items()->create(['description' => 'Accessories - ' . $items->pluck('item_name')->join(', '), 'quantity' => 1, 'unit' => 'lot', 'unit_price' => $items->sum(fn ($item) => (float) $item->quantity * (float) $item->unit_price), 'line_total' => $items->sum(fn ($item) => (float) $item->quantity * (float) $item->unit_price), 'is_grouped_accessory' => true]);
-                } else foreach ($items as $item) {
-                    $quotation->items()->create(['material_id' => $item->material_id, 'description' => $item->item_name, 'quantity' => $item->quantity, 'unit' => $item->unit, 'unit_price' => $item->unit_price, 'line_total' => $item->quantity * $item->unit_price]);
+                    $quotation->items()->create(['description' => 'Accessories - ' . $lineItems->pluck('item_name')->join(', '), 'quantity' => 1, 'unit' => 'lot', 'unit_price' => $lineItems->sum(fn ($lineItem) => (float) $lineItem->quantity * (float) $lineItem->unit_price), 'line_total' => $lineItems->sum(fn ($lineItem) => (float) $lineItem->quantity * (float) $lineItem->unit_price), 'is_grouped_accessory' => true]);
+                } else foreach ($lineItems as $lineItem) {
+                    $quotation->items()->create(['item_id' => $lineItem->item_id, 'description' => $lineItem->item_name, 'quantity' => $lineItem->quantity, 'unit' => $lineItem->unit, 'unit_price' => $lineItem->unit_price, 'line_total' => $lineItem->quantity * $lineItem->unit_price]);
                 }
             }
             return $quotation;
@@ -111,7 +120,7 @@ class AssessmentFormController extends Controller
 
     public function print(Assessment $assessment)
     {
-        $assessment->load(['client.user', 'items.material']);
+        $assessment->load(['client.user', 'items.item']);
         return view('print.assessment', compact('assessment'));
     }
 }

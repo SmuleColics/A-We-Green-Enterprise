@@ -160,12 +160,12 @@
                         <div class="card border-0 shadow-sm">
                             <div class="card-body p-4">
                                 <h5 class="fw-semibold mb-1">Service & Schedule</h5>
-                                <p class="text-muted small mb-4">Select one or more services you need and your preferred
+                                <p class="text-muted small mb-4">Select the service(s) you need and your preferred
                                     time slot.</p>
 
                                 <span class="section-label">Service Type <span class="text-muted fw-normal"
-                                        style="text-transform:none;letter-spacing:0;font-size:.7rem;">(you may select
-                                        multiple)</span></span>
+                                        style="text-transform:none;letter-spacing:0;font-size:.7rem;">(select up to
+                                        2)</span></span>
                                 <div class="row g-3 mb-3">
                                     @foreach ($services as $service)
                                         <div class="col-6 col-md-3">
@@ -181,10 +181,12 @@
                                 <!-- CCTV Sub-type -->
                                 @if ($cctvService)
                                     <div id="cctv-subtype-section" style="display:none;" class="mb-4">
-                                        <span class="section-label">CCTV Service Type</span>
+                                        <span class="section-label">CCTV Service Type <span class="text-muted fw-normal"
+                                                style="text-transform:none;letter-spacing:0;font-size:.7rem;">(you may select
+                                                multiple)</span></span>
                                         <div class="d-flex flex-wrap gap-2 mt-1">
                                             @foreach ($cctvService->subtypes as $subtype)
-                                                <div class="subtype-pill" onclick="selectSubtype(this,'{{ $subtype->name }}')">
+                                                <div class="subtype-pill" onclick="toggleSubtype(this,'{{ $subtype->name }}')">
                                                     {{ $subtype->name }}</div>
                                             @endforeach
                                         </div>
@@ -384,6 +386,11 @@
                                         <span class="review-label">CCTV Type</span>
                                         <span class="review-value" id="rv-subtype">—</span>
                                     </div>
+                                    <div id="rv-split-note" class="small text-muted fst-italic mt-1" style="display:none;">
+                                        <span class="material-symbols-outlined fs-14 align-middle">info</span>
+                                        These will be scheduled as separate assessment requests for the same visit
+                                        (same date and time).
+                                    </div>
                                     <hr class="my-2">
                                     <div class="review-row">
                                         <span class="review-label">Full Name</span>
@@ -525,8 +532,13 @@
                                                     <td data-order="{{ $a->preferred_date->format('Y-m-d') }}">
                                                         {{ $a->preferred_date->format('M j, Y') }}
                                                     </td>
-                                                    <td>{{ implode(', ', $a->services ?? []) }}</td>
-                                                    <td>{{ $a->cctv_subtype ?? '—' }}</td>
+                                                    <td>{{ implode(', ', $a->services ?? []) }}
+                                                        @if ($a->is_grouped)
+                                                            <span class="material-symbols-outlined fs-14 align-middle text-muted"
+                                                                title="Part of the same visit as request #{{ $a->sibling_ids->implode(', #') }}">link</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $a->cctv_subtype ? implode(', ', $a->cctv_subtype) : '—' }}</td>
                                                     <td>{{ $a->time_slot }}</td>
                                                     <td><span
                                                             class="badge bg-{{ $badge }} rounded-pill">{{ $a->derived_status }}</span>
@@ -540,7 +552,7 @@
                                             date: {{ Js::from($a->preferred_date->format('M j, Y')) }},
                                             slot: {{ Js::from($a->time_slot) }},
                                             service: {{ Js::from(implode(', ', $a->services ?? [])) }},
-                                            subtype: {{ Js::from($a->cctv_subtype ?? '—') }},
+                                            subtype: {{ Js::from($a->cctv_subtype ? implode(', ', $a->cctv_subtype) : '—') }},
                                             clientType: {{ Js::from($a->client_type) }},
                                             estab: {{ Js::from($a->establishment_type) }},
                                             status: {{ Js::from($a->derived_status) }},
@@ -606,8 +618,13 @@
                                                     <td data-order="{{ $a->preferred_date->format('Y-m-d') }}">
                                                         {{ $a->preferred_date->format('M j, Y') }}
                                                     </td>
-                                                    <td>{{ implode(', ', $a->services ?? []) }}</td>
-                                                    <td>{{ $a->cctv_subtype ?? '—' }}</td>
+                                                    <td>{{ implode(', ', $a->services ?? []) }}
+                                                        @if ($a->is_grouped)
+                                                            <span class="material-symbols-outlined fs-14 align-middle text-muted"
+                                                                title="Part of the same visit as request #{{ $a->sibling_ids->implode(', #') }}">link</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $a->cctv_subtype ? implode(', ', $a->cctv_subtype) : '—' }}</td>
                                                     <td>{{ $a->time_slot }}</td>
                                                     <td><span
                                                             class="badge bg-{{ $badge }} rounded-pill">{{ $a->status }}</span>

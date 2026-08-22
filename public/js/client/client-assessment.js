@@ -6,7 +6,7 @@ const state = {
   selectedDate: '',        // ISO yyyy-mm-dd, sent to the backend
   selectedDateDisplay: '', // human-readable, shown in the UI
   services: [],
-  subtype: '',
+  subtypes: [],
   slot: ''
 };
 let currentStep = 1;
@@ -285,8 +285,16 @@ function fullAlert() {
   showToast('This date is not available. Please choose another date.', 'danger');
 }
 
-/* ─── Step 3: Multi-select services ─── */
+/* ─── Step 3: Multi-select services (max 2 per booking) ─── */
+const MAX_SERVICES = 2;
+
 function toggleService(el, service) {
+  const isSelecting = !el.classList.contains('selected');
+  if (isSelecting && state.services.length >= MAX_SERVICES) {
+    showToast('You can select up to ' + MAX_SERVICES + ' services per booking.', 'warning');
+    return;
+  }
+
   el.classList.toggle('selected');
   if (el.classList.contains('selected')) {
     if (!state.services.includes(service)) state.services.push(service);
@@ -296,16 +304,27 @@ function toggleService(el, service) {
   const hasCCTV = state.services.includes('CCTV Setup');
   document.getElementById('cctv-subtype-section').style.display = hasCCTV ? 'block' : 'none';
   if (!hasCCTV) {
-    state.subtype = '';
+    state.subtypes = [];
     document.querySelectorAll('.subtype-pill').forEach(p => p.classList.remove('selected'));
   }
+  updateServiceCardAvailability();
   updateSlotLogic();
 }
 
-function selectSubtype(el, sub) {
-  document.querySelectorAll('.subtype-pill').forEach(p => p.classList.remove('selected'));
-  el.classList.add('selected');
-  state.subtype = sub;
+function updateServiceCardAvailability() {
+  const atMax = state.services.length >= MAX_SERVICES;
+  document.querySelectorAll('.service-card').forEach(card => {
+    card.classList.toggle('disabled', atMax && !card.classList.contains('selected'));
+  });
+}
+
+function toggleSubtype(el, sub) {
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    if (!state.subtypes.includes(sub)) state.subtypes.push(sub);
+  } else {
+    state.subtypes = state.subtypes.filter(s => s !== sub);
+  }
 }
 
 /* ─── Slot logic ─── */
@@ -587,7 +606,7 @@ function validateStep(s) {
       return false;
     }
 
-    if (state.services.includes('CCTV Setup') && !state.subtype) {
+    if (state.services.includes('CCTV Setup') && state.subtypes.length === 0) {
       showToast('Please select a CCTV service type.', 'danger');
       return false;
     }
@@ -644,9 +663,11 @@ function buildReview() {
   document.getElementById('rv-date').textContent = state.selectedDateDisplay || '—';
   document.getElementById('rv-slot').textContent = state.slot;
   document.getElementById('rv-service').textContent = state.services.join(', ') || '—';
-  document.getElementById('rv-subtype').textContent = state.subtype || '—';
+  document.getElementById('rv-subtype').textContent = state.subtypes.join(', ') || '—';
   document.getElementById('rv-subtype-row').style.display =
     state.services.includes('CCTV Setup') ? 'flex' : 'none';
+  document.getElementById('rv-split-note').style.display =
+    state.services.length > 1 ? 'block' : 'none';
   document.getElementById('rv-name').textContent = [fname, lname].filter(Boolean).join(' ') || '—';
   document.getElementById('rv-contact').textContent = contact;
   document.getElementById('rv-email').textContent = email || '—';
@@ -671,7 +692,7 @@ function submitRequest() {
     preferred_date: state.selectedDate,
     time_slot: state.slot,
     services: state.services,
-    cctv_subtype: state.subtype || null,
+    cctv_subtype: state.subtypes.length ? state.subtypes : null,
     first_name: document.getElementById('d-fname').value.trim(),
     last_name: document.getElementById('d-lname').value.trim(),
     contact_number: document.getElementById('d-contact').value.trim(),
@@ -726,10 +747,10 @@ function resetWizard() {
   state.selectedDate = '';
   state.selectedDateDisplay = '';
   state.services = [];
-  state.subtype = '';
+  state.subtypes = [];
   state.slot = '';
   document.querySelectorAll('.type-card,.estab-card,.service-card,.slot-card').forEach(c => c.classList.remove(
-    'selected'));
+    'selected', 'disabled'));
   document.querySelectorAll('.subtype-pill').forEach(p => p.classList.remove('selected'));
   document.querySelectorAll('.calendar-cell.selected-day').forEach(c => c.classList.remove('selected-day'));
   document.getElementById('selected-date-label').textContent = 'No date selected yet.';

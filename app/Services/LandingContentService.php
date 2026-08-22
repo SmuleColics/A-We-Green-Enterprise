@@ -19,15 +19,38 @@ class LandingContentService
 
     public static function heroStats()
     {
-        return Cache::remember('landing.stats.hero', self::CACHE_TTL, function () {
+        $stats = Cache::remember('landing.stats.hero', self::CACHE_TTL, function () {
             return LandingStat::where('placement', 'hero')->where('active', true)->orderBy('sort_order')->get();
         });
+
+        return self::applyDynamicYears($stats);
     }
 
     public static function statsBar()
     {
-        return Cache::remember('landing.stats.bar', self::CACHE_TTL, function () {
+        $stats = Cache::remember('landing.stats.bar', self::CACHE_TTL, function () {
             return LandingStat::where('placement', 'bar')->where('active', true)->orderBy('sort_order')->get();
+        });
+
+        return self::applyDynamicYears($stats);
+    }
+
+    /**
+     * The "years of excellence" / "since <year>" stats are computed from
+     * company_founded_year (not the cached DB value) so they stay correct
+     * every year without anyone having to edit the stat text — see
+     * company_years_active() in app/helpers.php.
+     */
+    private static function applyDynamicYears($stats)
+    {
+        return $stats->map(function ($stat) {
+            if ($stat->label === 'of Excellence') {
+                $stat->value = company_years_active().' Years';
+            } elseif ($stat->label === 'Years of Service') {
+                $stat->value = 'Since '.setting('company_founded_year');
+            }
+
+            return $stat;
         });
     }
 

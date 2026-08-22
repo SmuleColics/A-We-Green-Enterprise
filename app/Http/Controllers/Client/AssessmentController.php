@@ -9,6 +9,8 @@ use App\Models\Assessment;
 use App\Services\AssessmentConfigService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AssessmentController extends Controller
 {
@@ -20,9 +22,10 @@ class AssessmentController extends Controller
             'establishment_size' => 'required|in:small,large',
             'preferred_date' => 'required|date|after_or_equal:today',
             'time_slot' => 'required|in:Morning,Afternoon,Full Day',
-            'services' => 'required|array|min:1',
+            'services' => 'required|array|min:1|max:2',
             'services.*' => 'required|string|max:100',
-            'cctv_subtype' => 'nullable|string|max:50',
+            'cctv_subtype' => 'nullable|array',
+            'cctv_subtype.*' => 'required|string|max:50',
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
             'contact_number' => ['required', 'regex:/^09\d{9}$/'],
@@ -37,6 +40,7 @@ class AssessmentController extends Controller
             'notes' => 'nullable|string|max:1000',
         ], [
             'contact_number.regex' => 'Contact number must be an 11-digit number starting with 09 (e.g. 09171234567).',
+            'services.max' => 'You can select up to 2 services per booking.',
         ]);
 
         foreach ($validated['services'] as $service) {
@@ -55,11 +59,13 @@ class AssessmentController extends Controller
             ], 422);
         }
 
-        if (! empty($validated['cctv_subtype']) && ! AssessmentConfigService::isValidSubtype('CCTV Setup', $validated['cctv_subtype'])) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Please select a valid CCTV service type.',
-            ], 422);
+        foreach ($validated['cctv_subtype'] ?? [] as $subtype) {
+            if (! AssessmentConfigService::isValidSubtype('CCTV Setup', $subtype)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please select a valid CCTV service type.',
+                ], 422);
+            }
         }
 
         if (! AssessmentConfigService::isWorkingDay(Carbon::parse($validated['preferred_date']))) {
@@ -115,25 +121,34 @@ class AssessmentController extends Controller
             $user->update(['contact_number' => $validated['contact_number']]);
         }
 
-        $assessment = Assessment::create([
-            'client_id' => $client->id,
-            'client_type' => $validated['client_type'],
-            'establishment_type' => $validated['establishment_type'],
-            'establishment_size' => $validated['establishment_size'],
-            'preferred_date' => $validated['preferred_date'],
-            'time_slot' => $validated['time_slot'],
-            'services' => $validated['services'],
-            'cctv_subtype' => $validated['cctv_subtype'] ?? null,
-            'notes' => $validated['notes'] ?? null,
-            'status' => 'Pending',
-        ]);
+        $bookingGroupId = (string) Str::uuid();
+
+        $assessments = DB::transaction(function () use ($validated, $client, $bookingGroupId) {
+            return collect($validated['services'])->map(function ($service) use ($validated, $client, $bookingGroupId) {
+                return Assessment::create([
+                    'client_id' => $client->id,
+                    'booking_group_id' => $bookingGroupId,
+                    'client_type' => $validated['client_type'],
+                    'establishment_type' => $validated['establishment_type'],
+                    'establishment_size' => $validated['establishment_size'],
+                    'preferred_date' => $validated['preferred_date'],
+                    'time_slot' => $validated['time_slot'],
+                    'services' => [$service],
+                    'cctv_subtype' => $service === 'CCTV Setup' ? ($validated['cctv_subtype'] ?? null) : null,
+                    'notes' => $validated['notes'] ?? null,
+                    'status' => 'Pending',
+                ]);
+            });
+        });
 
         $serviceList = implode(', ', $validated['services']);
+        $idList = $assessments->pluck('id')->implode(', #');
+        $firstAssessment = $assessments->first();
 
         ActivityLogController::log(
             'Assessment',
             'Created',
-            "{$user->full_name} submitted an assessment request for {$serviceList} on {$assessment->preferred_date->format('M j, Y')}.",
+            "{$user->full_name} submitted an assessment request for {$serviceList} (Assessment #{$idList}) on {$firstAssessment->preferred_date->format('M j, Y')}.",
             $user->id,
             $user->full_name
         );
@@ -141,15 +156,15 @@ class AssessmentController extends Controller
         NotificationController::notify(
             module: 'Assessment',
             title: 'New assessment request',
-            message: "{$user->full_name} — {$serviceList}, {$assessment->preferred_date->format('M j')}",
+            message: "{$user->full_name} — {$serviceList}, {$firstAssessment->preferred_date->format('M j')}",
             recipientRole: ['admin', 'secretary', 'super_admin'],
-            notifiable: $assessment
+            notifiable: $firstAssessment
         );
 
         return response()->json([
             'success' => true,
             'message' => 'Your assessment request has been submitted.',
-            'assessment_id' => $assessment->id,
+            'assessment_ids' => $assessments->pluck('id'),
         ]);
     }
 
@@ -190,7 +205,9 @@ class AssessmentController extends Controller
 
         $assessments = Assessment::whereBetween('preferred_date', [$start, $end])
             ->whereIn('status', ['Pending', 'Confirmed'])
-            ->get(['preferred_date', 'time_slot']);
+            ->get(['id', 'booking_group_id', 'preferred_date', 'time_slot'])
+            ->groupBy(fn ($a) => $a->preferred_date->format('Y-m-d').'|'.($a->booking_group_id ?? 'row-'.$a->id))
+            ->map->first();
 
         $counts = [];
         foreach ($assessments as $a) {

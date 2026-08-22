@@ -18,7 +18,7 @@ class LandingContentSeeder extends Seeder
     {
         $scalars = [
             'landing_hero_image_path' => 'css/images/hero-img.jpg',
-            'landing_hero_badge' => 'Trusted Since 2014',
+            'landing_hero_badge' => 'Trusted Since 2015',
             'landing_hero_headline' => 'We Bring The Right Technology',
             'landing_hero_subtitle' => 'Your trusted partner for CCTV, Solar Energy, Solar Street Lighting, and Public Address Systems since 2014.',
             'landing_hero_cta_primary' => 'Schedule Free Assessment',
@@ -91,8 +91,8 @@ class LandingContentSeeder extends Seeder
 
         $testimonials = [
             ['name' => 'Engr. Roberto Cruz', 'role' => 'Operations Manager, Manufacturing Plant', 'quote' => 'A We Green installed CCTV across our entire facility. Quality of work is excellent and after-sales support is top-notch.'],
-            ['name' => 'Hon. Maria Santos', 'role' => 'Barangay Captain, Bulacan', 'quote' => 'Our solar street lights have been running flawlessly for 3 years. Best decision our barangay ever made.'],
-            ['name' => 'Anna Reyes', 'role' => 'Homeowner, Quezon City', 'quote' => 'Professional team, fair pricing, and they actually deliver on time. Highly recommend their solar systems.'],
+            ['name' => 'Hon. Maria Santos', 'role' => 'Barangay Captain, Laguna', 'quote' => 'Our solar street lights have been running flawlessly for 3 years. Best decision our barangay ever made.'],
+            ['name' => 'Anna Reyes', 'role' => 'Homeowner, GMA, Cavite', 'quote' => 'Professional team, fair pricing, and they actually deliver on time. Highly recommend their solar systems.'],
         ];
         foreach ($testimonials as $order => $t) {
             LandingTestimonial::updateOrCreate(

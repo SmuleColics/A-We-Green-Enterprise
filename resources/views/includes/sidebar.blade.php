@@ -64,10 +64,10 @@
                 Clients
             </a>
 
-            <a href="{{ route('employee.materials') }}"
-                class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('employee.materials*')) active @endif">
+            <a href="{{ route('employee.items') }}"
+                class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('employee.items*')) active @endif">
                 <span class="material-symbols-outlined">inventory_2</span>
-                Materials
+                Items
             </a>
 
         </nav>
@@ -135,10 +135,10 @@
                 Clients
             </a>
 
-            <a href="{{ route('materials') }}"
-                class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('materials') || Request::routeIs('archive-materials')) active @endif">
+            <a href="{{ route('items') }}"
+                class="nav-link d-flex align-items-center gap-2 px-3 mb-1 @if (Request::routeIs('items') || Request::routeIs('archive-items')) active @endif">
                 <span class="material-symbols-outlined">inventory_2</span>
-                Materials
+                Items
             </a>
 
         </nav>

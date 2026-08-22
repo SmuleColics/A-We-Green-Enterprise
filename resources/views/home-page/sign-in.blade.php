@@ -55,7 +55,7 @@
           </div>
           <div class="col-4">
             <div class="login-stat-card p-4">
-              <div class="login-stat-value">12 yrs</div>
+              <div class="login-stat-value">{{ company_years_active() }} yrs</div>
               <div class="login-stat-label">Excellence</div>
             </div>
           </div>

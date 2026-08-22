@@ -8,6 +8,7 @@ use App\Models\Assessment;
 use App\Models\Client;
 use App\Models\Employee;
 use App\Models\Task;
+use App\Services\AssessmentConfigService;
 use Illuminate\Support\Facades\Auth;
 
 class AssessmentScheduleController extends Controller
@@ -36,6 +37,8 @@ class AssessmentScheduleController extends Controller
 
         $clients = Client::with('user')->get();
         $employees = Employee::with('staff.user')->get();
+        $workingDays = AssessmentConfigService::workingDays();
+        $blockedDates = AssessmentConfigService::blockedDateStrings();
 
         return view('admin.assessments.assessments', compact(
             'assessments',
@@ -45,7 +48,9 @@ class AssessmentScheduleController extends Controller
             'submittedFormCount',
             'pendingCount',
             'clients',
-            'employees'
+            'employees',
+            'workingDays',
+            'blockedDates'
         ));
     }
 

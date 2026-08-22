@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\AssessmentScheduleController;
 use App\Http\Controllers\Admin\ChecklistController;
 use App\Http\Controllers\Admin\ClientController as AdminClientController;
 use App\Http\Controllers\Admin\EmployeeController;
-use App\Http\Controllers\Admin\MaterialController;
+use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\ProjectTaskController;
 use App\Http\Controllers\Admin\ProjectUpdateController;
@@ -24,7 +24,7 @@ use App\Http\Controllers\Employee\AssessmentFormController as EmployeeAssessment
 use App\Http\Controllers\Employee\DashboardController as EmployeeDashboardController;
 use App\Http\Controllers\Employee\ChecklistController as EmployeeChecklistController;
 use App\Http\Controllers\Employee\ClientController as EmployeeClientController;
-use App\Http\Controllers\Employee\MaterialController as EmployeeMaterialController;
+use App\Http\Controllers\Employee\ItemController as EmployeeItemController;
 use App\Http\Controllers\Employee\ProjectController as EmployeeProjectController;
 use App\Http\Controllers\Employee\QuotationController as EmployeeQuotationController;
 use App\Http\Controllers\Employee\RequestController as EmployeeRequestController;
@@ -502,22 +502,22 @@ Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function 
 });
 
 // ==========================================================
-// ADMIN MATERIALS ROUTES
+// ADMIN ITEMS ROUTES
 // View is shared (admin/secretary/super_admin) — pricing and all
-// manage actions are super_admin only (see MaterialController::index).
+// manage actions are super_admin only (see ItemController::index).
 // ==========================================================
 Route::middleware(['auth', 'role:admin,secretary,super_admin'])->group(function () {
-    Route::get('/materials', [MaterialController::class, 'index'])->name('materials');
+    Route::get('/items', [ItemController::class, 'index'])->name('items');
 });
 
 Route::middleware(['auth', 'role:super_admin'])->group(function () {
-    Route::get('/archive-materials', [MaterialController::class, 'archivedPage'])
-        ->name('archive-materials');
-    Route::post('/materials', [MaterialController::class, 'store'])->name('materials.store');
-    Route::put('/materials/{material}', [MaterialController::class, 'update'])
-        ->name('materials.update');
-    Route::patch('/materials/{material}/archive', [MaterialController::class, 'archive'])->name('materials.archive');
-    Route::post('/materials/{material}/unarchive', [MaterialController::class, 'unarchive'])->name('materials.unarchive');
+    Route::get('/archive-items', [ItemController::class, 'archivedPage'])
+        ->name('archive-items');
+    Route::post('/items', [ItemController::class, 'store'])->name('items.store');
+    Route::put('/items/{item}', [ItemController::class, 'update'])
+        ->name('items.update');
+    Route::patch('/items/{item}/archive', [ItemController::class, 'archive'])->name('items.archive');
+    Route::post('/items/{item}/unarchive', [ItemController::class, 'unarchive'])->name('items.unarchive');
 });
 
 // ==========================================================
@@ -599,9 +599,9 @@ Route::middleware(['auth', 'role:employee'])
         Route::get('/clients/{client}/details', [EmployeeClientController::class, 'show'])
             ->name('clients.show');
 
-        // Employee material catalog — read-only, no pricing data at all
-        Route::get('/materials', [EmployeeMaterialController::class, 'index'])
-            ->name('materials');
+        // Employee item catalog — read-only, no pricing data at all
+        Route::get('/items', [EmployeeItemController::class, 'index'])
+            ->name('items');
 
         // Employee personal settings — notification preferences only
         Route::get('/settings', [EmployeeSettingsController::class, 'index'])

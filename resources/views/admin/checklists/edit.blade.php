@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ asset('css/admin/checklists/checklists.css') }}">
 @endsection
 
-@section('page-title', 'Materials Checklist')
+@section('page-title', 'Items Checklist')
 @section('page-subtitle', $project->project_title . ' | ' . $project->quotation->assessment->client->user->full_name)
 
 @section('topbar-actions')

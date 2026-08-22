@@ -20,6 +20,17 @@ class AssessmentRequestController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
+        // Sibling assessments (same booking_group_id) came from one client
+        // submission for multiple services in the same visit — flag them so
+        // the table can show a "part of the same visit" hint.
+        $groupCounts = $assessments->whereNotNull('booking_group_id')->groupBy('booking_group_id')->map->count();
+        $assessments->each(function ($a) use ($assessments, $groupCounts) {
+            $a->is_grouped = $a->booking_group_id && ($groupCounts[$a->booking_group_id] ?? 0) > 1;
+            $a->sibling_ids = $a->is_grouped
+                ? $assessments->where('booking_group_id', $a->booking_group_id)->where('id', '!=', $a->id)->pluck('id')
+                : collect();
+        });
+
         $employees = Employee::with('staff.user')->get();
 
         $total = $assessments->count();
